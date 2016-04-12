@@ -27,7 +27,7 @@
         <field name="productionReport">
             <property name="Label">Sales_ProductionReport.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
                 name="Sales_ProductionCosting_SelectDocForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ProductionCosting">
@@ -42,7 +42,7 @@
         <field name="productionCosting">
             <property name="Label">Sales_ProductionCosting.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
                 name="Sales_ProductionCosting_SelectDocForm.acquisitionCosting.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ProductionCosting">
@@ -59,12 +59,12 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_ProductionCosting_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm"
                 name="Sales_ProductionCosting_SelectDocForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting" />

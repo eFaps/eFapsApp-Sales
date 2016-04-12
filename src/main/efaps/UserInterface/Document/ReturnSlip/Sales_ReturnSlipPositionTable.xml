@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,19 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ca1f039d-748d-4918-b392-d15815ff3dd6</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipPositionTable</name>
@@ -37,7 +30,7 @@
             <property name="Label">Sales_ReturnSlipPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        <field name="product" character="Picker">
+        <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -109,6 +102,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_ReturnSlipPositionTable.storage.Label</property>
+             <property name="UIType">DROPDOWN</property>
              <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                    method="getStorageFieldValueUI"
                    name="Sales_ReturnSlipPositionTable.storage.UI_FIELD_VALUE"

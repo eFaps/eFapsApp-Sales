@@ -30,13 +30,13 @@
         <name>Sales_CheckBookCreateRelationForm</name>
         <field name="start">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_CheckBookCreateRelationForm.start.label</property>
             <property name="Required">true</property>
         </field>
         <field name="end">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_CheckBookCreateRelationForm.end.label</property>
             <property name="Required">true</property>
         </field>

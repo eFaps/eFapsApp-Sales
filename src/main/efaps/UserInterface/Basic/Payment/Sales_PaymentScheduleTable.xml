@@ -48,7 +48,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         </field>
       <field name="total">
         <property name="Phrase">$&lt;attribute[Total].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-        <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         <property name="Label">Sales_PaymentScheduleTable/Total.Label</property>
       </field>
         <field name="date">

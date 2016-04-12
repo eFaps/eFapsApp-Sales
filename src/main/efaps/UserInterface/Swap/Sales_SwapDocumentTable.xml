@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b10780d6-7fed-4d3a-b8fb-1e17b11e9529</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_SwapDocumentTable</name>
@@ -32,11 +28,12 @@
             <property name="Phrase">$&lt;attribute[Amount].type.label&gt; $&lt;linkto[CurrencyLink].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Document2Document4Swap/Amount.Label</property>
             <property name="Align">right</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="direction">
             <property name="Label">Sales_SwapDocumentTable.direction.Label</property>
             <property name="FilterType">PICKLIST</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="getSwapDirectionFieldValue"
                 name="Sales_SwapDocumentTable.direction.UI_FIELD_VALUE"
@@ -46,7 +43,7 @@
         <field name="document">
             <property name="HRef">TREE</property>
             <property name="Label">Sales_SwapDocumentTable.document.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="getSwapDocumentFieldValue"
                 name="Sales_SwapDocumentTable.document.UI_FIELD_VALUE"

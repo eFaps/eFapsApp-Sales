@@ -25,7 +25,7 @@
         <field name="incomingInvoice">
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReminder"
                 method="autoComplete4Doc"
                 name="Sales_IncomingReminder_SelectDocForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
@@ -46,12 +46,12 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_IncomingInvoice_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReminder"
                 method="getJS4SelectDocumentForm"
                 name="Sales_IncomingReminder_SelectDocForm.javaScript.UI_FIELD_VALUE"

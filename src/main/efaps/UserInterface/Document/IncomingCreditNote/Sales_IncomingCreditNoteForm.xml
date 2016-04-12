@@ -30,7 +30,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="activatePositionsCalculator"
                 name="Sales_IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE"
@@ -83,7 +83,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingCreditNoteForm.documentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
                 name="Sales_IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -184,7 +184,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -218,7 +218,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingCreditNoteForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="rateFieldValueUI"
                 name="Sales_IncomingCreditNoteForm.rate.UI_FIELD_VALUE"
@@ -280,7 +280,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingCreditNote/NetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="taxes4Read">
             <property name="Attribute">Taxes</property>
@@ -290,7 +290,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingCreditNote/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
             <property name="Level">1</property>
@@ -356,7 +356,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingCreditNote/RateNetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="accessCheck4Rate"
                 name="Sales_IncomingCreditNoteForm.rateNetTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
@@ -370,7 +370,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingCreditNote/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="accessCheck4Rate"
                 name="Sales_IncomingCreditNoteForm.rateCrossTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
@@ -379,7 +379,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingCreditNoteForm.javaScript.UI_FIELD_VALUE"
@@ -398,7 +398,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
                 name="Sales_IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -448,7 +448,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingCreditNoteForm.documentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
                 name="Sales_IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -518,7 +518,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">100</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project" name="Sales_CreditNoteForm.project.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
@@ -533,7 +533,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2IncomingCreditNote#ToLink].linkto[FromLink].oid</property>
@@ -543,7 +543,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field character="Heading" name="headingClient">
@@ -572,7 +572,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -606,7 +606,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingCreditNoteForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="rateFieldValueUI"
                 name="Sales_IncomingCreditNoteForm.rate.UI_FIELD_VALUE"
@@ -668,7 +668,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/NetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="taxes4Read">
             <property name="Attribute">Taxes</property>
@@ -678,7 +678,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
@@ -739,7 +739,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/RateNetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="accessCheck4Rate"
                 name="Sales_CreditNoteForm.rateNetTotal4Read.UI_ACCESSCHECK"
@@ -757,7 +757,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="accessCheck4Rate"
                 name="Sales_CreditNoteForm.rateCrossTotal4Read.UI_ACCESSCHECK"
@@ -768,7 +768,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getJavaScriptUIValue"
                 name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>

@@ -74,7 +74,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_GoodsIssueSlipPositionTable.storage.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>

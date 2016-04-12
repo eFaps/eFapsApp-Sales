@@ -39,7 +39,7 @@
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2DocumentTable.toLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getEmptyFieldValue" name="Sales_Document2DocumentTable.toLink.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
                 <property name="check4InstanceNotCallInstance">true</property>
              </trigger>
@@ -67,7 +67,7 @@
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2DocumentTable.fromLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getEmptyFieldValue" name="Sales_Document2DocumentTable.fromLink.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
                 <property name="check4InstanceNotCallInstance">true</property>
              </trigger>

@@ -72,6 +72,7 @@
             <property name="Phrase">$&lt;linkto[Payment].linkto[TargetDocument].linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkto[Payment].linkto[TargetDocument].linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].attribute[Date]&gt;</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_TransactionAbstract/BulkPayment.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Transaction"
                     method="formatDate"
                     name="Sales_TransactionAbstractTable.bulkPayment.UI_FIELD_FORMAT"

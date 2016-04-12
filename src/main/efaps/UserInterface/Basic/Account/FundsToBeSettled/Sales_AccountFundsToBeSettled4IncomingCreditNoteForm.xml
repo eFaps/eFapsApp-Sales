@@ -32,7 +32,7 @@
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -62,7 +62,7 @@
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -82,7 +82,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.derived.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="autoComplete4PettyCashReceipt"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4PettyCashReceipt"
@@ -98,7 +98,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
@@ -109,7 +109,7 @@
         <field name="contactData">
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.contactData.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
@@ -133,7 +133,7 @@
         <field name="rateCurrencyData">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="withoutVAT">
             <property name="HideLabel">true</property>
@@ -173,7 +173,7 @@
         </field>
         <field name="javaScript">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getJavaScriptUIValue"
                 name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -187,7 +187,7 @@
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -217,7 +217,7 @@
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -244,7 +244,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">100</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project"
                 name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
@@ -260,14 +260,14 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field name="derived">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.derived.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="autoComplete4PettyCashReceipt"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4PettyCashReceipt"
@@ -283,7 +283,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
@@ -294,7 +294,7 @@
         <field name="contactData">
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.contactData.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
@@ -318,7 +318,7 @@
         <field name="rateCurrencyData">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="withoutVAT">
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.withoutVAT.Label</property>
@@ -360,7 +360,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project" method="getJavaScript4ProjectUIValue"
                 name="Sales_AccountPettyCashForm.javascript.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ReadOnly">true</property>

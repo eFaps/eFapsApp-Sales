@@ -74,7 +74,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"
@@ -128,7 +128,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_RecievingTicketForm.storage.Label</property>
-             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="autoComplete4Storage"
                 name="Sales_ProductionReportForm.storage.UI_FIELD_AUTOCOMPLETE"
@@ -169,7 +169,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
@@ -192,7 +192,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getJavaScriptUIValue"
                 name="Sales_ProductionReportForm.javaScript.UI_FIELD_VALUE"
@@ -207,7 +207,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
@@ -274,7 +274,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"
@@ -328,7 +328,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_RecievingTicketForm.storage.Label</property>
-             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="autoComplete4Storage"
                 name="Sales_ProductionReportForm.storage.UI_FIELD_AUTOCOMPLETE"
@@ -360,7 +360,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.fabrication.Process"
                 method="autoComplete4Process"
@@ -377,7 +377,7 @@
                 event="UI_FIELD_UPDATE"/>
         </field>
         <field name="fabricationProcessData">
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_ProductionReportForm.fabricationProcessData.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
@@ -391,7 +391,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field character="Heading" name="headingPositon">
@@ -414,7 +414,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
@@ -437,7 +437,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getJavaScriptUIValue"
                 name="Sales_ProductionReportForm.javaScript.UI_FIELD_VALUE"
@@ -452,7 +452,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"

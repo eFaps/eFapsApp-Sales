@@ -31,7 +31,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator"
                 name="Sales_ProductionCostingForm.activatePositionsCalculator.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -122,7 +122,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_ProductionCostingForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionCosting"
                 method="rateFieldValueUI"
                 name="Sales_ProductionCostingForm.rate.UI_FIELD_VALUE"
@@ -183,7 +183,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/NetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="taxes4Read">
             <property name="Attribute">Taxes</property>
@@ -193,7 +193,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="rate4ReadHeading">
             <property name="Level">1</property>
@@ -262,7 +262,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/RateNetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
                 name="Sales_ProductionCostingForm.rateNetTotal4Read.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -278,7 +278,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
                 name="Sales_ProductionCostingForm.rateCrossTotal4Read.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -288,7 +288,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_ProductionCostingForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -316,7 +316,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator"
                 name="Sales_ProductionCostingForm.activatePositionsCalculator.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -389,7 +389,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.fabrication.Process"
                 method="autoComplete4Process"
@@ -406,7 +406,7 @@
                 event="UI_FIELD_UPDATE"/>
         </field>
         <field name="fabricationProcessData">
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_ProductionCostingForm.fabricationProcessData.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
@@ -420,7 +420,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field character="Heading" name="headingPositon">
@@ -452,7 +452,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_ProductionCostingForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionCosting"
                 method="rateFieldValueUI"
                 name="Sales_ProductionCostingForm.rate.UI_FIELD_VALUE"
@@ -513,7 +513,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/NetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="taxes4Read">
             <property name="Attribute">Taxes</property>
@@ -523,7 +523,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="rate4ReadHeading">
             <property name="Level">1</property>
@@ -592,7 +592,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/RateNetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
                 name="Sales_ProductionCostingForm.rateNetTotal4Read.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -608,7 +608,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_ProductionCosting/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
                 name="Sales_ProductionCostingForm.rateCrossTotal4Read.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
@@ -618,7 +618,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_ProductionCostingForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>

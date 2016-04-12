@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,24 +15,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>ff576202-171b-42c8-8093-63c38d7a36d2</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDetractionOutPaymentTable</name>
-        <!-- fields -->
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -52,7 +43,7 @@
             <property name="Label">Sales_PaymentDepositOutPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="autoComplete4CreateDocument"
                 name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">Sales_IncomingDetraction</property>
@@ -62,20 +53,24 @@
                 <property name="ExtraParameter01">checkbox4Invoice</property>
                 <property name="ShowRevision">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4CreateDocument"
-                name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4CreateDocument"
+                name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="createDocumentContact">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDetractionOutPaymentTable.createDocumentContact.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDetractionOutPaymentTable.createDocumentDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
@@ -83,21 +78,25 @@
             <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4PaymentRate"
-                name="Sales_PaymentDetractionOutPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4PaymentRate"
+                name="Sales_PaymentDetractionOutPaymentTable.paymentRate.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Sales_PaymentDetractionOutPaymentTable.payment4Pay.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4PaymentAmount"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4PaymentAmount"
                 name="Sales_PaymentDetractionOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentDiscount">
@@ -105,14 +104,18 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4PaymentDiscount"
-            name="Sales_PaymentDetractionOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4PaymentDiscount"
+                name="Sales_PaymentDetractionOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentDetractionOutPaymentTable.paymentAmountDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink">
             <property name="SelectAlternateOID">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].oid</property>
@@ -128,6 +131,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

@@ -27,7 +27,7 @@
         <name>Sales_DocSituationReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_DocSituationReportForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocSituationReport">
@@ -73,7 +73,7 @@
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_DocSituationReportForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocSituationReport">
@@ -89,7 +89,7 @@
         <name>Sales_DocSituationReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_DocSituationReportForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocSituationReport">
@@ -146,7 +146,7 @@
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_DocSituationReportForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocSituationReport">

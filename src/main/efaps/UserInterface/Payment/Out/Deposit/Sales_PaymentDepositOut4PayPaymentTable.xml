@@ -27,7 +27,7 @@
             <property name="Label">Sales_PaymentDepositOut4PayPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
                 method="autoComplete4FilteredDocuments"
                 name="Sales_PaymentDepositOut4PayPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
@@ -51,6 +51,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentDepositOut4PayPaymentTable.crossTotal4Read.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>

@@ -55,7 +55,7 @@
         <field name="quotation">
             <property name="Label">Sales_Quotation.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Doc"
                 name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Autocomplete"
@@ -70,7 +70,7 @@
         <field name="invoice">
             <property name="Label">Sales_Invoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Doc"
                 name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Autocomplete"
@@ -87,12 +87,12 @@
             <property name="Label">Sales_Invoice_SelectDocForm.info.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="getJS4SelectDocumentForm"
                 name="Sales_Invoice_SelectQuotationForm.javaScript.UI_Field_Value"

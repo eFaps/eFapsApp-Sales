@@ -37,7 +37,7 @@
         <field name="startAmount">
             <property name="Label">Sales_AccountPettyCashBalancingForm.startAmount.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="startAmountFieldValue4PettyCashUI"
@@ -50,7 +50,7 @@
         </field>
         <field name="messageBalancing">
             <property name="Label">Sales_AccountPettyCashBalancingForm.messageBalancing.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="ModeCreate">READONLY</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="setFieldValue4PettyCash"
@@ -60,7 +60,7 @@
         <field name="revenues">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashBalancingForm.revenues.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="revenuesFieldValue4PettyCashUI"
                 name="Sales_AccountPettyCashBalancingForm.revenues.UI_FIELD_VALUE"

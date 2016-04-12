@@ -83,7 +83,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_ReturnSlip/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getNameWithSerialFieldValue"
@@ -115,7 +115,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ReturnSlipForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ReturnSlipForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -190,7 +190,7 @@
             <property name="Label">Sales_ReturnSlip/ContactData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingInfo" character="Heading">
             <property name="Level">2</property>
@@ -276,14 +276,14 @@
             <property name="Label">Sales_ReturnSlipForm.carrierData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="storageSetter">
              <property name="ModeCreate">EDITABLE</property>
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_ReturnSlipForm.storage.Label</property>
-             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Storage"
                 name="Sales_ReturnSlipForm.storage.UI_FIELD_AUTOCOMPLETE"
@@ -329,7 +329,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getJavaScriptUIValue"
                 name="Sales_ReturnSlipForm.javaScript.UI_Field_Value"
@@ -390,7 +390,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_ReturnSlip/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getNameWithSerialFieldValue"
@@ -422,7 +422,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ReturnSlipForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ReturnSlipForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -479,7 +479,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">98</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project"
                 name="Sales_ReturnSlipForm.project.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
@@ -499,7 +499,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ReturnSlip#ToLink].linkto[FromLink].oid</property>
@@ -509,7 +509,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field name="headingClient" character="Heading">
@@ -541,7 +541,7 @@
             <property name="Label">Sales_ReturnSlip/ContactData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingInfo" character="Heading">
             <property name="Level">2</property>
@@ -627,14 +627,14 @@
             <property name="Label">Sales_ReturnSlipForm.carrierData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="storageSetter">
              <property name="ModeCreate">EDITABLE</property>
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_ReturnSlipForm.storage.Label</property>
-             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Storage"
                 name="Sales_ReturnSlipForm.storage.UI_FIELD_AUTOCOMPLETE"
@@ -680,7 +680,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getJavaScriptUIValue"
                 name="Sales_ReturnSlipForm.javaScript.UI_Field_Value"

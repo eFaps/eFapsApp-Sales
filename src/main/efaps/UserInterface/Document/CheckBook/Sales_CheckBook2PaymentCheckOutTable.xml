@@ -36,21 +36,21 @@
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Label">Sales_PaymentCheckOut/Name.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CheckBook" method="getInfoDocumentFieldValue"
                 name="Sales_CheckBook2PaymentCheckOutTable.name.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
             </trigger>
         </field>
         <field name="status">
             <property name="Label">Sales_CheckBook/Status.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CheckBook" method="getInfoStatusDocumentFieldValue"
                 name="Sales_CheckBook2PaymentCheckOutTable.status.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
             </trigger>
         </field>
         <field name="value">
             <property name="Label">Sales_CheckBook/Value.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CheckBook" method="getInfoValueDocumentFieldValue"
                 name="Sales_CheckBook2PaymentCheckOutTable.value.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
             </trigger>

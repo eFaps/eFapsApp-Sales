@@ -28,7 +28,7 @@
         <field name="orderOutbound">
             <property name="Label">Sales_OrderOutbound.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_FIELD_AUTOCOMPLETE"
@@ -53,7 +53,7 @@
         <field name="serviceOrderOutbound">
             <property name="Label">Sales_ServiceOrderOutbound.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_FIELD_AUTOCOMPLETE"
@@ -78,7 +78,7 @@
         <field name="recievingTicket">
             <property name="Label">Sales_RecievingTicket.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.recievingTicket.UI_FIELD_AUTOCOMPLETE"
@@ -104,12 +104,12 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_IncomingInvoice_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJS4SelectDocumentForm"
                 name="Sales_IncomingInvoice_SelectDocForm.javaScript.UI_FIELD_VALUE"

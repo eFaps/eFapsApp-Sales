@@ -29,7 +29,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModePrint">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="activatePositionsCalculator"
                 name="Sales_QuotationForm.activatePositionsCalculator.UI_FIELD_VALUE"
@@ -149,7 +149,7 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="condition">
             <property name="Select">linkfrom[Sales_ChannelSalesCondition2Quotation#ToLink].linkto[FromLink].oid</property>
@@ -225,7 +225,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_QuotationForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="rateFieldValueUI"
                 name="Sales_QuotationForm.rate.UI_FIELD_VALUE"
@@ -288,7 +288,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Quotation/NetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="taxes4Read">
             <property name="Attribute">Taxes</property>
@@ -298,7 +298,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Quotation/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
             <property name="Level">1</property>
@@ -363,7 +363,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Quotation/RateNetTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation" method="accessCheck4Rate"
                 name="Sales_QuotationForm.rateNetTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
@@ -377,7 +377,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Quotation/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation" method="accessCheck4Rate"
                 name="Sales_QuotationForm.rateCrossTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
@@ -386,7 +386,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="getJavaScriptUIValue"
                 name="Sales_QuotationForm.javaScript.UI_FIELD_VALUE"

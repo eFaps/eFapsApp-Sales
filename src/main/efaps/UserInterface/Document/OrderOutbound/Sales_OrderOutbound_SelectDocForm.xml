@@ -40,7 +40,7 @@
       <property name="Label">Sales_ProductRequest.Label</property>
       <property name="ModeCreate">EDITABLE</property>
       <property name="Required">true</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+      <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
       <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                method="autoComplete4ProductRequest"
                name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Autocomplete"
@@ -54,12 +54,12 @@
       <property name="ModePrint">NONE</property>
       <property name="Label">Sales_Invoice_SelectQuotationForm/info.Label</property>
       <property name="ModeCreate">READONLY</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+      <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
     </field>
     <field name="javaScript">
       <property name="ModePrint">NONE</property>
       <property name="ModeCreate">HIDDEN</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+      <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
       <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                method="getJS4SelectDocumentForm"
                name="Sales_Order_SelectOrderForm.javaScript.UI_Field_Value"

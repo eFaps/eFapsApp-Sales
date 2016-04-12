@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d322c340-569a-419f-8c56-46688feb164c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledBalancingPaymentTable</name>
@@ -42,16 +37,19 @@
             <property name="Phrase">$&lt;linkto[CreateDocument].type.label&gt; - $&lt;linkto[CreateDocument].attribute[Name]&gt;</property>
             <property name="Label">Sales_Payment/CreateDocument.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
          <field name="targetDocument">
             <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
             <property name="Phrase">$&lt;linkto[TargetDocument].type.label&gt; - $&lt;linkto[TargetDocument].attribute[Name]&gt;</property>
             <property name="Label">Sales_Payment/TargetDocument.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="amount">
             <property name="Phrase">$&lt;linkto[CreateDocument].attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="contact">
             <property name="Select">linkto[CreateDocument].linkto[Contact].attribute[Name]</property>

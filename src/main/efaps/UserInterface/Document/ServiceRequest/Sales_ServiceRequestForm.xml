@@ -142,7 +142,7 @@
             <property name="Label">Sales_ServiceRequestForm.contactData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingPosition">
             <property name="Level">2</property>

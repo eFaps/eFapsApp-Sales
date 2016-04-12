@@ -28,7 +28,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="deactivateFiltered4Invoice"
                 name="Sales_PaymentRetentionOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -94,7 +94,7 @@
             <property name="Label">Sales_PaymentRetentionOutForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
                 name="Sales_PaymentRetentionOutForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
@@ -116,7 +116,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut"
                 method="dropDown4AccountFieldValue"
                 name="Sales_PaymentRetentionOutForm.account.UI_FIELD_VALUE"
@@ -221,7 +221,7 @@
         </field>
         <field name="total4DiscountPay">
             <property name="Label">Sales_PaymentRetentionOutForm.total4DiscountPay.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
@@ -230,7 +230,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut"
                 method="getJavaScriptUIValue"
                 name="Sales_PaymentRetentionOutForm.javaScript.UI_FIELD_VALUE"

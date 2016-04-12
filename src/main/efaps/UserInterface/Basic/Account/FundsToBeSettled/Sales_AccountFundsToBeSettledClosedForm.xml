@@ -32,7 +32,7 @@
             <property name="Columns">12</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountIn.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="getAmount4FieldValue"
                 name="Sales_AccountFundsToBeSettledClosedForm.amountIn.UI_FIELD_VALUE"
@@ -44,7 +44,7 @@
             <property name="Columns">12</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountOut.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="getAmount4FieldValue"
                 name="Sales_AccountFundsToBeSettledClosedForm.amountOut.UI_FIELD_VALUE"
@@ -56,7 +56,7 @@
             <property name="Columns">12</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.result.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="getAmount4FieldValue"
                 name="Sales_AccountFundsToBeSettledClosedForm.result.UI_FIELD_VALUE"

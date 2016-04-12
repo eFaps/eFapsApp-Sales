@@ -14,24 +14,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>3a935435-3099-4cec-9752-69f0a4bb3874</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentRetentionOutPaymentTable</name>
-        <!-- fields -->
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -52,9 +42,11 @@
             <property name="Label">Sales_PaymentRetentionOutPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="autoComplete4CreateDocument"
-                name="Sales_PaymentRetentionOutPaymentTable.createDocument.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut"
+                method="autoComplete4CreateDocument"
+                name="Sales_PaymentRetentionOutPaymentTable.createDocument.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">Sales_IncomingRetention</property>
                 <property name="StatusGroup">Sales_IncomingRetentionStatus</property>
                 <property name="Status">Open</property>
@@ -62,14 +54,17 @@
                 <property name="ExtraParameter01">checkbox4Invoice</property>
                 <property name="ShowRevision">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="updateFields4CreateDocument"
-                name="Sales_PaymentRetentionOutPaymentTable.createDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut"
+                method="updateFields4CreateDocument"
+                name="Sales_PaymentRetentionOutPaymentTable.createDocument.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentRetentionOutPaymentTable.createDocumentDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
@@ -77,14 +72,17 @@
             <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="updateFields4PaymentRate"
-                name="Sales_PaymentRetentionOutPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut"
+                method="updateFields4PaymentRate"
+                name="Sales_PaymentRetentionOutPaymentTable.paymentRate.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Sales_PaymentRetentionOutPaymentTable.payment4Pay.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
@@ -99,14 +97,17 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="updateFields4PaymentDiscount"
-            name="Sales_PaymentRetentionOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut"
+                method="updateFields4PaymentDiscount"
+                name="Sales_PaymentRetentionOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentRetentionOutPaymentTable.paymentAmountDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink">
             <property name="SelectAlternateOID">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].oid</property>

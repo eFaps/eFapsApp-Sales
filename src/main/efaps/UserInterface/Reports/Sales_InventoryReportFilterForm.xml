@@ -30,7 +30,7 @@
         <name>Sales_InventoryReportFilterForm</name>
         <field name="date">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">org.efaps.esjp.products.reports.InventoryReport.date</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateFrom.UI_FIELD_VALUE"
@@ -73,7 +73,7 @@
 
          <field name="valuation">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">org.efaps.esjp.sales.report.InventoryReport.valuation</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"

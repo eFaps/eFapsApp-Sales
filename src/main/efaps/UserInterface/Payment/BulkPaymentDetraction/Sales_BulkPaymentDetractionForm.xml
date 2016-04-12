@@ -42,7 +42,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_BulkPayment.account.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="dropDownFieldValue"
                 name="Sales_BulkPaymentDetractionForm.accountLink.UI_FIELD_VALUE"
@@ -103,7 +103,7 @@
         </field>
         <field name="crosstotal">
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
         </field>
         <field name="bulkDefinition">
@@ -121,7 +121,7 @@
          <field name="report4Detail">
             <property name="HideLabel">true</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getReport4Detail"
                 name="Sales_BulkPaymentDetractionForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.payment.BulkPaymentDetraction"/>

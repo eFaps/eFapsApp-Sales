@@ -44,7 +44,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="autoComplete4CreateDocument"
                 name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <!-- Sales-Configuration -->
@@ -54,7 +54,8 @@
                 <property name="ExtraParameter01">checkbox4Invoice</property>
                 <property name="ShowRevision">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4CreateDocument"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
+                method="updateFields4CreateDocument"
                 name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="createDocumentDesc">
@@ -62,6 +63,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCheckOutPaymentTable.createDocumentDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
@@ -77,6 +79,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Sales_PaymentCheckOutPaymentTable.payment4Pay.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
@@ -91,7 +94,9 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4PaymentDiscount"
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
+                method="updateFields4PaymentDiscount"
                 name="Sales_PaymentCheckOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
@@ -99,7 +104,9 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentCheckOutPaymentTable.paymentAmountDesc.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4PaymentAmountDesc"
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
+                method="updateFields4PaymentAmountDesc"
                 name="Sales_PaymentCheckOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="accountLink">
@@ -143,6 +150,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentCheckOutPaymentTable.amount4DocCreate.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
                 name="Sales_PaymentCheckOutPaymentTable.amount4DocCreate.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>

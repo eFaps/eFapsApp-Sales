@@ -27,7 +27,7 @@
         <name>Sales_DocSituationReportFilterForm</name>
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">org.efaps.esjp.sales.report.DocSituationReport.dateFrom</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
                 name="ERP_ReportFilterForm4DateFromTo.dateFrom.UI_FIELD_VALUE"
@@ -35,7 +35,7 @@
         </field>
         <field name="dateTo">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">org.efaps.esjp.sales.report.DocSituationReport.dateTo</property>
             <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
                 name="ERP_ReportFilterForm4DateFromTo.dateTo.UI_FIELD_VALUE"
@@ -43,7 +43,7 @@
         </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">ERP_ReportFilterForm4DateFromToType.type.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -69,7 +69,7 @@
         </field>
           <field name="dateGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">org.efaps.esjp.sales.report.DocSituationReport.dateGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -94,7 +94,7 @@
         <name>Sales_DocSituationReportFilterForm</name>
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">org.efaps.esjp.sales.report.DocSituationReport.dateFrom</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
                 name="ERP_ReportFilterForm4DateFromTo.dateFrom.UI_FIELD_VALUE"
@@ -102,7 +102,7 @@
         </field>
         <field name="dateTo">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">org.efaps.esjp.sales.report.DocSituationReport.dateTo</property>
             <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
                 name="ERP_ReportFilterForm4DateFromTo.dateTo.UI_FIELD_VALUE"
@@ -110,7 +110,7 @@
         </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">ERP_ReportFilterForm4DateFromToType.type.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -152,7 +152,7 @@
         </field>
           <field name="dateGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">org.efaps.esjp.sales.report.DocSituationReport.dateGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"

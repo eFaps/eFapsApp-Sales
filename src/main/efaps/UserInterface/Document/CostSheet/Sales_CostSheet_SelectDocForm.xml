@@ -31,7 +31,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
                      method="autoComplete4Doc"
                      name="Sales_CostSheet_SelectDocForm.costSheet.UI_FIELD_AUTOCOMPLETE"
@@ -47,12 +47,12 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_CostSheet_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
                      method="getJS4SelectDocumentForm"
                      name="Sales_CostSheet_SelectDocForm.javaScript.UI_FIELD_VALUE"

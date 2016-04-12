@@ -48,7 +48,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="swapDocHeading">
             <property name="Level">2</property>
@@ -77,7 +77,7 @@
         <field name="total">
             <property name="Label">Sales_SwapCollectTable.document.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="preCalculate">
             <property name="Label">Sales_IncomingExchangeCreateCalculatedForm.preCalculate.Label</property>
@@ -105,7 +105,7 @@
          <field name="exchangeTotal">
             <property name="Label">Sales_ExchangeCreateCalculatedForm.exchangeTotal.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

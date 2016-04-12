@@ -35,6 +35,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Width">1</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_UsageReportPositionTable.storage.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="CheckCallingCommand">true</property>
@@ -84,6 +85,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_UsageReportPositionTable.storage.Label</property>
+             <property name="UIType">DROPDOWN</property>
              <trigger program="org.efaps.esjp.sales.document.UsageReport"
                    method="getStorageFieldValueUI"
                    name="Sales_UsageReportPositionTable.storage.UI_FIELD_VALUE"

@@ -30,7 +30,7 @@
             <property name="Columns">12</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountIn.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account" method="getAmount4FieldValue"
                 name="Sales_AccountPettyCashClosedForm.amountIn.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Value">In</property>
@@ -40,7 +40,7 @@
             <property name="Columns">12</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountOut.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account" method="getAmount4FieldValue"
                 name="Sales_AccountPettyCashClosedForm.amountOut.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Value">Out</property>
@@ -50,7 +50,7 @@
             <property name="Columns">12</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.result.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account" method="getAmount4FieldValue"
                 name="Sales_AccountPettyCashClosedForm.result.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>

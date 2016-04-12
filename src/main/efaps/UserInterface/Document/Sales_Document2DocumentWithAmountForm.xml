@@ -33,7 +33,7 @@
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2DocumentTable.toLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="fromLink">
             <property name="ModeEdit">READONLY</property>
@@ -42,7 +42,7 @@
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2DocumentTable.fromLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="amount">
             <property name="ModeEdit">EDITABLE</property>

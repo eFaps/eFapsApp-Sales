@@ -80,7 +80,7 @@
             <property name="Select">linkto[Payment].type.label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_TransactionAbstract/Payment.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
     <definition>
@@ -128,7 +128,7 @@
             <property name="Select">linkto[Payment].type.label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_TransactionAbstract/Payment.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="docTypeLink">
             <property name="Select">linkto[Payment].linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
@@ -138,7 +138,7 @@
             <property name="SelectAlternateOID">linkto[Payment].linkto[CreateDocument].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
             <property name="Select">linkto[Payment].linkto[CreateDocument].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>
             <property name="Label">Sales_TransactionAbstractTable.projectLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="FilterType">PICKLIST</property>
         </field>
     </definition>

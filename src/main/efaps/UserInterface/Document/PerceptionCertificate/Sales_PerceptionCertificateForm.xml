@@ -92,7 +92,7 @@
             <property name="SelectAlternateOID">linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].type.label&gt; - $&lt;linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].attribute[Name]&gt;</property>
             <property name="HRef">TREE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
@@ -129,7 +129,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
@@ -142,13 +142,13 @@
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_PerceptionCertificate/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
          <field name="rateCrossTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_PerceptionCertificate/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

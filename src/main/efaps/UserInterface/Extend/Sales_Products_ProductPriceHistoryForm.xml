@@ -36,7 +36,7 @@
             <property name="Label">Sales_Products_ProductPriceHistoryForm.product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Products_ProductPicker4Product"/>
             <trigger program="org.efaps.esjp.sales.PriceUtil"
                      method="updateField4Product"
@@ -47,12 +47,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.PriceUtil"
                      method="removeField4Product"
                      name="Sales_Products_ProductPriceHistoryForm.javaScript.UI_FIELD_VALUE"

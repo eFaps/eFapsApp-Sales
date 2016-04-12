@@ -34,7 +34,7 @@
             <property name="Label">Sales_OrderOutbound.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4OrderOutbound"
                 name="Sales_IncomingReceipt_SelectDocForm.order.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.IncomingReceipt" />
@@ -46,12 +46,12 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_IncomingReceipt_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm"
                 name="Sales_IncomingReceipt_SelectDocForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingReceipt" />

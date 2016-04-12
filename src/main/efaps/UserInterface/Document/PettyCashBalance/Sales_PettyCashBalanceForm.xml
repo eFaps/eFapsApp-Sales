@@ -98,12 +98,12 @@
             <property name="Phrase">$&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].type.label&gt; - $&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PettyCashBalanceForm.order.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_PettyCashBalance/CrossTotal.Label</property>
         </field>
         <field name="payment">
@@ -111,7 +111,7 @@
             <property name="Phrase">$&lt;linkfrom[Sales_Payment#CreateDocument].type.label&gt; - $&lt;linkfrom[Sales_Payment#CreateDocument].attribute[Date]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PettyCashBalanceForm.payment.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="targetPayments" character="Heading">
             <property name="Level">2</property>

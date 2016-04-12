@@ -70,7 +70,7 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
@@ -128,13 +128,13 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[Total]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_PaymentScheduleForm/Total.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule"
                 method="getJavaScript4UIValue"
                 name="Sales_PaymentScheduleForm.javaScript.UI_FIELD_VALUE"

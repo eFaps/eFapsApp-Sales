@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3cc48957-2819-437d-befd-4d443f22b59e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDebitCardPaymentTable</name>
@@ -49,8 +44,10 @@
             <property name="Label">Sales_PaymentDebitCardPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentDebitCardPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentDebitCard">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument"
+                name="Sales_PaymentDebitCardPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.payment.PaymentDebitCard">
                 <property name="Type">Sales_Invoice</property>
                 <property name="StatusGroup">Sales_InvoiceStatus</property>
                 <property name="Status">Open</property>
@@ -69,13 +66,16 @@
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentDebitCardPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDebitCard"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument"
+                name="Sales_PaymentDebitCardPaymentTable.product.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDebitCard"/>
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDebitCardPaymentTable.createDocumentDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
@@ -91,27 +91,34 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Sales_PaymentDebitCardPaymentTable.payment4Pay.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount" name="Sales_PaymentDebitCardPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDebitCard"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount"
+                name="Sales_PaymentDebitCardPaymentTable.paymentAmount.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDebitCard"/>
         </field>
         <field name="paymentDiscount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4PaymentDiscount"
-                name="Sales_PaymentDebitCardPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard"
+                method="updateFields4PaymentDiscount"
+                name="Sales_PaymentDebitCardPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentDebitCardPaymentTable.paymentAmountDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink">
             <property name="SelectAlternateOID">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].oid</property>

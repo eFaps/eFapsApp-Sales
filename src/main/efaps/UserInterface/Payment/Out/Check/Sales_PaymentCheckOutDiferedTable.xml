@@ -62,7 +62,7 @@
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">MONTH</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
         </field>
         <field name="dueDate">
             <property name="Select">linkto[TargetDocument].attribute[DueDate]</property>
@@ -75,7 +75,7 @@
         </field>
         <field name="account">
             <property name="Label">Sales_PaymentCheckDifered/account.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="FilterType">PICKLIST</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" name="Sales_PaymentCheckOutDiferedTable.account.UI_FIELD_VALUE"
                 method="getAccount" event="UI_FIELD_VALUE" />
@@ -96,7 +96,7 @@
         </field>
         <field name="orderOutbound">
             <property name="Label">Sales_PaymentCheckDifered/orderOutbound.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" name="Sales_PaymentCheckOutDiferedTable.payableDocument2Document.UI_FIELD_VALUE"
                 method="getpayableDocument" event="UI_FIELD_VALUE" />
         </field>

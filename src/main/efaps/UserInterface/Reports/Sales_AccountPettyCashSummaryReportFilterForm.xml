@@ -30,7 +30,7 @@
         <name>Sales_AccountPettyCashSummaryReportFilterForm</name>
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">ERP_ReportFilterForm4DateFromTo.dateFrom.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
                 name="ERP_ReportFilterForm4DateFromTo.dateFrom.UI_FIELD_VALUE"
@@ -38,7 +38,7 @@
         </field>
         <field name="dateTo">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">ERP_ReportFilterForm4DateFromTo.dateTo.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
                 name="ERP_ReportFilterForm4DateFromTo.dateTo.UI_FIELD_VALUE"

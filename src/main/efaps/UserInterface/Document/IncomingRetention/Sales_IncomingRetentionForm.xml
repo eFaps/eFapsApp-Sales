@@ -142,7 +142,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">2</property>
@@ -166,7 +166,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingRetentionForm.rateCurrencyData.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingRetention"
                 method="rateFieldValueUI"
                 name="Sales_IncomingRetentionForm.rate.UI_FIELD_VALUE"
@@ -180,7 +180,7 @@
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
             <property name="Label">Sales_IncomingRetentionCreateForm.retentionPercent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingRetention"
                 method="updateFields4RetentionPercent"
                 name="Sales_IncomingIncomingRetentionForm.retentionPercent.UI_FIELD_UPDATE"
@@ -227,7 +227,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingRetention/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="rate4ReadHeading">
             <property name="Level">2</property>
@@ -261,7 +261,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingRetention/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

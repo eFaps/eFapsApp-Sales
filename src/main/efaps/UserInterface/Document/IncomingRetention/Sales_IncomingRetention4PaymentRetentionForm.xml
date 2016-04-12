@@ -33,7 +33,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="dropDown4AccountFieldValue"
                 name="Sales_IncomingRetention4PaymentRetentionForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
@@ -45,7 +45,7 @@
        </field>
        <field name="storeOIDs">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Sales_IncomingRetention4PaymentRetentionForm.storeOIDs.UI_FIELD_VALUE"

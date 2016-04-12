@@ -146,7 +146,7 @@
             <property name="Label">Sales_GoodsIssueSlipForm.contactData.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>

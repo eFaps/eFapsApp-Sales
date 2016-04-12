@@ -32,9 +32,9 @@
             <property name="Attribute">Storage</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_PettyCashReceipt_CreateTransDocShadowForm.storage.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Storage"
                 name="Sales_IncomingInvoice_CreateTransDocShadowForm.storage.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.RecievingTicket">
@@ -47,7 +47,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_PettyCashReceipt_CreateTransDocShadowForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_IncomingInvoice_CreateTransDocShadowForm.documentType.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.RecievingTicket">

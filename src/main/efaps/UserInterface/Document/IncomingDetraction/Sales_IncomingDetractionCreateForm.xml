@@ -31,7 +31,7 @@
         <field name="incomingInvoice">
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
                 name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.IncomingDetraction">
@@ -48,7 +48,7 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_IncomingInvoice_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="detractionPercent">
             <property name="ModeCreate">EDITABLE</property>
@@ -56,7 +56,7 @@
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionPercent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="updateFields4DetractionPercent"
                 name="Sales_IncomingDetractionCreateForm.detractionPercent.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
@@ -65,21 +65,21 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionValue.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="totalAmount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.totalAmount.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
          <field name="detractionServiceType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionServiceType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
@@ -91,7 +91,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_IncomingDetractionCreateForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingDetraction" />
         </field>

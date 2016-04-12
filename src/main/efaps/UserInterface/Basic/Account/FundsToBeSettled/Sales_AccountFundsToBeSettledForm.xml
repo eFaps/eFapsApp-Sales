@@ -78,7 +78,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="Label">Sales_AccountAbstractForm.amountCurrent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getAmountCurrentFieldValueUI"
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
@@ -155,7 +155,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="Label">Sales_AccountAbstractForm.amountCurrent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getAmountCurrentFieldValueUI"
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
@@ -190,7 +190,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">60</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
                 name="Sales_AccountFundsToBeSettledForm.project.UI_FIELD_AUTOCOMPLETE"
@@ -208,7 +208,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field name="dategroup" character="Group">
@@ -259,7 +259,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="Label">Sales_AccountAbstractForm.amountCurrent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getAmountCurrentFieldValueUI"
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
@@ -294,7 +294,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">60</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
                 name="Sales_AccountFundsToBeSettledForm.project.UI_FIELD_AUTOCOMPLETE"
@@ -312,7 +312,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field name="dategroup" character="Group">
@@ -363,7 +363,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="Label">Sales_AccountAbstractForm.amountCurrent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getAmountCurrentFieldValueUI"
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
@@ -376,7 +376,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">EmployeeLink</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.humanresource.Employee"
                 method="autoComplete4Employee"
                 name="Sales_AccountFundsToBeSettledForm.employee.UI_FIELD_AUTOCOMPLETE"
@@ -393,7 +393,7 @@
             <property name="Label">Sales_AccountFundsToBeSettled/Employee.Label</property>
             <property name="Phrase">$&lt;linkto[EmployeeLink].attribute[Number]&gt; - $&lt;linkto[EmployeeLink].attribute[LastName]&gt; $&lt;linkto[EmployeeLink].attribute[SecondLastName]&gt;, $&lt;linkto[EmployeeLink].attribute[FirstName]&gt;</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="responsible">
             <property name="Columns">40</property>

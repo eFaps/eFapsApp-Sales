@@ -36,7 +36,7 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Products_TransactionAbstractForm.type.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getTypeDropDownFieldValue"
                 name="Products_TransactionAbstractForm.type.UI_FIELD_VALUE"
@@ -59,7 +59,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.products.Product"
                 method="autoComplete4Product"
                 name="Products_TransactionAbstractForm.product.UI_FIELD_AUTOCOMPLETE"
@@ -167,7 +167,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_TransactionAbstract.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Products_TransactionAbstractForm.productDocumentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>

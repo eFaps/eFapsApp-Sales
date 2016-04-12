@@ -33,7 +33,7 @@
         <name>Sales_Products_ProductStock4ProductRequestForm</name>
         <field name="description">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                     method="getDBPropertiesFieldValue"
                     name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
@@ -43,7 +43,7 @@
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
                     method="generateReport"
                     name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"
@@ -64,7 +64,7 @@
         <name>Sales_Products_ProductStock4ProductRequestForm</name>
         <field name="description">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                     method="getDBPropertiesFieldValue"
                     name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
@@ -74,7 +74,7 @@
         </field>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
                 method="setDefaultFilter"
                 name="Sales_Products_ProductStock4ProductRequestForm.filter.UI_FIELD_VALUE.1"
@@ -98,7 +98,7 @@
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
                     method="generateReport"
                     name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"

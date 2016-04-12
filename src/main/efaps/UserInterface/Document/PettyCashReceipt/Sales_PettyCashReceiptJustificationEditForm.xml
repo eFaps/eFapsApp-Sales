@@ -35,7 +35,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">12</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">Sales_PettyCashReceipt/Date.Label</property>
         </field>
         <field name="contact">
@@ -45,7 +45,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Contacts_CreateContactPicker" />
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
                 name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
@@ -60,7 +60,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -68,7 +68,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                     name="Sales_PettyCashReceiptJustificationEditForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -86,7 +86,7 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.name.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="action">
             <property name="ModeCreate">EDITABLE</property>
@@ -94,7 +94,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
@@ -112,7 +112,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="getJavaScriptUIValue4EditJustification"
                 name="Sales_AccountPettyCashReceiptForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />

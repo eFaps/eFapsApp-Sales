@@ -27,7 +27,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
                 method="deactivateFiltered4Invoice"
                 name="Sales_PaymentCash.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
@@ -94,7 +94,7 @@
             <property name="Label">Sales_PaymentCashForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue" name="Sales_PaymentCashForm.checkbox4Invoice.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
@@ -116,7 +116,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="dropDown4AccountFieldValue" name="Sales_PaymentCashForm.account.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
@@ -212,7 +212,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

@@ -44,7 +44,7 @@
         <field name="rate">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_DocumentSum_RecalculateForm.rate.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

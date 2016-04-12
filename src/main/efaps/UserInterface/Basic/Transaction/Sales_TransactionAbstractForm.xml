@@ -84,7 +84,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeSearch">NONE</property>
             <property name="Label">Sales_TransactionAbstractForm.payment.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Transaction" method="accessCheck4Payment"
                 name="Sales_TransactionAbstractForm/payment.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>

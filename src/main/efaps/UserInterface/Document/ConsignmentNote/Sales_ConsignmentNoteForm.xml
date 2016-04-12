@@ -77,7 +77,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_ConsignmentNote/Name.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getNameWithSerialFieldValue"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
@@ -105,7 +105,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ConsignmentNoteForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ConsignmentNoteForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -179,7 +179,7 @@
             <property name="Label">Sales_ConsignmentNote/ContactData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingInfo">
             <property name="Level">2</property>
@@ -251,7 +251,7 @@
             <property name="Label">Sales_ConsignmentNoteForm.carrierData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
@@ -278,7 +278,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_ConsignmentNoteForm.javaScript.UI_Field_Value" program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>
@@ -335,7 +335,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_ConsignmentNote/Name.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getNameWithSerialFieldValue"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ConsignmentNote">
@@ -361,7 +361,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ConsignmentNoteForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ConsignmentNoteForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -418,7 +418,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">98</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Project"
                 name="Sales_ConsignmentNoteForm.project.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.projects.Project">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
@@ -437,7 +437,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ConsignmentNote#ToLink].linkto[FromLink].oid</property>
@@ -447,7 +447,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
         </field>
         <field character="Heading" name="headingClient">
@@ -478,7 +478,7 @@
             <property name="Label">Sales_ConsignmentNote/ContactData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingInfo">
             <property name="Level">2</property>
@@ -550,7 +550,7 @@
             <property name="Label">Sales_ConsignmentNoteForm.carrierData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
@@ -577,7 +577,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_ConsignmentNoteForm.javaScript.UI_Field_Value" program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>

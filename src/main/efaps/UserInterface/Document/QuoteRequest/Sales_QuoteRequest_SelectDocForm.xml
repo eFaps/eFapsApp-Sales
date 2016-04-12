@@ -34,7 +34,7 @@
             <property name="Label">Sales_QuoteRequest_SelectDocForm.productRequest.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="autoComplete4ProductRequest"
                 name="Sales_QuoteRequest_SelectDocForm.quotation.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
 
@@ -46,14 +46,14 @@
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_QuoteRequest_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="getJS4SelectDocumentForm"
                 name="Sales_QuoteRequest_SelectDocForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>

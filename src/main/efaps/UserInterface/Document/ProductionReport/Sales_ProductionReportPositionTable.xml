@@ -76,7 +76,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_ProductionReportPositionTable.storage.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Width">2</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getStorageFieldValueUI"

@@ -26,7 +26,7 @@
         <field name="document">
             <property name="Label">Sales_SwapCollectTable.document.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="autoComplete4Document"
                 name="Sales_SwapCollectTable.document.UI_FIELD_AUTOCOMPLETE"
@@ -41,36 +41,36 @@
         </field>
         <field name="contact">
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/Contact.Label</property>
         </field>
         <field name="crossTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/CrossTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/NetTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateCrossTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/RateCrossTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateNetTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/RateNetTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rate">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="updateFields4Rate"
@@ -79,11 +79,11 @@
         </field>
         <field name="rate_eFapsRateInverted">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="partial">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Sales_DocumentSumAbstract/NetTotal.Label</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="updateFields4Partial"
@@ -93,7 +93,7 @@
         </field>
         <field name="status">
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/Status.Label</property>
         </field>
     </definition>
