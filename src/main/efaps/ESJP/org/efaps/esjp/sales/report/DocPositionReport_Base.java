@@ -89,7 +89,7 @@ public abstract class DocPositionReport_Base
     {
         /** None. */
         NONE,
-        /** Group by Document Contact*/
+        /** Group by Document Contact.*/
         DOCCONTACT,
         /** Group by Product Producer. */
         PRODPRODUCER,
@@ -200,7 +200,7 @@ public abstract class DocPositionReport_Base
                 typeList = getTypeList(_parameter);
             }
             final Properties props = getProperties4TypeList(_parameter);
-            AbstractGroupedByDate.DateGroup dateGroup;
+            final AbstractGroupedByDate.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
@@ -211,29 +211,36 @@ public abstract class DocPositionReport_Base
                             typeList.toArray(new Type[typeList.size()]));
 
             if (filter.containsKey("bom") && BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
-                final List<Map<String, Object>> tmpList = new ArrayList<>();
-                for (final Map<String, Object> value  : this.valueList) {
-                    final Instance prodInst = (Instance) value.get("productInst");
-                    final BigDecimal quantity = (BigDecimal) value.get("quantity");
-                    final UoM uom  = (UoM) value.get("uoM");
-                    final BOM bom  = new BOM();
-                    final List<ProductBOMBean> prodBeans = bom.getBOMProducts(_parameter, prodInst, quantity, uom);
-                    if (prodBeans.isEmpty()) {
-                        tmpList.add(value);
-                    } else {
-                        for (final ProductBOMBean bean : prodBeans) {
-                            final Map<String, Object> newmap = new HashMap<>(value);
-                            newmap.put("quantity", bean.getQuantity());
-                            newmap.put("uoM", bean.getUoM());
-                            newmap.put("product", bean.getName() + " - " + bean.getDescription()
-                                        + " [" + bean.getUoM().getName() + "]");
-                            newmap.put("productInst", bean.getInstance());
-                            tmpList.add(newmap);
+                int counter = 0; // just a variable to prevent eternal loops
+                boolean finisched = false;
+                while (!finisched && counter < 5) {
+                    finisched = true;
+                    final List<Map<String, Object>> tmpList = new ArrayList<>();
+                    for (final Map<String, Object> value  : this.valueList) {
+                        final Instance prodInst = (Instance) value.get("productInst");
+                        final BigDecimal quantity = (BigDecimal) value.get("quantity");
+                        final UoM uom  = (UoM) value.get("uoM");
+                        final BOM bom  = new BOM();
+                        final List<ProductBOMBean> prodBeans = bom.getBOMProducts(_parameter, prodInst, quantity, uom);
+                        if (prodBeans.isEmpty()) {
+                            tmpList.add(value);
+                        } else {
+                            finisched = false;
+                            for (final ProductBOMBean bean : prodBeans) {
+                                final Map<String, Object> newmap = new HashMap<>(value);
+                                newmap.put("quantity", bean.getQuantity());
+                                newmap.put("uoM", bean.getUoM());
+                                newmap.put("product", bean.getName() + " - " + bean.getDescription()
+                                            + " [" + bean.getUoM().getName() + "]");
+                                newmap.put("productInst", bean.getInstance());
+                                tmpList.add(newmap);
+                            }
                         }
                     }
+                    counter++;
+                    this.valueList.clear();
+                    this.valueList.addAll(tmpList);
                 }
-                this.valueList.clear();
-                this.valueList.addAll(tmpList);
             }
             final ContactGroup contactGroup = evaluateContactGroup(_parameter);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
@@ -331,7 +338,7 @@ public abstract class DocPositionReport_Base
     protected ContactGroup evaluateContactGroup(final Parameter _parameter)
         throws EFapsException
     {
-        ContactGroup ret;
+        final ContactGroup ret;
         final Map<String, Object> filter = getFilterMap(_parameter);
         final EnumFilterValue value = (EnumFilterValue) filter.get("contactGroup");
         if (value != null) {
