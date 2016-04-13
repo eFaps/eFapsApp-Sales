@@ -23,17 +23,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDetractionOut4MassiveForm</name>
-        <!-- fields -->
-        <field name="deactivateFiltered4Invoice">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
-                method="deactivateFiltered4Invoice"
-                name="Sales_PaymentDetractionOut4MassiveForm.deactivateFiltered4Invoice.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
-        </field>
         <field name="code">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
@@ -110,21 +99,13 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="checkbox4Invoice">
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDetractionOutForm.checkbox4Invoice.Label</property>
+            <property name="HideLabel">true</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="checkboxFieldValue"
-                name="Sales_PaymentDetractionOut4MassiveForm.checkbox4Invoice.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="checked">false</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
-                method="update4checkbox4Invoive"
-                name="Sales_PaymentDetractionOut4MassiveForm.checkbox4Invoice.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
@@ -140,7 +121,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
                 method="dropDown4AccountFieldValue"
                 name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_VALUE"

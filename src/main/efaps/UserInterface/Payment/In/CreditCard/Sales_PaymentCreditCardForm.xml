@@ -22,16 +22,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCreditCardForm</name>
-        <!-- fields -->
-        <!-- fields -->
-        <field name="deactivateFiltered4Invoice">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="deactivateFiltered4Invoice"
-                name="Sales_PaymentCreditCardForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
-        </field>
         <field name="code">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
@@ -91,17 +81,20 @@
                 name="Sales_PaymentCreditCardForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="checkbox4Invoice">
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentCreditCardForm.checkbox4Invoice.Label</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+        </field>
+        <field name="contactData">
+            <property name="Label">Sales_PaymentCreditCardForm.contactData.Label</property>
+            <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
-                name="Sales_PaymentCreditCardForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="checked">false</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="update4checkbox4Invoive"
-                name="Sales_PaymentCreditCardForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
@@ -117,8 +110,9 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="dropDown4AccountFieldValue"
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCreditCard"
+                method="dropDown4AccountFieldValue"
                 name="Sales_PaymentCreditCardForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>

@@ -24,14 +24,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDepositForm</name>
-        <field name="deactivateFiltered4Invoice">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="deactivateFiltered4Invoice"
-                name="Sales_PaymentDepositForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
-        </field>
         <field name="code">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
@@ -89,18 +81,21 @@
             <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="updateFields4Contact"
                 name="Sales_PaymentDepositForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
-        <field name="checkbox4Invoice" >
-            <property name="ModeCreate">READONLY</property>
+        <field name="checkbox4Invoice">
+            <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDepositForm.checkbox4Invoice.Label</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+        </field>
+        <field name="contactData">
+            <property name="Label">Sales_PaymentDepositForm.contactData.Label</property>
+            <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
-                name="Sales_PaymentDepositForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="checked">false</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="update4checkbox4Invoive"
-                name="Sales_PaymentDepositForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="rateGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -116,7 +111,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="dropDown4AccountFieldValue"
                 name="Sales_PaymentDepositForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>

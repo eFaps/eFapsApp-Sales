@@ -48,7 +48,7 @@
         <property name="TargetCreateType">Sales_PaymentCreditCardVisa</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
-        <property name="WindowWidth">800</property>
+        <property name="WindowWidth">1000</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

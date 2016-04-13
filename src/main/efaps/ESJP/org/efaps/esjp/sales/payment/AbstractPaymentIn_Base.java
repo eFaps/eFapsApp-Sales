@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -33,15 +30,13 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
-import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -55,10 +50,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("35abd734-d033-460f-bb00-2f40e3a58320")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractPaymentIn_Base
     extends AbstractPaymentDocument
 {
@@ -89,31 +83,6 @@ public abstract class AbstractPaymentIn_Base
         return retVal;
     }
 
-    public Return checkbox4InvoiceFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder selContInst = new SelectBuilder().linkto(CISales.PaymentCheck.Contact).instance();
-        print.addSelect(selContInst);
-        print.execute();
-        final Instance contInst = print.<Instance>getSelect(selContInst);
-
-        final boolean checked = "true".equalsIgnoreCase((String) props.get("checked"));
-        if (!checked) {
-            if (contInst.isValid()) {
-                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY,
-                                contInst);
-            } else {
-                Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-            }
-        } else {
-            Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-        }
-        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contInst);
-        return new org.efaps.esjp.common.uiform.Field().checkboxFieldValue(_parameter);
-    }
 
     public Return getJavaScript4AmountAddDoc(final Parameter _parameter)
         throws EFapsException

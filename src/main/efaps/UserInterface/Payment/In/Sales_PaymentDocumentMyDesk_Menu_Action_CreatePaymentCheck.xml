@@ -14,25 +14,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f45a1430-ed19-492d-a509-ce8cad5f58ee</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCheck</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentCheckForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCheck">
@@ -43,12 +36,11 @@
             </execute>
             <validate program="org.efaps.esjp.sales.payment.PaymentCheck" method="validatePaymentDocument"/>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentCheck</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
-        <property name="WindowWidth">800</property>
+        <property name="WindowWidth">1000</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

@@ -14,15 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7ebc17fe-afbb-4480-b903-c2c1b8b38fa1</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction</name>
@@ -45,7 +39,7 @@
         <property name="TargetCreateType">Sales_PaymentDetraction</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
-        <property name="WindowWidth">800</property>
+        <property name="WindowWidth">1000</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

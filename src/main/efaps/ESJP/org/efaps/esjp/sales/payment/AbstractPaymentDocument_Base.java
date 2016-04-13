@@ -67,6 +67,7 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -104,12 +105,6 @@ public abstract class AbstractPaymentDocument_Base
      * Logger for this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPaymentDocument.class);
-
-    /** The Constant INVOICE_SESSIONKEY. */
-    public static final String INVOICE_SESSIONKEY = "eFaps_Selected_Sales_Invoice";
-
-    /** The Constant CONTACT_SESSIONKEY. */
-    public static final String CONTACT_SESSIONKEY = "eFaps_Selected_Contact";
 
     /** The Constant CHANGE_AMOUNT. */
     public static final String CHANGE_AMOUNT = "eFaps_Selected_ChangeAmount";
@@ -232,14 +227,21 @@ public abstract class AbstractPaymentDocument_Base
         String ret = null;
         if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
                         && !Sales.PAYMENTDOCUMENTDEACTIVATECODE.get()) {
-            // explecitely set
+            // explecitely set via SystemConfiguration
             if (Sales.PAYMENTDOCUMENTNUMGEN.exists()) {
                 final String numGenkey = Sales.PAYMENTDOCUMENTNUMGEN.get();
                 final NumberGenerator numGen = isUUID(numGenkey) ? NumberGenerator.get(UUID.fromString(numGenkey))
                                 : NumberGenerator.get(numGenkey);
                 ret = numGen.getNextVal();
             } else {
-                ret = new Naming().fromNumberGenerator(_parameter, CISales.PaymentDocumentAbstract.getType().getName());
+                ret = new Naming().fromNumberGenerator(_parameter, getType4DocCreate(_parameter).getName());
+            }
+            // no value use default
+            if (ret == null) {
+                final String numGenkey = Sales.PAYMENTDOCUMENTNUMGEN.get();
+                final NumberGenerator numGen = isUUID(numGenkey) ? NumberGenerator.get(UUID.fromString(numGenkey))
+                                : NumberGenerator.get(numGenkey);
+                ret = numGen.getNextVal();
             }
         } else if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentOutAbstract.getType())
                         && !Sales.PAYMENTDOCUMENTOUTACTIVATECODE.get()) {
@@ -250,7 +252,14 @@ public abstract class AbstractPaymentDocument_Base
                                 : NumberGenerator.get(numGenkey);
                 ret = numGen.getNextVal();
             } else {
-                ret = new Naming().fromNumberGenerator(_parameter, CISales.PaymentDocumentAbstract.getType().getName());
+                ret = new Naming().fromNumberGenerator(_parameter, getType4DocCreate(_parameter).getName());
+            }
+            // no value use default
+            if (ret == null) {
+                final String numGenkey = Sales.PAYMENTDOCUMENTOUTNUMGEN.get();
+                final NumberGenerator numGen = isUUID(numGenkey) ? NumberGenerator.get(UUID.fromString(numGenkey))
+                                : NumberGenerator.get(numGenkey);
+                ret = numGen.getNextVal();
             }
         }
         return ret;
@@ -742,26 +751,6 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     /**
-     * Checks if is incoming invoice valid.
-     *
-     * @param _parameter Parameter as passed by the eFaps API
-     * @param _createdDoc the created doc
-     * @param _index the index
-     * @return true, if is incoming invoice valid
-     */
-    protected boolean isIncomingInvoiceValid(final Parameter _parameter,
-                                             final CreatedDoc _createdDoc,
-                                             final int _index)
-    {
-        boolean ret = false;
-        if (!_createdDoc.getPositions().isEmpty() &&
-                        CISales.IncomingInvoice.getType().equals(_createdDoc.getPositions().get(_index).getType())) {
-            ret = true;
-        }
-        return ret;
-    }
-
-    /**
      * Gets the payment type.
      *
      * @param _parameter Parameter as passed by the eFaps API
@@ -836,6 +825,8 @@ public abstract class AbstractPaymentDocument_Base
 
         if (contactInst.isValid() && check) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+        } else if (check) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, 0);
         }
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
 
@@ -918,7 +909,7 @@ public abstract class AbstractPaymentDocument_Base
                 }
             };
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
 
@@ -1095,28 +1086,6 @@ public abstract class AbstractPaymentDocument_Base
     }
 
 
-
-    public Return update4checkbox4Invoive(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String contactOid = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.PaymentDocumentAbstract.Contact.name));
-        final String check = _parameter.getParameterValue("checkbox4Invoice");
-        final Instance contact = Instance.get(contactOid);
-        if (check == null && !"true".equalsIgnoreCase(check)) {
-            if (contact.isValid()) {
-                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contact);
-            } else {
-                Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-            }
-        } else {
-            Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-        }
-        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contact);
-        return ret;
-    }
-
     public Return updateFields4RateCurrency(final Parameter _parameter)
         throws EFapsException
     {
@@ -1162,31 +1131,18 @@ public abstract class AbstractPaymentDocument_Base
         return "paymentTable";
     }
 
+    /**
+     * Update fields for contact.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the eFaps exception
+     */
     public Return updateFields4Contact(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance contact = Instance.get(_parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.PaymentDocumentAbstract.Contact.name)));
-        final String check = _parameter.getParameterValue("checkbox4Invoice");
-        if (contact.isValid() && check == null && !"true".equalsIgnoreCase(check)) {
-            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contact);
-        } else {
-            Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-        }
-        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contact);
-        return new Return();
+        return new Contacts().updateFields4Contact(_parameter);
     }
-
-    public Return deactivateFiltered4Invoice(final Parameter _parameter)
-        throws EFapsException
-    {
-        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
-        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT);
-        return new Return();
-    }
-
-
 
     /**
      * Method to get a formater.
@@ -1554,7 +1510,8 @@ public abstract class AbstractPaymentDocument_Base
 
                 final BigDecimal pay = BigDecimal.ZERO;
                 final String doc = inst.getOid();
-                final BigDecimal total4Doc = getAttribute4Document(doc, CISales.DocumentSumAbstract.RateCrossTotal.name);
+                final BigDecimal total4Doc = getAttribute4Document(doc,
+                                CISales.DocumentSumAbstract.RateCrossTotal.name);
                 final BigDecimal payments4Doc = getPayments4Document(doc);
                 final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
                 BigDecimal amountDue = amount2Pay.subtract(pay);
@@ -1703,11 +1660,9 @@ public abstract class AbstractPaymentDocument_Base
     {
         final List<Instance> instances = new ArrayList<Instance>();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
+        final Instance contactInst = null;
 
-        final Instance contactSessionInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
+        final Instance contactSessionInst = null;
         for (int i = 0; i < 100; i++) {
             if (props.containsKey("Type" + i)) {
                 final Type type = Type.get(String.valueOf(props.get("Type" + i)));
@@ -1768,9 +1723,6 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4DocumentSelected(final Parameter _parameter)
         throws EFapsException
     {
-        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
-        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
-
         final Return ret = new Return();
 
         final Instance selectDoc = Instance.get(_parameter.getParameterValue("name"));
@@ -1824,17 +1776,6 @@ public abstract class AbstractPaymentDocument_Base
                             map.put(field.getValue(), new String[] { StringEscapeUtils.escapeEcmaScript(value),
                                             StringEscapeUtils.escapeEcmaScript(value2) });
                         }
-                    }
-                }
-                if (map.containsKey("contact")) {
-                    final Instance contactInst = Instance.get(((String[]) map.get("contact"))[0]);
-                    if (contactInst.isValid()) {
-                        Context.getThreadContext()
-                                        .setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY,
-                                                        contactInst);
-                        Context.getThreadContext()
-                                        .setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY,
-                                                        contactInst);
                     }
                 }
                 list.add(map);
