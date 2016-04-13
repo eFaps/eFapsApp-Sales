@@ -32,6 +32,7 @@
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].type.label</property>
             <property name="Label">Sales_PaymentDepositOutPaymentTable.createDocumentType.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createDocument4Read">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
