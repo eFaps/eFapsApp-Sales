@@ -27,7 +27,11 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.util.EFapsException;
 
@@ -105,5 +109,45 @@ public abstract class IncomingCheck_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+        add2DocCreateEdit(_parameter, _insert, _createdDoc);
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        add2DocCreateEdit(_parameter, _update, _editDoc);
+    }
+
+    /**
+     * Add to doc create and edit.
+     *
+     * @param _parameter the _parameter
+     * @param _update the _update
+     * @param _createdDoc the _created doc
+     */
+    protected void add2DocCreateEdit(final Parameter _parameter,
+                                     final Update _update,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String financialInstitute = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingCheckForm.financialInstitute.name);
+        if (financialInstitute != null) {
+            _update.add(CISales.IncomingCheck.FinancialInstitute, financialInstitute);
+            _createdDoc.getValues().put(CISales.IncomingCheck.FinancialInstitute.name, financialInstitute);
+        }
     }
 }

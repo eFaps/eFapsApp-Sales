@@ -72,9 +72,14 @@
         <field name="status">
             <property name="Attribute">Status</property>
         </field>
+        <field character="Group" name="nameGroup4create">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field character="Group" name="nameGroup">
             <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
@@ -89,6 +94,11 @@
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="financialInstitute">
+            <property name="Attribute">FinancialInstitute</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">EDITABLE</property>

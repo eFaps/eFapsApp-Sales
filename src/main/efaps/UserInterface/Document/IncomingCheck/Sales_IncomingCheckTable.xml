@@ -33,9 +33,10 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
-        <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Sales_DocumentAbstract/Revision.Label</property>
+        <field name="financialInstitute">
+            <property name="Label">Sales_IncomingCheck/FinancialInstitute.Label</property>
+            <property name="Select">linkto[FinancialInstitute].attribute[Value]</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="contact">
             <property name="FilterType">PICKLIST</property>
