@@ -184,6 +184,7 @@
             <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2IncomingInvoice#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2IncomingInvoice#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_DocumentAbstract.project.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="created">
             <property name="FilterType">FREETEXT</property>

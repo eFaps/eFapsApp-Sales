@@ -253,6 +253,7 @@
             <property name="HRef">TREE</property>
             <property name="FilterType">PICKLIST</property>
             <property name="Label">Projects_ProjectService.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
