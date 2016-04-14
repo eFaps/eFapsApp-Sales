@@ -107,7 +107,7 @@
             <property name="Label">Sales_FundsToBeSettledBalance.targetPayments.Heading</property>
         </field>
         <field character="Target" name="paymentTable">
-            <table>Sales_PaymentTable</table>
+            <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">TargetDocument</property>

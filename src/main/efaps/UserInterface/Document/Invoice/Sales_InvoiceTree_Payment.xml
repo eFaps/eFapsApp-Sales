@@ -35,7 +35,7 @@
         <name>Sales_InvoiceTree_Payment</name>
         <target>
             <menu>Sales_InvoiceTree_Payment_Menu</menu>
-            <table>Sales_PaymentTable</table>
+            <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>
                 <property name="LinkFrom">CreateDocument</property>

@@ -32,7 +32,7 @@
         </access>
         <target>
             <menu>Sales_IncomingInvoiceTree_Payment_Menu</menu>
-            <table>Sales_PaymentTable</table>
+            <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">CreateDocument</property>

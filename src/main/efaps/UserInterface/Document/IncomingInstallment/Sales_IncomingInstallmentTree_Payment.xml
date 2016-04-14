@@ -23,7 +23,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInstallmentTree_Payment</name>
         <target>
-            <table>Sales_PaymentTable</table>
+            <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>
                 <property name="LinkFrom">CreateDocument</property>

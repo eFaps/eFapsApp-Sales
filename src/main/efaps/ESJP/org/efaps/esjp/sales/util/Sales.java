@@ -495,6 +495,42 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGRECEIPTFROMORDEROUTBOUND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReceipt.CreateFromOrderOutbound")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Receipt and "
+                                    + "Order Outbound.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGRECEIPTFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReceipt.CreateFromOrderOutboundAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
+                                    + "Incoming Receipt from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGRECEIPTFROMSERVORDEROUTBOUND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReceipt.CreateFromServiceOrderOutbound")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Receipt and "
+                                    + "Order Outbound.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGRECEIPTFROMSERVORDEROUTBOUNDAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReceipt.CreateFromServiceOrderOutboundAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
+                                    + "to create Incoming Receipt from.");
+
+
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGREMINDERREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingReminder.RevisionSequence")
@@ -622,6 +658,7 @@ public final class Sales
                     .key(BASE + "payment.in.CreditCard.Activate")
                     .description("Deactivate the automatic generation of a code for every Payment Documents.");
 
+    /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENTCHECKPAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
