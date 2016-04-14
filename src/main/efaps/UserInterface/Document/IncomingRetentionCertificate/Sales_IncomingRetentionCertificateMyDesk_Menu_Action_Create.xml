@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4930aa91-aee0-44dc-96cc-39cc96f544fd</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingRetentionCertificateMyDesk_Menu_Action_Create</name>
@@ -33,7 +28,6 @@
             <role>Sales_Accounting</role>
             <role>Sales_IncomingDocument</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_IncomingRetentionCertificateForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="create">
@@ -41,14 +35,11 @@
                 <property name="Status">Open</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingRetentionCertificate</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">400</property>
-        <property name="WindowWidth">800</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">1100</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
-
 </ui-command>

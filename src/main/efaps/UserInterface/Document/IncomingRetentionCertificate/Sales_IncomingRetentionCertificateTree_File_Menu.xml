@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2016 The eFaps Team
 
@@ -18,23 +17,16 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0d871379-5955-4239-a37d-e8b7ffb2d661</uuid>
+    <uuid>0ee750e3-02a9-403c-bca0-c379619a0856</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingRetentionCertificateTree</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_IncomingRetentionCertificateTree_Menu</menu>
-            <form>Sales_IncomingRetentionCertificateForm</form>
-        </target>
-        <type>Sales_IncomingRetentionCertificate</type>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_IncomingRetentionCertificateTree_File_Menu</name>
         <childs>
-            <child>Sales_IncomingRetentionCertificateTree_Documents</child>
+            <child>Sales_IncomingRetentionCertificateTree_File_Menu_Action</child>
         </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
     </definition>
 </ui-menu>
