@@ -19,7 +19,7 @@
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>bc89f8b9-6341-4a66-b780-f6e1de3f5814</uuid>
-    <file-application>eFapsApp-Products</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_ProductsTransactionResultReportFilterForm</name>

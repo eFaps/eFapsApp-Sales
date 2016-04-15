@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,24 +16,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>29c61210-5e44-453b-a171-95993c95da36</uuid>
-    <file-application>eFapsApp-Products</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
-            <profile name="products"/>
+            <profile name="eFaps" />
+            <profile name="products" />
         </profiles>
         <name>Products_ProductAbstract</name>
         <purpose abstract="true" />
@@ -86,10 +79,8 @@
             <typelink>Admin_DataModel_Dimension</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>DIMID</sqlcolumn>
-            <trigger program="org.efaps.esjp.products.Product"
-                method="dimensionRangeValue"
-                name="Products_ProductAbstract.Dimension.RANGE_VALUE"
-                event="RANGE_VALUE">
+            <trigger program="org.efaps.esjp.products.Product" method="dimensionRangeValue"
+                name="Products_ProductAbstract.Dimension.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">$&lt;attribute[Name]&gt; - $&lt;linkto[BaseUoM].attribute[Name]&gt;</property>
                 <property name="Type">Admin_DataModel_Dimension</property>
             </trigger>
@@ -159,8 +150,7 @@
             <typelink>Sales_TaxCategory</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>TAXCATID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Products_ProductAbstract.TaxCategory.RANGE_VALUE"
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Products_ProductAbstract.TaxCategory.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">Sales_TaxCategory</property>
@@ -172,7 +162,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="POS"/>
+            <profile name="POS" />
         </profiles>
         <name>Products_ProductAbstract</name>
         <purpose abstract="true" />
@@ -219,16 +209,14 @@
             <sqlcolumn>ACTIVE</sqlcolumn>
             <defaultvalue>true</defaultvalue>
         </attribute>
-       <attribute>
+        <attribute>
             <name>Dimension</name>
             <type>LinkWithRanges</type>
             <typelink>Admin_DataModel_Dimension</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>DIMID</sqlcolumn>
-            <trigger program="org.efaps.esjp.products.Product"
-                method="dimensionRangeValue"
-                name="Products_ProductAbstract.Dimension.RANGE_VALUE"
-                event="RANGE_VALUE">
+            <trigger program="org.efaps.esjp.products.Product" method="dimensionRangeValue"
+                name="Products_ProductAbstract.Dimension.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">$&lt;attribute[Name]&gt; - $&lt;linkto[BaseUoM].attribute[Name]&gt;</property>
                 <property name="Type">Admin_DataModel_Dimension</property>
             </trigger>
@@ -254,7 +242,7 @@
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>SALESUNIT</sqlcolumn>
         </attribute>
-         <attribute>
+        <attribute>
             <name>ProductFamilyLink</name>
             <type>Link</type>
             <typelink>Products_ProductFamilyAbstract</typelink>
@@ -291,15 +279,13 @@
             <typelink>Sales_TaxCategory</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>TAXCATID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Products_ProductAbstract.TaxCategory.RANGE_VALUE"
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Products_ProductAbstract.TaxCategory.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">Sales_TaxCategory</property>
             </trigger>
         </attribute>
-
-         <attribute>
+        <attribute>
             <name>UUID</name>
             <type>String</type>
             <sqltable>Products_ProductSQLTable</sqltable>
@@ -312,5 +298,4 @@
             <sqlcolumn>CODE</sqlcolumn>
         </attribute>
     </definition>
-
 </datamodel-type>

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,37 +15,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>6a801444-436b-4ecf-a5b6-a435fb2590e3</uuid>
-  <file-application>eFapsApp-Commons</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_BulkPaymentDefinition2ContactSQLTable</name>
-    <typeid-column>TYPEID</typeid-column>
-    <database>
-      <table-name>T_SALESBULKPAYDEF2CONTACT</table-name>
-      <!-- columns -->
-      <column name="TYPEID"     not-null="true" type="INTEGER"/>
-      <column name="FROMID"     not-null="true" type="INTEGER"/>
-      <column name="TOID"       not-null="true" type="INTEGER"/>
-      <column name="ACCNUMBER"  not-null="true" type="STRING_SHORT" length="255"/>
-      <column name="CREATOR"    not-null="true" type="INTEGER"/>
-      <column name="CREATED"    not-null="true" type="DATETIME"/>
-      <column name="MODIFIER"   not-null="true" type="INTEGER"/>
-      <column name="MODIFIED"   not-null="true" type="DATETIME"/>
-      <!-- foreign keys -->
-      <foreign key="FROMID"     name="T_SALESBULKPAYDEF2CONTACT_FK_FROMID"   reference="T_SALESBULKPAYDEF(ID)"/>
-      <foreign key="TOID"       name="T_SALESBULKPAYDEF2CONTACT_FK_TOID"     reference="T_COCONTACT(ID)"/>
-      <foreign key="CREATOR"    name="T_SALESBULKPAYDEF2CONTACT_FK_CRTR"     reference="T_USERPERSON(ID)"/>
-      <foreign key="MODIFIER"   name="T_SALESBULKPAYDEF2CONTACT_FK_MDFR"     reference="T_USERPERSON(ID)"/>
-     </database>
-  </definition>
-
+-->
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>6a801444-436b-4ecf-a5b6-a435fb2590e3</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_BulkPaymentDefinition2ContactSQLTable</name>
+        <typeid-column>TYPEID</typeid-column>
+        <database>
+            <table-name>T_SALESBULKPAYDEF2CONTACT</table-name>
+            <column name="TYPEID"       not-null="true" type="INTEGER" />
+            <column name="FROMID"       not-null="true" type="INTEGER" />
+            <column name="TOID"         not-null="true" type="INTEGER" />
+            <column name="ACCNUMBER"    not-null="true" type="STRING_SHORT" length="255" />
+            <column name="CREATOR"      not-null="true" type="INTEGER" />
+            <column name="CREATED"      not-null="true" type="DATETIME" />
+            <column name="MODIFIER"     not-null="true" type="INTEGER" />
+            <column name="MODIFIED"     not-null="true" type="DATETIME" />
+            <foreign key="FROMID"       name="T_SALESBULKPAYDEF2CONTACT_FK_FROMID" reference="T_SALESBULKPAYDEF(ID)" />
+            <foreign key="TOID"         name="T_SALESBULKPAYDEF2CONTACT_FK_TOID" reference="T_COCONTACT(ID)" />
+            <foreign key="CREATOR"      name="T_SALESBULKPAYDEF2CONTACT_FK_CRTR" reference="T_USERPERSON(ID)" />
+            <foreign key="MODIFIER"     name="T_SALESBULKPAYDEF2CONTACT_FK_MDFR" reference="T_USERPERSON(ID)" />
+        </database>
+    </definition>
 </datamodel-sqltable>

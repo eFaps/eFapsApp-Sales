@@ -20,7 +20,7 @@
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>44835123-2055-47ae-b6de-08151897171f</uuid>
-    <file-application>eFapsApp-Products</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Products_ProductPicker4HistoryTable</name>

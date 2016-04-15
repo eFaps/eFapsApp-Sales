@@ -20,7 +20,7 @@
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b5c12e46-0180-432a-b9d9-9776c7a033b0</uuid>
-    <file-application>eFaps-ERP-Products</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TransactionAbstractTable</name>

@@ -21,7 +21,7 @@
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>48708893-35fd-48df-afd8-4867be7dd7b3</uuid>
-    <file-application>eFaps-ERP-Products</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCreateTransactionTable</name>
