@@ -2519,7 +2519,7 @@ public abstract class AbstractDocument_Base
                                 Status.find(CIProducts.StorageAbstractStatus.Active));
             }
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**
