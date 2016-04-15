@@ -2,6 +2,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Suite" parallel="false">
     <test name="CITests">
+        <parameter name="application" value="eFapsApp-Sales"/>
         <parameter name="baseFolder" value="../../../main/efaps"></parameter>
         <parameter name="ciClass" value="org.efaps.esjp.ci.CISales"/>
         <parameter name="regex4TypeLabelExclude" value=".*|/Flag.Label|/Group.Label|/Company.Label"/>
