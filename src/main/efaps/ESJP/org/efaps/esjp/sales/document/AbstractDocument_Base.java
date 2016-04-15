@@ -104,7 +104,6 @@ import org.efaps.esjp.sales.listener.IOnQuery;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
 import org.efaps.ui.wicket.models.objects.UITable.TableFilter;
@@ -1862,6 +1861,7 @@ public abstract class AbstractDocument_Base
                                                      final QueryBuilder _queryBldr)
         throws EFapsException
     {
+        /**
         final UITableCell tableCell = (UITableCell) _parameter.get(ParameterValues.CLASS);
         final AbstractCommand command = tableCell.getParent().getCommand();
         // evaluate the type
@@ -1922,6 +1922,7 @@ public abstract class AbstractDocument_Base
                             .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
             _queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
         }
+        */
     }
 
     /**
