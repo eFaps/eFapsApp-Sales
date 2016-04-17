@@ -390,149 +390,18 @@ public abstract class AbstractDocument_Base
         if ("TOKEN".equals(getProperty(_parameter, "AutoType"))) {
             final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
             if (uiObject instanceof Field) {
-               final Instance docInst = Instance.get(_parameter.getParameterValue(((Field) uiObject).getName()));
-               if (docInst.isValid()) {
-                   final PrintQuery print = new PrintQuery(docInst);
-                   print.addAttribute(CIERP.DocumentAbstract.Contact);
-                   print.execute();
-                   final Object contObj = print.getAttribute(CIERP.DocumentAbstract.Contact);
-                   if (contObj != null) {
-                       _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contObj);
-                   }
-               }
+                final Instance docInst = Instance.get(_parameter.getParameterValue(((Field) uiObject).getName()));
+                if (docInst.isValid()) {
+                    final PrintQuery print = new PrintQuery(docInst);
+                    print.addAttribute(CIERP.DocumentAbstract.Contact);
+                    print.execute();
+                    final Object contObj = print.getAttribute(CIERP.DocumentAbstract.Contact);
+                    if (contObj != null) {
+                        _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contObj);
+                    }
+                }
             }
         }
-    }
-
-    /**
-     * Used by the update event used in the select doc form for DeliveryNote.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4DeliveryNote(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for IncomingInvoice.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4IncomingInvoice(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for IncomingInvoice.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4RecievingTicket(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for Invoice.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4Invoice(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for OrderInbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4OrderInbound(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for OrderOutbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4OrderOutbound(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for OrderOutbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4ServiceOrderOutbound(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for OrderOutbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4Reservation(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for Quotation.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4Quotation(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for ProductRequest.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-
-    public Return updateFields4ProductRequest(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -548,88 +417,6 @@ public abstract class AbstractDocument_Base
     {
         return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
-
-    /**
-     * Used by the update event used in the select doc form for PettyCashReceipt.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-
-    public Return updateFields4PettyCashReceipt(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for ProductRequest.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-
-    public Return updateFields4QuoteRequest(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for Receipt.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4Receipt(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for CreditNote.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4CreditNote(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for CostSheet.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4CostSheet(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-    /**
-     * Used by the update event used in the select doc form for ProductionOrder.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4ProductionOrder(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
-    }
-
-
 
     /**
      * Used by the update event used in the select doc form for CostSheet.
