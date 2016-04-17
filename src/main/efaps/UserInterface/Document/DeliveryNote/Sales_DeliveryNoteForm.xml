@@ -75,6 +75,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">Sales_DeliveryNote/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="getNameWithSerialFieldValue"
@@ -465,6 +466,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">Sales_DeliveryNote/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="getNameWithSerialFieldValue"

@@ -114,6 +114,7 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_CreditNote/Name.Label</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="getNameWithSerialFieldValue"
                 name="Sales_CreditNoteForm.name4create.UI_FIELD_VALUE"
@@ -489,6 +490,7 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_CreditNote/Name.Label</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="getNameWithSerialFieldValue"
                 name="Sales_CreditNoteForm.name4create.UI_FIELD_VALUE"

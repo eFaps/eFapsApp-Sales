@@ -78,6 +78,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">Sales_ConsignmentNote/Name.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getNameWithSerialFieldValue"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
@@ -337,6 +338,7 @@
             <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_ConsignmentNote/Name.Label</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="getNameWithSerialFieldValue"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Type">Sales_ConsignmentNote</property>

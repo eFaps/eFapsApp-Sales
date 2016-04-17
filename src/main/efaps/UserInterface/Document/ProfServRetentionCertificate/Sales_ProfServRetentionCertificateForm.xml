@@ -70,6 +70,7 @@
             <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
             <property name="Label">Sales_Invoice/Name.Label</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="getNameWithSerialFieldValue"
                 name="Sales_ProfServRetentionCertificateForm.name4create.UI_FIELD_VALUE"
