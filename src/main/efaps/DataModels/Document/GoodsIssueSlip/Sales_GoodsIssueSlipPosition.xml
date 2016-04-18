@@ -16,37 +16,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>15dd35ff-78b4-42d8-89f3-3bd1cedda5ca</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_GoodsIssueSlipPosition</name>
         <parent>Sales_PositionAbstract</parent>
-
         <attribute>
-            <name>GoodsIssueSlip</name>
+            <name>GoodsIssueSlipLink</name>
             <type>Link</type>
             <typelink>Sales_GoodsIssueSlip</typelink>
             <sqltable>Sales_PositionAbstractSQLTable</sqltable>
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
-
-        <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
-            method="goodsIssueSlipPositionInsertTrigger"
-            name="Sales_GoodsIssueSlipPosition.INSERT_POST"
-            event="INSERT_POST" />
-
     </definition>
 </datamodel-type>

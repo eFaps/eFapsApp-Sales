@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,23 +16,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
-
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ae767400-f312-454b-8f86-c9d41549d3ce</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_GoodsIssueSlipForm</name>
-        <!-- fields -->
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -45,6 +36,14 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
+         <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
+            <property name="Required">true</property>
+        </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -52,16 +51,14 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
-               method="getSalesPersonFieldValue"
-               name="Sales_GoodsIssueSlipForm.salesperson.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
+            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="getSalesPersonFieldValue"
+                name="Sales_GoodsIssueSlipForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Admin_User_Person</property>
+                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+                <property name="OrderSelect">attribute[LastName]</property>
+                <property name="WhereAttrEqValue">Status|true</property>
+                <property name="SelectCurrent">true</property>
+            </trigger>
         </field>
         <field name="salespersonLink">
             <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
@@ -100,24 +97,8 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
-                method="getNameFieldValueUI"
-                name="Sales_GoodsIssueSlipForm.name4create.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Sales_GoodsIssueSlip</property>
-            </trigger>
-        </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Required">true</property>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -132,14 +113,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
-                method="autoComplete4Contact"
-                name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
-                method="updateFields4Contact"
-                name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="autoComplete4Contact"
+                name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="updateFields4Contact"
+                name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -157,8 +134,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_GoodsIssueSlipPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_GoodsIssueSlipPosition</property>
-                <property name="LinkFroms">GoodsIssueSlip</property>
+                <property name="Type">Sales_GoodsIssueSlipPosition</property>
+                <property name="LinkFrom">GoodsIssueSlipLink</property>
             </evaluate>
         </field>
     </definition>

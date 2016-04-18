@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -329,6 +329,13 @@ public final class Sales
                     .key(BASE + "FundsToBeSettledReceipt.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute GOODSISSUESLIPACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "GoodsIssueSlip.Activate")
+                    .description("Activate GoodsIssueSlip mechnism");
 
     /** See description. */
     @EFapsSysConfAttribute

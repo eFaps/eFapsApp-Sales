@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -16,25 +15,14 @@
  limitations under the License.
 
 -->
-<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3059a0bd-ad99-4ee8-9811-85d91d0b6580</uuid>
+    <uuid>d2ffa9de-d8af-4edd-9777-a365383f5727</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_GoodsIssueSlipStatus</name>
-        <parent>Sales_DocumentStatus</parent>
-        <status key="Draft">
-            <description>The products where not delivered yet.</description>
-        </status>
-        <status key="Open">
-            <description>The products where not delivered yet.</description>
-        </status>
-        <status key="Closed">
-            <description>The products where delivered.</description>
-        </status>
-        <status key="Canceled">
-            <description>The Delivery Note was canceled.</description>
-        </status>
+        <name>Sales_GoodsIssueSlipSequence</name>
+        <format>EP-%05d</format>
+        <startvalue>1</startvalue>
     </definition>
-</datamodel-statusgroup>
+</numbergenerator>
