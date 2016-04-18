@@ -38,7 +38,7 @@
                 <property name="Type">Sales_OrderInbound</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.OrderInbound"
-                method="updateFields4OrderInbound"
+                method="updateFields4Document"
                 name="Sales_OrderInbound_SelectDocForm.orderInbound.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="info">

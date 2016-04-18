@@ -35,10 +35,6 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ProfServRetentionCertificateForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.ProfServRetentionCertificate">
-                <property name="StatusGroup">Sales_ProfServRetentionCertificateStatus</property>
-                <property name="Status">Open</property>
-            </execute>
         </target>
 
         <!-- properties -->

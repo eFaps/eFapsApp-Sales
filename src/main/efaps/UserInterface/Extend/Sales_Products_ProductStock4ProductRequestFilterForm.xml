@@ -35,7 +35,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="projects"/>
         </profiles>
         <name>Sales_Products_ProductStock4ProductRequestFilterForm</name>
         <field name="jsLinkField">

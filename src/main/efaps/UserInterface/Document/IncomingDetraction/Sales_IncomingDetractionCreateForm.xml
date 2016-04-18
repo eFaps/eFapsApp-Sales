@@ -37,11 +37,13 @@
                 program="org.efaps.esjp.sales.document.IncomingDetraction">
                 <property name="Type">Sales_IncomingInvoice</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice"
-                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1" program="org.efaps.esjp.sales.document.IncomingDetraction"
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Document"
+                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
+                program="org.efaps.esjp.sales.document.IncomingDetraction"
                 index="1" />
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice"
-                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2" program="org.efaps.esjp.sales.document.IncomingDetraction"
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Document"
+                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
+                program="org.efaps.esjp.sales.document.IncomingDetraction"
                 index="2" />
         </field>
         <field name="info">

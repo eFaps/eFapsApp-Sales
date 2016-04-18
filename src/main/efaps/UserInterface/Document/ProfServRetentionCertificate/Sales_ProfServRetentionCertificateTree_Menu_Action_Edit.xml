@@ -34,7 +34,6 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ProfServRetentionCertificateForm</form>
-            <execute method="edit" program="org.efaps.esjp.sales.document.ProfServRetentionCertificate"/>
         </target>
 
         <!-- properties -->

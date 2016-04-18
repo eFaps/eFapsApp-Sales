@@ -39,7 +39,7 @@
                 <property name="Type">Sales_CostSheet</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
-                     method="updateFields4CostSheet"
+                     method="updateFields4Document"
                      name="Sales_CostSheet_SelectDocForm.costSheet.UI_FIELD_UPDATE"
                      event="UI_FIELD_UPDATE" />
         </field>

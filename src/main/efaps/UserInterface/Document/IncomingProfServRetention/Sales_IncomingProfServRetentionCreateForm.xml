@@ -34,10 +34,12 @@
                 <property name="Status01">Open</property>
                 <property name="Status02">Paid</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4IncomingInvoice"
-                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1" program="org.efaps.esjp.sales.document.IncomingRetention" />
+            <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4Document"
+                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
+                program="org.efaps.esjp.sales.document.IncomingRetention" />
             <trigger event="UI_FIELD_UPDATE" index="2" method="cleanFields"
-                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2" program="org.efaps.esjp.sales.document.IncomingRetention" />
+                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
+                program="org.efaps.esjp.sales.document.IncomingRetention" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>

@@ -45,7 +45,7 @@
                 <property name="Type">Sales_DeliveryNote</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
-                method="updateFields4DeliveryNote"
+                method="updateFields4Document"
                 name="Sales_ReturnSlip_SelectDocForm.deliveryNote.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
