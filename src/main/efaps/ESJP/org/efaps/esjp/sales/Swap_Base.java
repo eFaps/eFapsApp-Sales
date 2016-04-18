@@ -18,6 +18,7 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -321,6 +323,45 @@ public abstract class Swap_Base
             new DocumentUpdate().updateDocument(_parameter, inst);
         }
         return new Return();
+    }
+
+    /**
+     * Update fields for percentage.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the eFaps exception
+     */
+    public Return updateFields4Percentage(final Parameter _parameter)
+        throws EFapsException
+    {
+        Return ret = new Return();
+        final int idx = getSelectedRow(_parameter);
+        final Instance docInst = Instance.get(_parameter.getParameterValues("document")[idx]);
+        final String perStr = _parameter.getParameterValues("percentage")[idx];
+        if (docInst.isValid() && StringUtils.isNotEmpty(perStr)) {
+            BigDecimal percentage = BigDecimal.ONE;
+            try {
+                percentage = (BigDecimal) NumberFormatter.get().getFormatter().parse(perStr);
+            } catch (final ParseException e) {
+                LOG.error("Catched ParseException", e);
+
+            }
+            final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInst).setTargetDocInst(docInst);
+            final DecimalFormat frmt = docInfo.getFormatter();
+            final BigDecimal total4Doc = docInfo.getCrossTotal4Target();
+            final BigDecimal payments4Doc = docInfo.getPaid4Target();
+            final BigDecimal partial = total4Doc.subtract(payments4Doc)
+                            .multiply(percentage.setScale(8, RoundingMode.HALF_UP)
+                                            .divide(new BigDecimal(100), RoundingMode.HALF_UP))
+                            .setScale(2, RoundingMode.HALF_UP);
+            final String[] partialArray = _parameter.getParameterValues("partial");
+            partialArray[idx] = frmt.format(partial);
+            final Parameter parameter = ParameterUtil.clone(_parameter);
+            ParameterUtil.setParmeterValue(parameter, "partial", partialArray);
+            ret = updateFields4Partial(parameter);
+        }
+        return ret;
     }
 
     /**

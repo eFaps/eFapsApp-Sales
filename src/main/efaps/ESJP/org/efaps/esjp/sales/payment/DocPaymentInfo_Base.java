@@ -356,7 +356,6 @@ public abstract class DocPaymentInfo_Base
         return ret;
     }
 
-
     /**
      * @return the paid amount in the rate currency of the document.
      * @throws EFapsException on error
@@ -380,25 +379,31 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
-     * @param _accInst instance of the account
-     * @throws EFapsException on error
+     * Sets the target doc inst.
      *
+     * @param _accInst instance of the account
+     * @return the doc payment info
+     * @throws EFapsException on error
      */
-    public void setTargetDocInst(final Instance _accInst)
+    public DocPaymentInfo setTargetDocInst(final Instance _accInst)
         throws EFapsException
     {
         this.targetInfo = new TargetDocInfo(_accInst);
+        return (DocPaymentInfo) this;
     }
 
     /**
-     * @param _accInst instance of the account
-     * @throws EFapsException on error
+     * Sets the account inst.
      *
+     * @param _accInst instance of the account
+     * @return the doc payment info
+     * @throws EFapsException on error
      */
-    public void setAccountInst(final Instance _accInst)
+    public DocPaymentInfo setAccountInst(final Instance _accInst)
         throws EFapsException
     {
         this.targetInfo = new AccountInfo(_accInst);
+        return (DocPaymentInfo) this;
     }
 
     /**
@@ -418,10 +423,12 @@ public abstract class DocPaymentInfo_Base
      * Setter method for instance variable {@link #name}.
      *
      * @param _name value for instance variable {@link #name}
+     * @return the doc payment info
      */
-    public void setName(final String _name)
+    public DocPaymentInfo setName(final String _name)
     {
         this.name = _name;
+        return (DocPaymentInfo) this;
     }
 
     /**
@@ -454,10 +461,12 @@ public abstract class DocPaymentInfo_Base
      * Setter method for instance variable {@link #accountInfo}.
      *
      * @param _accountInfo value for instance variable {@link #accountInfo}
+     * @return the doc payment info
      */
-    public void setAccountInfo(final AccountInfo _accountInfo)
+    public DocPaymentInfo setAccountInfo(final AccountInfo _accountInfo)
     {
         this.targetInfo = _accountInfo;
+        return (DocPaymentInfo) this;
     }
 
     /**
@@ -508,10 +517,12 @@ public abstract class DocPaymentInfo_Base
      * Setter method for instance variable {@link #contactName}.
      *
      * @param _contactName value for instance variable {@link #contactName}
+     * @return the doc payment info
      */
-    public void setContactName(final String _contactName)
+    public DocPaymentInfo setContactName(final String _contactName)
     {
         this.contactName = _contactName;
+        return (DocPaymentInfo) this;
     }
 
     /**
@@ -541,10 +552,12 @@ public abstract class DocPaymentInfo_Base
      * Setter method for instance variable {@link #rateInfo}.
      *
      * @param _rateInfo value for instance variable {@link #rateInfo}
+     * @return the doc payment info
      */
-    public void setRateInfo(final RateInfo _rateInfo)
+    public DocPaymentInfo setRateInfo(final RateInfo _rateInfo)
     {
         this.rateInfo = _rateInfo;
+        return (DocPaymentInfo) this;
     }
 
     /**
@@ -564,30 +577,36 @@ public abstract class DocPaymentInfo_Base
      * Setter method for instance variable {@link #date}.
      *
      * @param _date value for instance variable {@link #date}
+     * @return the doc payment info
      */
-    public void setDate(final DateTime _date)
+    public DocPaymentInfo setDate(final DateTime _date)
     {
         this.date = _date;
+        return (DocPaymentInfo) this;
     }
 
     /**
      * Setter method for instance variable {@link #crossTotal}.
      *
      * @param _crossTotal value for instance variable {@link #crossTotal}
+     * @return the doc payment info
      */
-    public void setCrossTotal(final BigDecimal _crossTotal)
+    public DocPaymentInfo setCrossTotal(final BigDecimal _crossTotal)
     {
         this.crossTotal = _crossTotal;
+        return (DocPaymentInfo) this;
     }
 
     /**
      * Setter method for instance variable {@link #rateCrossTotal}.
      *
      * @param _rateCrossTotal value for instance variable {@link #rateCrossTotal}
+     * @return the doc payment info
      */
-    public void setRateCrossTotal(final BigDecimal _rateCrossTotal)
+    public DocPaymentInfo setRateCrossTotal(final BigDecimal _rateCrossTotal)
     {
         this.rateCrossTotal = _rateCrossTotal;
+        return (DocPaymentInfo) this;
     }
 
     /**
@@ -601,35 +620,40 @@ public abstract class DocPaymentInfo_Base
         return AbstractDocumentTax.getDocTaxInfo(getParameter(), getInstance());
     }
 
-
     /**
      * Setter method for instance variable {@link #currencyInstance}.
      *
      * @param _currencyInstance value for instance variable {@link #currencyInstance}
+     * @return the doc payment info
      */
-    public void setCurrencyInstance(final Instance _currencyInstance)
+    public DocPaymentInfo setCurrencyInstance(final Instance _currencyInstance)
     {
         this.currencyInstance = _currencyInstance;
+        return (DocPaymentInfo) this;
     }
 
     /**
      * Setter method for instance variable {@link #rateCurrencyInstance}.
      *
      * @param _rateCurrencyInstance value for instance variable {@link #rateCurrencyInstance}
+     * @return the doc payment info
      */
-    public void setRateCurrencyInstance(final Instance _rateCurrencyInstance)
+    public DocPaymentInfo setRateCurrencyInstance(final Instance _rateCurrencyInstance)
     {
         this.rateCurrencyInstance = _rateCurrencyInstance;
+        return (DocPaymentInfo) this;
     }
 
     /**
      * Setter method for instance variable {@link #initialized}.
      *
      * @param _initialized value for instance variable {@link #initialized}
+     * @return the doc payment info
      */
-    public void setInitialized(final boolean _initialized)
+    public DocPaymentInfo setInitialized(final boolean _initialized)
     {
         this.initialized = _initialized;
+        return (DocPaymentInfo) this;
     }
 
     @Override
