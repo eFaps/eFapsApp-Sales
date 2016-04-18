@@ -66,7 +66,7 @@ public abstract class Channel_Base
         final Return retVal = new Return();
         final String fieldName = getProperty(_parameter, "ConditionFieldName", "condition");
         final Instance condInst = Instance.get(_parameter.getParameterValue(fieldName));
-        if (condInst.isValid() && condInst.getType().isCIType(CISales.ChannelConditionAbstract)) {
+        if (condInst.isValid() && condInst.getType().isKindOf(CISales.ChannelConditionAbstract)) {
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Map<String, String> map = new HashMap<String, String>();
             final PrintQuery print = new PrintQuery(condInst);
