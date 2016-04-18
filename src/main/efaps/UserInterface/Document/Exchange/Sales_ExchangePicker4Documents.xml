@@ -25,7 +25,7 @@
         <target>
             <table>Sales_ExchangePicker4DocumentsTable</table>
             <evaluate method="pickerMultiPrint" program="org.efaps.esjp.sales.Swap">
-                <property name="CreateType">Sales_Exchange</property>
+                <property name="SwapType">Sales_Exchange</property>
             </evaluate>
             <trigger event="UI_PICKER" method="picker4Document"
                 name="Sales_ExchangePicker4Documents.UI_PICKER"
