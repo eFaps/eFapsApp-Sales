@@ -103,10 +103,55 @@
         <field name="name">
             <property name="Attribute">Name</property>
         </field>
-        <field name="headingClient" character="Heading">
+        <field name="headingEmployee" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_GoodsIssueSlipForm.headingClient.Heading</property>
+            <property name="Label">Sales_GoodsIssueSlipForm.headingEmployee.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_GoodsIssueSlipForm.headingEmployee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.GoodsIssueSlip.AssignEmployee</property>
+           </trigger>
+        </field>
+        <field name="employee">
+            <property name="SelectAlternateOID">linkfrom[Sales_Employee2GoodsIssueSlip#ToLink].linkto[FromLink].oid</property>
+            <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_GoodsIssueSlipForm.employee.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Columns">80</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.humanresource.Employee"
+                method="autoComplete4Employee"
+                name="Sales_GoodsIssueSlipForm.employee.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_GoodsIssueSlipForm.employee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.GoodsIssueSlip.AssignEmployee</property>
+           </trigger>
+        </field>
+        <field name="headingContact" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_GoodsIssueSlipForm.headingContact.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_GoodsIssueSlipForm.headingContact.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.GoodsIssueSlip.AssignContact</property>
+           </trigger>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
@@ -116,10 +161,20 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="autoComplete4Contact"
-                name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
+                method="autoComplete4Contact"
+                name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
             <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="updateFields4Contact"
                 name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_GoodsIssueSlipForm.contact.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.GoodsIssueSlip.AssignContact</property>
+           </trigger>
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>

@@ -338,6 +338,20 @@ public final class Sales
                     .description("Activate GoodsIssueSlip mechnism");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute GOODSISSUESLIPASSCONTACT = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "GoodsIssueSlip.AssignContact")
+                    .description("Activate GoodsIssueSlip mechnism");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute GOODSISSUESLIPASSEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "GoodsIssueSlip.AssignEmployee")
+                    .description("Activate GoodsIssueSlip mechnism");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink GOODSISSUESLIPDEFAULTWAREHOUSE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)

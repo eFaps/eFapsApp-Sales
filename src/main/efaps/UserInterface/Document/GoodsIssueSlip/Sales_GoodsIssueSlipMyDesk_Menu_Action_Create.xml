@@ -35,6 +35,12 @@
                 <property name="Status">Draft</property>
                 <!-- set a default NumberGenerator Sales_GoodsIssueSlipSequence-->
                 <property name="NumberGenerator">d2ffa9de-d8af-4edd-9777-a365383f5727</property>
+
+                <!-- Sales_Employee2GoodsIssueSlip -->
+                <property name="ConnectType03">1fbd5fb8-4fa3-494f-9001-968fb2636470</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">employee</property>
             </execute>
         </target>
         <property name="Target">modal</property>

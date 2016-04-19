@@ -24,6 +24,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -36,6 +38,7 @@ import org.efaps.util.EFapsException;
 public abstract class GoodsIssueSlip_Base
     extends AbstractProductDocument
 {
+
     /**
      * Method for create a new GoodsIssueSlip.
      *
@@ -59,5 +62,35 @@ public abstract class GoodsIssueSlip_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    /**
+     * Method for edit the GoodsIssuesSlip.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
+
+        final File file = createReport(_parameter, editedDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.GoodsIssueSlip;
     }
 }

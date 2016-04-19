@@ -30,7 +30,14 @@
         </access>
         <target>
             <form>Sales_GoodsIssueSlipForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute  program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="edit" >
+                <property name="PositionType">Sales_GoodsIssueSlipPosition</property>
+                <!-- Sales_Employee2GoodsIssueSlip -->
+                <property name="ConnectType01">1fbd5fb8-4fa3-494f-9001-968fb2636470</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">employee</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_GoodsIssueSlipTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
