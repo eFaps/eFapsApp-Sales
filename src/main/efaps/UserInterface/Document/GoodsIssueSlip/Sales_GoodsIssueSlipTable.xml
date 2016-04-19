@@ -46,8 +46,11 @@
             <property name="Label">Sales_GoodsIssueSlip/DueDate.Label</property>
         </field>
         <field name="status">
-            <property name="FilterType">PICKLIST</property>
-            <property name="Attribute">StatusAbstract</property>
+            <property name="FilterType">Status</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Open;Draft</property>
+            <property name="Attribute">Status</property>
             <property name="Label">Sales_GoodsIssueSlip/Status.Label</property>
         </field>
         <field name="creator">

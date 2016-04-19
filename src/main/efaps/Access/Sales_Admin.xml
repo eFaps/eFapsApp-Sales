@@ -203,6 +203,7 @@
         </status>
 
         <status group="Sales_GoodsIssueSlipStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
