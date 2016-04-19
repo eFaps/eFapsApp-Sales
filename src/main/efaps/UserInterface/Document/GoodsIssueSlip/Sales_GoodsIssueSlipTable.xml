@@ -32,6 +32,29 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
             <property name="HRef">TREEMENU</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_GoodsIssueSlipTable.employee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.GoodsIssueSlip.AssignEmployee</property>
+           </trigger>
+        </field>
+         <field name="employee">
+            <property name="SelectAlternateOID">linkfrom[Sales_Employee2GoodsIssueSlip#ToLink].linkto[FromLink].oid</property>
+            <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_GoodsIssueSlipForm.headingEmployee.Heading</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_GoodsIssueSlipTable.employee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.GoodsIssueSlip.AssignEmployee</property>
+           </trigger>
         </field>
         <field name="date">
             <property name="Attribute">Date</property>

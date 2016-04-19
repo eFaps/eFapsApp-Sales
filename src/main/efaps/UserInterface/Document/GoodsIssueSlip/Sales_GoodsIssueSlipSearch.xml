@@ -15,22 +15,20 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0021078d-5730-4980-b9cc-4ae564353aac</uuid>
+    <uuid>4c14aba7-6656-42c7-9980-9522dd191a37</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Common_DocumentSearch</name>
-        <childs>
-            <child>Sales_DeliveryNoteSearch</child>
-            <child>Sales_InvoiceSearch</child>
-            <child>Sales_OrderOutboundSearch</child>
-            <child>Sales_ReceiptSearch</child>
-            <child>Sales_GoodsIssueSlipSearch</child>
-        </childs>
-        <parents>
-            <parent>ERP_Common_Search</parent>
-        </parents>
+        <name>Sales_GoodsIssueSlipSearch</name>
+        <target>
+            <form>Sales_GoodsIssueSlipSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Sales_GoodsIssueSlip</property>
+            </evaluate>
+        </target>
+        <property name="TargetMode">search</property>
     </definition>
-</ui-menu>
+</ui-command>
