@@ -338,6 +338,14 @@ public final class Sales
                     .description("Activate GoodsIssueSlip mechnism");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink GOODSISSUESLIPDEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "GoodsIssueSlip.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse for GoodsIssueSlip. If not set "
+                                    + "the default from Products applies.");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGCREDITNOTEREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)

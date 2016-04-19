@@ -69,6 +69,9 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
@@ -123,6 +126,7 @@
             <property name="Label">Sales_GoodsIssueSlipForm.contactData.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
@@ -132,11 +136,24 @@
         </field>
         <field name="positionTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <table>Sales_GoodsIssueSlipPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_GoodsIssueSlipPosition</property>
                 <property name="LinkFrom">GoodsIssueSlipLink</property>
             </evaluate>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
+                method="getJavaScriptUIValue"
+                name="Sales_GoodsIssueSlipForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" >
+            </trigger>
         </field>
     </definition>
 </ui-form>

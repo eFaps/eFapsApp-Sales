@@ -27,11 +27,12 @@
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_GoodsIssueSlipPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="quantityInStock">
             <property name="Label">Sales_GoodsIssueSlipPositionTable.quantityInStock.Label</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Width">1</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -40,6 +41,7 @@
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_GoodsIssueSlipPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
                 method="autoComplete4Product"
                 name="Sales_GoodsIssueSlipPositionTable.product.UI_FIELD_AUTOCOMPLETE"
@@ -52,12 +54,14 @@
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_GoodsIssueSlipPosition/ProductDesc.Label</property>
             <property name="Width">10</property>
         </field>
         <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_GoodsIssueSlipPosition/UoM.Label</property>
@@ -65,13 +69,14 @@
         <field name="uom4View">
             <property name="Width">1</property>
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_GoodsIssueSlipPosition/UoM.Label</property>
         </field>
         <field name="storage">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_GoodsIssueSlipPositionTable.storage.Label</property>
             <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="getStorageFieldValueUI"
