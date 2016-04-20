@@ -178,7 +178,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Contact"
                 name="Sales_DeliveryNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -211,7 +211,7 @@
             <property name="Label">Sales_DeliveryNote/DeparturePoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="departurePointFieldValue"
                 name="Sales_DeliveryNoteForm.departurePoint.UI_FIELD_UPDATE"
@@ -248,7 +248,7 @@
             <property name="Label">Sales_DeliveryNote/ArrivalPoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4ArrivalPoint"
                 name="Sales_DeliveryNoteForm.arrivalPoint.UI_FIELD_AUTOCOMPLETE"
@@ -283,7 +283,7 @@
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Carrier"
                 name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
@@ -613,7 +613,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Contact"
                 name="Sales_DeliveryNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -646,7 +646,7 @@
             <property name="Label">Sales_DeliveryNote/DeparturePoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="departurePointFieldValue"
                 name="Sales_DeliveryNoteForm.departurePoint.UI_FIELD_UPDATE"
@@ -684,7 +684,7 @@
             <property name="Label">Sales_DeliveryNote/ArrivalPoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4ArrivalPoint"
                 name="Sales_DeliveryNoteForm.arrivalPoint.UI_FIELD_AUTOCOMPLETE"
@@ -720,7 +720,7 @@
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Carrier"
                 name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
