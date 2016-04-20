@@ -64,6 +64,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedInstanceQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
@@ -936,7 +937,8 @@ public abstract class AbstractDocument_Base
                         CISales.PositionSumAbstract.RateNetPrice,
                         CISales.PositionSumAbstract.RateCrossPrice,
                         CISales.PositionSumAbstract.Tax,
-                        CISales.PositionSumAbstract.Discount);
+                        CISales.PositionSumAbstract.Discount,
+                        CISales.PositionProdDocAbstract.StorageLink);
         final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
         final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Name);
@@ -957,6 +959,19 @@ public abstract class AbstractDocument_Base
                             .setUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))
                             .setProdName(multi.<String>getSelect(selProdName))
                             .setProdDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc));
+
+            // set the sorage Instance
+            if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionProdDocAbstract)) {
+                final QueryBuilder storageQueryBldr = new QueryBuilder(CIProducts.DynamicStorage);
+                storageQueryBldr.addWhereAttrEqValue(CIProducts.DynamicStorage.ID,
+                                multi.<Long>getAttribute(CISales.PositionProdDocAbstract.StorageLink));
+                final CachedInstanceQuery query = storageQueryBldr.getCachedQuery4Request();
+                query.execute();
+                if (query.next()) {
+                    origBean.setStorageInst(query.getCurrentValue());
+                }
+            }
+
             final List<AbstractUIPosition> beans = updateBean4Indiviual(_parameter, origBean);
 
             for (final AbstractUIPosition bean : beans) {
@@ -2259,55 +2274,6 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
-    }
-
-    /**
-     * Method to render a drop-down field containing all warehouses.
-     *
-     * @param _parameter Parameter as passed from eFaps.
-     * @return Return containing a SNIPPLET.
-     * @throws EFapsException on error.
-     */
-    public Return getStorageFieldValueUI(final Parameter _parameter)
-        throws EFapsException
-    {
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
-        if (!containsProperty(_parameter, "Type")) {
-            props.put("Type", CIProducts.DynamicStorage.getType().getName());
-        }
-        if (!containsProperty(_parameter, "Select")) {
-            props.put("Select", "attribute[" + CIProducts.StorageAbstract.Name.name + "]");
-        }
-
-        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field() {
-            @Override
-            protected void updatePositionList(final Parameter _parameter,
-                                              final List<DropDownPosition> _values)
-                throws EFapsException
-            {
-                final Instance inst = getDefaultStorage(_parameter);
-                if (inst.isValid()) {
-                    for (final DropDownPosition value : _values) {
-                        if (value.getValue().equals(inst.getId()) || value.getValue().equals(inst.getOid())) {
-                            value.setSelected(true);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void add2QueryBuilder4List(final Parameter _parameter,
-                                                 final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                super.add2QueryBuilder4List(_parameter, _queryBldr);
-                _queryBldr.addWhereAttrEqValue(CIProducts.StorageAbstract.StatusAbstract,
-                                Status.find(CIProducts.StorageAbstractStatus.Active));
-            }
-        };
-        return field.getOptionListFieldValue(_parameter);
     }
 
     /**

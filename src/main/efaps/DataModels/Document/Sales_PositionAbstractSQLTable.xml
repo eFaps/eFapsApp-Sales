@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,21 +16,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6398fd11-457b-4b81-8586-e005e7d8c90e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
-    <definition>
+        <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PositionAbstractSQLTable</name>
         <typeid-column>TYPEID</typeid-column>
@@ -45,6 +37,7 @@
             <column name="QUANTITY"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
             <column name="UOMID"           type="INTEGER"         not-null="true" />
             <column name="REMARK"          type="STRING_SHORT"                    length="255"/>
+            <column name="LINKID"          type="INTEGER" />
             <foreign name="T_SALESPOS_DOCID"               key="DOCID"           reference="T_ERPDOC(ID)"/>
             <foreign name="T_SALESPOS_PROD"                key="PROD"            reference="T_PRODPRODUCT(ID)"/>
         </database>

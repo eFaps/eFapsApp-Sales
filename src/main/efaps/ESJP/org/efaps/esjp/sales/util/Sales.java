@@ -361,6 +361,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute  GOODSISSUESLIPJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "GoodsIssueSlip.JasperReport")
+                    .description("Name of the jasperReport for GoodsIssueSlip.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime>  GOODSISSUESLIPMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "GoodsIssueSlip.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for GoodsIssueSlip.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGCREDITNOTEREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingCreditNote.RevisionSequence")

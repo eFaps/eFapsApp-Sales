@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,18 +17,19 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>15dd35ff-78b4-42d8-89f3-3bd1cedda5ca</uuid>
+    <uuid>67e26374-0cc4-4e35-adbe-3ed3204d4316</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_GoodsIssueSlipPosition</name>
-        <parent>Sales_PositionProdDocAbstract</parent>
+        <name>Sales_PositionProdDocAbstract</name>
+        <parent>Sales_PositionAbstract</parent>
+        <purpose abstract="true" />
         <attribute>
-            <name>GoodsIssueSlipLink</name>
+            <name>StorageLink</name>
             <type>Link</type>
-            <typelink>Sales_GoodsIssueSlip</typelink>
+            <typelink>Products_DynamicStorage</typelink>
             <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>DOCID</sqlcolumn>
+            <sqlcolumn>LINKID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

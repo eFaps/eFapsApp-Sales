@@ -45,7 +45,11 @@
             <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
                 method="autoComplete4Product"
                 name="Sales_GoodsIssueSlipPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="InStock">true</property>
+                <property name="ExtraParameter">storage</property>
+                <property name="ExtraParameter01">eFapsRSR</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
                 method="updateFields4Product"
                 name="Sales_GoodsIssueSlipPositionTable..product.UI_FIELD_UPDATE"
@@ -64,6 +68,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">UoM</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_GoodsIssueSlipPosition/UoM.Label</property>
         </field>
         <field name="uom4View">
@@ -74,14 +79,18 @@
             <property name="Label">Sales_GoodsIssueSlipPosition/UoM.Label</property>
         </field>
         <field name="storage">
+            <property name="Attribute">StorageLink</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_GoodsIssueSlipPositionTable.storage.Label</property>
             <property name="UIType">DROPDOWN</property>
-            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="getStorageFieldValueUI"
-                name="Sales_GoodsIssueSlipPositionTable.storage.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
+                method="getStorageFieldValueUI"
+                name="Sales_GoodsIssueSlipPositionTable.storage.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="ValueSelect">oid</property>
+                <property name="SetSelected">true</property>
                    <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Link4DefaultStorage">org.efaps.sales.GoodsIssueSlip.DefaultWareHouse</property>

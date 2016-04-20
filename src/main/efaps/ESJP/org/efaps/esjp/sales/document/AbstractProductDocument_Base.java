@@ -32,11 +32,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -46,6 +49,8 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.admin.ui.field.FieldTable;
 import org.efaps.ci.CIType;
 import org.efaps.db.CachedPrintQuery;
@@ -66,6 +71,7 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.products.Batch;
@@ -179,7 +185,6 @@ public abstract class AbstractProductDocument_Base
         return createdDoc;
     }
 
-
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _createdDoc created doc
@@ -189,10 +194,9 @@ public abstract class AbstractProductDocument_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
-
-            final Insert posIns = new Insert(getType4PositionCreate(_parameter));
+            final Type type = getType4PositionCreate(_parameter);
+            final Insert posIns = new Insert(type);
 
             posIns.add(CISales.PositionAbstract.PositionNumber, i + 1);
             posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance());
@@ -250,11 +254,20 @@ public abstract class AbstractProductDocument_Base
                 posIns.add(CISales.PositionAbstract.Quantity, quantity[i]);
             }
 
+            if (type.isKindOf(CISales.PositionProdDocAbstract)) {
+                final String[] storages = _parameter.getParameterValues("storage");
+                if (ArrayUtils.isNotEmpty(storages)) {
+                    final Instance storageInst = Instance.get(storages[i]);
+                    if (storageInst.isValid()) {
+                        posIns.add(CISales.PositionProdDocAbstract.StorageLink, storageInst);
+                    }
+                }
+            }
             add2PositionCreate(_parameter, posIns, _createdDoc, i);
 
             posIns.execute();
-            if (individualName != null) {
-                CIType transType;
+            if (individualName != null && !type.isKindOf(CISales.PositionProdDocAbstract)) {
+                final CIType transType;
                 if (posIns.getInstance().getType().isKindOf(CISales.ReturnSlipPosition)
                                 || posIns.getInstance().getType().isKindOf(CISales.RecievingTicketPosition)) {
                     transType = CIProducts.TransactionIndividualInbound;
@@ -376,8 +389,16 @@ public abstract class AbstractProductDocument_Base
                 _posUpdate.add(CISales.PositionAbstract.Product, prodInst);
             }
         }
+        if (_posUpdate.getInstance().getType().isKindOf(CISales.PositionProdDocAbstract)) {
+            final String[] storages = _parameter.getParameterValues("storage");
+            if (ArrayUtils.isNotEmpty(storages)) {
+                final Instance storageInst = Instance.get(storages[_idx]);
+                if (storageInst.isValid()) {
+                    _posUpdate.add(CISales.PositionProdDocAbstract.StorageLink, storageInst);
+                }
+            }
+        }
     }
-
 
     /**
      * @param _parameter Paramater as passed by the eFaps API
@@ -421,10 +442,10 @@ public abstract class AbstractProductDocument_Base
                             final Object uom = multi.getAttribute(CIProducts.TransactionInOutAbstract.UoM);
                             final Object descr = multi.getAttribute(CIProducts.TransactionInOutAbstract.Description);
 
-                            Type prodType;
-                            Type relType;
-                            boolean clazz;
-                            Object quantity;
+                            final Type prodType;
+                            final Type relType;
+                            final boolean clazz;
+                            final Object quantity;
                             if (ProductIndividual.BATCH.equals(prIn)) {
                                 prodType = CIProducts.ProductBatch.getType();
                                 relType = CIProducts.StockProductAbstract2Batch.getType();
@@ -550,6 +571,67 @@ public abstract class AbstractProductDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    /**
+     * Method to render a drop-down field containing all warehouses.
+     *
+     * @param _parameter Parameter as passed from eFaps.
+     * @return Return containing a SNIPPLET.
+     * @throws EFapsException on error.
+     */
+    public Return getStorageFieldValueUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret;
+        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.EDITABLE.equals(value.getDisplay())) {
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
+            if (!containsProperty(_parameter, "Type")) {
+                props.put("Type", CIProducts.DynamicStorage.getType().getName());
+            }
+            if (!containsProperty(_parameter, "Select")) {
+                props.put("Select", "attribute[" + CIProducts.StorageAbstract.Name.name + "]");
+            }
+
+            final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
+            {
+
+                @Override
+                protected void updatePositionList(final Parameter _parameter,
+                                                  final List<DropDownPosition> _values)
+                    throws EFapsException
+                {
+                    if (!(TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE)) && "true".equalsIgnoreCase(
+                                    getProperty(_parameter, "SetSelected")))) {
+                        final Instance inst = getDefaultStorage(_parameter);
+                        if (inst.isValid()) {
+                            for (final DropDownPosition value : _values) {
+                                if (value.getValue().equals(inst.getId()) || value.getValue().equals(inst.getOid())) {
+                                    value.setSelected(true);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                     final QueryBuilder _queryBldr)
+                    throws EFapsException
+                {
+                    super.add2QueryBuilder4List(_parameter, _queryBldr);
+                    _queryBldr.addWhereAttrEqValue(CIProducts.StorageAbstract.StatusAbstract, Status.find(
+                                    CIProducts.StorageAbstractStatus.Active));
+                }
+            };
+            ret = field.getOptionListFieldValue(_parameter);
+        } else {
+            ret = new Return();
+        }
+        return ret;
     }
 
     /**
@@ -778,7 +860,7 @@ public abstract class AbstractProductDocument_Base
                         }
 
                         BigDecimal currentQty = _bean.getQuantity();
-                        boolean complete= false;
+                        boolean complete = false;
                         for (final AbstractUIPosition tmpPos : fifoMap.values()) {
                             ret.add(tmpPos);
                             if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
@@ -969,6 +1051,77 @@ public abstract class AbstractProductDocument_Base
      * @return new empty Return
      * @throws EFapsException on error
      */
+    public Return createTransaction4Document(final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionProdDocAbstract);
+        posQueryBldr.addWhereAttrEqValue(CISales.PositionProdDocAbstract.DocumentAbstractLink, _parameter
+                        .getInstance());
+        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+        final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionProdDocAbstract.Product)
+                        .instance();
+        final SelectBuilder selStorageInst = SelectBuilder.get().linkto(CISales.PositionProdDocAbstract.StorageLink)
+                        .instance();
+        posMulti.addSelect(selProdInst, selStorageInst);
+        posMulti.addAttribute(CISales.PositionProdDocAbstract.Quantity, CISales.PositionProdDocAbstract.UoM);
+        posMulti.execute();
+        while (posMulti.next()) {
+            Instance prodInst = posMulti.getSelect(selProdInst);
+            final Instance storageInst = posMulti.getSelect(selStorageInst);
+
+            if (InstanceUtils.isValid(prodInst) && !prodInst.getType().isCIType(CIProducts.ProductInfinite)
+                            && prodInst.getType().isKindOf(CIProducts.StockProductAbstract)
+                            && InstanceUtils.isValid(storageInst)) {
+
+                final CIType ciType;
+                final CIType ciType4individual;
+                if (posMulti.getCurrentInstance().getType().isCIType(CISales.GoodsIssueSlipPosition)) {
+                    ciType = CIProducts.TransactionOutbound;
+                    ciType4individual = CIProducts.TransactionIndividualOutbound;
+                } else {
+                    ciType = CIProducts.TransactionInbound;
+                    ciType4individual = CIProducts.TransactionIndividualInbound;
+                }
+
+                if (Products.ACTIVATEINDIVIDUAL.get()
+                                && prodInst.getType().isKindOf(CIProducts.ProductIndividualAbstract)) {
+                    final Insert insert = new Insert(ciType4individual);
+                    insert.add(CIProducts.TransactionAbstract.Quantity,
+                                    posMulti.getAttribute(CISales.PositionProdDocAbstract.Quantity));
+                    insert.add(CIProducts.TransactionAbstract.Storage, storageInst);
+                    insert.add(CIProducts.TransactionAbstract.Product, prodInst);
+                    insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
+                    insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
+                    insert.add(CIProducts.TransactionAbstract.Document, _parameter.getInstance());
+                    insert.add(CIProducts.TransactionAbstract.UoM,
+                                    posMulti.getAttribute(CISales.PositionProdDocAbstract.UoM));
+                    insert.executeWithoutAccessCheck();
+
+                    prodInst = new Product().getProduct4Individual(_parameter, prodInst);
+                }
+
+                final Insert insert = new Insert(ciType);
+                insert.add(CIProducts.TransactionAbstract.Quantity,
+                                posMulti.getAttribute(CISales.PositionProdDocAbstract.Quantity));
+                insert.add(CIProducts.TransactionAbstract.Storage, storageInst);
+                insert.add(CIProducts.TransactionAbstract.Product, prodInst);
+                insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
+                insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
+                insert.add(CIProducts.TransactionAbstract.Document, _parameter.getInstance());
+                insert.add(CIProducts.TransactionAbstract.UoM,
+                                posMulti.getAttribute(CISales.PositionProdDocAbstract.UoM));
+                insert.executeWithoutAccessCheck();
+            }
+        }
+        return new Return();
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return changeStatusWithInverseTransaction(final Parameter _parameter)
         throws EFapsException
     {
@@ -1002,7 +1155,7 @@ public abstract class AbstractProductDocument_Base
             // ensure that all transaction are evaluated
             multi.executeWithoutAccessCheck();
             while (multi.next()) {
-                Insert insert;
+                final Insert insert;
                 if (CIProducts.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
                     insert = new Insert(CIProducts.TransactionOutbound);
                 } else if (CIProducts.TransactionOutbound.getType().equals(multi.getCurrentInstance().getType())) {
@@ -1233,7 +1386,7 @@ public abstract class AbstractProductDocument_Base
             throws EFapsException
         {
             final Map<String, Object> ret = super.getMap4JavaScript(_parameter);
-            AbstractProductDocument_Base tmpDoc;
+            final AbstractProductDocument_Base tmpDoc;
             if (getDoc() instanceof AbstractProductDocument_Base) {
                 tmpDoc = (AbstractProductDocument_Base) getDoc();
             } else {

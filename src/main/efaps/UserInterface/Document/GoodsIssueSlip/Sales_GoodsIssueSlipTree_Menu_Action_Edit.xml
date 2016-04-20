@@ -32,12 +32,24 @@
             <form>Sales_GoodsIssueSlipForm</form>
             <execute  program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="edit" >
                 <property name="PositionType">Sales_GoodsIssueSlipPosition</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.GoodsIssueSlip.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.GoodsIssueSlip.Mime</property>
+
                 <!-- Sales_Employee2GoodsIssueSlip -->
                 <property name="ConnectType01">1fbd5fb8-4fa3-494f-9001-968fb2636470</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">employee</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="validate" >
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">QUANTITYINSTOCK</property>
+                <property name="Validation03">DUPLICATEDPOSITION</property>
+                <property name="Validation04">INDIVIDUAL</property>
+            </validate>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_GoodsIssueSlipTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">

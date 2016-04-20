@@ -32,6 +32,7 @@
         <type>Sales_GoodsIssueSlip</type>
         <childs>
             <child>Sales_GoodsIssueSlipTree_Position</child>
+            <child>Sales_GoodsIssueSlipTree_Transaction</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

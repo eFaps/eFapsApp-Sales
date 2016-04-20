@@ -26,9 +26,13 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue" index="0">
                 <property name="Status">Open</property>
             </execute>
+            <execute  program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="createTransaction4Document" index="1"/>
+            <validate program="org.efaps.esjp.sales.document.GoodsIssueSlip" method="validate" >
+                <property name="Validation">QUANTITYINSTOCK4DOC</property>
+            </validate>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_GoodsIssueSlipTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">

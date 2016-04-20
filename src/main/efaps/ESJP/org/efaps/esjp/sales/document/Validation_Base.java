@@ -81,6 +81,8 @@ public abstract class Validation_Base
         ONLYONEPRODUCT,
         /** Validate Quantity in Stock. */
         QUANTITYINSTOCK,
+        /** Validate Quantity in Stock for a Document Instance in Background. */
+        QUANTITYINSTOCK4DOC,
         /** Validate that Quantity is greater than zero. */
         QUANTITYGREATERZERO,
         /** Validate that Amount is greater than zero. */
@@ -130,6 +132,9 @@ public abstract class Validation_Base
                     break;
                 case QUANTITYINSTOCK:
                     warnings.addAll(validateQuantityInStorage(_parameter, _doc));
+                    break;
+                case QUANTITYINSTOCK4DOC:
+                    warnings.addAll(validateQuantityInStorage4Doc(_parameter, _doc));
                     break;
                 case QUANTITYGREATERZERO:
                     warnings.addAll(validateQuantityGreaterZero(_parameter, _doc));
@@ -504,6 +509,60 @@ public abstract class Validation_Base
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
+    public List<IWarning> validateQuantityInStorage4Doc(final Parameter _parameter,
+                                                        final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionProdDocAbstract);
+        posQueryBldr.addWhereAttrEqValue(CISales.PositionProdDocAbstract.DocumentAbstractLink, _parameter
+                        .getInstance());
+        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+        final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionProdDocAbstract.Product)
+                        .instance();
+        final SelectBuilder selStorageInst = SelectBuilder.get().linkto(CISales.PositionProdDocAbstract.StorageLink)
+                        .instance();
+        posMulti.addSelect(selProdInst, selStorageInst);
+        posMulti.addAttribute(CISales.PositionProdDocAbstract.Quantity, CISales.PositionProdDocAbstract.UoM,
+                        CISales.PositionProdDocAbstract.PositionNumber);
+        posMulti.execute();
+        while (posMulti.next()) {
+            final Instance prodInst = posMulti.getSelect(selProdInst);
+            if (prodInst.isValid() && !prodInst.getType().isCIType(CIProducts.ProductInfinite)) {
+                BigDecimal currQuantity = BigDecimal.ZERO;
+                final Instance storageInst = posMulti.getSelect(selStorageInst);
+                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
+                queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, prodInst);
+                queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, storageInst);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIProducts.InventoryAbstract.Quantity, CIProducts.InventoryAbstract.Reserved);
+                multi.execute();
+                while (multi.next()) {
+                    currQuantity = currQuantity.add(multi.<BigDecimal>getAttribute(
+                                    CIProducts.InventoryAbstract.Quantity));
+                    currQuantity = currQuantity.add(multi.<BigDecimal>getAttribute(
+                                    CIProducts.InventoryAbstract.Reserved));
+                }
+                BigDecimal quantity = posMulti.getAttribute(CISales.PositionProdDocAbstract.Quantity);
+                final UoM uoM = Dimension.getUoM(posMulti.<Long>getAttribute(CISales.PositionProdDocAbstract.UoM));
+                quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())).divide(new BigDecimal(uoM
+                                .getDenominator()), BigDecimal.ROUND_HALF_UP);
+                if (quantity.compareTo(currQuantity) > 0) {
+                    ret.add(new NotEnoughStockWarning().setPosition(posMulti.<Integer>getAttribute(
+                                    CISales.PositionProdDocAbstract.PositionNumber)));
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Validate that the given quantities exist in the stock.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
     public List<IWarning> validateQuantityInStorage(final Parameter _parameter,
                                                     final AbstractDocument_Base _doc)
         throws EFapsException
@@ -592,8 +651,7 @@ public abstract class Validation_Base
                 // if it is not an individual product, verify that it is not marked a individual
                 if (!prodInst.getType().isKindOf(CIProducts.ProductIndividualAbstract)) {
                     Products.ProductIndividual individual = multi.getAttribute(CIProducts.ProductAbstract.Individual);
-                    if (individual == null)
-                    {
+                    if (individual == null) {
                         individual  = Products.ProductIndividual.NONE;
                     }
                     switch (individual) {
