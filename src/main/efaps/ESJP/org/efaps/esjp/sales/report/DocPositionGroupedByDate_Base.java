@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -37,7 +34,7 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -57,11 +54,9 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DocPositionGroupedByDate_Base.java 14807 2015-02-03 17:07:58Z
- *          jan@moxter.net $
  */
 @EFapsUUID("e852be19-7290-4d0f-ba41-85ea3287372e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DocPositionGroupedByDate_Base
     extends AbstractGroupedByDate
 {
@@ -152,6 +147,7 @@ public abstract class DocPositionGroupedByDate_Base
                             CISales.PositionSumAbstract.NetPrice, CISales.PositionSumAbstract.RateNetPrice);
         }
         multi.execute();
+
         while (multi.next()) {
             final Instance docInst = multi.getSelect(selDocInst);
             final Map<String, Object> map = new HashMap<>();
@@ -202,11 +198,15 @@ public abstract class DocPositionGroupedByDate_Base
                 }
                 map.put("quantity", quantity);
             }
+
             map.put("uoM", uom);
+            map.put("uoMStr", uoMStr);
             map.put("docInstance", docInst);
             map.put("contact", multi.getSelect(selDocContactName));
             map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
             map.put("type", docInst.getType().getLabel());
+            map.put("productName", multi.getSelect(selProdName));
+            map.put("productDescr", multi.getSelect(selProdDescr));
             map.put("product", multi.getSelect(selProdName) + " - " + multi.getSelect(selProdDescr)
                             + " [" + uoMStr + "]");
             map.put("productInst", multi.getSelect(selProdInst));
@@ -215,6 +215,13 @@ public abstract class DocPositionGroupedByDate_Base
         return ret;
     }
 
+    /**
+     * Add2 query builder.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException the e faps exception
+     */
     protected void add2QueryBuilder(final Parameter _parameter,
                                     final QueryBuilder _queryBldr)
         throws EFapsException
@@ -222,6 +229,9 @@ public abstract class DocPositionGroupedByDate_Base
         // to be used by implementations
     }
 
+    /**
+     * The Class ValueList.
+     */
     public static class ValueList
         extends ArrayList<Map<String, Object>>
     {
@@ -230,12 +240,28 @@ public abstract class DocPositionGroupedByDate_Base
          *
          */
         private static final long serialVersionUID = 1L;
+
+        /** The start. */
         private DateTime start;
+
+        /** The end. */
         private DateTime end;
+
+        /** The date gourp. */
         private DateGroup dateGourp;
+
+        /** The props. */
         private Properties props;
+
+        /** The types. */
         private Set<Type> types = new HashSet<>();
 
+        /**
+         * Group by.
+         *
+         * @param _keys the _keys
+         * @return the value list
+         */
         public ValueList groupBy(final String... _keys)
         {
             final Map<String, Map<String, Object>> tmpMap = new HashMap<>();
@@ -269,6 +295,11 @@ public abstract class DocPositionGroupedByDate_Base
             return ret;
         }
 
+        /**
+         * Gets the doc instances.
+         *
+         * @return the doc instances
+         */
         public Set<Instance> getDocInstances()
         {
             final Set<Instance> ret = new HashSet<>();

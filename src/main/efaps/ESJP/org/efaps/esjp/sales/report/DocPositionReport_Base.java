@@ -24,13 +24,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -62,12 +67,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
@@ -210,7 +218,7 @@ public abstract class DocPositionReport_Base
             this.valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
 
-            if (filter.containsKey("bom") && BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
+            if (BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
                 int counter = 0; // just a variable to prevent eternal loops
                 boolean finisched = false;
                 while (!finisched && counter < 5) {
@@ -377,6 +385,33 @@ public abstract class DocPositionReport_Base
         {
             final ValueList values = getDocPositionReport().getData(_parameter);
             final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
+
+            final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
+            if (!ContactGroup.NONE.equals(contactGrp)) {
+                chain.addComparator(new Comparator<Map<String, Object>>()
+                {
+
+                    @Override
+                    public int compare(final Map<String, Object> _o1,
+                                       final Map<String, Object> _o2)
+                    {
+                        return String.valueOf(_o1.get("contact")).compareTo(String.valueOf(_o2.get("contact")));
+                    }
+                });
+            }
+            final Map<String, Object> filterMap = getDocPositionReport().getFilterMap(_parameter);
+            if (BooleanUtils.isTrue((Boolean) filterMap.get("typeGroup"))) {
+                chain.addComparator(new Comparator<Map<String, Object>>()
+                {
+                    @Override
+                    public int compare(final Map<String, Object> _o1,
+                                       final Map<String, Object> _o2)
+                    {
+                        return String.valueOf(_o1.get("type")).compareTo(String.valueOf(_o2.get("type")));
+                    }
+                });
+            }
+
             chain.addComparator(new Comparator<Map<String, Object>>()
             {
 
@@ -384,11 +419,81 @@ public abstract class DocPositionReport_Base
                 public int compare(final Map<String, Object> _o1,
                                    final Map<String, Object> _o2)
                 {
-                    return 0;
+                    return String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName")));
                 }
             });
+            chain.addComparator(new Comparator<Map<String, Object>>()
+            {
+
+                @Override
+                public int compare(final Map<String, Object> _o1,
+                                   final Map<String, Object> _o2)
+                {
+                    return String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial")));
+                }
+            });
+
             Collections.sort(values, chain);
-            return new JRMapCollectionDataSource((Collection) values);
+
+            // it must be ensured that the firts product has information for all usesd partial
+            // so it is garantized that the columns are in order
+            final Collection finalValues = new ArrayList<>();
+            final Set<String> partials = new TreeSet<>();
+            for (final Map<String, Object> value : values) {
+                partials.add((String) value.get("partial"));
+            }
+            if (partials.size() > 1) {
+                final Iterator<String> partialIter = partials.iterator();
+                final String productName = (String) values.get(0).get("productName");
+                final Iterator<Map<String, Object>> iter = values.iterator();
+                Map<String, Object> previous = values.get(0);
+                while (iter.hasNext()) {
+                    final Map<String, Object> map = iter.next();
+                    // if not al partials added go on validating
+                    if (partialIter.hasNext()) {
+                        String partial = partialIter.next();
+                        final boolean current = productName.equals(map.get("productName"));
+                        // stil the same product
+                        if (current) {
+                            // there is a partial missing add on for it
+                            while (partial != null && partial.compareTo((String) map.get("partial")) < 0) {
+                                final Map<String, Object> newMap = new HashMap<>();
+                                for (final Entry<String, Object> entry : map.entrySet()) {
+                                    newMap.put(entry.getKey(), entry.getValue());
+                                }
+                                newMap.put("quantity", null);
+                                newMap.put("partial", partial);
+                                finalValues.add(newMap);
+                                partial = partialIter.hasNext() ? partialIter.next() : null;
+                            }
+                        } else {
+                            final Map<String, Object> newMap = new HashMap<>();
+                            for (final Entry<String, Object> entry : previous.entrySet()) {
+                                newMap.put(entry.getKey(), entry.getValue());
+                            }
+                            newMap.put("quantity", null);
+                            newMap.put("partial", partial);
+                            finalValues.add(newMap);
+                            // perhaps there are still more values
+                            while (partialIter.hasNext()) {
+                                partial = partialIter.next();
+                                final Map<String, Object> newMap1 = new HashMap<>();
+                                for (final Entry<String, Object> entry : previous.entrySet()) {
+                                    newMap1.put(entry.getKey(), entry.getValue());
+                                }
+                                newMap1.put("quantity", null);
+                                newMap1.put("partial", partial);
+                                finalValues.add(newMap1);
+                            }
+                        }
+                        previous = map;
+                    }
+                    finalValues.add(map);
+                }
+            } else {
+                finalValues.addAll(values);
+            }
+            return new JRMapCollectionDataSource(finalValues);
         }
 
         @Override
@@ -447,15 +552,28 @@ public abstract class DocPositionReport_Base
                                 "quantity", BigDecimal.class, Calculation.SUM);
                 crosstab.addMeasure(quantityMeasure);
             }
-            final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("product", String.class)
-                            .setHeaderWidth(250);
+            final CrosstabRowGroupBuilder<String> rowColGroup = DynamicReports.ctab
+                            .rowGroup("productName", String.class)
+                            .setShowTotal(true)
+                            .setHeaderWidth(150);
+            crosstab.addRowGroup(rowColGroup);
+
+            final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab
+                            .rowGroup("productDescr", String.class)
+                            .setHeaderWidth(250)
+                            .setHeaderHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
+                            .setShowTotal(false);
             crosstab.addRowGroup(rowTypeGroup);
+            final CrosstabRowGroupBuilder<String> rowTypeGroup2 = DynamicReports.ctab.rowGroup("uoMStr", String.class)
+                            .setHeaderWidth(50)
+                            .setShowTotal(false);
+            crosstab.addRowGroup(rowTypeGroup2);
 
             final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab.columnGroup("partial",
-                            String.class);
-
+                            String.class).setShowTotal(true);
             crosstab.addColumnGroup(columnGroup);
-            crosstab.setCellWidth(200);
+
+            crosstab.setCellWidth(200).setDataPreSorted(true);
             _builder.addSummary(crosstab);
         }
 
@@ -467,6 +585,32 @@ public abstract class DocPositionReport_Base
         public DocPositionReport_Base getDocPositionReport()
         {
             return this.filteredReport;
+        }
+    }
+
+
+    public static class TestExpression
+        extends AbstractSimpleExpression<String>
+    {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public String evaluate(final ReportParameters _reportParameters)
+        {
+            return RandomStringUtils.random(10);
+        }
+    }
+
+
+    public static class ComparatorExpression
+        implements Comparator<String>
+    {
+        @Override
+        public int compare(final String _o1,
+                           final String _o2)
+        {
+            return -1;
         }
     }
 }
