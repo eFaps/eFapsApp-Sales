@@ -101,19 +101,8 @@ public abstract class Exchange_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String onlynumber = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.Exchange.OnlyNumber.name));
-        if (onlynumber != null) {
-            _insert.add(CISales.Exchange.OnlyNumber, onlynumber);
-            _createdDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
-        }
-
-        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.Exchange.SituationLink.name));
-        if (situationLink != null) {
-            _insert.add(CISales.Exchange.SituationLink, situationLink);
-            _createdDoc.getValues().put(CISales.Exchange.SituationLink.name, situationLink);
-        }
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+        add2DocUpdate(_parameter, _insert, _createdDoc);
     }
 
     /**
@@ -137,7 +126,6 @@ public abstract class Exchange_Base
         return ret;
     }
 
-
     @Override
     protected void add2DocEdit(final Parameter _parameter,
                                final Update _update,
@@ -145,18 +133,34 @@ public abstract class Exchange_Base
         throws EFapsException
     {
         super.add2DocEdit(_parameter, _update, _editDoc);
+        add2DocUpdate(_parameter, _update, _editDoc);
+    }
+
+    /**
+     * Add to doc update.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _update the update
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
+     */
+    protected void add2DocUpdate(final Parameter _parameter,
+                                 final Update _update,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
         final String onlynumber = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.Exchange.OnlyNumber.name));
         if (onlynumber != null) {
             _update.add(CISales.Exchange.OnlyNumber, onlynumber);
-            _editDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
+            _createdDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
         }
 
         final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.Exchange.SituationLink.name));
         if (situationLink != null) {
             _update.add(CISales.Exchange.SituationLink, situationLink);
-            _editDoc.getValues().put(CISales.Exchange.SituationLink.name, situationLink);
+            _createdDoc.getValues().put(CISales.Exchange.SituationLink.name, situationLink);
         }
     }
 

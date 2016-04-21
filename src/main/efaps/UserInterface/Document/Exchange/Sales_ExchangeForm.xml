@@ -233,7 +233,7 @@
         <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.Exchange" method="rateCurrencyFieldValueUI"
                 name="Sales_ExchangeForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
@@ -241,8 +241,9 @@
                 name="Sales_ExchangeForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
+            <property name="Attribute">Rate</property>
             <property name="ModePrint">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_ExchangeForm.rateCurrencyData.Label</property>
@@ -255,14 +256,14 @@
             </trigger>
         </field>
         <field name="rateCrossTotal">
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>
             <property name="Required">true</property>
         </field>
         <field name="crossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Exchange/CrossTotal.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -302,7 +303,7 @@
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="rateCrossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Exchange/RateCrossTotal.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -325,13 +326,22 @@
         <field name="swapTotal">
             <property name="ModeEdit">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <property name="Label">Sales_ExchangeForm.swapTotal.Label</property>
+            <property name="Label">Sales_ExchangeForm.swapTotalFrom.Label</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="getSwapTotalFieldValue"
                 name="Sales_ExchangeForm.swapTotal.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" >
                 <property name="SwapFrom">true</property>
             </trigger>
+        </field>
+        <field name="swapTotal2">
+            <property name="ModeEdit">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_ExchangeForm.swapTotalTo.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapTotalFieldValue"
+                name="Sales_ExchangeForm.swapTotal2.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

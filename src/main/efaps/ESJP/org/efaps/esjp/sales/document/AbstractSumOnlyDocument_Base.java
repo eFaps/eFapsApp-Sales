@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -308,8 +309,9 @@ public abstract class AbstractSumOnlyDocument_Base
         try {
             final String rateNetTotalStr = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                             CISales.DocumentSumAbstract.RateNetTotal.name));
-
-            if (rateNetTotalStr != null && !rateNetTotalStr.isEmpty()) {
+            boolean updateRate = false;
+            if (StringUtils.isNotEmpty(rateNetTotalStr)) {
+                updateRate = true;
                 final BigDecimal rateNetTotal = (BigDecimal) frmt.parse(rateNetTotalStr);
                 update.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
                 _editDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
@@ -322,7 +324,8 @@ public abstract class AbstractSumOnlyDocument_Base
 
             final String rateCrossTotalStr = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                             CISales.DocumentSumAbstract.RateCrossTotal.name));
-            if (rateCrossTotalStr != null && !rateCrossTotalStr.isEmpty()) {
+            if (StringUtils.isNotEmpty(rateCrossTotalStr)) {
+                updateRate = true;
                 final BigDecimal rateCrossTotal = (BigDecimal) frmt.parse(rateCrossTotalStr);
                 update.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
                 _editDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
@@ -339,9 +342,12 @@ public abstract class AbstractSumOnlyDocument_Base
                     _editDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, crossTotal);
                 }
             }
-            update.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
-            update.add(CISales.DocumentSumAbstract.Rate, rateObj);
-            update.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+            // only update the rate if a change in totals was detected
+            if (updateRate) {
+                update.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
+                update.add(CISales.DocumentSumAbstract.Rate, rateObj);
+                update.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+            }
         } catch (final ParseException e) {
             throw new EFapsException("Parsing Error", e);
         }

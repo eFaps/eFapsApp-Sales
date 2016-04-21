@@ -243,13 +243,13 @@
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
         </field>
         <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
                 method="rateCurrencyFieldValueUI"
@@ -261,8 +261,9 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
+            <property name="Attribute">Rate</property>
             <property name="ModePrint">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingExchangeForm.rateCurrencyData.Label</property>
@@ -275,14 +276,14 @@
             </trigger>
         </field>
         <field name="rateCrossTotal">
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>
             <property name="Required">true</property>
         </field>
         <field name="crossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingExchange/CrossTotal.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -316,14 +317,14 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-             <property name="ModeView">NONE</property>
+            <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
                 method="rateFieldValueUI"
                 name="Sales_IncomingExchangeForm.rate.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="rateCrossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingExchange/RateCrossTotal.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -343,10 +344,25 @@
                 <property name="LinkFrom02">ToAbstractLink</property>
             </evaluate>
         </field>
+        <field name="swapGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="swapTotal">
             <property name="ModeEdit">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <property name="Label">Sales_IncomingExchangeForm.swapTotal.Label</property>
+            <property name="Label">Sales_IncomingExchangeForm.swapTotalFrom.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapTotalFieldValue"
+                name="Sales_IncomingExchangeForm.swapTotal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="SwapFrom">true</property>
+            </trigger>
+        </field>
+        <field name="swapTotal2">
+            <property name="ModeEdit">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_IncomingExchangeForm.swapTotalTo.Label</property>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="getSwapTotalFieldValue"
                 name="Sales_IncomingExchangeForm.swapTotal.UI_FIELD_VALUE"

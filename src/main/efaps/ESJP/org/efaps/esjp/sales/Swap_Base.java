@@ -912,11 +912,11 @@ public abstract class Swap_Base
             final SwapInfo info = new SwapInfo();
             final Instance fromInst = multi.getSelect(selFromInst);
             if (_callInstance.equals(fromInst)) {
-                info.setFrom(false)
+                info.setFrom(true)
                     .setDocInstance(multi.<Instance>getSelect(selToInst))
                     .setDocName(multi.<String>getSelect(selToName));
             } else {
-                info.setFrom(true)
+                info.setFrom(false)
                     .setDocInstance(multi.<Instance>getSelect(selFromInst))
                     .setDocName(multi.<String>getSelect(selFromName));
             }
