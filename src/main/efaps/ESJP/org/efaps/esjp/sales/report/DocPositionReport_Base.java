@@ -35,7 +35,6 @@ import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -67,7 +66,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
@@ -75,7 +73,6 @@ import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
@@ -236,6 +233,9 @@ public abstract class DocPositionReport_Base
                             finisched = false;
                             for (final ProductBOMBean bean : prodBeans) {
                                 final Map<String, Object> newmap = new HashMap<>(value);
+                                newmap.put("uoMStr", bean.getUoM().getName());
+                                newmap.put("productName", bean.getName());
+                                newmap.put("productDescr", bean.getDescription());
                                 newmap.put("quantity", bean.getQuantity());
                                 newmap.put("uoM", bean.getUoM());
                                 newmap.put("product", bean.getName() + " - " + bean.getDescription()
@@ -266,7 +266,6 @@ public abstract class DocPositionReport_Base
                     value.put("contact", print.getSelect(selContactName));
                 }
             }
-
         }
         return this.valueList;
     }
@@ -356,7 +355,6 @@ public abstract class DocPositionReport_Base
         }
         return ret;
     }
-
 
     /**
      * Dynamic Report.
@@ -502,7 +500,9 @@ public abstract class DocPositionReport_Base
             throws EFapsException
         {
             final boolean showAmount = false;
-            final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
+            final List<CrosstabRowGroupBuilder<?>> rowGrpBldrs = new ArrayList<>();
+            final List<CrosstabColumnGroupBuilder<?>> colGrpBldrs = new ArrayList<>();
+            final List<CrosstabMeasureBuilder<?>> measureGrpBldrs = new ArrayList<>();
 
             final Map<String, Object> filterMap = getDocPositionReport().getFilterMap(_parameter);
             CurrencyInst selected = null;
@@ -516,14 +516,14 @@ public abstract class DocPositionReport_Base
             if (!ContactGroup.NONE.equals(contactGrp)) {
                 final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
                                 String.class).setHeaderWidth(150);
-                crosstab.addRowGroup(contactGroup);
+                rowGrpBldrs.add(contactGroup);
             }
             if (filterMap.containsKey("typeGroup")) {
                 final Boolean contactBool = (Boolean) filterMap.get("typeGroup");
                 if (contactBool != null && contactBool) {
                     final CrosstabRowGroupBuilder<String> typeGroup = DynamicReports.ctab.rowGroup("type",
                                     String.class).setHeaderWidth(150);
-                    crosstab.addRowGroup(typeGroup);
+                    rowGrpBldrs.add(typeGroup);
                 }
             }
 
@@ -533,48 +533,76 @@ public abstract class DocPositionReport_Base
                         final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                         currency.getSymbol(),
                                         currency.getISOCode(), BigDecimal.class, Calculation.SUM);
-                        crosstab.addMeasure(amountMeasure);
+                        measureGrpBldrs.add(amountMeasure);
                     }
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                     DBProperties.getProperty(DocPositionReport.class.getName() + ".BASE")
                                                     + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
                                     "BASE", BigDecimal.class, Calculation.SUM);
-                    crosstab.addMeasure(amountMeasure);
+                    measureGrpBldrs.add(amountMeasure);
                 } else {
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                     selected.getSymbol(),
                                     selected.getISOCode(), BigDecimal.class, Calculation.SUM);
-                    crosstab.addMeasure(amountMeasure);
+                    measureGrpBldrs.add(amountMeasure);
                 }
             } else {
                 final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
                                 DBProperties.getProperty(DocPositionReport.class.getName() + ".quantity"),
                                 "quantity", BigDecimal.class, Calculation.SUM);
-                crosstab.addMeasure(quantityMeasure);
+                measureGrpBldrs.add(quantityMeasure);
             }
             final CrosstabRowGroupBuilder<String> rowColGroup = DynamicReports.ctab
                             .rowGroup("productName", String.class)
                             .setShowTotal(true)
                             .setHeaderWidth(150);
-            crosstab.addRowGroup(rowColGroup);
+            rowGrpBldrs.add(rowColGroup);
 
             final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab
                             .rowGroup("productDescr", String.class)
                             .setHeaderWidth(250)
                             .setHeaderHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
                             .setShowTotal(false);
-            crosstab.addRowGroup(rowTypeGroup);
+            rowGrpBldrs.add(rowTypeGroup);
+
             final CrosstabRowGroupBuilder<String> rowTypeGroup2 = DynamicReports.ctab.rowGroup("uoMStr", String.class)
                             .setHeaderWidth(50)
                             .setShowTotal(false);
-            crosstab.addRowGroup(rowTypeGroup2);
+            rowGrpBldrs.add(rowTypeGroup2);
 
             final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab.columnGroup("partial",
                             String.class).setShowTotal(true);
-            crosstab.addColumnGroup(columnGroup);
+            colGrpBldrs.add(columnGroup);
 
+            final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
             crosstab.setCellWidth(200).setDataPreSorted(true);
+
+            updateBldrs(rowGrpBldrs, colGrpBldrs, measureGrpBldrs);
+
+            for (final CrosstabRowGroupBuilder<?> rowGrpBldr : rowGrpBldrs) {
+                crosstab.addRowGroup(rowGrpBldr);
+            }
+            for (final CrosstabColumnGroupBuilder<?> colGrpBldr : colGrpBldrs) {
+                crosstab.addColumnGroup(colGrpBldr);
+            }
+            for (final CrosstabMeasureBuilder<?> measureGrpBldr : measureGrpBldrs) {
+                crosstab.addMeasure(measureGrpBldr);
+            }
             _builder.addSummary(crosstab);
+        }
+
+        /**
+         * Update builders.
+         *
+         * @param _rowGrpBldrs the row group builders
+         * @param _colGrpBldrs the column group builders
+         * @param _measureGrpBldrs the measure group builders
+         */
+        protected void updateBldrs(final List<CrosstabRowGroupBuilder<?>> _rowGrpBldrs,
+                                   final List<CrosstabColumnGroupBuilder<?>> _colGrpBldrs,
+                                   final List<CrosstabMeasureBuilder<?>> _measureGrpBldrs)
+        {
+            // to be used by implementation
         }
 
         /**
@@ -585,32 +613,6 @@ public abstract class DocPositionReport_Base
         public DocPositionReport_Base getDocPositionReport()
         {
             return this.filteredReport;
-        }
-    }
-
-
-    public static class TestExpression
-        extends AbstractSimpleExpression<String>
-    {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public String evaluate(final ReportParameters _reportParameters)
-        {
-            return RandomStringUtils.random(10);
-        }
-    }
-
-
-    public static class ComparatorExpression
-        implements Comparator<String>
-    {
-        @Override
-        public int compare(final String _o1,
-                           final String _o2)
-        {
-            return -1;
         }
     }
 }
