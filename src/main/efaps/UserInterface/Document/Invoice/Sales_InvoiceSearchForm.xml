@@ -20,7 +20,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>145225a3-6d21-436f-8075-819185666e34</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoiceSearchForm</name>
@@ -50,6 +49,18 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_Invoice/Name.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_Invoice/Status.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getStatusDropDownFieldValue"
+                name="Sales_RecievingTicketSearchForm.status.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="AddWildcard4Search">true</property>
+            </trigger>
         </field>
         <field name="javaScript">
             <property name="ModeSearch">HIDDEN</property>
