@@ -43,12 +43,18 @@
             <property name="Attribute">Revision</property>
             <property name="Label">Sales_IncomingExchange/Revision.Label</property>
         </field>
+        <field name="swap">
+            <property name="Select">linkfrom[Sales_Document2Document4Swap#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+        </field>
         <field name="onlyNumber">
             <property name="Attribute">OnlyNumber</property>
             <property name="Label">Sales_IncomingExchange/OnlyNumber.Label</property>
         </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterRequired">true</property>
+            <property name="FilterDefault">YEAR</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_IncomingExchange/Date.Label</property>
         </field>
@@ -85,6 +91,8 @@
         <field name="status">
             <property name="FilterType">STATUS</property>
             <property name="FilterBase">DATABASE</property>
+            <property name="FilterRequired">true</property>
+            <property name="FilterDefault">Open</property>
             <property name="Attribute">Status</property>
             <property name="Label">Sales_IncomingExchange/Status.Label</property>
         </field>
