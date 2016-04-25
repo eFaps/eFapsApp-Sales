@@ -40,6 +40,7 @@
             <child>Sales_Employee2DocReportMyDesk</child>
             <child>Sales_InventoryReportMyDesk</child>
             <child>Sales_DocVsDocReportMyDesk</child>
+            <child>Sales_CarrierReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

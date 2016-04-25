@@ -106,7 +106,7 @@ public abstract class DocPositionGroupedByDate_Base
                 attrQueryBldr.addType(_types[i]);
             }
         }
-        final List<Status> statuslist = getStatusListFromProperties(new Parameter(), _props);
+        final List<Status> statuslist = getStatusListFromProperties(new Parameter(), props);
         if (!statuslist.isEmpty()) {
             attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statuslist.toArray());
         }
@@ -128,6 +128,7 @@ public abstract class DocPositionGroupedByDate_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selDoc = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink);
         final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
+        final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Name);
         final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Date);
         final SelectBuilder selDocContactName = new SelectBuilder(selDoc).linkto(CISales.DocumentAbstract.Contact)
                         .attribute(CIContacts.ContactAbstract.Name);
@@ -137,7 +138,8 @@ public abstract class DocPositionGroupedByDate_Base
         final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
         final SelectBuilder selProdUoM = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.DefaultUoM);
 
-        multi.addSelect(selDocInst, selDocDate, selProdInst, selDocContactName, selProdName, selProdDescr, selProdUoM);
+        multi.addSelect(selDocInst, selDocName, selDocDate, selDocContactName,
+                        selProdInst, selProdName, selProdDescr, selProdUoM);
         multi.addAttribute(CISales.PositionAbstract.UoM, CISales.PositionAbstract.Quantity);
         SelectBuilder selRateCurInst = null;
         if (showAmount) {
@@ -146,6 +148,7 @@ public abstract class DocPositionGroupedByDate_Base
             multi.addAttribute(CISales.PositionSumAbstract.CrossPrice, CISales.PositionSumAbstract.RateCrossPrice,
                             CISales.PositionSumAbstract.NetPrice, CISales.PositionSumAbstract.RateNetPrice);
         }
+        add2Print(_parameter, multi);
         multi.execute();
 
         while (multi.next()) {
@@ -202,6 +205,7 @@ public abstract class DocPositionGroupedByDate_Base
             map.put("uoM", uom);
             map.put("uoMStr", uoMStr);
             map.put("docInstance", docInst);
+            map.put("docName", multi.getSelect(selDocName));
             map.put("contact", multi.getSelect(selDocContactName));
             map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
             map.put("type", docInst.getType().getLabel());
@@ -210,9 +214,41 @@ public abstract class DocPositionGroupedByDate_Base
             map.put("product", multi.getSelect(selProdName) + " - " + multi.getSelect(selProdDescr)
                             + " [" + uoMStr + "]");
             map.put("productInst", multi.getSelect(selProdInst));
+
+            add2RowMap(_parameter, multi, map);
             ret.add(map);
         }
         return ret;
+    }
+
+    /**
+     * Add2 row map.
+     *
+     * @param _parameter the _parameter
+     * @param _multi the _multi
+     * @param _map the _map
+     * @throws EFapsException the e faps exception
+     */
+    protected void add2RowMap(final Parameter _parameter,
+                              final MultiPrintQuery _multi,
+                              final Map<String, Object> _map)
+        throws EFapsException
+    {
+        // to be used by implementations
+    }
+
+    /**
+     * Add to print.
+     *
+     * @param _parameter the _parameter
+     * @param _multi the _multi
+     * @throws EFapsException the e faps exception
+     */
+    protected void add2Print(final Parameter _parameter,
+                             final MultiPrintQuery _multi)
+        throws EFapsException
+    {
+        // to be used by implementations
     }
 
     /**

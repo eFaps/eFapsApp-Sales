@@ -1023,6 +1023,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_CARRIER_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.CarrierReport.Activate")
+                    .description("Activate the CarrierReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.IN")
