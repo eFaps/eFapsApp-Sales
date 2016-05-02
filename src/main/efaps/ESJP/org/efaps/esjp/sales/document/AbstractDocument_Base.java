@@ -420,7 +420,7 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the update event used in the select doc form for CostSheet.
+     * Update event executed on change of the serial dropdown.
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
@@ -429,33 +429,38 @@ public abstract class AbstractDocument_Base
     public Return updateFields4Name(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
-        final Collection<String> types = analyseProperty(_parameter, "Type").values();
-        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-        final String fieldName = field.getName() + "_SN";
-        String number = getMaxNumber(_parameter, _parameter.getParameterValue(fieldName),
-                        types.toArray(new String[types.size()]));
-        if (number == null) {
-            number = "000001";
-        } else {
-            // get the numbers after the first "-"
-            final Pattern pattern = Pattern.compile("(?<=-)\\d*");
-            final Matcher matcher = pattern.matcher(number);
-            if (matcher.find()) {
-                final String numTmp = matcher.group();
-                final int length = numTmp.length();
-                final Integer numInt = Integer.parseInt(numTmp) + 1;
-                final NumberFormat nf = NumberFormat.getInstance();
-                nf.setMinimumIntegerDigits(length);
-                nf.setMaximumIntegerDigits(length);
-                nf.setGroupingUsed(false);
-                number = nf.format(numInt);
+        final Return ret = new Return();
+        final List<DropDownPosition> options = getSerialNumbers(_parameter);
+        if (options.size() > 1) {
+            final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            final Map<String, Object> map = new HashMap<String, Object>();
+            final Collection<String> types = analyseProperty(_parameter, "Type").values();
+            final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+            final String fieldName = field.getName() + "_SN";
+            String number = getMaxNumber(_parameter, _parameter.getParameterValue(fieldName),
+                            types.toArray(new String[types.size()]));
+            if (number == null) {
+                number = "000001";
+            } else {
+                // get the numbers after the first "-"
+                final Pattern pattern = Pattern.compile("(?<=-)\\d*");
+                final Matcher matcher = pattern.matcher(number);
+                if (matcher.find()) {
+                    final String numTmp = matcher.group();
+                    final int length = numTmp.length();
+                    final Integer numInt = Integer.parseInt(numTmp) + 1;
+                    final NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMinimumIntegerDigits(length);
+                    nf.setMaximumIntegerDigits(length);
+                    nf.setGroupingUsed(false);
+                    number = nf.format(numInt);
+                }
             }
+            map.put(field.getName(), number);
+            values.add(map);
+            ret.put(ReturnValues.VALUES, values);
         }
-        map.put(field.getName(), number);
-        values.add(map);
-        return new Return().put(ReturnValues.VALUES, values);
+        return ret;
     }
 
     /**
