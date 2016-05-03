@@ -324,6 +324,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute EXCHANGE_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Exchange.RevisionSequence")
+                    .defaultValue(CINumGenSales.ExchangeRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPTREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "FundsToBeSettledReceipt.RevisionSequence")
@@ -418,6 +426,14 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.UseNumberGenerator")
                     .description("Use a NumberGenerator for the Name.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGEXCHANGE_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Exchange.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingExchangeRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
 
     /** See description. */
     @EFapsSysConfAttribute

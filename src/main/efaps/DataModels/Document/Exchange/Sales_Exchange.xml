@@ -42,6 +42,12 @@
             <sqlcolumn>STRING1</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Reference</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING2</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>SituationLink</name>
             <type>LinkWithRanges</type>
             <typelink>Sales_AttributeDefinitionExchangeSituation</typelink>

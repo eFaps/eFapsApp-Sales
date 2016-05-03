@@ -19,16 +19,20 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 
@@ -71,6 +75,18 @@ public abstract class IncomingExchange_Base
         throws EFapsException
     {
         super.add2DocCreate(_parameter, _insert, _createdDoc);
+
+        if (Sales.INCOMINGEXCHANGE_REVSEQ.exists()) {
+            final String seqKey = Sales.INCOMINGEXCHANGE_REVSEQ.get();
+            final NumberGenerator numgen = isUUID(seqKey)
+                                ? NumberGenerator.get(UUID.fromString(seqKey))
+                                : NumberGenerator.get(seqKey);
+            if (numgen != null) {
+                final String revision = numgen.getNextVal();
+                Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
+                _insert.add(CISales.IncomingExchange.Revision, revision);
+            }
+        }
         add2DocUpdate(_parameter, _insert, _createdDoc);
     }
 

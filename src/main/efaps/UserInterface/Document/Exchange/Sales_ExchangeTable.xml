@@ -23,6 +23,17 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ExchangeTable</name>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_Exchange/Revision.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_ExchangeTable.revision.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Exchange.RevisionSequence</property>
+            </trigger>
+        </field>
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -39,9 +50,12 @@
             <property name="Label">Sales_Exchange/Contact.Label</property>
             <property name="HRef">TREE</property>
         </field>
-        <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Sales_Exchange/Revision.Label</property>
+        <field name="reference">
+            <property name="Attribute">Reference</property>
+            <property name="Label">Sales_Exchange/Reference.Label</property>
+        </field>
+        <field name="swap">
+            <property name="Select">linkfrom[Sales_Document2Document4Swap#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
         </field>
         <field name="onlyNumber">
             <property name="Attribute">OnlyNumber</property>
@@ -49,6 +63,9 @@
         </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterRequired">true</property>
+            <property name="FilterDefault">YEAR</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_Exchange/Date.Label</property>
         </field>

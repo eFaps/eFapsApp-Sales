@@ -27,14 +27,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.Update;
@@ -50,6 +53,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -102,6 +106,17 @@ public abstract class Exchange_Base
         throws EFapsException
     {
         super.add2DocCreate(_parameter, _insert, _createdDoc);
+        if (Sales.EXCHANGE_REVSEQ.exists()) {
+            final String seqKey = Sales.EXCHANGE_REVSEQ.get();
+            final NumberGenerator numgen = isUUID(seqKey)
+                                ? NumberGenerator.get(UUID.fromString(seqKey))
+                                : NumberGenerator.get(seqKey);
+            if (numgen != null) {
+                final String revision = numgen.getNextVal();
+                Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
+                _insert.add(CISales.Exchange.Revision, revision);
+            }
+        }
         add2DocUpdate(_parameter, _insert, _createdDoc);
     }
 

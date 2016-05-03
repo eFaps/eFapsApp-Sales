@@ -126,8 +126,8 @@
                 <property name="Attribute">!org.efaps.sales.Exchange.UseNumberGenerator</property>
             </trigger>
         </field>
-         <field name="revision">
-            <property name="Attribute">Revision</property>
+        <field name="reference">
+            <property name="Attribute">Reference</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -137,6 +137,16 @@
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_ExchangeForm.revision.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Exchange.RevisionSequence</property>
+            </trigger>
         </field>
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>

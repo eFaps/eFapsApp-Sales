@@ -23,6 +23,17 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeTable</name>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_Exchange/Revision.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_IncomingExchangeTable.revision.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.IncomingExchange.RevisionSequence</property>
+            </trigger>
+        </field>
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">TREE</property>
@@ -39,9 +50,9 @@
             <property name="Label">Sales_IncomingExchange/Contact.Label</property>
             <property name="HRef">TREE</property>
         </field>
-        <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Sales_IncomingExchange/Revision.Label</property>
+        <field name="reference">
+            <property name="Attribute">Reference</property>
+            <property name="Label">Sales_Exchange/Reference.Label</property>
         </field>
         <field name="swap">
             <property name="Select">linkfrom[Sales_Document2Document4Swap#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
