@@ -431,7 +431,7 @@ public final class Sales
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGEXCHANGE_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Exchange.RevisionSequence")
+                    .key(BASE + "IncomingExchange.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingExchangeRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
 
