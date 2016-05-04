@@ -38,19 +38,33 @@
                 name="Sales_CarrierReportFilterForm.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.CarrierReport" />
         </field>
-        <field name="contact">
+        <field name="carrierGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="carrier">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">org.efaps.esjp.sales.report.CarrierReport.contact</property>
-            <trigger event="UI_FIELD_VALUE" method="getInstanceFieldValue"
-                name="Sales_CarrierReportFilterForm.contact.UI_FIELD_VALUE"
+            <property name="Label">org.efaps.esjp.sales.report.CarrierReport.carrier</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
+                name="Sales_CarrierReportFilterForm.carrier.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.CarrierReport">
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_CarrierReportFilterForm.contact.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_CarrierReportFilterForm.carrier.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.contacts.Contacts">
                 <property name="Classification">Contacts_ClassCarrier</property>
+                <property name="AutoType">TOKEN</property>
+            </trigger>
+        </field>
+        <field name="carrier_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.CarrierReport.carrier_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_CarrierReportFilterForm.carrier_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.CarrierReport">
             </trigger>
         </field>
         <field name="dateGroup">
@@ -61,6 +75,34 @@
                 name="Sales_CarrierReportFilterForm.dateGroup.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.CarrierReport">
                 <property name="Enum">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
+            </trigger>
+        </field>
+        <field name="contactGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="contact">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.CarrierReport.contact</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
+                name="Sales_CarrierReportFilterForm.contact.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.CarrierReport">
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
+                name="Sales_CarrierReportFilterForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts">
+                <property name="AutoType">TOKEN</property>
+            </trigger>
+        </field>
+        <field name="contact_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.CarrierReport.contact_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_CarrierReportFilterForm.contact_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.CarrierReport">
             </trigger>
         </field>
         <field name="showDocName">

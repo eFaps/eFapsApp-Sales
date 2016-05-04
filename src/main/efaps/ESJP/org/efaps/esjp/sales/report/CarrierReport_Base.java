@@ -20,6 +20,7 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -30,6 +31,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -41,6 +43,8 @@ import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -65,6 +69,10 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 public abstract class CarrierReport_Base
     extends FilteredReport
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(CarrierReport.class);
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -126,13 +134,16 @@ public abstract class CarrierReport_Base
         private final CarrierReport_Base filteredReport;
 
         /**
-         * @param _carrierReport_Base
+         * Instantiates a new dyn carrier report.
+         *
+         * @param _carrierReport the _carrier report
          */
         public DynCarrierReport(final CarrierReport_Base _carrierReport)
         {
             this.filteredReport = _carrierReport;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
@@ -143,7 +154,7 @@ public abstract class CarrierReport_Base
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
-                    e.printStackTrace();
+                    LOG.error("Catched JRException", e);
                 }
             } else {
                 final ValueList values = getData(_parameter);
@@ -199,7 +210,7 @@ public abstract class CarrierReport_Base
                                     .linkto(CISales.DeliveryNotePosition.DeliveryNote)
                                     .linkto(CISales.DeliveryNote.CarrierLink)
                                     .attribute(CIContacts.Contact.Name);
-                    _map.put("contact", _multi.getSelect(selCarrName));
+                    _map.put("carrier", _multi.getSelect(selCarrName));
                 }
 
             };
@@ -238,13 +249,52 @@ public abstract class CarrierReport_Base
             throws EFapsException
         {
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("carrier")) {
+                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filter.get("carrier");
+                if (filterValue != null) {
+                    final Iterator<Instance> instanceIter = filterValue.getObject().iterator();
+                    while (instanceIter.hasNext()) {
+                        final Instance instance = instanceIter.next();
+                        if (!instance.isValid()) {
+                            instanceIter.remove();
+                        }
+                    }
+                    if (!filterValue.getObject().isEmpty()) {
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DeliveryNote);
+                        if (filterValue.isNegate()) {
+                            attrQueryBldr.addWhereAttrNotEqValue(CISales.DeliveryNote.CarrierLink,
+                                        filterValue.getObject().toArray());
+                        } else {
+                            attrQueryBldr.addWhereAttrEqValue(CISales.DeliveryNote.CarrierLink,
+                                            filterValue.getObject().toArray());
+                        }
+                        _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
+                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                    }
+                }
+            }
             if (filter.containsKey("contact")) {
-                final InstanceFilterValue filterValue = (InstanceFilterValue) filter.get("contact");
-                if (filterValue != null && filterValue.getObject().isValid()) {
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DeliveryNote);
-                    attrQueryBldr.addWhereAttrEqValue(CISales.DeliveryNote.CarrierLink, filterValue.getObject());
-                    _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
-                                    attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filter.get("contact");
+                if (filterValue != null) {
+                    final Iterator<Instance> instanceIter = filterValue.getObject().iterator();
+                    while (instanceIter.hasNext()) {
+                        final Instance instance = instanceIter.next();
+                        if (!instance.isValid()) {
+                            instanceIter.remove();
+                        }
+                    }
+                    if (!filterValue.getObject().isEmpty()) {
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DeliveryNote);
+                        if (filterValue.isNegate()) {
+                            attrQueryBldr.addWhereAttrNotEqValue(CISales.DeliveryNote.Contact,
+                                        filterValue.getObject().toArray());
+                        } else {
+                            attrQueryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Contact,
+                                            filterValue.getObject().toArray());
+                        }
+                        _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
+                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                    }
                 }
             }
         }
@@ -258,13 +308,13 @@ public abstract class CarrierReport_Base
 
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
 
-            final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab
-                            .rowGroup("contact", String.class)
+            final CrosstabRowGroupBuilder<String> carrierGroup = DynamicReports.ctab
+                            .rowGroup("carrier", String.class)
                             .setShowTotal(true);
-            crosstab.addRowGroup(contactGroup);
+            crosstab.addRowGroup(carrierGroup);
 
             if (BooleanUtils.isTrue((Boolean) filter.get("showDocName"))) {
-                   final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab
+                final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab
                             .rowGroup("docName", String.class)
                             .setShowTotal(true);
                 crosstab.addRowGroup(docGroup);
