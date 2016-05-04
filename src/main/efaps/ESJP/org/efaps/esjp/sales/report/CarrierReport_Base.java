@@ -236,7 +236,7 @@ public abstract class CarrierReport_Base
             final Properties props = new Properties();
             props.put("StatusGroup", CISales.DeliveryNoteStatus.getType().getName());
             props.put("Status", "!" + CISales.DeliveryNoteStatus.Canceled.key);
-            return ds.getValueList(_parameter, start, end, dateGroup, null, CISales.DeliveryNote.getType());
+            return ds.getValueList(_parameter, start, end, dateGroup, props, CISales.DeliveryNote.getType());
         }
 
         /**
