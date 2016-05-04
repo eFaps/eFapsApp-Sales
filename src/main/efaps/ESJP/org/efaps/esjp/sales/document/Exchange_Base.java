@@ -22,11 +22,13 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -180,6 +182,8 @@ public abstract class Exchange_Base
     }
 
     /**
+     * Methods creates the Exchanges and relates them to the documents.
+     *
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -200,6 +204,7 @@ public abstract class Exchange_Base
 
         final String[] docOids = _parameter.getParameterValues(CITableSales.Sales_SwapPayTable.document.name);
         final List<Instance> docInsts = new ArrayList<>();
+        final Set<CreatedDoc> createdDocs = new HashSet<>();
         if (!ArrayUtils.isEmpty(crossAr) && !ArrayUtils.isEmpty(currAr) && !ArrayUtils.isEmpty(docOids)) {
             try {
                 final Map<Instance, BigDecimal> exchangeMap = new LinkedHashMap<>();
@@ -222,7 +227,7 @@ public abstract class Exchange_Base
                                     CISales.DocumentSumAbstract.DueDate.name), dueDateAr[i]);
 
                     final CreatedDoc createdDoc = createDoc(parameter);
-                    createReport(_parameter, createdDoc);
+                    createdDocs.add(createdDoc);
                     exchangeMap.put(createdDoc.getInstance(), (BigDecimal) NumberFormatter.get().getFormatter().parse(
                                     crossAr[i]));
                 }
@@ -295,6 +300,10 @@ public abstract class Exchange_Base
         }
         for (final Instance inst : docInsts) {
             new DocumentUpdate().updateDocument(_parameter, inst);
+        }
+        // create the reports after all data manipulation is done
+        for (final CreatedDoc createdDoc : createdDocs) {
+            createReport(_parameter, createdDoc);
         }
         return new Return();
     }
