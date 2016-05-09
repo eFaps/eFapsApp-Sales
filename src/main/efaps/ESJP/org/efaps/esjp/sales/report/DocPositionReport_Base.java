@@ -381,7 +381,7 @@ public abstract class DocPositionReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final ValueList values = getDocPositionReport().getData(_parameter);
+            final ValueList values = getFilteredReport().getData(_parameter);
             final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
 
             final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
@@ -397,7 +397,7 @@ public abstract class DocPositionReport_Base
                     }
                 });
             }
-            final Map<String, Object> filterMap = getDocPositionReport().getFilterMap(_parameter);
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
             if (BooleanUtils.isTrue((Boolean) filterMap.get("typeGroup"))) {
                 chain.addComparator(new Comparator<Map<String, Object>>()
                 {
@@ -499,17 +499,38 @@ public abstract class DocPositionReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            final boolean showAmount = false;
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+            final List<Type> typeList;
+            if (filterMap.containsKey("type")) {
+                typeList = new ArrayList<>();
+                final TypeFilterValue filters = (TypeFilterValue) filterMap.get("type");
+                for (final Long typeid : filters.getObject()) {
+                    typeList.add(Type.get(typeid));
+                }
+            } else {
+                typeList = getFilteredReport().getTypeList(_parameter);
+            }
+            boolean showAmount = true;
+            for (final Type type : typeList) {
+                if (!type.isKindOf(CISales.DocumentSumAbstract)) {
+                    showAmount = false;
+                }
+            }
+
             final List<CrosstabRowGroupBuilder<?>> rowGrpBldrs = new ArrayList<>();
             final List<CrosstabColumnGroupBuilder<?>> colGrpBldrs = new ArrayList<>();
             final List<CrosstabMeasureBuilder<?>> measureGrpBldrs = new ArrayList<>();
 
-            final Map<String, Object> filterMap = getDocPositionReport().getFilterMap(_parameter);
+            boolean base = false;
             CurrencyInst selected = null;
             if (filterMap.containsKey("currency")) {
                 final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
-                if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
-                    selected = CurrencyInst.get(filter.getObject());
+                if (filter.getObject() instanceof Instance) {
+                    if (filter.getObject().isValid()) {
+                        selected = CurrencyInst.get(filter.getObject());
+                    } else {
+                        base = "BASE".equals(filter.getObject().getKey());
+                    }
                 }
             }
             final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
@@ -527,13 +548,20 @@ public abstract class DocPositionReport_Base
                 }
             }
 
+            final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
+                            DBProperties.getProperty(DocPositionReport.class.getName() + ".quantity"),
+                            "quantity", BigDecimal.class, Calculation.SUM);
+            measureGrpBldrs.add(quantityMeasure);
+
             if (showAmount) {
                 if (selected == null) {
-                    for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                        final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
+                    if (!base) {
+                        for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                            final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                         currency.getSymbol(),
                                         currency.getISOCode(), BigDecimal.class, Calculation.SUM);
-                        measureGrpBldrs.add(amountMeasure);
+                            measureGrpBldrs.add(amountMeasure);
+                        }
                     }
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                     DBProperties.getProperty(DocPositionReport.class.getName() + ".BASE")
@@ -546,11 +574,6 @@ public abstract class DocPositionReport_Base
                                     selected.getISOCode(), BigDecimal.class, Calculation.SUM);
                     measureGrpBldrs.add(amountMeasure);
                 }
-            } else {
-                final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
-                                DBProperties.getProperty(DocPositionReport.class.getName() + ".quantity"),
-                                "quantity", BigDecimal.class, Calculation.SUM);
-                measureGrpBldrs.add(quantityMeasure);
             }
             final CrosstabRowGroupBuilder<String> rowColGroup = DynamicReports.ctab
                             .rowGroup("productName", String.class)
@@ -610,7 +633,7 @@ public abstract class DocPositionReport_Base
          *
          * @return value of instance variable {@link #filteredReport}
          */
-        public DocPositionReport_Base getDocPositionReport()
+        public DocPositionReport_Base getFilteredReport()
         {
             return this.filteredReport;
         }

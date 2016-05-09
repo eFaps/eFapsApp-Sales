@@ -79,7 +79,12 @@ public abstract class DocPositionGroupedByDate_Base
                                   final Type... _types)
         throws EFapsException
     {
-        final boolean showAmount = false;
+        boolean showAmount = true;
+        for (final Type type : _types) {
+            if (!type.isKindOf(CISales.DocumentSumAbstract)) {
+                showAmount = false;
+            }
+        }
 
         final ValueList ret = new ValueList();
         ret.setStart(_start);
@@ -310,7 +315,7 @@ public abstract class DocPositionGroupedByDate_Base
                 for (final String keyTmp : _keys) {
                     key = key + map.get(keyTmp);
                 }
-                Map<String, Object> newMap;
+                final Map<String, Object> newMap;
                 if (tmpMap.containsKey(key)) {
                     newMap = tmpMap.get(key);
                     for (final Entry<String, Object> entry : map.entrySet()) {
