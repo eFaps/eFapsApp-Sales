@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+  * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -43,6 +44,7 @@ import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,8 +213,11 @@ public abstract class CarrierReport_Base
                                     .linkto(CISales.DeliveryNote.CarrierLink)
                                     .attribute(CIContacts.Contact.Name);
                     _map.put("carrier", _multi.getSelect(selCarrName));
-                }
 
+                    final DateTime date = (DateTime) _map.get("docDate");
+                    _map.put("docName", _map.get("docName") + " "
+                    + date.toString(DateTimeFormat.shortDate().withLocale(Context.getThreadContext().getLocale())));
+                }
             };
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
             final DateTime start;
@@ -312,6 +317,13 @@ public abstract class CarrierReport_Base
                             .rowGroup("carrier", String.class)
                             .setShowTotal(true);
             crosstab.addRowGroup(carrierGroup);
+
+            if (BooleanUtils.isTrue((Boolean) filter.get("groupByContact"))) {
+                final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab
+                            .rowGroup("contact", String.class)
+                            .setShowTotal(true);
+                crosstab.addRowGroup(docGroup);
+            }
 
             if (BooleanUtils.isTrue((Boolean) filter.get("showDocName"))) {
                 final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab

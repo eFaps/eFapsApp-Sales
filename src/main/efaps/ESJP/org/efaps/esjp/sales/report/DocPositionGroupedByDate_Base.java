@@ -154,7 +154,7 @@ public abstract class DocPositionGroupedByDate_Base
         while (multi.next()) {
             final Instance docInst = multi.getSelect(selDocInst);
             final Map<String, Object> map = new HashMap<>();
-            final DateTime dateTime = multi.getSelect(selDocDate);
+            final DateTime date = multi.getSelect(selDocDate);
 
             if (showAmount) {
                 BigDecimal total;
@@ -206,8 +206,9 @@ public abstract class DocPositionGroupedByDate_Base
             map.put("uoMStr", uoMStr);
             map.put("docInstance", docInst);
             map.put("docName", multi.getSelect(selDocName));
+            map.put("docDate", date);
             map.put("contact", multi.getSelect(selDocContactName));
-            map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
+            map.put("partial", getPartial(date, _dateGourp).toString(dateTimeFormatter));
             map.put("type", docInst.getType().getLabel());
             map.put("productName", multi.getSelect(selProdName));
             map.put("productDescr", multi.getSelect(selProdDescr));
