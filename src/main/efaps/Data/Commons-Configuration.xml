@@ -51,5 +51,22 @@ Sales_ProductionCosting=da404e37-e1d5-4c01-8abd-6018631b8622
 Sales_IncomingInstallment=f521848e-46ca-43d4-9b3e-77aeb4d09a20
 Sales_Installment=ebcf6479-6d1e-41e4-a689-1ceb046ba850]]></value>
         </attribute>
+         <attribute>
+            <key>org.efaps.commons.DocumentStatus4Create01</key>
+            <value><![CDATA[Sales_CollectionOrder.Status=Open
+Sales_CreditNote.Status=Draft
+Sales_Exchange.Status=Draft
+Sales_IncomingCreditNote.Status=Digitized
+Sales_IncomingExchange.Status=Digitized
+Sales_IncomingInvoice.Status=Digitized
+Sales_IncomingProfServReceipt.Status=Digitized
+Sales_IncomingReceipt.Status=Digitized
+Sales_IncomingReminder.Status=Digitized
+Sales_Invoice.Status=Draft
+Sales_PaymentOrder.Status=Open
+Sales_ProductionOrder.Status=Digitized
+Sales_Receipt.Status=Draft
+Sales_Reminder.Status=Draft]]></value>
+         </attribute>
     </definition>
 </common-systemconfiguration>

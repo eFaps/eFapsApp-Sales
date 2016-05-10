@@ -355,6 +355,7 @@
         </status>
 
         <status group="Sales_ExchangeStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
@@ -362,6 +363,7 @@
         </status>
 
         <status group="Sales_IncomingExchangeStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>

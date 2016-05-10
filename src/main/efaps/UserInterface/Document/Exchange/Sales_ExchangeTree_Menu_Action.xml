@@ -25,7 +25,9 @@
         <name>Sales_ExchangeTree_Menu_Action</name>
         <childs>
             <child>Sales_ExchangeTree_Menu_Action_Edit</child>
+            <child>Sales_ExchangeTree_Menu_Action_EditSituation</child>
             <child>Sales_ExchangeTree_Menu_Action_Swap</child>
+            <child>Sales_ExchangeTree_Menu_Action_SetOpen</child>
             <child>Sales_ExchangeTree_Menu_Action_SetClosed</child>
             <child>Sales_ExchangeTree_Menu_Action_SetCanceled</child>
             <child>Sales_ExchangeTree_Menu_Action_SetBooked</child>

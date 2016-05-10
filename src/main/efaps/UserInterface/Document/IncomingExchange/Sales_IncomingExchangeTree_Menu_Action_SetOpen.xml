@@ -18,37 +18,28 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d2eff494-1b9c-4d1b-9e5d-627821309d2c</uuid>
+    <uuid>46405a08-25de-480c-8eaf-b528f1d6ac14</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_Menu_Action_Edit</name>
+        <name>Sales_IncomingExchangeTree_Menu_Action_SetOpen</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <form>Sales_IncomingExchangeForm</form>
-            <execute program="org.efaps.esjp.sales.document.IncomingExchange" method="edit">
-                <!-- Sales-Configuration -->
-                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigReport">org.efaps.sales.IncomingExchange.JasperReport</property>
-                <property name="JasperConfigMime">org.efaps.sales.IncomingExchange.Mime</property>
-                <!-- Sales_Contact2IncomingExchange -->
-                <property name="ConnectType">6f20b4a7-3705-463b-9306-03cdb869de31</property>
-                <property name="ConnectCurrentLink">ToLink</property>
-                <property name="ConnectForeignLink">FromLink</property>
-                <property name="ConnectForeignField">guarantee</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Open</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_IncomingExchangeTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
+                name="Sales_IncomingExchangeTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Digitized</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="TargetShowFile">true</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

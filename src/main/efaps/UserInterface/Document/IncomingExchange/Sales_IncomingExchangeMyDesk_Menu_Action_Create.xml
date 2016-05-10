@@ -28,10 +28,7 @@
         </access>
         <target>
             <form>Sales_IncomingExchangeForm</form>
-            <execute method="create"
-                program="org.efaps.esjp.sales.document.IncomingExchange">
-                <property name="StatusGroup">Sales_IncomingExchangeStatus</property>
-                <property name="Status">Open</property>
+            <execute method="create" program="org.efaps.esjp.sales.document.IncomingExchange">
                 <!-- default Numbergenerator Sales_IncomingExchangeSequence-->
                 <property name="NumberGenerator">64007d2b-ba69-4973-aba8-c318b4ee89e6</property>
 
