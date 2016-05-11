@@ -48,6 +48,7 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
@@ -1053,7 +1054,13 @@ public abstract class SalesReport4Account_Base
         public String getAssigned()
             throws EFapsException
         {
-            return Employee.getEmployeeAssigned2Contact(new Parameter(), getContactInst());
+            final String ret;
+            if (InstanceUtils.isValid(getContactInst())) {
+                ret = Employee.getEmployeeAssigned2Contact(new Parameter(), getContactInst());
+            } else {
+                ret = "";
+            }
+            return ret;
         }
 
         /**
