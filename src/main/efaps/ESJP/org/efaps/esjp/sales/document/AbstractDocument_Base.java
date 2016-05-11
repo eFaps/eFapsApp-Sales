@@ -87,6 +87,7 @@ import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -995,7 +996,22 @@ public abstract class AbstractDocument_Base
                         .setNetPrice(calc.getNetPrice())
                         .setCrossPrice(calc.getCrossPrice());
                 }
-                values.add(bean);
+                // if the instance of the AbstractUIPosition are set it means
+                // that we want to prevent duplication
+                if (InstanceUtils.isValid(bean.getInstance())) {
+                    boolean add = true;
+                    for (final AbstractUIPosition pos : values) {
+                        if (InstanceUtils.isValid(pos.getInstance()) && bean.getInstance().equals(pos.getInstance())) {
+                            add = false;
+                            break;
+                        }
+                    }
+                    if (add) {
+                        values.add(bean);
+                    }
+                } else {
+                    values.add(bean);
+                }
             }
         }
 
@@ -3009,7 +3025,8 @@ public abstract class AbstractDocument_Base
             final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(typeName);
             final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(typeName);
 
-            ret.put("oid", this.instance != null ? this.instance.getOid() : "");
+            ret.put("oid", InstanceUtils.isKindOf(this.instance, CISales.PositionAbstract)
+                            ? this.instance.getOid() : "");
             ret.put("quantity", qtyFrmt.format(getQuantity()));
             ret.put("product", new String[] { getProdInstance().getOid(), getProdName() });
             ret.put("productDesc", getProdDescr());

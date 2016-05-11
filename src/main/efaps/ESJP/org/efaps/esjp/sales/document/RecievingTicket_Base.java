@@ -242,13 +242,13 @@ public abstract class RecievingTicket_Base
     @Override
     protected List<AbstractUIPosition> updateBean4Indiviual(final Parameter _parameter,
                                                             final AbstractUIPosition _bean)
-                                                                throws EFapsException
+        throws EFapsException
     {
         final List<AbstractUIPosition> ret = new ArrayList<>();
         final List<Instance> docInsts = getInstances4Derived(_parameter);
-        // if the vcalues are copied from a Deliverynote the batches must use
+        // if the values are copied from a Deliverynote the batches must use
         // the same batch again
-        // (its just movement between distinct storages)
+        // (it means that it is just a movement between distinct storages)
         if (!docInsts.isEmpty() && docInsts.get(0).isValid()
                         && docInsts.get(0).getType().isCIType(CISales.DeliveryNote)) {
             final Instance docInst = docInsts.get(0);
@@ -267,30 +267,35 @@ public abstract class RecievingTicket_Base
 
                             final MultiPrintQuery multi = queryBldr.getPrint();
 
-                            final SelectBuilder selProdInst = SelectBuilder.get()
+                            final SelectBuilder selProd = SelectBuilder.get()
                                             .linkto(CIProducts.TransactionIndividualOutbound.Product)
                                             .linkfrom(CIProducts.StockProductAbstract2Batch.ToLink)
-                                            .linkto(CIProducts.StockProductAbstract2Batch.FromLink)
-                                            .instance();
+                                            .linkto(CIProducts.StockProductAbstract2Batch.FromLink);
+                            final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+                            final SelectBuilder selProdDescr = new SelectBuilder(selProd)
+                                            .attribute(CIProducts.ProductAbstract.Description);
                             final SelectBuilder selBatchInst = SelectBuilder.get()
                                             .linkto(CIProducts.TransactionIndividualOutbound.Product)
                                             .instance();
                             final SelectBuilder selBatchName = SelectBuilder.get()
                                             .linkto(CIProducts.TransactionIndividualOutbound.Product)
                                             .attribute(CIProducts.ProductAbstract.Name);
-                            multi.addSelect(selProdInst, selBatchInst, selBatchName);
+                            multi.addSelect(selProdInst, selProdDescr, selBatchInst, selBatchName);
                             multi.addAttribute(CIProducts.TransactionIndividualOutbound.Quantity);
                             multi.execute();
                             new TreeMap<>();
                             while (multi.next()) {
                                 final Instance prodInst = multi.getSelect(selProdInst);
+                                final String prodDescr = multi.getSelect(selProdDescr);
                                 if (prodInst.equals(_bean.getProdInstance())) {
                                     final Instance batchInst = multi.getSelect(selBatchInst);
                                     _bean.setDoc(null);
                                     final AbstractUIPosition bean = SerializationUtils.clone(_bean);
-                                    bean.setProdInstance(batchInst)
-                                                    .setProdName(multi.<String>getSelect(selBatchName))
-                                                    .setQuantity(multi.<BigDecimal>getAttribute(
+                                    bean.setInstance(multi.getCurrentInstance())
+                                        .setProdInstance(batchInst)
+                                        .setProdDescr(prodDescr)
+                                        .setProdName(multi.<String>getSelect(selBatchName))
+                                        .setQuantity(multi.<BigDecimal>getAttribute(
                                                                     CIProducts.TransactionIndividualOutbound.Quantity));
                                     bean.setDoc(this);
                                     ret.add(bean);
