@@ -457,9 +457,12 @@ public abstract class DocPositionReport_Base
                             while (partial != null && partial.compareTo((String) map.get("partial")) < 0) {
                                 final Map<String, Object> newMap = new HashMap<>();
                                 for (final Entry<String, Object> entry : map.entrySet()) {
-                                    newMap.put(entry.getKey(), entry.getValue());
+                                    if (entry.getValue() instanceof Number) {
+                                        newMap.put(entry.getKey(), null);
+                                    } else {
+                                        newMap.put(entry.getKey(), entry.getValue());
+                                    }
                                 }
-                                newMap.put("quantity", null);
                                 newMap.put("partial", partial);
                                 finalValues.add(newMap);
                                 partial = partialIter.hasNext() ? partialIter.next() : null;
@@ -467,9 +470,12 @@ public abstract class DocPositionReport_Base
                         } else {
                             final Map<String, Object> newMap = new HashMap<>();
                             for (final Entry<String, Object> entry : previous.entrySet()) {
-                                newMap.put(entry.getKey(), entry.getValue());
+                                if (entry.getValue() instanceof Number) {
+                                    newMap.put(entry.getKey(), null);
+                                } else {
+                                    newMap.put(entry.getKey(), entry.getValue());
+                                }
                             }
-                            newMap.put("quantity", null);
                             newMap.put("partial", partial);
                             finalValues.add(newMap);
                             // perhaps there are still more values
@@ -477,9 +483,12 @@ public abstract class DocPositionReport_Base
                                 partial = partialIter.next();
                                 final Map<String, Object> newMap1 = new HashMap<>();
                                 for (final Entry<String, Object> entry : previous.entrySet()) {
-                                    newMap1.put(entry.getKey(), entry.getValue());
+                                    if (entry.getValue() instanceof Number) {
+                                        newMap1.put(entry.getKey(), null);
+                                    } else {
+                                        newMap1.put(entry.getKey(), entry.getValue());
+                                    }
                                 }
-                                newMap1.put("quantity", null);
                                 newMap1.put("partial", partial);
                                 finalValues.add(newMap1);
                             }
