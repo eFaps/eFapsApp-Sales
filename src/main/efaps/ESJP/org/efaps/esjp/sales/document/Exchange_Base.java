@@ -366,9 +366,9 @@ public abstract class Exchange_Base
                     val = vals[0];
                 }
                 map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.crossTotal4Exchange.name, val);
-                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.date.name,
+                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.date.name + "_eFapsDate",
                                 DateUtil.getDate4Parameter(new DateTime().plusMonths(i)));
-                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.dueDate.name,
+                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.dueDate.name + "_eFapsDate",
                                 DateUtil.getDate4Parameter(new DateTime().plusMonths(i + 1)));
             }
             js.append(getTableRemoveScript(_parameter, "exchangeTable", false, false))
@@ -376,6 +376,7 @@ public abstract class Exchange_Base
             final List<Map<String, Object>> values = new ArrayList<>();
             final Map<String, Object> map = new HashMap<>();
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            map.put(CIFormSales.Sales_ExchangeCreateCalculatedForm.exchangeTotal.name, total.toString());
             values.add(map);
             ret.put(ReturnValues.VALUES, values);
         }
