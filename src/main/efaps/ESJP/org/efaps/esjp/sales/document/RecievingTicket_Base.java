@@ -19,10 +19,11 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -68,6 +69,13 @@ public abstract class RecievingTicket_Base
      * Revision Key.
      */
     public static final String REVISIONKEY =  RecievingTicket.class.getName() +  ".RevisionKey";
+
+    /**
+     * Instances set used on
+     * {@link #isUpdateBean4Individual(Parameter, AbstractUIPosition)}
+     * to ensure that values are not added more than once.
+     * */
+    private final Set<Instance> transInsts = new HashSet<>();
 
     /**
      * @param _parameter Parameter as passed from the eFaps API.
@@ -283,22 +291,23 @@ public abstract class RecievingTicket_Base
                             multi.addSelect(selProdInst, selProdDescr, selBatchInst, selBatchName);
                             multi.addAttribute(CIProducts.TransactionIndividualOutbound.Quantity);
                             multi.execute();
-                            new TreeMap<>();
                             while (multi.next()) {
-                                final Instance prodInst = multi.getSelect(selProdInst);
-                                final String prodDescr = multi.getSelect(selProdDescr);
-                                if (prodInst.equals(_bean.getProdInstance())) {
-                                    final Instance batchInst = multi.getSelect(selBatchInst);
-                                    _bean.setDoc(null);
-                                    final AbstractUIPosition bean = SerializationUtils.clone(_bean);
-                                    bean.setInstance(multi.getCurrentInstance())
-                                        .setProdInstance(batchInst)
-                                        .setProdDescr(prodDescr)
-                                        .setProdName(multi.<String>getSelect(selBatchName))
-                                        .setQuantity(multi.<BigDecimal>getAttribute(
-                                                                    CIProducts.TransactionIndividualOutbound.Quantity));
-                                    bean.setDoc(this);
-                                    ret.add(bean);
+                                if (!this.transInsts.contains(multi.getCurrentInstance())) {
+                                    final Instance prodInst = multi.getSelect(selProdInst);
+                                    final String prodDescr = multi.getSelect(selProdDescr);
+                                    if (prodInst.equals(_bean.getProdInstance())) {
+                                        final Instance batchInst = multi.getSelect(selBatchInst);
+                                        _bean.setDoc(null);
+                                        final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+                                        bean.setProdInstance(batchInst)
+                                            .setProdDescr(prodDescr)
+                                            .setProdName(multi.<String>getSelect(selBatchName))
+                                            .setQuantity(multi.<BigDecimal>getAttribute(
+                                                                CIProducts.TransactionIndividualOutbound.Quantity));
+                                        bean.setDoc(this);
+                                        ret.add(bean);
+                                        this.transInsts.add(multi.getCurrentInstance());
+                                    }
                                 }
                             }
                             break;

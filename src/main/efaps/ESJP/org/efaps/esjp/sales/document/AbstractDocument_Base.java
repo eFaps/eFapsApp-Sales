@@ -979,7 +979,7 @@ public abstract class AbstractDocument_Base
             }
 
             final List<AbstractUIPosition> beans = updateBean4Indiviual(_parameter, origBean);
-
+            LOG.debug("Updated bean {} with {}", origBean, beans);
             for (final AbstractUIPosition bean : beans) {
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionSumAbstract)) {
                     bean.setNetUnitPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice))
@@ -996,22 +996,7 @@ public abstract class AbstractDocument_Base
                         .setNetPrice(calc.getNetPrice())
                         .setCrossPrice(calc.getCrossPrice());
                 }
-                // if the instance of the AbstractUIPosition are set it means
-                // that we want to prevent duplication
-                if (InstanceUtils.isValid(bean.getInstance())) {
-                    boolean add = true;
-                    for (final AbstractUIPosition pos : values) {
-                        if (InstanceUtils.isValid(pos.getInstance()) && bean.getInstance().equals(pos.getInstance())) {
-                            add = false;
-                            break;
-                        }
-                    }
-                    if (add) {
-                        values.add(bean);
-                    }
-                } else {
-                    values.add(bean);
-                }
+                values.add(bean);
             }
         }
 
@@ -1037,19 +1022,19 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Give the chance to replace the product with others. e.g Orginal Product with Batch.
+     * Give the chance to replace the product with others. e.g Original Product with Batch.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _bean bean to be updated
+     * @param _currentBean current bean to be updated
      * @return List of beans
      * @throws EFapsException on error
      */
     protected List<AbstractUIPosition> updateBean4Indiviual(final Parameter _parameter,
-                                                            final AbstractUIPosition _bean)
+                                                            final AbstractUIPosition _currentBean)
         throws EFapsException
     {
         final List<AbstractUIPosition> ret = new ArrayList<>();
-        ret.add(_bean);
+        ret.add(_currentBean);
         return ret;
     }
 
@@ -1310,8 +1295,6 @@ public abstract class AbstractDocument_Base
         final Set<String> noEscape = new HashSet<String>();
         noEscape.add("uoM");
 
-        //evaluatePositions4RelatedInstances(_parameter, values, _instances.toArray(new Instance[_instances.size()]));
-
         add2JavaScript4Postions(_parameter, values, noEscape);
 
         final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
@@ -1494,9 +1477,8 @@ public abstract class AbstractDocument_Base
         }
     }
 
-
     /**
-     * Add4 individual.
+     * Add for individual.
      *
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _prodInst     instance of the product the new individuals will belong to
@@ -1815,7 +1797,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      * @return new Calculator
      */
-    //CHECKSTYLE:OFF
+    @SuppressWarnings("checkstyle:parameternumber")
     public Calculator getCalculator(final Parameter _parameter,
                                     final Calculator _oldCalc,
                                     final String _oid,
@@ -1828,8 +1810,6 @@ public abstract class AbstractDocument_Base
     {
         return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this);
     }
-    //CHECKSTYLE:ON
-
 
     /**
      * @param _parameter Parameter parameter as passe dfrom the eFaps API
@@ -1843,7 +1823,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      * @return new Calculator
      */
-    //CHECKSTYLE:OFF
+    @SuppressWarnings("checkstyle:parameternumber")
     public Calculator getCalculator(final Parameter _parameter,
                                     final Calculator _oldCalc,
                                     final Instance _prodInstance,
@@ -1856,7 +1836,6 @@ public abstract class AbstractDocument_Base
     {
         return new Calculator(_parameter, _oldCalc, _prodInstance, _quantity, _unitPrice, _discount, _priceFromDB, this);
     }
-    //CHECKSTYLE:ON
 
     /**
      * @param _parameter Parameter parameter as passed from the eFaps API
