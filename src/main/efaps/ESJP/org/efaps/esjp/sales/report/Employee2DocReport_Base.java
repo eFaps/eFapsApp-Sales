@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
@@ -36,6 +37,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -51,6 +53,7 @@ import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,7 +186,7 @@ public abstract class Employee2DocReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            JRRewindableDataSource ret;
+            final JRRewindableDataSource ret;
             if (getFilteredReport().isCached(_parameter)) {
                 ret = getFilteredReport().getDataSourceFromCache(_parameter);
                 try {
@@ -278,6 +281,32 @@ public abstract class Employee2DocReport_Base
                     super.add2QueryBuilder(_parameter, _queryBldr);
                     DynEmployee2DocReport.this.add2DocumentQueryBuilder(_parameter, _queryBldr);
                 }
+
+                @Override
+                protected void add2Print(final Parameter _parameter,
+                                         final MultiPrintQuery _multi)
+                    throws EFapsException
+                {
+                    super.add2Print(_parameter, _multi);
+                    _multi.addAttribute(CISales.DocumentAbstract.Name);
+                }
+
+                @Override
+                protected void add2Map(final Parameter _parameter,
+                                       final MultiPrintQuery _multi,
+                                       final Map<String, Object> _map)
+                    throws EFapsException
+                {
+                    super.add2Map(_parameter, _multi, _map);
+                    final DateTime date = (DateTime) _map.get("date");
+                    if (date == null) {
+                        _map.put("docName", _multi.getAttribute(CISales.DocumentAbstract.Name));
+                    } else {
+                        _map.put("docName", _multi.getAttribute(CISales.DocumentAbstract.Name)
+                                        + " " + date.toString(DateTimeFormat.forStyle("S-")
+                                                        .withLocale(Context.getThreadContext().getLocale())));
+                    }
+                }
             };
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
             final DateTime start;
@@ -303,7 +332,7 @@ public abstract class Employee2DocReport_Base
                 typeList = getFilteredReport().getTypeList(_parameter);
             }
             final Properties props = getFilteredReport().getProperties4TypeList(_parameter);
-            DocumentSumGroupedByDate_Base.DateGroup dateGroup;
+            final DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
@@ -338,11 +367,22 @@ public abstract class Employee2DocReport_Base
             crosstab.addRowGroup(employeeGroup);
 
             if (filterMap.containsKey("contactGroup")) {
-                final Boolean contactBool = (Boolean) filterMap.get("contactGroup");
-                if (contactBool != null && contactBool) {
+                if (BooleanUtils.isTrue((Boolean) filterMap.get("contactGroup"))) {
                     final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
                                     String.class).setHeaderWidth(150);
                     crosstab.addRowGroup(contactGroup);
+                }
+            }
+
+            final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("type", String.class)
+                            .setHeaderWidth(150);
+            crosstab.addRowGroup(rowTypeGroup);
+
+            if (filterMap.containsKey("docDetails")) {
+                if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+                    final CrosstabRowGroupBuilder<String> docDetailsGroup = DynamicReports.ctab.rowGroup("docName",
+                                    String.class);
+                    crosstab.addRowGroup(docDetailsGroup);
                 }
             }
 
@@ -375,10 +415,6 @@ public abstract class Employee2DocReport_Base
 
                 crosstab.addMeasure(amountMeasure, countMeasure);
             }
-
-            final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("type", String.class)
-                            .setHeaderWidth(150);
-            crosstab.addRowGroup(rowTypeGroup);
 
             final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab.columnGroup("partial",
                             String.class);

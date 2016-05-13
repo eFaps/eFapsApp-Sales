@@ -149,6 +149,7 @@ public abstract class DocumentSumGroupedByDate_Base
             }
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
             map.put("docInstance", multi.getCurrentInstance());
+            map.put("date", dateTime);
             map.put("contact", multi.getSelect(selContactName));
             map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
             map.put("type", multi.getCurrentInstance().getType().getLabel());
@@ -253,7 +254,7 @@ public abstract class DocumentSumGroupedByDate_Base
                 for (final String keyTmp : _keys) {
                     key = key + map.get(keyTmp);
                 }
-                Map<String, Object> newMap;
+                final Map<String, Object> newMap;
                 if (tmpMap.containsKey(key)) {
                     newMap = tmpMap.get(key);
                     for (final Entry<String, Object> entry : map.entrySet()) {
