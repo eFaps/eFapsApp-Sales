@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-10-02T18:50:26 -->
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2016-05-13T14:15:36 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_RecievingTicketTransaction" language="groovy" pageWidth="555" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ac19cc16-ed32-4766-a8af-9577e8a31e97">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Rudolf Prod"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -12,22 +12,25 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="INSTANCE" class="org.efaps.db.Instance"/>
+	<parameter name="INSTANCE" class="java.lang.Object">
+		<defaultValueExpression><![CDATA[5728.58212]]></defaultValueExpression>
+	</parameter>
 	<queryString language="eFaps">
-		<![CDATA[query type Products_TransactionAbstract where Document == $P!{INSTANCE} select 
-type.label as type,
-attribute[Description] as description, 
-attribute[Quantity] as quantity, 
-linkto[Product].attribute[Name] as prodName, 
-linkto[UoM].attribute[Name] as uom,
-attribute[Date] as date,
-linkto[Storage].attribute[Name] as storage]]>
+		<![CDATA[query type Products_TransactionAbstract where Document == $P!{INSTANCE} 
+ select 
+ type.label as typeLabel,
+ attribute[Description] as description, 
+ attribute[Quantity] as quantity, 
+ linkto[Product].attribute[Name] as prodName, 
+ linkto[UoM].attribute[Name] as uom,
+ attribute[Date] as date,
+ linkto[Storage].attribute[Name] as storage]]>
 	</queryString>
 	<field name="description" class="java.lang.String"/>
 	<field name="quantity" class="java.math.BigDecimal"/>
 	<field name="prodName" class="java.lang.String"/>
 	<field name="uom" class="java.lang.String"/>
-	<field name="type" class="java.lang.String"/>
+	<field name="typeLabel" class="java.lang.String"/>
 	<field name="date" class="org.joda.time.DateTime"/>
 	<field name="storage" class="java.lang.String"/>
 	<columnHeader>
@@ -64,7 +67,7 @@ linkto[Storage].attribute[Name] as storage]]>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Código]]></text>
 			</staticText>
@@ -79,7 +82,7 @@ linkto[Storage].attribute[Name] as storage]]>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
@@ -95,7 +98,7 @@ linkto[Storage].attribute[Name] as storage]]>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Almacen]]></text>
 			</staticText>
@@ -129,7 +132,7 @@ linkto[Storage].attribute[Name] as storage]]>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<text><![CDATA[Unidad]]></text>
 			</staticText>
@@ -140,7 +143,7 @@ linkto[Storage].attribute[Name] as storage]]>
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.####" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="270" y="0" width="50" height="12" isPrintWhenDetailOverflows="true" uuid="6328423f-d604-446c-83fe-10612f25bf89">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -203,7 +206,7 @@ linkto[Storage].attribute[Name] as storage]]>
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{typeLabel}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="410" y="0" width="45" height="12" isPrintWhenDetailOverflows="true" uuid="d1524739-ce61-447a-8078-43f7240c9622">
