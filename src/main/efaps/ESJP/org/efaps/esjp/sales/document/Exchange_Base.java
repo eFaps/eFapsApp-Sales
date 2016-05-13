@@ -348,7 +348,8 @@ public abstract class Exchange_Base
         final BigDecimal total = new Swap().getSum4Positions(_parameter, true);
         final String divStr = _parameter.getParameterValue(
                         CIFormSales.Sales_IncomingExchangeCreateCalculatedForm.preCalculate.name);
-        if (!StringUtils.isEmpty(divStr) && StringUtils.isNumeric(divStr) && total.compareTo(BigDecimal.ZERO) > 0) {
+        if (!StringUtils.isEmpty(divStr) && StringUtils.isNumeric(divStr) && total.compareTo(BigDecimal.ZERO) > 0
+                        && Integer.parseInt(divStr) > 0) {
             final int div = Integer.parseInt(divStr);
             final BigDecimal[] vals = total.divideAndRemainder(new BigDecimal(div));
 
