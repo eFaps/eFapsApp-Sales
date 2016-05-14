@@ -36,8 +36,9 @@
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_IncomingInvoice.ACCESSCHECK" event="ACCESSCHECK" />
-        <index msgPhrase="ERP_IndexDocumentMsgPhrase">
-            <field select="attribute[Revision]" key="index.Sales_IncomingInvoice.Revision" type="STRING"/>
+        <index msgPhrase="Sales_IndexDocumentWithRevsionMsgPhrase">
+            <field id="revisionLong" select="attribute[Revision]" key="index.Revision" type="SEARCHLONG"
+                transform="org.efaps.esjp.admin.index.transformer.StringRight2Long"/>
         </index>
     </definition>
 </datamodel-type>
