@@ -37,6 +37,7 @@ import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
 import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CINumGenSales;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -760,6 +761,16 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.out.DeactivateCodeGeneration")
                     .description("Deactivate the automatic generation of a code for every Payment Out Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTDOCUMENTOUT_TOBESETTLED = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Config4ToBeSetteled")
+                    .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
+                    .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */
     @EFapsSysConfAttribute

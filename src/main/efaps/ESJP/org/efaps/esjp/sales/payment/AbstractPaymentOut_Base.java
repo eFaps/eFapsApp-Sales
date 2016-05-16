@@ -15,7 +15,6 @@
  *
  */
 
-
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
@@ -68,7 +67,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
-
 /**
  * TODO comment!
  *
@@ -107,7 +105,8 @@ public abstract class AbstractPaymentOut_Base
             accMulti.execute();
             if (accMulti.next()) {
                 _parameter.getParameters().put("account",
-                        new String[] { accMulti.<Long>getAttribute(CISales.BulkPayment2Account.ToLink).toString() });
+                                new String[] { accMulti.<Long>getAttribute(CISales.BulkPayment2Account.ToLink)
+                                                .toString() });
             }
 
             final Set<String> names = new HashSet<String>();
@@ -196,8 +195,8 @@ public abstract class AbstractPaymentOut_Base
 
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
         ret.append("document.getElementsByName('rate')[0].value='").append(rates[3].stripTrailingZeros()).append("';\n")
-            .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
-            .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';\n");
+                        .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                        .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';\n");
         return ret.toString();
     }
 
@@ -220,19 +219,37 @@ public abstract class AbstractPaymentOut_Base
     }
 
     /**
-     * Gets the payment documents4 pay.
+     * Gets the payment out documents that need to be settled
+     * (the user is still accountable for them).
      *
      * @param _parameter the _parameter
      * @return the payment documents4 pay
      * @throws EFapsException the e faps exception
      */
-    public Return getPaymentDocuments4Pay(final Parameter _parameter)
+    public Return getPaymentDocuments4ToBeSettled(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new MultiPrint().execute(_parameter);
+        final Return ret = new MultiPrint()
+        {
+
+            @Override
+            public List<Instance> getInstances(final Parameter _parameter)
+                throws EFapsException
+            {
+                final QueryBuilder targetAttrQueryBldr = getQueryBldrFromProperties(_parameter,
+                                Sales.PAYMENTDOCUMENTOUT_TOBESETTLED.get());
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+                attrQueryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
+                                targetAttrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
+                queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentOutAbstract.ID,
+                                attrQueryBldr.getAttributeQuery(CISales.Payment.TargetDocument));
+                return queryBldr.getQuery().execute();
+            }
+        }.execute(_parameter);
         return ret;
     }
-
 
     /**
      * Drop down4 create documents.
@@ -246,6 +263,7 @@ public abstract class AbstractPaymentOut_Base
     {
         final Return ret = new Field()
         {
+
             @Override
             protected void add2QueryBuilder4List(final Parameter _parameter,
                                                  final QueryBuilder _queryBldr)
@@ -332,8 +350,8 @@ public abstract class AbstractPaymentOut_Base
                     final PrintQuery print = new PrintQuery(document);
                     print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                     print.execute();
-                    final BigDecimal amount4Doc =
-                                    print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    final BigDecimal amount4Doc = print
+                                    .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                     if (first) {
                         replacePaymentInfo(_parameter, instDoc, document, amount4Doc, infoDoc);
                         first = false;
@@ -482,8 +500,8 @@ public abstract class AbstractPaymentOut_Base
             print.execute();
 
             ret.append(DBProperties.getProperty(AbstractPaymentOut.class.getName() + ".generateDoc4Note.Label"))
-                .append(": ").append(_parameter.getCallInstance().getType().getLabel()).append(" - ")
-                .append(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Name));
+                            .append(": ").append(_parameter.getCallInstance().getType().getLabel()).append(" - ")
+                            .append(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Name));
         }
 
         return ret.toString();
@@ -644,15 +662,15 @@ public abstract class AbstractPaymentOut_Base
 
                     final StringBuilder choice = new StringBuilder();
                     choice.append(name).append(" - ").append(multi.getCurrentInstance().getType().getLabel())
-                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                        Context.getThreadContext().getLocale())));
+                                    .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                    Context.getThreadContext().getLocale())));
 
                     if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
                         final BigDecimal amount = multi
                                         .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                         final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
                         choice.append(" - ").append(curr.getSymbol()).append(" ")
-                            .append(NumberFormatter.get().getTwoDigitsFormatter().format(amount));
+                                        .append(NumberFormatter.get().getTwoDigitsFormatter().format(amount));
                     }
 
                     final Map<String, String> map = new HashMap<String, String>();
@@ -694,10 +712,10 @@ public abstract class AbstractPaymentOut_Base
                 final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
                 if (difference.signum() == 1) {
                     error.append(DBProperties
-                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
+                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
                 } else {
                     error.append(DBProperties
-                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountGreater"));
+                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountGreater"));
                 }
                 error.append(" ").append(difference.abs());
                 ret.put(ReturnValues.TRUE, true);
@@ -848,16 +866,16 @@ public abstract class AbstractPaymentOut_Base
         final BigDecimal payAmountDesc = parseBigDecimal(payAmountDescStr);
 
         map.put("paymentAmount", NumberFormatter.get().getTwoDigitsFormatter().format(amount.subtract(payAmountDesc)));
-        map.put("paymentAmountDesc",  NumberFormatter.get().getTwoDigitsFormatter().format(payAmountDesc));
+        map.put("paymentAmountDesc", NumberFormatter.get().getTwoDigitsFormatter().format(payAmountDesc));
         final BigDecimal recalculatePos = getSum4Positions(_parameter, true)
                         .subtract(payAmount).add(amount.subtract(payAmountDesc));
         BigDecimal total4DiscountPay = BigDecimal.ZERO;
         if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-            map.put("amount",  NumberFormatter.get().getTwoDigitsFormatter().format(recalculatePos));
+            map.put("amount", NumberFormatter.get().getTwoDigitsFormatter().format(recalculatePos));
         } else {
             total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(recalculatePos);
         }
-        map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(total4DiscountPay));
+        map.put("total4DiscountPay", NumberFormatter.get().getTwoDigitsFormatter().format(total4DiscountPay));
         list.add(map);
 
         final Return ret = new Return();
