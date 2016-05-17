@@ -157,6 +157,10 @@
             </trigger>
         </attribute>
         <!-- CHANGE END -->
+        <index msgPhrase="Products_IndexProductMsgPhrase">
+            <field id="name"        key="index.Product.Name" select="attribute[Name]"          type="TEXT" />
+            <field id="description" key="index.Product.Description" select="attribute[Description]"   type="TEXT" />
+        </index>
     </definition>
 
     <definition>
@@ -297,5 +301,9 @@
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>CODE</sqlcolumn>
         </attribute>
+        <index msgPhrase="Products_IndexProductMsgPhrase">
+            <field id="name"        key="index.Product.Name" select="attribute[Name]"          type="TEXT" />
+            <field id="description" key="index.Product.Description" select="attribute[Description]"   type="TEXT" />
+        </index>
     </definition>
 </datamodel-type>
