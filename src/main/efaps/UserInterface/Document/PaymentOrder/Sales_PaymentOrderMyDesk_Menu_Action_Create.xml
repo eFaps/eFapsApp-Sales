@@ -31,6 +31,11 @@
                 <property name="StatusGroup">Sales_PaymentOrderStatus</property>
                 <property name="Status">Open</property>
 
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.PaymentOrder.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.PaymentOrder.Mime</property>
+
                  <!-- Sales_ActionDefinitionPaymentOrder2Document -->
                 <property name="ConnectType">ebbb915f-b955-48dd-b3d8-b2c73d0bd521</property>
                 <property name="ConnectCurrentLink">ToLink</property>

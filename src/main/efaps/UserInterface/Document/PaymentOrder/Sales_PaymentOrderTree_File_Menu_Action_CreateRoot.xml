@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>be017257-c87e-42ba-bfb0-2b67d0bcf1f7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
@@ -48,9 +42,7 @@
                 method="checkAccess2ArchiveRoot"
                 name="Sales_PaymentOrderTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
                 program="org.efaps.esjp.archives.Archive">
-                <property name="Type">Sales_PaymentOrder2ArchiveAbstract</property>
-                <property name="AttributeLink">FromLink</property>
-                <property name="activeAccessCheck">true</property>
+                <property name="Object2ArchiveType">Sales_PaymentOrder2ArchiveAbstract</property>
             </trigger>
         </target>
         <property name="Target">modal</property>

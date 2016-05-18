@@ -782,6 +782,22 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTORDER_JASPERREPORT
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PaymentOrder.JasperReport")
+                    .description("Name of the jasperReport for PaymentOrder.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> PAYMENTORDER_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PaymentOrder.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for PaymentOrder");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENTOUTCASHPAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.out.Cash.PayableDocuments")

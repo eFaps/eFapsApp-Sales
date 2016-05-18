@@ -14,15 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3a3a2d58-09ed-468d-a04a-7783391a54ea</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderTree_Menu_Action_SetCanceled</name>
@@ -34,8 +30,8 @@
                 <property name="Status">Canceled</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_PaymentOrderTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"  event="UI_ACCESSCHECK">
-                <property name="Check4CreateStatus">true</property>
+                name="Sales_PaymentOrderTree_Menu_Action_SetCanceled.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Status">!Canceled</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8100 $
- * Last Changed:    $Date: 2012-10-26 10:23:50 -0500 (vie, 26 oct 2012) $
- * Last Changed By: $Author: m.aranya@moxter.net $
  */
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
  * class.
- * 
+ *
  * @author The eFaps Team
- * @version $Id: PaymentCheck.java 8100 2012-10-26 15:23:50Z m.aranya@moxter.net
- *          $
  */
 @EFapsUUID("98cdf593-52d6-449b-b1df-462987c2c9a2")
-@EFapsRevision("$Rev: 8100 $")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentOrder
     extends PaymentOrder_Base
 {

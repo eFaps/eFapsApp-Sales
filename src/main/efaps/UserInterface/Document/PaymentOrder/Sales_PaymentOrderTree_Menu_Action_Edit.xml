@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,18 +14,11 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev: 5742 $
- Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (mar, 26 oct 2010) $
- Last Changed By: $Author: jorge.m.cueva $
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>34b89fbd-5cfb-4d30-bce8-68ec4f65c56a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5742 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderTree_Menu_Action_Edit</name>
@@ -33,7 +27,22 @@
         </access>
         <target>
             <form>Sales_PaymentOrderForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+            <execute method="edit" program="org.efaps.esjp.sales.document.PaymentOrder">
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.PaymentOrder.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.PaymentOrder.Mime</property>
+
+                 <!-- Sales_ActionDefinitionPaymentOrder2Document -->
+                <property name="ConnectType">ebbb915f-b955-48dd-b3d8-b2c73d0bd521</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">action</property>
+            </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_PaymentOrderTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                 <property name="Status">Open</property>
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
