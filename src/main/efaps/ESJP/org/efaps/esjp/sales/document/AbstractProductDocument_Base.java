@@ -1087,14 +1087,14 @@ public abstract class AbstractProductDocument_Base
                                 && prodInst.getType().isKindOf(CIProducts.ProductIndividualAbstract)) {
                     final Insert insert = new Insert(ciType4individual);
                     insert.add(CIProducts.TransactionAbstract.Quantity,
-                                    posMulti.getAttribute(CISales.PositionProdDocAbstract.Quantity));
+                                    posMulti.<BigDecimal>getAttribute(CISales.PositionProdDocAbstract.Quantity));
                     insert.add(CIProducts.TransactionAbstract.Storage, storageInst);
                     insert.add(CIProducts.TransactionAbstract.Product, prodInst);
                     insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
                     insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
                     insert.add(CIProducts.TransactionAbstract.Document, _parameter.getInstance());
                     insert.add(CIProducts.TransactionAbstract.UoM,
-                                    posMulti.getAttribute(CISales.PositionProdDocAbstract.UoM));
+                                    posMulti.<Object>getAttribute(CISales.PositionProdDocAbstract.UoM));
                     insert.executeWithoutAccessCheck();
 
                     prodInst = new Product().getProduct4Individual(_parameter, prodInst);
@@ -1102,14 +1102,14 @@ public abstract class AbstractProductDocument_Base
 
                 final Insert insert = new Insert(ciType);
                 insert.add(CIProducts.TransactionAbstract.Quantity,
-                                posMulti.getAttribute(CISales.PositionProdDocAbstract.Quantity));
+                                posMulti.<BigDecimal>getAttribute(CISales.PositionProdDocAbstract.Quantity));
                 insert.add(CIProducts.TransactionAbstract.Storage, storageInst);
                 insert.add(CIProducts.TransactionAbstract.Product, prodInst);
                 insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
                 insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
                 insert.add(CIProducts.TransactionAbstract.Document, _parameter.getInstance());
                 insert.add(CIProducts.TransactionAbstract.UoM,
-                                posMulti.getAttribute(CISales.PositionProdDocAbstract.UoM));
+                                posMulti.<Object>getAttribute(CISales.PositionProdDocAbstract.UoM));
                 insert.executeWithoutAccessCheck();
             }
         }
@@ -1173,18 +1173,18 @@ public abstract class AbstractProductDocument_Base
                     insert = new Insert(CIProducts.TransactionReservationInbound);
                 }
                 insert.add(CIProducts.TransactionAbstract.Quantity,
-                                multi.getAttribute(CIProducts.TransactionAbstract.Quantity));
+                                multi.<BigDecimal>getAttribute(CIProducts.TransactionAbstract.Quantity));
                 insert.add(CIProducts.TransactionAbstract.Storage,
-                                multi.getAttribute(CIProducts.TransactionAbstract.Storage));
+                                multi.<Long>getAttribute(CIProducts.TransactionAbstract.Storage));
                 insert.add(CIProducts.TransactionAbstract.Product,
-                                multi.getAttribute(CIProducts.TransactionAbstract.Product));
+                                multi.<Long>getAttribute(CIProducts.TransactionAbstract.Product));
                 insert.add(CIProducts.TransactionAbstract.Description,
-                                multi.getAttribute(CIProducts.TransactionAbstract.Description));
+                                multi.<String>getAttribute(CIProducts.TransactionAbstract.Description));
                 insert.add(CIProducts.TransactionAbstract.Date,
-                                multi.getAttribute(CIProducts.TransactionAbstract.Date));
+                                multi.<DateTime>getAttribute(CIProducts.TransactionAbstract.Date));
                 insert.add(CIProducts.TransactionAbstract.Document, instance);
                 insert.add(CIProducts.TransactionAbstract.UoM,
-                                multi.getAttribute(CIProducts.TransactionAbstract.UoM));
+                                multi.<Long>getAttribute(CIProducts.TransactionAbstract.UoM));
                 insert.execute();
             }
         }

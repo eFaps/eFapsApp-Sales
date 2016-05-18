@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,8 +65,11 @@ public abstract class AcquisitionCosting_Base
     }
 
     /**
+     * Connect2 recieving ticket.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _createdDoc   created doc
+     * @param _deriveds the deriveds
      * @throws EFapsException on error
      */
     protected void connect2RecievingTicket(final Parameter _parameter,
@@ -95,7 +98,7 @@ public abstract class AcquisitionCosting_Base
         while (multi.next()) {
             final Insert insert = new Insert(CISales.AcquisitionCosting2RecievingTicket);
             insert.add(CISales.AcquisitionCosting2RecievingTicket.FromLink, _createdDoc.getInstance());
-            insert.add(CISales.AcquisitionCosting2RecievingTicket.ToLink, multi.getSelect(selInst));
+            insert.add(CISales.AcquisitionCosting2RecievingTicket.ToLink, multi.<Object>getSelect(selInst));
             insert.execute();
         }
         for (final Instance inst : _deriveds) {

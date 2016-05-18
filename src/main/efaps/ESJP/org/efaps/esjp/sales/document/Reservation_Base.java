@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2011 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -31,7 +28,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -51,10 +48,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("8b35c62b-debd-46f8-9a07-7a9befb6edc4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Reservation_Base
     extends AbstractProductDocument
 {
@@ -182,7 +178,7 @@ public abstract class Reservation_Base
             for (final Instance storInst : storInsts) {
                 final Insert insert = new Insert(CIProducts.TransactionReservationOutbound);
                 insert.add(CIProducts.TransactionReservationOutbound.Quantity,
-                                multi.getAttribute(CISales.ReservationPosition.Quantity));
+                                multi.<BigDecimal>getAttribute(CISales.ReservationPosition.Quantity));
                 insert.add(CIProducts.TransactionReservationOutbound.Storage, storInst.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.Product, prodInst.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.Description,
@@ -190,13 +186,21 @@ public abstract class Reservation_Base
                 insert.add(CIProducts.TransactionReservationOutbound.Date, new DateTime());
                 insert.add("Document", instance.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.UoM,
-                                multi.getAttribute(CISales.ReservationPosition.UoM));
+                                multi.<Object>getAttribute(CISales.ReservationPosition.UoM));
                 insert.execute();
             }
         }
         return new StatusValue().setStatus(_parameter);
     }
 
+    /**
+     * Gets the storage instances4 status closed.
+     *
+     * @param _parameter the _parameter
+     * @param _prodInst the _prod inst
+     * @return the storage instances4 status closed
+     * @throws EFapsException the e faps exception
+     */
     protected List<Instance> getStorageInstances4StatusClosed(final Parameter _parameter,
                                                               final Instance _prodInst)
         throws EFapsException
@@ -228,7 +232,7 @@ public abstract class Reservation_Base
     {
         super.add2UpdateField4Product(_parameter, _map, _prodInst);
         if (!_map.containsKey(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name)) {
-            final Instance defaultStorageInst = getDefaultStorage(_parameter);;
+            final Instance defaultStorageInst = getDefaultStorage(_parameter);
             if (defaultStorageInst != null && defaultStorageInst.isValid()) {
                 _map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
                         getStock4ProductInStorage(_parameter, _prodInst, defaultStorageInst));
