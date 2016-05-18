@@ -122,7 +122,7 @@ public class Calculator
      * @param _parameter the _parameter
      * @param _config the _config
      * @return true, if successful
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public static boolean priceIsNet(final Parameter _parameter,
                                      final ICalculatorConfig _config)
@@ -137,7 +137,7 @@ public class Calculator
      * @param _parameter the _parameter
      * @param _config the _config
      * @return true, if successful
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public static boolean isIncludeMinRetail(final Parameter _parameter,
                                              final ICalculatorConfig _config)

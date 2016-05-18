@@ -1533,6 +1533,7 @@ public abstract class Calculator_Base
     }
 
     /**
+     * Get a map of taxes for teh current position.
      * @return mapping of tax to amount
      * @throws EFapsException on error
      */
@@ -1546,7 +1547,9 @@ public abstract class Calculator_Base
             if (tax.equals(Tax_Base.getZeroTax())) {
                 ret.put(tax, BigDecimal.ZERO);
             } else {
-                ret.put(tax, net.multiply(tax.getFactor()).setScale(net.scale(), BigDecimal.ROUND_HALF_UP));
+                final DecimalFormat format = NumberFormatter.get().getFrmt4Tax(getPosKey());
+                final int decDigCant = format.getMaximumFractionDigits();
+                ret.put(tax, net.multiply(tax.getFactor()).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
             }
         }
         return ret;
