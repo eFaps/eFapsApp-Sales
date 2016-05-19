@@ -34,9 +34,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
-import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -52,13 +50,16 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.esjp.products.BOM;
-import org.efaps.esjp.products.BOM_Base.ProductBOMBean;
+import org.efaps.esjp.products.Cost;
+import org.efaps.esjp.products.reports.CostReport;
+import org.efaps.esjp.products.reports.CostReport_Base.CostTypeFilterValue;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
+import org.efaps.esjp.sales.report.DocPositionReport_Base.ContactGroup;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -80,27 +81,11 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("4fad5c69-177a-4d35-85ad-984146bcf546")
+@EFapsUUID("4a3b5f5d-9122-47fa-95fb-a5af567324d0")
 @EFapsApplication("eFapsApp-Sales")
-public abstract class DocPositionReport_Base
+public abstract class DocPositionCostReport_Base
     extends FilteredReport
 {
-    /**
-     * The Enum DateConfig.
-     *
-     * @author The eFaps Team
-     */
-    public enum ContactGroup
-    {
-        /** None. */
-        NONE,
-        /** Group by Document Contact.*/
-        DOCCONTACT,
-        /** Group by Product Producer. */
-        PRODPRODUCER,
-        /** Group by Product Supplier. */
-        PRODSUPPLIER;
-    }
 
     /**
      * Values for the report.
@@ -146,6 +131,20 @@ public abstract class DocPositionReport_Base
     }
 
     /**
+     * Gets the cost type field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the cost type field value
+     * @throws EFapsException on error
+     */
+    public Return getCostTypeFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CostReport costReport = new CostReport();
+        return costReport.getCostTypeFieldValue(_parameter);
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFasp API
      * @return the report class
      * @throws EFapsException on error
@@ -153,7 +152,7 @@ public abstract class DocPositionReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new DynDocPositionReport(this);
+        return new DynDocPositionCostReport(this);
     }
 
     /**
@@ -173,26 +172,26 @@ public abstract class DocPositionReport_Base
                     throws EFapsException
                 {
                     super.add2QueryBuilder(_parameter, _queryBldr);
-                    DocPositionReport_Base.this.add2QueryBuilder(_parameter, _queryBldr);
+                    DocPositionCostReport_Base.this.add2QueryBuilder(_parameter, _queryBldr);
                 }
             };
-            final Map<String, Object> filter = getFilterMap(_parameter);
+            final Map<String, Object> filterMap = getFilterMap(_parameter);
             final DateTime start;
             final DateTime end;
-            if (filter.containsKey("dateFrom")) {
-                start = (DateTime) filter.get("dateFrom");
+            if (filterMap.containsKey("dateFrom")) {
+                start = (DateTime) filterMap.get("dateFrom");
             } else {
                 start = new DateTime();
             }
-            if (filter.containsKey("dateTo")) {
-                end = (DateTime) filter.get("dateTo");
+            if (filterMap.containsKey("dateTo")) {
+                end = (DateTime) filterMap.get("dateTo");
             } else {
                 end = new DateTime();
             }
             final List<Type> typeList;
-            if (filter.containsKey("type")) {
+            if (filterMap.containsKey("type")) {
                 typeList = new ArrayList<>();
-                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+                final TypeFilterValue filters = (TypeFilterValue) filterMap.get("type");
                 for (final Long typeid : filters.getObject()) {
                     typeList.add(Type.get(typeid));
                 }
@@ -201,8 +200,9 @@ public abstract class DocPositionReport_Base
             }
             final Properties props = getProperties4TypeList(_parameter);
             final AbstractGroupedByDate.DateGroup dateGroup;
-            if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
+            if (filterMap.containsKey("dateGroup") && filterMap.get("dateGroup") != null) {
+                dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filterMap.get("dateGroup"))
+                                .getObject();
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
@@ -210,41 +210,6 @@ public abstract class DocPositionReport_Base
             this.valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
 
-            if (BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
-                int counter = 0; // just a variable to prevent eternal loops
-                boolean finisched = false;
-                while (!finisched && counter < 5) {
-                    finisched = true;
-                    final List<Map<String, Object>> tmpList = new ArrayList<>();
-                    for (final Map<String, Object> value  : this.valueList) {
-                        final Instance prodInst = (Instance) value.get("productInst");
-                        final BigDecimal quantity = (BigDecimal) value.get("quantity");
-                        final UoM uom  = (UoM) value.get("uoM");
-                        final BOM bom  = new BOM();
-                        final List<ProductBOMBean> prodBeans = bom.getBOMProducts(_parameter, prodInst, quantity, uom);
-                        if (prodBeans.isEmpty()) {
-                            tmpList.add(value);
-                        } else {
-                            finisched = false;
-                            for (final ProductBOMBean bean : prodBeans) {
-                                final Map<String, Object> newmap = new HashMap<>(value);
-                                newmap.put("uoMStr", bean.getUoM().getName());
-                                newmap.put("productName", bean.getName());
-                                newmap.put("productDescr", bean.getDescription());
-                                newmap.put("quantity", bean.getQuantity());
-                                newmap.put("uoM", bean.getUoM());
-                                newmap.put("product", bean.getName() + " - " + bean.getDescription()
-                                            + " [" + bean.getUoM().getName() + "]");
-                                newmap.put("productInst", bean.getInstance());
-                                tmpList.add(newmap);
-                            }
-                        }
-                    }
-                    counter++;
-                    this.valueList.clear();
-                    this.valueList.addAll(tmpList);
-                }
-            }
             final ContactGroup contactGroup = evaluateContactGroup(_parameter);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
                             || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
@@ -260,6 +225,36 @@ public abstract class DocPositionReport_Base
                     print.executeWithoutAccessCheck();
                     value.put("contact", print.getSelect(selContactName));
                 }
+            }
+
+            Instance selected = null;
+            if (filterMap.containsKey("currency")) {
+                final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+                if (filter.getObject() instanceof Instance) {
+                    if (filter.getObject().isValid()) {
+                        selected = filter.getObject();
+                    } else {
+                        selected = Currency.getBaseCurrency();
+                    }
+                }
+            }
+
+            final CostTypeFilterValue filterValue = (CostTypeFilterValue) filterMap.get("costType");
+            Instance alterInst = null;
+            if (filterValue != null) {
+                alterInst = Instance.get(filterValue.getObject());
+            }
+            for (final Map<String, Object> value : this.valueList) {
+                final DateTime docDate = (DateTime) value.get("docDate");
+                final Instance prodInst = (Instance) value.get("productInst");
+                final BigDecimal quantity = (BigDecimal) value.get("quantity");
+                final BigDecimal cost;
+                if (InstanceUtils.isValid(alterInst)) {
+                    cost = Cost.getAlternativeCost4Currency(_parameter, alterInst, prodInst, selected);
+                } else {
+                    cost = Cost.getCost4Currency(_parameter, docDate, prodInst, selected);
+                }
+                value.put("cost", cost.multiply(quantity));
             }
         }
         return this.valueList;
@@ -283,7 +278,7 @@ public abstract class DocPositionReport_Base
             }
         }
         if (ret == null) {
-            ret = Sales.DOCPOSREPORT.get();
+            ret = Sales.DOCPOSCOSTREPORT.get();
         }
         return ret;
     }
@@ -305,7 +300,6 @@ public abstract class DocPositionReport_Base
                 _queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.RateCurrencyId, filter.getObject());
             }
         }
-
         if (filterMap.containsKey("contact")) {
             final InstanceFilterValue filterValue = (InstanceFilterValue) filterMap.get("contact");
             if (filterValue != null && filterValue.getObject().isValid()) {
@@ -361,19 +355,19 @@ public abstract class DocPositionReport_Base
     /**
      * Dynamic Report.
      */
-    public static class DynDocPositionReport
+    public static class DynDocPositionCostReport
         extends AbstractDynamicReport
     {
 
         /**
          * Filtered Report.
          */
-        private final DocPositionReport_Base filteredReport;
+        private final DocPositionCostReport_Base filteredReport;
 
         /**
          * @param _filteredReport report
          */
-        public DynDocPositionReport(final DocPositionReport_Base _filteredReport)
+        public DynDocPositionCostReport(final DocPositionCostReport_Base _filteredReport)
         {
             this.filteredReport = _filteredReport;
         }
@@ -408,20 +402,6 @@ public abstract class DocPositionReport_Base
                         }
                     });
                 }
-                final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-                if (BooleanUtils.isTrue((Boolean) filterMap.get("typeGroup"))) {
-                    chain.addComparator(new Comparator<Map<String, Object>>()
-                    {
-
-                        @Override
-                        public int compare(final Map<String, Object> _o1,
-                                           final Map<String, Object> _o2)
-                        {
-                            return String.valueOf(_o1.get("type")).compareTo(String.valueOf(_o2.get("type")));
-                        }
-                    });
-                }
-
                 chain.addComparator(new Comparator<Map<String, Object>>()
                 {
 
@@ -563,19 +543,19 @@ public abstract class DocPositionReport_Base
                                 String.class).setHeaderWidth(150);
                 rowGrpBldrs.add(contactGroup);
             }
-            if (filterMap.containsKey("typeGroup")) {
-                final Boolean contactBool = (Boolean) filterMap.get("typeGroup");
-                if (contactBool != null && contactBool) {
-                    final CrosstabRowGroupBuilder<String> typeGroup = DynamicReports.ctab.rowGroup("type",
-                                    String.class).setHeaderWidth(150);
-                    rowGrpBldrs.add(typeGroup);
-                }
-            }
 
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
-                            DBProperties.getProperty(DocPositionReport.class.getName() + ".quantity"),
+                            DBProperties.getProperty(DocPositionCostReport.class.getName() + ".quantity"),
                             "quantity", BigDecimal.class, Calculation.SUM);
             measureGrpBldrs.add(quantityMeasure);
+
+            final CrosstabMeasureBuilder<BigDecimal> costMeasure = DynamicReports.ctab.measure(
+                            DBProperties.getProperty(DocPositionCostReport.class.getName() + ".cost") + " "
+                                            + (base || selected == null
+                                                ? CurrencyInst.get(Currency.getBaseCurrency()).getSymbol()
+                                                : selected.getSymbol()),
+                            "cost", BigDecimal.class, Calculation.SUM);
+            measureGrpBldrs.add(costMeasure);
 
             if (showAmount) {
                 if (selected == null) {
@@ -588,7 +568,7 @@ public abstract class DocPositionReport_Base
                         }
                     }
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                    DBProperties.getProperty(DocPositionReport.class.getName() + ".BASE")
+                                    DBProperties.getProperty(DocPositionCostReport.class.getName() + ".BASE")
                                                     + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
                                     "BASE", BigDecimal.class, Calculation.SUM);
                     measureGrpBldrs.add(amountMeasure);
@@ -657,7 +637,7 @@ public abstract class DocPositionReport_Base
          *
          * @return value of instance variable {@link #filteredReport}
          */
-        public DocPositionReport_Base getFilteredReport()
+        public DocPositionCostReport_Base getFilteredReport()
         {
             return this.filteredReport;
         }

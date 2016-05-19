@@ -282,6 +282,24 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCPOSCOSTREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionCostReport")
+                    .addDefaultValue("Type01", "Sale_Invoice")
+                    .addDefaultValue("Sales_Invoice.Total", "NET")
+                    .addDefaultValue("StatusGroup01", "Sales_InvoiceStatus")
+                    .addDefaultValue("Status01", "!Replaced ")
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute DOCPOSCOSTREPORTALTERNATIVE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionCostReport.ActivateAlternative")
+                    .description("Activate the Cost Alternative Mechanism.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCVSDOCREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocVsDocReport")

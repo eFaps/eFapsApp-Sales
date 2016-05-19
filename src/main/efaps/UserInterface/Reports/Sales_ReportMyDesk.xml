@@ -41,6 +41,7 @@
             <child>Sales_InventoryReportMyDesk</child>
             <child>Sales_DocVsDocReportMyDesk</child>
             <child>Sales_CarrierReportMyDesk</child>
+            <child>Sales_DocPositionCostReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
