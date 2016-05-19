@@ -35,6 +35,7 @@ import org.efaps.db.Instance;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.products.reports.TransactionResultReport;
@@ -50,7 +51,6 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 
-// TODO: Auto-generated Javadoc
 /**
  * TODO comment!.
  *
@@ -150,13 +150,24 @@ public abstract class ProductsTransactionResultReport_Base
             switch (getValuation(_parameter)) {
                 case COST:
                     final Instance prodInst = _parameter.getInstance();
-                    final BigDecimal cost = Cost.getCost4Currency(_parameter, _bean.getDate(), prodInst, filter
-                                    .getObject());
+                    final BigDecimal cost;
+                    if (InstanceUtils.isValid(costCurrencyInst)) {
+                        cost = Cost.getAlternativeCost4Currency(_parameter, _bean.getDate(), costCurrencyInst, prodInst,
+                                        filter.getObject());
+                    } else {
+                        cost = Cost.getCost4Currency(_parameter, _bean.getDate(), prodInst, filter.getObject());
+                    }
                     ((CostDataBean) _bean).setCost(cost).setCurrency(CurrencyInst.get(filter.getObject()).getSymbol());
                     break;
                 case COSTING:
-                    final Map<Instance, CostingInfo> costings = Costing.getAlternativeCostings4Currency(_parameter,
-                                    _bean.getDate(), costCurrencyInst, filter.getObject(), _bean.getTransInst());
+                    final Map<Instance, CostingInfo> costings;
+                    if (InstanceUtils.isValid(costCurrencyInst)) {
+                        costings = Costing.getAlternativeCostings4Currency(_parameter, _bean.getDate(),
+                                        costCurrencyInst, filter.getObject(), _bean.getTransInst());
+                    } else {
+                        costings = Costing.getCostings4Currency(_parameter, _bean.getDate(), filter.getObject(), _bean
+                                        .getTransInst());
+                    }
                     if (costings.containsKey(_bean.getTransInst())) {
                         final CostingInfo costing = costings.get(_bean.getTransInst());
                         ((CostDataBean) _bean).setAverage(costing.getResult()).setCost(costing.getCost()).setCurrency(
