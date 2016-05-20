@@ -486,9 +486,15 @@ public abstract class AbstractPaymentDocument_Base
         if (payments4Doc.compareTo(BigDecimal.ZERO) == 0) {
             // if this is the first payment. check for detraction etc.
             final DocTaxInfo docTaxInfo = _docInfo.getDocTaxInfo();
-            amount4PayDoc = total4Doc.subtract(docTaxInfo.getTaxAmount());
-            paymentDiscount = docTaxInfo.getPercent();
-            paymentAmountDesc = docTaxInfo.getTaxAmount();
+            if (docTaxInfo.isRetention() || docTaxInfo.isDetraction()) {
+                amount4PayDoc = total4Doc.subtract(docTaxInfo.getTaxAmount());
+                paymentDiscount = docTaxInfo.getPercent();
+                paymentAmountDesc = docTaxInfo.getTaxAmount();
+            } else {
+                amount4PayDoc = total4Doc;
+                paymentDiscount = BigDecimal.ZERO;
+                paymentAmountDesc = BigDecimal.ZERO;
+            }
         } else {
             amount4PayDoc = total4Doc.subtract(payments4Doc);
             paymentDiscount = BigDecimal.ZERO;

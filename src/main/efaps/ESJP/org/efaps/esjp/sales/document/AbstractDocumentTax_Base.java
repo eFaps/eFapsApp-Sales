@@ -261,7 +261,7 @@ public abstract class AbstractDocumentTax_Base
             ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
                             .append(formater.format(doctaxInfo.getTaxAmount()))
                             .append("\">");
-        } else if ( uiObject.getDisplay().equals(Display.READONLY)
+        } else if (uiObject.getDisplay().equals(Display.READONLY)
                         || uiObject.getDisplay().equals(Display.NONE)) {
             if (!doctaxInfo.isValid()) {
                 ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"));
@@ -660,6 +660,19 @@ public abstract class AbstractDocumentTax_Base
         {
             initialize();
             return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingDetraction);
+        }
+
+        /**
+         * Getter method for the instance variable {@link #retention}.
+         *
+         * @return value of instance variable {@link #retention}
+         * @throws EFapsException on error
+         */
+        public boolean isPercetion()
+            throws EFapsException
+        {
+            initialize();
+            return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingPerceptionCertificate);
         }
 
         /**
