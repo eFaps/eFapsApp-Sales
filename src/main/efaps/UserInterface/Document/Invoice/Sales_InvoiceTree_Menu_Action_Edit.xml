@@ -53,7 +53,7 @@
                 method="check4Status"
                 name="Sales_InvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <property name="Check4CreateStatus">true</property>
+                <property name="Status">Draft</property>
              </trigger>
         </target>
         <property name="Target">modal</property>

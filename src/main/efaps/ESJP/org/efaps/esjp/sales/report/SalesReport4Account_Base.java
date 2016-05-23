@@ -36,6 +36,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAttribute;
 import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -96,6 +97,19 @@ public abstract class SalesReport4Account_Base
         IN,
         /** Outgoing. */
         OUT
+    }
+
+    /**
+     * Used to distinguish between incoming and outgoing report.
+     */
+    public enum FilterDate
+    {
+        /** The date. */
+        DATE,
+        /** The created. */
+        CREATED,
+        /** The duedate. */
+        DUEDATE;
     }
 
     /**
@@ -283,7 +297,7 @@ public abstract class SalesReport4Account_Base
                     }
                     dataSource.add(dataBean);
                 }
-
+                final FilterDate filterDate = getFilterDate(_parameter);
                 final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
                 chain.addComparator(new Comparator<DataBean>()
                 {
@@ -292,9 +306,24 @@ public abstract class SalesReport4Account_Base
                     public int compare(final DataBean _o1,
                                        final DataBean _o2)
                     {
-                        return Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT) ? _o1
-                                        .getDocCreated().compareTo(_o2.getDocCreated())
-                                        : _o1.getDocDate().compareTo(_o2.getDocDate());
+                        final int ret;
+                        switch (filterDate) {
+                            case CREATED:
+                                ret = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                                break;
+                            case DUEDATE:
+                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                    ret = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                                } else {
+                                    ret = 0;
+                                }
+                                break;
+                            case DATE:
+                            default:
+                                ret = _o1.getDocDate().compareTo(_o2.getDocDate());
+                                break;
+                        }
+                        return ret;
                     }
                 });
                 chain.addComparator(new Comparator<DataBean>()
@@ -320,19 +349,19 @@ public abstract class SalesReport4Account_Base
             return ret;
         }
 
-
         /**
          * Checks if is show condition.
          *
          * @return true, if is show condition
          * @throws EFapsException on error
          */
-        protected boolean isShowCondition() throws EFapsException
+        protected boolean isShowCondition()
+            throws EFapsException
         {
             return Sales.CHACTIVATESALESCOND.get()
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                        || Sales.CHACTIVATEPURCHASECOND.get()
-                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+                            || Sales.CHACTIVATEPURCHASECOND.get()
+                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
         }
 
         /**
@@ -341,12 +370,33 @@ public abstract class SalesReport4Account_Base
          * @return true, if is show assigned
          * @throws EFapsException on error
          */
-        protected boolean isShowAssigned() throws EFapsException
+        protected boolean isShowAssigned()
+            throws EFapsException
         {
             return Sales.SALESREPORT4ACCOUNTINASSIGENED.get()
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                        || Sales.SALESREPORT4ACCOUNTOUTASSIGENED.get()
-                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+                            || Sales.SALESREPORT4ACCOUNTOUTASSIGENED.get()
+                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+        }
+
+        /**
+         * Checks if is show assigned.
+         *
+         * @return true, if is show assigned
+         * @throws EFapsException on error
+         */
+        protected FilterDate getFilterDate(final Parameter _parameter) throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+
+            final FilterDate ret;
+            if (filterMap.containsKey("filterDate")) {
+                final EnumFilterValue filterValue = (EnumFilterValue) filterMap.get("filterDate");
+                ret = (FilterDate) filterValue.getObject();
+            } else {
+                ret = FilterDate.DATE;
+            }
+            return ret;
         }
 
         /**
@@ -391,11 +441,21 @@ public abstract class SalesReport4Account_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, typeids.toArray());
                 }
             }
-
-            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date,
-                            dateFrom.withTimeAtStartOfDay().minusMinutes(1));
-            _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
-                            .withTimeAtStartOfDay());
+            CIAttribute dateAttr;
+            switch (getFilterDate(_parameter)) {
+                case CREATED:
+                    dateAttr = CISales.DocumentSumAbstract.Created;
+                    break;
+                case DUEDATE:
+                    dateAttr = CISales.DocumentSumAbstract.DueDate;
+                    break;
+                case DATE:
+                default:
+                    dateAttr = CISales.DocumentSumAbstract.Date;
+                    break;
+            }
+            _queryBldr.addWhereAttrGreaterValue(dateAttr, dateFrom.withTimeAtStartOfDay().minusMinutes(1));
+            _queryBldr.addWhereAttrLessValue(dateAttr, dateTo.plusDays(1).withTimeAtStartOfDay());
         }
 
         @Override
@@ -405,9 +465,19 @@ public abstract class SalesReport4Account_Base
         {
             final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
 
-            final String filter = Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
-                            ? "docCreated"
-                            : "docDate";
+            final String filter;
+            switch (getFilterDate(_parameter)) {
+                case CREATED:
+                    filter = "docCreated";
+                    break;
+                case DUEDATE:
+                    filter = "docDueDate";
+                    break;
+                case DATE:
+                default:
+                    filter = "docDate";
+                    break;
+            }
 
             final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "FilterDate1"), filter,
@@ -416,7 +486,7 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "FilterDate2"), filter,
                             DateTimeYear.get());
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "Created"), "docDate",
+                            this.filteredReport.getLabel(_parameter, "Date"), "docDate",
                             DateTimeDate.get());
 
             final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(
@@ -424,7 +494,7 @@ public abstract class SalesReport4Account_Base
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<DateTime> createdColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "Date"), "docCreated",
+                            this.filteredReport.getLabel(_parameter, "Created"), "docCreated",
                             DateTimeDate.get());
 
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(

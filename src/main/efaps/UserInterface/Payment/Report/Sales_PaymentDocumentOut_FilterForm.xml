@@ -38,6 +38,16 @@
                 name="Sales_PaymentDocumentOut_FilterForm.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />
         </field>
+        <field name="filterDate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesReport4Account.filterDate</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_PaymentDocumentOut_FilterForm.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesReport4Account" >
+                <property name="Enum">org.efaps.esjp.sales.report.SalesReport4Account_Base$FilterDate</property>
+            </trigger>
+        </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
