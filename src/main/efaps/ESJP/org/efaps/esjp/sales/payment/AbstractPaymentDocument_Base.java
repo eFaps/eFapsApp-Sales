@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.payment;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -487,9 +488,16 @@ public abstract class AbstractPaymentDocument_Base
             // if this is the first payment. check for detraction etc.
             final DocTaxInfo docTaxInfo = _docInfo.getDocTaxInfo();
             if (docTaxInfo.isRetention() || docTaxInfo.isDetraction()) {
-                amount4PayDoc = total4Doc.subtract(docTaxInfo.getTaxAmount());
+                BigDecimal taxAmount;
+                if (Currency.getBaseCurrency().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
+                    taxAmount = docTaxInfo.getTaxAmount();
+                } else {
+                    taxAmount = docTaxInfo.getTaxAmount().setScale(8, RoundingMode.HALF_UP)
+                                    .multiply(_docInfo.getRateInfo().getRate());
+                }
+                amount4PayDoc = total4Doc.subtract(taxAmount);
                 paymentDiscount = docTaxInfo.getPercent();
-                paymentAmountDesc = docTaxInfo.getTaxAmount();
+                paymentAmountDesc = taxAmount;
             } else {
                 amount4PayDoc = total4Doc;
                 paymentDiscount = BigDecimal.ZERO;
