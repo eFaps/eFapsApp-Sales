@@ -47,18 +47,9 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetraction" method="autoComplete4CreateDocument"
                 name="Sales_PaymentDetractionPaymentTable.createDocument.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_Invoice</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
-                <property name="Status">Open</property>
-                <property name="Type01">Sales_Receipt</property>
-                <property name="StatusGroup01">Sales_ReceiptStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_CollectionOrder</property>
-                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_Credit</property>
-                <property name="StatusGroup03">Sales_CreditStatus</property>
-                <property name="Status03">Open</property>
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.in.Detraction.PayableDocuments</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>

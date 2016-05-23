@@ -255,6 +255,32 @@ Status03=!Replaced
 StatusGroup04=Sales_IncomingReceiptStatus
 Status04=!Paid]]></value>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.payment.in.Deposit.PayableDocuments</key>
+            <value><![CDATA[Type01=Sales_Invoice
+Type02=Sales_Receipt
+StatusGroup01=Sales_InvoiceStatus
+Status01=!Replaced
+StatusGroup02=Sales_InvoiceStatus
+Status02=!Paid
+StatusGroup03=Sales_ReceiptStatus
+Status03=!Replaced
+StatusGroup04=Sales_ReceiptStatus
+Status04=!Paid]]></value>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.payment.in.Check.PayableDocuments</key>
+            <value><![CDATA[Type01=Sales_Invoice
+Type02=Sales_Receipt
+StatusGroup01=Sales_InvoiceStatus
+Status01=!Replaced
+StatusGroup02=Sales_InvoiceStatus
+Status02=!Paid
+StatusGroup03=Sales_ReceiptStatus
+Status03=!Replaced
+StatusGroup04=Sales_ReceiptStatus
+Status04=!Paid]]></value>
+        </attribute>
     </definition>
 </common-systemconfiguration>
 

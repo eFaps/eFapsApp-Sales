@@ -50,24 +50,9 @@
                 method="autoComplete4CreateDocument"
                 name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Type">Sales_Invoice</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
-                <property name="Status">Open</property>
-                <property name="Type01">Sales_Receipt</property>
-                <property name="StatusGroup01">Sales_ReceiptStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_CollectionOrder</property>
-                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_Credit</property>
-                <property name="StatusGroup03">Sales_CreditStatus</property>
-                <property name="Status03">Open</property>
-                <property name="Type04">Sales_PerceptionCertificate</property>
-                <property name="StatusGroup04">Sales_PerceptionCertificateStatus</property>
-                <property name="Status04">Open</property>
-                <property name="Type05">Sales_IncomingExchange</property>
-                <property name="StatusGroup05">Sales_IncomingExchangeStatus</property>
-                <property name="Status05">Open</property>
+                 <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.in.Check.PayableDocuments</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
