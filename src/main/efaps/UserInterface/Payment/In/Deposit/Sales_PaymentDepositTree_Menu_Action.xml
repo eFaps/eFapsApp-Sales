@@ -21,13 +21,11 @@
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4ea8ec45-2b08-400e-a013-89ba9ca5369d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDepositTree_Menu_Action</name>
         <childs>
             <child>Sales_PaymentDepositTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentDepositTree_Menu_Action_AddDoc</child>
             <child>Sales_PaymentDocumentTree_Renew</child>
             <child>Sales_PaymentDepositTree_Menu_Action_SetCanceled</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
