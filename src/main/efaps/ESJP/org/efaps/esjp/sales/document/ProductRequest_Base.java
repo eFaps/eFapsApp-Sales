@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -25,7 +22,7 @@ import java.io.File;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.esjp.ci.CISales;
@@ -35,10 +32,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("97c5f066-ac96-465c-89da-f890896b7ab4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ProductRequest_Base
     extends AbstractProductDocument
 {
@@ -86,10 +82,10 @@ public abstract class ProductRequest_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final EditedDoc createdDoc = editDoc(_parameter);
-        updatePositions(_parameter, createdDoc);
-
-        final File file = createReport(_parameter, createdDoc);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

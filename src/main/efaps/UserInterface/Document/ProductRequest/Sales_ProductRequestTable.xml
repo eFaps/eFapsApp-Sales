@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2016 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>cdabe727-af1c-4b20-bcc5-61e871cc4569</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ProductRequestTable</name>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="HRef">Type</property>
+            <property name="Label">Sales_ProductRequest/Name.Label</property>
+        </field>
+         <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_ProductRequest/Contact.Label</property>
+            <property name="HRef">TREEMENU</property>
+        </field>
+        <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_ProductRequest/Date.Label</property>
+        </field>
+        <field name="dueDate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_ProductRequest/DueDate.Label</property>
+        </field>
+        <field name="status">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Sales_ProductRequest/Status.Label</property>
+        </field>
+        <field name="department">
+            <property name="SelectAlternateOID">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_IncomingProductRequestForm.department.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
+</ui-table>

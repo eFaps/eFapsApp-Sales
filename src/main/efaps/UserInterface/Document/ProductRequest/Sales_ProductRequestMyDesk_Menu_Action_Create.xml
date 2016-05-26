@@ -15,30 +15,35 @@
  limitations under the License.
 
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>22249517-da22-4ff1-b5da-f5be4308aa9a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductRequestMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_ProductRequestForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.ProductRequest">
                 <property name="PositionType">Sales_ProductRequestPosition</property>
                 <property name="StatusGroup">Sales_ProductRequestStatus</property>
-                <property name="Status">Open</property>
+                <property name="Status">Draft</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.ProductRequest.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.ProductRequest.Mime</property>
 
+                <!-- Sales_HumanResource_Department2ProductRequest -->
+                <property name="ConnectType01">88b37def-9a59-4fa9-957a-1a1e04c4214b</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">department</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_ProductRequest</property>
         <property name="TargetMode">create</property>
@@ -46,5 +51,4 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
-
 </ui-command>

@@ -252,6 +252,7 @@
         </status>
 
         <status group="Sales_ProductRequestStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>

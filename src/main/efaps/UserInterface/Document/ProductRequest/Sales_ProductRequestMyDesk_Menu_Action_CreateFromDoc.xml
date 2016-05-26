@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -18,27 +17,24 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5887a08b-b408-4ec2-a601-d4c707e9bd15</uuid>
+    <uuid>3d5602ec-a8e8-4cbd-a5fb-86dcee575cca</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductRequestTree_Menu_Action_SetClosed</name>
+        <name>Sales_ProductRequestMyDesk_Menu_Action_CreateFromDoc</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Delivery</role>
+            <role>Sales_Accounting</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Closed</property>
-            </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_ProductRequestTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
-            </trigger>
+            <form>Sales_ProductRequest_SelectDocForm</form>
+            <command>Sales_ProductRequestMyDesk_Menu_Action_CreateFromDoc2</command>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetCmdRevise">true</property>
     </definition>
 </ui-command>

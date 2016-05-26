@@ -102,16 +102,64 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">READONLY</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+        </field>
+        <field name="headingDepartment" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_ProductRequestForm.headingDepartment.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
+        </field>
+        <field name="department">
+            <property name="Label">Sales_IncomingProductRequestForm.department.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Required">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_ProductRequestForm.department.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">HumanResource_Department</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
+        </field>
+         <field name="department4View">
+            <property name="SelectAlternateOID">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingProductRequestForm.department.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -124,7 +172,6 @@
             <property name="Label">Sales_ProductRequest/Contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Required">true</property>
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.document.ProductRequest"
                 method="autoComplete4Contact"
@@ -147,21 +194,20 @@
             <property name="Level">2</property>
             <property name="Label">Sales_ProductRequestForm.headingPosition.Heading</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <table>Sales_ProductRequestPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ProductRequestPosition</property>
-                <property name="LinkFroms">ProductRequestLink</property>
+                <property name="Type">Sales_ProductRequestPosition</property>
+                <property name="LinkFrom">ProductRequestLink</property>
             </evaluate>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -259,6 +305,59 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="headingDepartment" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_ProductRequestForm.headingDepartment.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
+        </field>
+        <field name="department">
+            <property name="Label">Sales_IncomingProductRequestForm.department.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_ProductRequestForm.department.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">HumanResource_Department</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
+        </field>
+         <field name="department4View">
+            <property name="SelectAlternateOID">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingProductRequestForm.department.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.AssignDepartment</property>
+            </trigger>
+        </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_ProductRequestForm.headingClient.Heading</property>
@@ -270,7 +369,6 @@
             <property name="Label">Sales_ProductRequest/Contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Required">true</property>
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.document.ProductRequest"
                 method="autoComplete4Contact"
@@ -291,11 +389,11 @@
         </field>
          <field name="headingProject" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_InvoiceForm.headingProject.Heading</property>
+            <property name="Label">Sales_ProductRequestForm.headingProject.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="project">
-            <property name="Label">Sales_InvoiceForm.project.Label</property>
+            <property name="Label">Sales_ProductRequestForm.project.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
@@ -303,7 +401,7 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
-                name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_ProductRequestForm.project.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
                 <property name="Status">Closed</property>
@@ -311,14 +409,14 @@
             </trigger>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="updateField4Project"
-                name="Sales_InvoiceForm.project.UI_FIELD_UPDATE"
+                name="Sales_ProductRequestForm.project.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
                 <property name="ContactField">contact</property>
                 <property name="ContactData">contactData</property>
             </trigger>
         </field>
         <field name="projectData">
-            <property name="Label">Sales_InvoiceForm.projectData.Label</property>
+            <property name="Label">Sales_ProductRequestForm.projectData.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
@@ -326,7 +424,7 @@
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ProductRequest#ToLink].linkto[FromLink].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2ProductRequest#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2Invoice#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2ProductRequest#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2ProductRequest#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_ProductRequest.project.Label</property>
             <property name="ModeCreate">NONE</property>

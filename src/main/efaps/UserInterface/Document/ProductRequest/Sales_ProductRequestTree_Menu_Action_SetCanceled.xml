@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -18,23 +17,23 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5887a08b-b408-4ec2-a601-d4c707e9bd15</uuid>
+    <uuid>e2f7c183-8574-40c7-9ae0-bae3f51826e4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductRequestTree_Menu_Action_SetClosed</name>
+        <name>Sales_ProductRequestTree_Menu_Action_SetCanceled</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Delivery</role>
         </access>
         <target>
             <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Closed</property>
+                <property name="Status">Canceled</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_ProductRequestTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
+                name="Sales_ProductRequestTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status">!Canceled</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

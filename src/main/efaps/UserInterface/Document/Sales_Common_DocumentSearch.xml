@@ -28,6 +28,7 @@
             <child>Sales_OrderOutboundSearch</child>
             <child>Sales_ReceiptSearch</child>
             <child>Sales_GoodsIssueSlipSearch</child>
+            <child>Sales_ProductRequestSearch</child>
         </childs>
         <parents>
             <parent>ERP_Common_Search</parent>
