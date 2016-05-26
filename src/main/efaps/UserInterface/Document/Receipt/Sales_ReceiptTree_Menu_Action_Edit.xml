@@ -30,7 +30,12 @@
             <form>Sales_ReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.Receipt" method="edit" >
                 <property name="PositionType">Sales_ReceiptPosition</property>
-                 <!-- Sales_Employee2Receipt -->
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.Receipt.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.Receipt.Mime</property>
+
+                <!-- Sales_Employee2Receipt -->
                 <property name="ConnectType01">9d8b432c-ddf7-45b4-8ed9-cb749b9ee8a1</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>

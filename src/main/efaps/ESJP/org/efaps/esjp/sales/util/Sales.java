@@ -1038,17 +1038,32 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECEIPTASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute RECEIPT_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Receipt.AssignEmployee")
                     .description("Activate the mechanism to assign employee to Receipt");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECEIPTACTIVATECONDITION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute RECEIPT_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Receipt.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Receipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute RECEIPT_JASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.JasperReport")
+                    .description("Name of the jasperReport for ReturnUsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> RECEIPT_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime for the jasperReport for ReturnUsageReport");
 
     /** See description. */
     @EFapsSysConfAttribute
