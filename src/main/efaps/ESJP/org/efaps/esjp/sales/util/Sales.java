@@ -179,14 +179,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute CREDITNOTEJASPERREPORT = new StringSysConfAttribute()
+    public static final PropertiesSysConfAttribute CREDITNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "CreditNote.CreateFromInvoiceAutoComplete")
+                    .description("Possibiloity to overwrite the configuraiton for the Automcomplete for Invoice.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute CREDITNOTE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "CreditNote.JasperReport")
                     .description("Name of the jasperReport for CreditNote");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> CREDITNOTEMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> CREDITNOTE_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "CreditNote.Mime")
                     .clazz(JasperMime.class)
@@ -403,11 +410,19 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute INCOMINGCREDITNOTEREVSEQ = new StringSysConfAttribute()
+    public static final StringSysConfAttribute INCOMINGCREDITNOTE_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingCreditNote.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGCREDITNOTE_FROMINCINVOICEAC
+            = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingCreditNote.CreateFromIncomingInvoiceAutoComplete")
+                    .description("Possibiloity to overwrite the configuraiton for the Automcomplete for Invoice.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -605,16 +620,22 @@ public final class Sales
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
                                     + "to create Incoming Receipt from.");
 
-
-
-
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute INCOMINGREMINDERREVSEQ = new StringSysConfAttribute()
+    public static final StringSysConfAttribute INCOMINGREMINDER_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingReminder.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGREMINDER_FROMINCINVOICEAC
+            = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReminder.CreateFromIncomingInvoiceAutoComplete")
+                    .description("Possibiloity to overwrite the configuraiton for the Automcomplete "
+                                    + "for Incoming Invoice.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -810,7 +831,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PAYMENTGENERATEREPORT = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENTDOCUMENT_GENERATEREPORT = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.in.GenerateReport")
                     .description("Activate the generation of a report for every payment.");
@@ -821,6 +842,13 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.out.DeactivateCodeGeneration")
                     .description("Deactivate the automatic generation of a code for every Payment Out Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTDOCUMENTOUT_GENERATEREPORT = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.GenerateReport")
+                    .description("Activate the generation of a report for every payment.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1320,6 +1348,13 @@ public final class Sales
                     .key(BASE + "UsageReport.Mime")
                     .clazz(JasperMime.class)
                     .description("Mime for the jasperReport for UsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REMINDER_FROMINVOICEAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Reminder.CreateFromInvoiceAutoComplete")
+                    .description("Possibiloity to overwrite the configuraiton for the Automcomplete for Invoice.");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -1304,7 +1304,10 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         File file = null;
-        if (Sales.PAYMENTGENERATEREPORT.get()) {
+        if (_createdDoc.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract)
+                        && Sales.PAYMENTDOCUMENT_GENERATEREPORT.get()
+                        || _createdDoc.getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract)
+                        && Sales.PAYMENTDOCUMENTOUT_GENERATEREPORT.get()) {
             final Object name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Code.name);
             if (name == null) {
                 _createdDoc.getValues().put(CIERP.DocumentAbstract.Name.name, name);
