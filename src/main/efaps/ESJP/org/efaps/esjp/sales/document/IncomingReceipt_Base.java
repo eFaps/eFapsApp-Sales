@@ -26,7 +26,6 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -156,15 +155,7 @@ public abstract class IncomingReceipt_Base
     public Return showRevisionFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
-        final String revision = (String) Context.getThreadContext().getSessionAttribute(
-                        IncomingReceipt_Base.REVISIONKEY);
-        Context.getThreadContext().setSessionAttribute(IncomingReceipt_Base.REVISIONKEY, null);
-        final StringBuilder html = new StringBuilder();
-        html.append("<span style=\"text-align: center; width: 98%; font-size:40pt; height: 55px; position:absolute\">")
-            .append(revision).append("</span>");
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
+        return getRevisionSequenceFieldValue(_parameter, IncomingReceipt.REVISIONKEY);
     }
 
     @Override

@@ -32,4 +32,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class RecievingTicket
     extends RecievingTicket_Base
 {
+    /**
+     * Revision Key.
+     */
+    public static final String REVISIONKEY =  RecievingTicket_Base.REVISIONKEY;
+
 }

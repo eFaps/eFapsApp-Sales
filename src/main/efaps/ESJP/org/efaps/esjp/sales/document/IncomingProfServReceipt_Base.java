@@ -196,15 +196,7 @@ public abstract class IncomingProfServReceipt_Base
     public Return showRevisionFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
-        final String revision = (String) Context.getThreadContext().getSessionAttribute(
-                        IncomingProfServReceipt.REVISIONKEY);
-        Context.getThreadContext().setSessionAttribute(IncomingProfServReceipt.REVISIONKEY, null);
-        final StringBuilder html = new StringBuilder();
-        html.append("<span style=\"text-align: center; width: 98%; font-size:40pt; height: 55px; position:absolute\">")
-            .append(revision).append("</span>");
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
+        return getRevisionSequenceFieldValue(_parameter, IncomingProfServReceipt.REVISIONKEY);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -25,25 +22,30 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 
 @EFapsUUID("07c31497-62dd-48af-9962-7dc8a20d4fb6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingRetentionCertificate_Base
     extends AbstractDocumentSum
 {
@@ -52,6 +54,11 @@ public abstract class IncomingRetentionCertificate_Base
      * Used to store the RetentionDoc in the Context.
      */
     public static final String RETENTIONDOC = IncomingRetentionCertificate.class.getName() + ".RetentiontionDoc";
+
+    /**
+     * Used to store the Revision in the Context.
+     */
+    protected static final String REVISIONKEY = IncomingRetentionCertificate.class.getName() + "RevisionKey";
 
     /**
      * Executed from a Command execute vent to create a new Incoming PerceptionCertificate.
@@ -71,6 +78,22 @@ public abstract class IncomingRetentionCertificate_Base
         return new Return();
     }
 
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String seqKey = Sales.INCOMINGRETENTIONCERTIFICATE__REVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
+        if (numgen != null) {
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingRetentionCertificate.REVISIONKEY, revision);
+            _insert.add(CISales.IncomingRetentionCertificate.Revision, revision);
+        }
+    }
 
     /**
      * Executed from a Command execute event to edit.
@@ -106,6 +129,13 @@ public abstract class IncomingRetentionCertificate_Base
         return ret;
     }
 
+    /**
+     * Parses the big decimal.
+     *
+     * @param _value the _value
+     * @return the big decimal
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal parseBigDecimal(final String _value)
         throws EFapsException
     {
@@ -119,5 +149,16 @@ public abstract class IncomingRetentionCertificate_Base
             throw new EFapsException(IncomingRetentionCertificate.class, "RateCrossTotal.ParseException", p);
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
+    public Return showRevisionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getRevisionSequenceFieldValue(_parameter, IncomingRetentionCertificate.REVISIONKEY);
     }
 }

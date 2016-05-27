@@ -94,6 +94,9 @@
         <field name="status">
             <property name="Attribute">Status</property>
         </field>
+        <field character="Group" name="nameGroup">
+            <property name="GroupCount">2</property>
+        </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
@@ -116,6 +119,9 @@
             <property name="Columns">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
         </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>

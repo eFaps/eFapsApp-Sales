@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -18,29 +17,17 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4930aa91-aee0-44dc-96cc-39cc96f544fd</uuid>
+    <uuid>45f3221b-dd92-4863-b4aa-d9a0f2734cad</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingRetentionCertificateMyDesk_Menu_Action_Create</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
-            <role>Sales_IncomingDocument</role>
-        </access>
+        <name>Sales_IncomingRetentionCertificate_ShowRevision</name>
         <target>
-            <form>Sales_IncomingRetentionCertificateForm</form>
-            <execute program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="create">
-                <property name="StatusGroup">Sales_IncomingRetentionCertificateStatus</property>
-                <property name="Status">Open</property>
-            </execute>
-            <command>Sales_IncomingRetentionCertificate_ShowRevision</command>
+            <form>Sales_IncomingRetentionCertificateRevisionForm</form>
         </target>
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_IncomingRetentionCertificate</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">1100</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCmdRevise">false</property>
     </definition>
 </ui-command>

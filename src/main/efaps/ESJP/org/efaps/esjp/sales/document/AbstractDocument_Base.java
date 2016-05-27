@@ -2719,6 +2719,28 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Gets the revision sequence field value.
+     *
+     * @param _parameter the _parameter
+     * @param _sessionKey the _session key
+     * @return the revision sequence field value
+     * @throws EFapsException the e faps exception
+     */
+    protected Return getRevisionSequenceFieldValue(final Parameter _parameter,
+                                                   final String _sessionKey)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String revision = (String) Context.getThreadContext().getSessionAttribute(_sessionKey);
+        Context.getThreadContext().setSessionAttribute(_sessionKey, null);
+        final StringBuilder html = new StringBuilder();
+        html.append("<span style=\"text-align: center; width: 98%; font-size:40pt; height: 55px; position:absolute\">")
+                        .append(revision).append("</span>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
      * The Class AbstractUIPosition.
      *
      * @author The eFaps Team

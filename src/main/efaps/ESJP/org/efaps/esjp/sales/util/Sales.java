@@ -647,10 +647,18 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGRETENTIONCERTIFICATEACTIVATE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGRETENTIONCERTIFICATE_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingRetentionCertificate.Activate")
                     .description("Activate Incoming Retention Certificates");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGRETENTIONCERTIFICATE__REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingRetentionCertificate.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingRetentionCertificateRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
 
     /** See description. */
     @EFapsSysConfAttribute
