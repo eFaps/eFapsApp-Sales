@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,40 +22,52 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ServiceRequestPositionTable</name>
-        <field name="quantity">
+       <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_ServiceRequestPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_ServiceRequestPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
-                name="Sales_ServiceRequestPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.ServiceRequest" >
+                name="Sales_ProductRequestPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.ServiceRequest">
+                <!-- Sales-Configuration -->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.ServiceRequest.AutoComplete4Products</property>
                 <property name="Type">Products_NonStockProductAbstract</property>
+                <property name="ExtraParameter">project</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Product"
-                name="Sales_ServiceRequestPositionTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.ServiceRequest" />
+            <trigger program="org.efaps.esjp.sales.document.ServiceRequest" method="updateFields4Product"
+                name="Sales_ProductRequestPositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_ServiceRequestPosition/ProductDesc.Label</property>
             <property name="Width">10</property>
         </field>
         <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_ServiceRequestPosition/UoM.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getUoMDropDownFieldValue"
+                name="Sales_ServiceionReportPositionTable.uoM.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field" />
         </field>
         <field name="uom4View">
             <property name="Width">1</property>
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_ServiceRequestPosition/UoM.Label</property>
         </field>

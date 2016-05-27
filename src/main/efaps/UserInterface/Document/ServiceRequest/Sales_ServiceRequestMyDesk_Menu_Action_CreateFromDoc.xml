@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -15,30 +14,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>aa3b535c-bd7d-4943-be69-19eccc7a13e7</uuid>
+    <uuid>43365798-cdc5-4e65-ab30-aecf6cd6dd44</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ServiceRequestTree_Menu_Action_SetClosed</name>
+        <name>Sales_ServiceRequestMyDesk_Menu_Action_CreateFromDoc</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Delivery</role>
+            <role>Sales_Accounting</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Closed</property>
-            </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_ServiceRequestTree_Menu_Action_SetClosed.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
-            </trigger>
+            <form>Sales_ServiceRequest_SelectDocForm</form>
+            <command>Sales_ServiceRequestMyDesk_Menu_Action_CreateFromDoc2</command>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetCmdRevise">true</property>
     </definition>
 </ui-command>

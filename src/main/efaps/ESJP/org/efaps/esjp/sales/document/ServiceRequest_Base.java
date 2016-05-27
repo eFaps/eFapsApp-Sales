@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -25,21 +22,31 @@ import java.io.File;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("7adb6aad-e8ab-4f22-a52d-f1b952c9f018")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ServiceRequest_Base
     extends AbstractProductDocument
 {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.ServiceRequest;
+    }
 
     /**
      * @param _parameter Parameter as passed from the eFaps API.
@@ -54,7 +61,6 @@ public abstract class ServiceRequest_Base
         createPositions(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
-        connect2Terms(_parameter, createdDoc);
 
         final File file = createReport(_parameter, createdDoc);
         if (file != null) {
@@ -75,10 +81,11 @@ public abstract class ServiceRequest_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final EditedDoc createdDoc = editDoc(_parameter);
-        updatePositions(_parameter, createdDoc);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
 
-        final File file = createReport(_parameter, createdDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

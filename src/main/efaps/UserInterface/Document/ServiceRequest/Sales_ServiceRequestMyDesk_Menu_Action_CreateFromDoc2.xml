@@ -14,22 +14,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1f7a0e99-daf8-4d59-9ac7-8df42b947413</uuid>
+    <uuid>9102a989-f49d-4a22-ab6e-ebbda6d80a37</uuid>
     <file-application>eFapsApp-Sales</file-application>
-   <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ServiceRequestTree_Menu_Action_Edit</name>
+        <name>Sales_ServiceRequestMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
-            <role>Sales_Salesman</role>
             <role>Sales_Admin</role>
         </access>
         <target>
             <form>Sales_ServiceRequestForm</form>
-            <execute program="org.efaps.esjp.sales.document.ServiceRequest" method="edit">
+            <execute method="create" program="org.efaps.esjp.sales.document.ServiceRequest">
+                <property name="PositionType">Sales_ServiceRequestPosition</property>
+                <property name="StatusGroup">Sales_ServiceRequestStatus</property>
+                <property name="Status">Draft</property>
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.ServiceRequest.JasperReport</property>
@@ -41,15 +42,12 @@
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">department</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_InvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Status">Draft</property>
-            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="TargetCreateType">Sales_ServiceRequest</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
     </definition>
 </ui-command>

@@ -950,6 +950,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PRODUCTREQUEST_AUTOCOMPLETE4PRODUCTS
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ProductRequest.AutoComplete4Products")
+                    .description("Possib ility to overwrite the dafutl Autocomplete for Products in ProductRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute PRODUCTREQUEST_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ProductRequest.JasperReport")
@@ -1211,6 +1219,36 @@ public final class Sales
                     .key(BASE + "SerialNumbers.SuffixLength")
                     .defaultValue(6)
                     .description("Length of the number part of a Serialnumber .\"001-NNNNNN\". Default Value: 6");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEREQUEST_ASSDEP = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceRequest.AssignDepartment")
+                    .description("Activate the mechanism to assign a department to ServiceRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SERVICEREQUEST_AUTOCOMPLETE4PRODUCTS
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceRequest.AutoComplete4Products")
+                    .description("Possib ility to overwrite the dafutl Autocomplete for Products in ServiceRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute SERVICEREQUEST_JASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceRequest.JasperReport")
+                    .description("Name of the jasperReport for ServiceRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> SERVICEREQUEST_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceRequest.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime of the jasperReport for ServiceRequest.");
 
     /** See description. */
     @EFapsSysConfAttribute

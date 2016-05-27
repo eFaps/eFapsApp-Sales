@@ -30,7 +30,17 @@
             <execute method="create" program="org.efaps.esjp.sales.document.ServiceRequest">
                 <property name="PositionType">Sales_ServiceRequestPosition</property>
                 <property name="StatusGroup">Sales_ServiceRequestStatus</property>
-                <property name="Status">Open</property>
+                <property name="Status">Draft</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.ServiceRequest.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.ServiceRequest.Mime</property>
+
+                <!-- Sales_HumanResource_Department2ServiceRequest -->
+                <property name="ConnectType01">b2c99ab0-b47b-4023-b19e-ec5c6195cbae</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">department</property>
             </execute>
         </target>
         <property name="Target">modal</property>

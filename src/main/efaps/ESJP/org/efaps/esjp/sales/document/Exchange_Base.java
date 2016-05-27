@@ -368,7 +368,7 @@ public abstract class Exchange_Base
                 }
                 map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.crossTotal4Exchange.name, val);
                 map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.date.name + "_eFapsDate",
-                                DateUtil.getDate4Parameter(new DateTime().plusMonths(i)));
+                                DateUtil.getDate4Parameter(new DateTime()));
                 map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.dueDate.name + "_eFapsDate",
                                 DateUtil.getDate4Parameter(new DateTime().plusMonths(i + 1)));
             }

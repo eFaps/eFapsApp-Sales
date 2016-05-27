@@ -29,6 +29,7 @@
             <child>Sales_ReceiptSearch</child>
             <child>Sales_GoodsIssueSlipSearch</child>
             <child>Sales_ProductRequestSearch</child>
+            <child>Sales_ServiceRequestSearch</child>
         </childs>
         <parents>
             <parent>ERP_Common_Search</parent>

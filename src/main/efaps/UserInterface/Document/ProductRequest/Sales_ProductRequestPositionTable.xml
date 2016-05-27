@@ -37,6 +37,10 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
                 name="Sales_ProductRequestPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ProductRequest">
+                <!-- Sales-Configuration -->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.ProductRequest.AutoComplete4Products</property>
+                <property name="Type">Products_StockProductAbstract</property>
                 <property name="ExtraParameter">project</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.ProductRequest" method="updateFields4Product"

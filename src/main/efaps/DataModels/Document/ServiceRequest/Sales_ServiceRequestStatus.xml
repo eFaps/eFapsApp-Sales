@@ -14,21 +14,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>85f9fa03-98a9-4776-b74a-c95b1538fee8</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ServiceRequestStatus</name>
         <parent>Sales_DocumentStatus</parent>
+         <status key="Draft">
+            <description>The products where not delivered yet.</description>
+        </status>
         <status key="Open">
             <description>The products where not delivered yet.</description>
         </status>
