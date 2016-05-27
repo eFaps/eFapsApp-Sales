@@ -464,7 +464,7 @@ public abstract class PettyCashBalance_Base
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
-                final String seqKey = Sales.INCOMINGCREDITNOTEREVSEQ.get();
+                final String seqKey = Sales.INCOMINGCREDITNOTE_REVSEQ.get();
                 final NumberGenerator numgen = isUUID(seqKey)
                                 ? NumberGenerator.get(UUID.fromString(seqKey))
                                 : NumberGenerator.get(seqKey);

@@ -95,6 +95,9 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+        </field>
         <field name="financialInstitute">
             <property name="Attribute">FinancialInstitute</property>
             <property name="ModeEdit">EDITABLE</property>

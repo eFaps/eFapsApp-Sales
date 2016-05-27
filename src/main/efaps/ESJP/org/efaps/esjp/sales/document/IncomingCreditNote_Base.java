@@ -173,7 +173,7 @@ public abstract class IncomingCreditNote_Base
         throws EFapsException
     {
         if (_parameter.getInstance() == null) {
-            final String seqKey = Sales.INCOMINGCREDITNOTEREVSEQ.get();
+            final String seqKey = Sales.INCOMINGCREDITNOTE_REVSEQ.get();
             final NumberGenerator numgen = isUUID(seqKey)
                             ? NumberGenerator.get(UUID.fromString(seqKey))
                             : NumberGenerator.get(seqKey);

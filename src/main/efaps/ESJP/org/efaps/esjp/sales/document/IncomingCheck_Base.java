@@ -21,18 +21,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -45,6 +49,11 @@ import org.efaps.util.EFapsException;
 public abstract class IncomingCheck_Base
     extends AbstractSumOnlyDocument
 {
+
+    /**
+     * Used to store the Revision in the Context.
+     */
+    protected static final String REVISIONKEY = IncomingCheck.class.getName() + "RevisionKey";
 
     /**
      * Method for create a new IncomingCredit.
@@ -118,6 +127,15 @@ public abstract class IncomingCheck_Base
         throws EFapsException
     {
         super.add2DocCreate(_parameter, _insert, _createdDoc);
+        final String seqKey = Sales.INCOMINGCHECK_REVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
+        if (numgen != null) {
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingCheck.REVISIONKEY, revision);
+            _insert.add(CISales.IncomingCheck.Revision, revision);
+        }
         add2DocCreateEdit(_parameter, _insert, _createdDoc);
     }
 
@@ -137,6 +155,7 @@ public abstract class IncomingCheck_Base
      * @param _parameter the _parameter
      * @param _update the _update
      * @param _createdDoc the _created doc
+     * @throws EFapsException the e faps exception
      */
     protected void add2DocCreateEdit(final Parameter _parameter,
                                      final Update _update,
@@ -149,5 +168,23 @@ public abstract class IncomingCheck_Base
             _update.add(CISales.IncomingCheck.FinancialInstitute, financialInstitute);
             _createdDoc.getValues().put(CISales.IncomingCheck.FinancialInstitute.name, financialInstitute);
         }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
+    public Return showRevisionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String revision = (String) Context.getThreadContext().getSessionAttribute(IncomingCheck.REVISIONKEY);
+        Context.getThreadContext().setSessionAttribute(IncomingCheck.REVISIONKEY, null);
+        final StringBuilder html = new StringBuilder();
+        html.append("<span style=\"text-align: center; width: 98%; font-size:40pt; height: 55px; position:absolute\">")
+            .append(revision).append("</span>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
     }
 }

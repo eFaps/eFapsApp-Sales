@@ -37,6 +37,7 @@
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">createDocument</property>
             </execute>
+            <command>Sales_IncomingCheck_ShowRevision</command>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingCheck</property>

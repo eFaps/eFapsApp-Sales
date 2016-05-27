@@ -31,5 +31,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class IncomingCheck
     extends IncomingCheck_Base
 {
-
+    /**
+     * Used to store the Revision in the Context.
+     */
+    public static final String REVISIONKEY = IncomingCheck_Base.REVISIONKEY;
 }

@@ -85,7 +85,7 @@ public abstract class IncomingReminder_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String seqKey = Sales.INCOMINGREMINDERREVSEQ.get();
+        final String seqKey = Sales.INCOMINGREMINDER_REVSEQ.get();
         final NumberGenerator numgen = isUUID(seqKey)
                         ? NumberGenerator.get(UUID.fromString(seqKey))
                         : NumberGenerator.get(seqKey);
