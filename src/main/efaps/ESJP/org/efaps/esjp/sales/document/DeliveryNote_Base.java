@@ -55,6 +55,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
@@ -239,7 +240,7 @@ public abstract class DeliveryNote_Base
     {
         final Return ret = new Return();
         if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
-            final List<String> depPoints = Sales.DELIVERYNOTEDEFAULTDEPARTUREPOINTS.get();
+            final List<String> depPoints = Sales.DELIVERYNOTE_DEFAULTDEPARTUREPOINTS.get();
             if (!depPoints.isEmpty()) {
                 ret.put(ReturnValues.VALUES, depPoints.get(0));
             }
@@ -262,7 +263,7 @@ public abstract class DeliveryNote_Base
             all = true;
         }
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final List<String> depPoints = Sales.DELIVERYNOTEDEFAULTDEPARTUREPOINTS.get();
+        final List<String> depPoints = Sales.DELIVERYNOTE_DEFAULTDEPARTUREPOINTS.get();
         for (final String depPoint : depPoints) {
             if (all || StringUtils.startsWithIgnoreCase(depPoint, input)) {
                 final Map<String, String> map = new HashMap<String, String>();
@@ -307,11 +308,24 @@ public abstract class DeliveryNote_Base
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
         final PrintQuery print = new PrintQuery(_contactInstance);
-        final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+        final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTE_CONTMSGPH4ARP.get()));
         print.addMsgPhrase(msgPhrase);
         print.execute();
         final String address = print.getMsgPhrase(msgPhrase);
         _map.put(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, address);
+
+        if (Sales.DELIVERYNOTE_FROMINVOICEAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.DELIVERYNOTE_FROMINVOICEAC.get());
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_DeliveryNoteForm.invoice.name, queryBldr));
+        }
+        if (Sales.DELIVERYNOTE_FROMRECEIPTAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.DELIVERYNOTE_FROMRECEIPTAC.get());
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_DeliveryNoteForm.receipt.name, queryBldr));
+        }
     }
 
 
@@ -323,11 +337,24 @@ public abstract class DeliveryNote_Base
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
         final PrintQuery print = new PrintQuery(_contactInstance);
-        final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+        final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTE_CONTMSGPH4ARP.get()));
         print.addMsgPhrase(msgPhrase);
         print.execute();
         final String adress = print.getMsgPhrase(msgPhrase);
         ret.append(getSetFieldValue(0, CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress));
+
+        if (Sales.DELIVERYNOTE_FROMINVOICEAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.DELIVERYNOTE_FROMINVOICEAC.get());
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_DeliveryNoteForm.invoice.name, queryBldr));
+        }
+        if (Sales.DELIVERYNOTE_FROMRECEIPTAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.DELIVERYNOTE_FROMRECEIPTAC.get());
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_DeliveryNoteForm.receipt.name, queryBldr));
+        }
         return ret;
     }
 
@@ -440,7 +467,7 @@ public abstract class DeliveryNote_Base
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.contact.name));
         if (contactInst.isValid()) {
             final PrintQuery print = new PrintQuery(contactInst);
-            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTE_CONTMSGPH4ARP.get()));
             print.addMsgPhrase(msgPhrase);
             print.execute();
             final String address = print.getMsgPhrase(msgPhrase);
@@ -459,7 +486,8 @@ public abstract class DeliveryNote_Base
                                 attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CIContacts.SubContact.Name);
-                final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTESUBCONTMSGPH4ARP.get()));
+                final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(
+                                Sales.DELIVERYNOTE_SUBCONTMSGPH4ARP.get()));
                 multi.addMsgPhrase(subMsgPhrase);
                 multi.execute();
                 int idx = 1;
@@ -482,7 +510,7 @@ public abstract class DeliveryNote_Base
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
         if (carrierInst.isValid()) {
             final PrintQuery print = new PrintQuery(carrierInst);
-            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTE_CONTMSGPH4ARP.get()));
             print.addMsgPhrase(msgPhrase);
             print.execute();
             final String address = print.getMsgPhrase(msgPhrase);
@@ -494,7 +522,7 @@ public abstract class DeliveryNote_Base
             }
         }
 
-        final List<String> destinations = Sales.DELIVERYNOTEDEFAULTARRIVALPOINTS.get();
+        final List<String> destinations = Sales.DELIVERYNOTE_DEFAULTARRIVALPOINTS.get();
         int idx = 1;
         for (final String destination : destinations) {
             if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
@@ -873,15 +901,16 @@ public abstract class DeliveryNote_Base
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
+        final SelectBuilder selStatus = SelectBuilder.get()
+                        .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
                         .attribute(CISales.DeliveryNote.Status);
-        final SelectBuilder selDelNoteInst = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
-                        .instance();
-        final SelectBuilder selInvoiceInst = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.FromLink)
-                        .instance();
+        final SelectBuilder selDelNoteInst = SelectBuilder.get()
+                        .linkto(CISales.Document2DocumentAbstract.ToAbstractLink).instance();
+        final SelectBuilder selInvoiceInst = SelectBuilder.get()
+                        .linkto(CISales.Document2DocumentAbstract.FromAbstractLink).instance();
         print.addSelect(selStatus, selDelNoteInst, selInvoiceInst);
-        print.addAttribute(CISales.Invoice2DeliveryNote.ToLink,
-                        CISales.Invoice2DeliveryNote.FromLink);
+        print.addAttribute(CISales.Document2DocumentAbstract.ToAbstractLink,
+                        CISales.Document2DocumentAbstract.FromAbstractLink);
         print.executeWithoutAccessCheck();
         final Status status = Status.get(print.<Long>getSelect(selStatus));
         // if the deliverynote ticket was open check if the status must change
@@ -891,11 +920,11 @@ public abstract class DeliveryNote_Base
             comp.setDocInstance(delNoteInst);
             // check for the case that there are n Invoices for the given DeliveryNote
             final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice2DeliveryNote);
-            queryBldr.addWhereAttrEqValue(CISales.Invoice2DeliveryNote.ToLink, delNoteInst);
+            queryBldr.addType(CISales.Receipt2DeliveryNote);
+            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, delNoteInst);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selInvInst = SelectBuilder.get()
-                            .linkto(CISales.Invoice2DeliveryNote.FromLink)
-                            .instance();
+                            .linkto(CISales.Document2DocumentAbstract.FromAbstractLink).instance();
             multi.addSelect(selInvInst);
             multi.executeWithoutAccessCheck();
             while (multi.next()) {
@@ -916,13 +945,13 @@ public abstract class DeliveryNote_Base
                 invComp.setDocInstance(invoiceInst);
                 // check for the case that there are n Invoices for the given DeliveryNote
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Invoice2DeliveryNote);
-                queryBldr2.addWhereAttrEqValue(CISales.Invoice2DeliveryNote.FromLink, invoiceInst);
+                queryBldr.addType(CISales.Receipt2DeliveryNote);
+                queryBldr2.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, invoiceInst);
                 final MultiPrintQuery multi2 = queryBldr2.getPrint();
                 final SelectBuilder selDelInst = SelectBuilder.get()
-                                .linkto(CISales.Invoice2DeliveryNote.ToLink)
-                                .instance();
+                                .linkto(CISales.Document2DocumentAbstract.ToAbstractLink).instance();
                 final SelectBuilder selDelStatus = SelectBuilder.get()
-                                .linkto(CISales.Invoice2DeliveryNote.ToLink).status();
+                                .linkto(CISales.Document2DocumentAbstract.ToAbstractLink).status();
                 multi2.addSelect(selDelInst, selDelStatus);
                 multi2.executeWithoutAccessCheck();
                 final Set<Instance> delInsts = new HashSet<>();
@@ -950,4 +979,14 @@ public abstract class DeliveryNote_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new return
+     * @throws EFapsException on error
+     */
+    public Return connect2ReceiptTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        return connect2InvoiceTrigger(_parameter);
+    }
 }

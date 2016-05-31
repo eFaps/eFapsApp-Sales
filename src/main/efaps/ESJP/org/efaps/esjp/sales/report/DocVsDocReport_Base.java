@@ -171,7 +171,7 @@ public abstract class DocVsDocReport_Base
                                      final String _default)
         throws EFapsException
     {
-        Object ret;
+        final Object ret;
         if ("Versus".equalsIgnoreCase(_type)) {
             final Map<Integer, String> types = analyseProperty(_parameter, "Type");
             types.putAll(analyseProperty(_parameter, "Type", 100));
@@ -208,14 +208,14 @@ public abstract class DocVsDocReport_Base
         throws CacheReloadException
     {
         final String typeStr1 = _types.get(_idx);
-        Type type1;
+        final Type type1;
         if (UUIDUtil.isUUID(typeStr1)) {
             type1 = Type.get(UUID.fromString(typeStr1));
         } else {
             type1 = Type.get(typeStr1);
         }
         final String typeStr2 = _types.get(_idx + 100);
-        Type type2;
+        final Type type2;
         if (UUIDUtil.isUUID(typeStr2)) {
             type2 = Type.get(UUID.fromString(typeStr1));
         } else {
@@ -287,7 +287,7 @@ public abstract class DocVsDocReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            JRRewindableDataSource ret;
+            final JRRewindableDataSource ret;
             if (getFilteredReport().isCached(_parameter)) {
                 ret = getFilteredReport().getDataSourceFromCache(_parameter);
                 try {
@@ -422,7 +422,7 @@ public abstract class DocVsDocReport_Base
             final Map<Integer, String> types = analyseProperty(_parameter, "Type", _offset);
             final String typeStr = types.get(selected);
 
-            Type type;
+            final Type type;
             if (isUUID(typeStr)) {
                 type = Type.get(UUID.fromString(typeStr));
             } else {
@@ -495,7 +495,7 @@ public abstract class DocVsDocReport_Base
         protected Object[] getContactInsts(final Parameter _parameter)
             throws EFapsException
         {
-            Object[] ret;
+            final Object[] ret;
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
             if (filter == null || (filter != null && filter.getObject() == null)) {
@@ -605,6 +605,50 @@ public abstract class DocVsDocReport_Base
                         while (iter.hasNext() && !found) {
                             final DocBean rightBean = iter.next();
                             if (rightBean.getDocDate().isAfter(leftBean.getDocDate())) {
+                                if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
+                                    BigDecimal currentQuantity = dataBean.getQuantity();
+                                    // if currentQuantity > rightQuanity remove the right bean
+                                    if (currentQuantity.compareTo(rightBean.getQuantity()) > 0) {
+                                        currentQuantity = currentQuantity.subtract(rightBean.getQuantity());
+                                        dataBean.getRightBeans().add(rightBean);
+                                        iter.remove();
+                                    } else if (currentQuantity.compareTo(rightBean.getQuantity()) == 0) {
+                                        currentQuantity = BigDecimal.ZERO;
+                                        dataBean.getRightBeans().add(rightBean);
+                                        iter.remove();
+                                        found = true;
+                                    } else {
+                                    // currentQuantity < rightQuanity mark as found but keep the rightbean
+                                        currentQuantity = BigDecimal.ZERO;
+                                        dataBean.getRightBeans().add(rightBean);
+                                        found = true;
+                                    }
+                                    dataBean.setQuantity(currentQuantity);
+                                }
+                            } else {
+                                iter.remove();
+                            }
+                        }
+                    }
+                    break;
+                case "DateEqualOrAfter":
+                    sort(_parameter, getLeftDocuments());
+                    sort(_parameter, getRightDocuments());
+
+                    for (final DocBean leftBean : getLeftDocuments()) {
+                        final DataBean dataBean = new DataBean()
+                                        .addLeft(leftBean)
+                                        .setContactName(leftBean.getContactName())
+                                        .setProductName(leftBean.getProductName())
+                                        .setProductDesc(leftBean.getProductDesc())
+                                        .setQuantity(leftBean.getQuantity());
+                        ret.add(dataBean);
+                        boolean found = false;
+                        final Iterator<DocBean> iter = getRightDocuments().iterator();
+                        while (iter.hasNext() && !found) {
+                            final DocBean rightBean = iter.next();
+                            if (rightBean.getDocDate().isAfter(leftBean.getDocDate())
+                                            || rightBean.getDocDate().isEqual(leftBean.getDocDate())) {
                                 if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
                                     BigDecimal currentQuantity = dataBean.getQuantity();
                                     // if currentQuantity > rightQuanity remove the right bean
@@ -884,7 +928,7 @@ public abstract class DocVsDocReport_Base
          */
         public DocBean setDocDate(final DateTime _date)
         {
-            this.docDate = _date;
+            this.docDate = _date.withTimeAtStartOfDay();
             return this;
         }
 

@@ -245,8 +245,8 @@ public abstract class DocComparator_Base
             rateNet = rateNet.add(pos.getRateNetPrice());
         }
         // if the evaluation of Rate Currency is permitted check if one of them is ok
-        return evalrate ? net.abs().compareTo(getNetDeviation()) < 0 || rateNet.abs().compareTo(getNetDeviation()) < 0
-                        : net.abs().compareTo(getNetDeviation()) < 0;
+        return evalrate ? net.abs().compareTo(getNetDeviation()) <= 0 || rateNet.abs().compareTo(getNetDeviation()) <= 0
+                        : net.abs().compareTo(getNetDeviation()) <= 0;
     }
 
     /**
@@ -262,7 +262,7 @@ public abstract class DocComparator_Base
         for (final Position pos : getInst2pos().values()) {
             quantity = quantity.add(pos.getQuantity());
         }
-        return quantity.abs().compareTo(getQuantityDeviation()) < 0;
+        return quantity.abs().compareTo(getQuantityDeviation()) <= 0;
     }
 
     /**

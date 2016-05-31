@@ -182,7 +182,7 @@ public final class Sales
     public static final PropertiesSysConfAttribute CREDITNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "CreditNote.CreateFromInvoiceAutoComplete")
-                    .description("Possibiloity to overwrite the configuraiton for the Automcomplete for Invoice.");
+                    .description("Possibiloity to overwrite the configuraiton for the Autocomplete for Invoice.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -208,14 +208,34 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute DELIVERYNOTEJASPERREPORT = new StringSysConfAttribute()
+    public static final PropertiesSysConfAttribute DELIVERYNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.CreateFromInvoiceAutoComplete")
+                    .description("AutoComplete and Activation for Create from Invoice for DeliveryNote.")
+                    .addDefaultValue("Type", "Sales_Invoice")
+                    .addDefaultValue("StatusGroup01", "Sales_InvoiceStatus")
+                    .addDefaultValue("Status01", "Open");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DELIVERYNOTE_FROMRECEIPTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.CreateFromReceiptAutoComplete")
+                    .description("AutoComplete and Activation for Create from Receipt for DeliveryNote.")
+                    .addDefaultValue("Type", "Sales_Receipt")
+                    .addDefaultValue("StatusGroup01", "Sales_ReceiptStatus")
+                    .addDefaultValue("Status01", "Open");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute DELIVERYNOTE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.JasperReport")
                     .description("Name of the jasperReport for DeliveryNote.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> DELIVERYNOTEMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> DELIVERYNOTE_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.Mime")
                     .clazz(JasperMime.class)
@@ -223,7 +243,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute DELIVERYNOTECONTMSGPH4ARP = new StringSysConfAttribute()
+    public static final StringSysConfAttribute DELIVERYNOTE_CONTMSGPH4ARP = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.ContactMsgPhrase4ArrivalPoint")
                     .defaultValue(CIMsgContacts.ContactAddressMsgPhrase.uuid.toString())
@@ -231,7 +251,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute DELIVERYNOTESUBCONTMSGPH4ARP = new StringSysConfAttribute()
+    public static final StringSysConfAttribute DELIVERYNOTE_SUBCONTMSGPH4ARP = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.SubContactMsgPhrase4ArrivalPoint")
                     .defaultValue(CIMsgContacts.SubContactAddressMsgPhrase.uuid.toString())
@@ -239,28 +259,28 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute DELIVERYNOTEACTIVATEREMARK = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute DELIVERYNOTE_ACTIVATEREMARK = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.ActivateRemark")
                     .description("Activate the Remark Attribute for Order Inbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final ListSysConfAttribute DELIVERYNOTEDEFAULTARRIVALPOINTS = new ListSysConfAttribute()
+    public static final ListSysConfAttribute DELIVERYNOTE_DEFAULTARRIVALPOINTS = new ListSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.DefaultArrivalPoints")
                     .description("Default addresses used as the departure point in delivery note.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final ListSysConfAttribute DELIVERYNOTEDEFAULTDEPARTUREPOINTS = new ListSysConfAttribute()
+    public static final ListSysConfAttribute DELIVERYNOTE_DEFAULTDEPARTUREPOINTS = new ListSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.DefaultDeparturePoints")
                     .description("Default addresses used as the departure point in delivery note.");
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink DELIVERYNOTEDEFAULTWAREHOUSE = new SysConfLink()
+    public static final SysConfLink DELIVERYNOTE_DEFAULTWAREHOUSE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.DefaultWareHouse")
                     .description("Possibility to set a default Warehouse fo0r DeliveryNote. If not set "
@@ -654,7 +674,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute INCOMINGRETENTIONCERTIFICATE__REVSEQ = new StringSysConfAttribute()
+    public static final StringSysConfAttribute INCOMINGRETENTIONCERTIFICATE_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingRetentionCertificate.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingRetentionCertificateRevisionSequence.uuid.toString())

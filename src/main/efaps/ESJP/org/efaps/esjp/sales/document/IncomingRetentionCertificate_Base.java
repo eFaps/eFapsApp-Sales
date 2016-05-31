@@ -84,7 +84,7 @@ public abstract class IncomingRetentionCertificate_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String seqKey = Sales.INCOMINGRETENTIONCERTIFICATE__REVSEQ.get();
+        final String seqKey = Sales.INCOMINGRETENTIONCERTIFICATE_REVSEQ.get();
         final NumberGenerator numgen = isUUID(seqKey)
                         ? NumberGenerator.get(UUID.fromString(seqKey))
                         : NumberGenerator.get(seqKey);

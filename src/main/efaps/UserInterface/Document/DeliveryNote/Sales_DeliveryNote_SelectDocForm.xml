@@ -16,38 +16,66 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>a4e18314-fcbe-413c-8013-baec54940064</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DeliveryNote_SelectDocForm</name>
-        <!-- fields -->
         <field name="invoice">
             <property name="Label">Sales_Invoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="autoComplete4Doc"
-                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type01">Sales_Invoice</property>
-                <property name="StatusGroup01">Sales_InvoiceStatus</property>
-                <property name="Status01">*</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Doc"
+                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.DeliveryNote.CreateFromInvoiceAutoComplete</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="updateFields4Document"
-                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Document"
+                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromInvoiceAutoComplete</property>
+           </trigger>
+        </field>
+        <field name="receipt">
+            <property name="Label">Sales_Receipt.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Doc"
+                name="Sales_DeliveryNote_SelectDocForm.receipt.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
+                <property name="Status01">*</property>
+                 <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.DeliveryNote.CreateFromReceiptAutoComplete</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Document"
+                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNote_SelectDocForm.receipt.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromReceiptAutoComplete</property>
+           </trigger>
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
