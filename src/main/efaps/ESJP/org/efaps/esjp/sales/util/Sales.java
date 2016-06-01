@@ -1245,7 +1245,10 @@ public final class Sales
     public static final PropertiesSysConfAttribute REPORT_PAYMENT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.PaymentReport")
-                    .description("Properties 4 PaymentReport.");
+                    .description("Properties 4 PaymentReport.")
+                    .addDefaultValue("IN.Type", CISales.PaymentDocumentAbstract.getType().getName())
+                    .addDefaultValue("OUT.Type", CISales.PaymentDocumentOutAbstract.getType().getName())
+                    .addDefaultValue("BOTH.Type", CISales.PaymentDocumentIOAbstract.getType().getName());
 
     /** See description. */
     @EFapsSysConfAttribute

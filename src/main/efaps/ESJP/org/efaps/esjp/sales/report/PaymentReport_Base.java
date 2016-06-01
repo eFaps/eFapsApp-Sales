@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -44,6 +45,7 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -283,14 +285,17 @@ public abstract class PaymentReport_Base
             final QueryBuilder attrQueryBldr;
             switch (getPayDoc(_parameter)) {
                 case IN:
-                    attrQueryBldr = new QueryBuilder(CISales.PaymentDocumentAbstract);
+                    attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
+                                    PayDoc.IN.name());
                     break;
                 case OUT:
-                    attrQueryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
+                    attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
+                                    PayDoc.OUT.name());
                     break;
                 case BOTH:
                 default:
-                    attrQueryBldr = new QueryBuilder(CISales.PaymentDocumentIOAbstract);
+                    attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
+                                    PayDoc.BOTH.name());
                     break;
             }
 
@@ -472,7 +477,7 @@ public abstract class PaymentReport_Base
          */
         public String getAccount()
         {
-           return this.account;
+            return this.account;
         }
 
         /**
@@ -481,9 +486,13 @@ public abstract class PaymentReport_Base
          * @param _account the account
          * @return the data bean
          */
-        public DataBean setAccount(final String _account)
+        public DataBean setAccount(final Object _account)
         {
-            this.account = _account;
+            if (_account instanceof Collection) {
+                this.account = String.valueOf(((Collection<?>) _account).iterator().next());
+            } else {
+                this.account = String.valueOf(_account);
+            }
             return this;
         }
 
