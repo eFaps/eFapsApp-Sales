@@ -27,9 +27,9 @@
             <child>Sales_PaymentDetractionOutTree_Menu_Action_Edit</child>
             <child>Sales_PaymentDocumentTree_Renew</child>
             <child>Sales_PaymentDetractionOutTree_Menu_Action_SetCanceled</child>
-            <child>Sales_PaymentDocumentCheckout</child>
             <child>Sales_PaymentDetractionOutTree_Menu_Action_PayPayment</child>
-             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
+            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>

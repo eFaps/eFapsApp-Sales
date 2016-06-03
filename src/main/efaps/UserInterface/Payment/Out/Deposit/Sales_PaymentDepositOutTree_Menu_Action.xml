@@ -20,7 +20,6 @@
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c44ed591-684d-4296-9844-eb0b07fa23dd</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDepositOutTree_Menu_Action</name>
@@ -28,8 +27,8 @@
             <child>Sales_PaymentDepositOutTree_Menu_Action_Edit</child>
             <child>Sales_PaymentDocumentTree_Renew</child>
             <child>Sales_PaymentDepositOutTree_Menu_Action_SetCanceled</child>
-            <child>Sales_PaymentDocumentCheckout</child>
             <child>Sales_PaymentDepositOutTree_Menu_Action_PayPayment</child>
+            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
