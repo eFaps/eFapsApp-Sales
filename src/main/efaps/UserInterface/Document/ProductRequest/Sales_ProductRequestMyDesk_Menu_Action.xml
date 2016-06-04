@@ -26,6 +26,7 @@
         <childs>
             <child>Sales_ProductRequestMyDesk_Menu_Action_Create</child>
             <child>Sales_ProductRequestMyDesk_Menu_Action_CreateFromDoc</child>
+            <child>Sales_ProductRequestMyDesk_Menu_Action_CreateOrderOutbound</child>
             <child>Sales_ProductRequestMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

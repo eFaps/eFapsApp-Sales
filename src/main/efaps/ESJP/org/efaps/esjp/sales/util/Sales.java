@@ -737,23 +737,31 @@ public final class Sales
                     .key(BASE + "Invoice.AutoCompleteProperties4Products")
                     .description("Autocomplete Properties 4 Products in Invoice");
 
+
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_CREATEFROMPRODREQ = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "OrderOutbound.CreateFromProductRequest")
+                    .description("Activate the ppossiblity to create an OrderOutbound from ProductRequest");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderOutbound.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute ORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute ORDEROUTBOUND_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderOutbound.JasperReport")
                     .description("Name of the jasperReport for Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute ORDEROUTBOUNDPRODUCTAC = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute ORDEROUTBOUND_PRODUCTAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderOutbound.ProductAutoComplete")
                     .description("Configuration for the AutoComplete for Products in OrderOutbound")
@@ -761,14 +769,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ORDERINBOUNDACTIVATEREMARK = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute ORDERINBOUND_ACTIVATEREMARK = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderInbound.ActivateRemark")
                     .description("Activate the Remark Attribute for Order Inbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute ORDERINBOUNDSTATUS4CREATE = new StringSysConfAttribute()
+    public static final StringSysConfAttribute ORDERINBOUND_STATUS4CREATE = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderInbound.Status4Create")
                     .description("Key of the Status for create.");

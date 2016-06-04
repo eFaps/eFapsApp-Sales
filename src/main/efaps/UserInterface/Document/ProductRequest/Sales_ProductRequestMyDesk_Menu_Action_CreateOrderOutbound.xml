@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2015 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c2d0c236-4023-4c58-902f-d949fda40b49</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ProductRequestMyDesk_Menu_Action_CreateOrderOutbound</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_OrderOutboundForm</form>
+            <evaluate method="validateStatus" program="org.efaps.esjp.common.uiform.Evaluate">
+                <property name="StatusGroup">Sales_ProductRequestStatus</property>
+                <property name="Status">Open</property>
+            </evaluate>
+            <execute program="org.efaps.esjp.sales.document.OrderOutbound" method="create">
+                <property name="PositionType">Sales_OrderOutboundPosition</property>
+                <property name="StatusGroup">Sales_OrderOutboundStatus</property>
+                <property name="Status">Draft</property>
+
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.OrderOutbound.JasperReport</property>
+                <property name="NoDataSource">true</property>
+
+                <!-- Sales_ChannelPurchaseCondition2OrderOutbound -->
+                <property name="ConnectType01">498557bd-6747-4991-8a12-6a581e96218c</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
+
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">QUANTITYGREATERZERO</property>
+                <property name="Validation03">DUPLICATEDPOSITION</property>
+            </validate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestMyDesk_Menu_Action_CreateOrderOutbound.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.CreateFromProductRequest</property>
+            </trigger>
+        </target>
+        <property name="HRef">TREE</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">0</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_OrderOutbound</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
+    </definition>
+</ui-command>

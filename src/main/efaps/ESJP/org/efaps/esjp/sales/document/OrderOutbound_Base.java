@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ import org.efaps.util.cache.CacheReloadException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("bd08a90e-91ce-4f03-b1bc-921a53b71948")
 @EFapsApplication("eFapsApp-Sales")
@@ -169,7 +168,7 @@ public abstract class OrderOutbound_Base
         throws EFapsException
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
-        if (Sales.ORDEROUTBOUNDACTIVATECONDITION.get()) {
+        if (Sales.ORDEROUTBOUND_ACTIVATECONDITION.get()) {
             InterfaceUtils.appendScript4FieldUpdate(_map,
                             new Channel().getConditionJs(_parameter, _contactInstance,
                                             CISales.ChannelPurchaseCondition2Contact));
@@ -183,13 +182,19 @@ public abstract class OrderOutbound_Base
         throws EFapsException
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
-        if (Sales.ORDEROUTBOUNDACTIVATECONDITION.get()) {
+        if (Sales.ORDEROUTBOUND_ACTIVATECONDITION.get()) {
             ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
                             CISales.ChannelPurchaseCondition2Contact));
         }
         return ret;
     }
 
+    /**
+     * Gets the status mapping4connect2 recieving ticker.
+     *
+     * @return the status mapping4connect2 recieving ticker
+     * @throws CacheReloadException the cache reload exception
+     */
     protected Map<Status, Status> getStatusMapping4connect2RecievingTicker()
         throws CacheReloadException
     {
@@ -199,6 +204,12 @@ public abstract class OrderOutbound_Base
         return ret;
     }
 
+    /**
+     * Gets the status mapping4connect2 incoming invoice.
+     *
+     * @return the status mapping4connect2 incoming invoice
+     * @throws CacheReloadException the cache reload exception
+     */
     protected Map<Status, Status> getStatusMapping4connect2IncomingInvoice()
         throws CacheReloadException
     {
@@ -208,6 +219,14 @@ public abstract class OrderOutbound_Base
         return ret;
     }
 
+    /**
+     * Gets the comparator.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _orderInst the order inst
+     * @return the comparator
+     * @throws EFapsException on error
+     */
     protected DocComparator getComparator(final Parameter _parameter,
                                           final Instance _orderInst)
         throws EFapsException

@@ -181,7 +181,7 @@ public abstract class Channel_Base
         if (!_instances.isEmpty() && _instances.get(0).isValid()) {
             final Instance docInst = _instances.get(0);
             CIType ciType = null;
-            if (docInst.getType().isCIType(CISales.OrderOutbound) && Sales.ORDEROUTBOUNDACTIVATECONDITION.get()) {
+            if (docInst.getType().isCIType(CISales.OrderOutbound) && Sales.ORDEROUTBOUND_ACTIVATECONDITION.get()) {
                 ciType = CISales.ChannelPurchaseCondition2OrderOutbound;
             }
             if (ciType != null) {
