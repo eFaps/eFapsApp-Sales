@@ -737,7 +737,6 @@ public final class Sales
                     .key(BASE + "Invoice.AutoCompleteProperties4Products")
                     .description("Autocomplete Properties 4 Products in Invoice");
 
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute ORDEROUTBOUND_CREATEFROMPRODREQ = new BooleanSysConfAttribute()
@@ -1334,17 +1333,32 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUND_CREATEFROMSERVDREQ = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceOrderOutbound.CreateFromServiceRequest")
+                    .description("Activate the ppossiblity to create an ServiceOrderOutbound from ServiceRequest");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUND_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ServiceOrderOutbound.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute SERVICEORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute SERVICEORDEROUTBOUND_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ServiceOrderOutbound.JasperReport")
-                    .description("Name of the jasperReport for Order Outbound");
+                    .description("Name of the jasperReport for Service Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> SERVICEORDEROUTBOUND_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceOrderOutbound.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime of the jasperReport for Service Order Outbound.");
 
     /** See description. */
     @EFapsSysConfAttribute
