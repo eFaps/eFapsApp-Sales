@@ -102,13 +102,14 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractPaymentDocument_Base
     extends CommonDocument
 {
+
+    /** The Constant CHANGE_AMOUNT. */
+    public static final String CHANGE_AMOUNT = AbstractPaymentDocument.class.getName() + ".ChangeAmount";
+
     /**
      * Logger for this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPaymentDocument.class);
-
-    /** The Constant CHANGE_AMOUNT. */
-    public static final String CHANGE_AMOUNT = "eFaps_Selected_ChangeAmount";
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -488,7 +489,7 @@ public abstract class AbstractPaymentDocument_Base
             // if this is the first payment. check for detraction etc.
             final DocTaxInfo docTaxInfo = _docInfo.getDocTaxInfo();
             if (docTaxInfo.isRetention() || docTaxInfo.isDetraction()) {
-                BigDecimal taxAmount;
+                final BigDecimal taxAmount;
                 if (Currency.getBaseCurrency().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
                     taxAmount = docTaxInfo.getTaxAmount();
                 } else {
@@ -927,6 +928,13 @@ public abstract class AbstractPaymentDocument_Base
     }
 
 
+    /**
+     * Update fields4 absolute amount.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4AbsoluteAmount(final Parameter _parameter)
         throws EFapsException
     {
@@ -935,7 +943,8 @@ public abstract class AbstractPaymentDocument_Base
         final Return retVal = new Return();
         final BigDecimal amount2Pay = getAmount4Pay(_parameter).abs();
         map.put("amount", NumberFormatter.get().getTwoDigitsFormatter().format(amount2Pay));
-        map.put("total4DiscountPay", NumberFormatter.get().getTwoDigitsFormatter().format(amount2Pay.subtract(getSum4Positions(_parameter, true))));
+        map.put("total4DiscountPay", NumberFormatter.get().getTwoDigitsFormatter().format(
+                        amount2Pay.subtract(getSum4Positions(_parameter, true))));
         list.add(map);
         retVal.put(ReturnValues.VALUES, list);
 
@@ -948,6 +957,13 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
+    /**
+     * Gets the amount for pay.
+     *
+     * @param _parameter the _parameter
+     * @return the amount4 pay
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal getAmount4Pay(final Parameter _parameter)
         throws EFapsException
     {
@@ -967,6 +983,13 @@ public abstract class AbstractPaymentDocument_Base
         return _amount4PayDoc.divide(_rate, 2, BigDecimal.ROUND_HALF_UP);
     }
 
+    /**
+     * Update fields4 payment discount.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4PaymentDiscount(final Parameter _parameter)
         throws EFapsException
     {
@@ -984,7 +1007,8 @@ public abstract class AbstractPaymentDocument_Base
         final BigDecimal discAmount = amount.multiply(discount.divide(new BigDecimal(100)))
                                                 .setScale(2, BigDecimal.ROUND_HALF_UP);
         map.put("paymentAmount", NumberFormatter.get().getTwoDigitsFormatter().format(amount.subtract(discAmount)));
-        map.put("paymentAmountDesc", NumberFormatter.get().getTwoDigitsFormatter().format(amount.subtract(amount.subtract(discAmount))));
+        map.put("paymentAmountDesc", NumberFormatter.get().getTwoDigitsFormatter().format(
+                        amount.subtract(amount.subtract(discAmount))));
         final BigDecimal recalculatePos = getSum4Positions(_parameter, true)
                                                     .subtract(payAmount).add(amount.subtract(discAmount));
         BigDecimal total4DiscountPay = BigDecimal.ZERO;
@@ -1001,6 +1025,13 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Parses the big decimal.
+     *
+     * @param _value the _value
+     * @return the big decimal
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal parseBigDecimal(final String _value)
         throws EFapsException
     {
@@ -1016,6 +1047,13 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Update fields4 payment amount.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4PaymentAmount(final Parameter _parameter)
         throws EFapsException
     {
@@ -1024,7 +1062,7 @@ public abstract class AbstractPaymentDocument_Base
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
-                                                        _parameter.getParameterValue("account"));
+                        _parameter.getParameterValue("account"));
         if (docInstance.isValid() && accInstance.isValid()) {
             final String payStr = _parameter.getParameterValues("paymentAmount")[selected];
             final String amount4PayStr = _parameter.getParameterValues("payment4Pay")[selected];
@@ -1033,11 +1071,13 @@ public abstract class AbstractPaymentDocument_Base
             final BigDecimal amount4PayTotal = parseBigDecimal(amount4PayStr);
 
             map.put("paymentAmount", NumberFormatter.get().getTwoDigitsFormatter().format(pay));
-            map.put("paymentAmountDesc", NumberFormatter.get().getTwoDigitsFormatter().format(amount4PayTotal.subtract(pay)));
+            map.put("paymentAmountDesc",
+                            NumberFormatter.get().getTwoDigitsFormatter().format(amount4PayTotal.subtract(pay)));
             map.put("paymentDiscount", NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
             BigDecimal total4DiscountPay = BigDecimal.ZERO;
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-                map.put("amount", NumberFormatter.get().getTwoDigitsFormatter().format(getSum4Positions(_parameter, true)));
+                map.put("amount", NumberFormatter.get().getTwoDigitsFormatter()
+                                .format(getSum4Positions(_parameter, true)));
             } else {
                 total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(getSum4Positions(_parameter, true));
             }
@@ -1049,6 +1089,15 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
+    /**
+     * Gets the symbol4 document.
+     *
+     * @param _doc the _doc
+     * @param _linkTo the _link to
+     * @param _attribute the _attribute
+     * @return the symbol4 document
+     * @throws EFapsException the e faps exception
+     */
     protected String getSymbol4Document(final String _doc,
                                         final String _linkTo,
                                         final String _attribute)
@@ -1066,6 +1115,13 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Gets the payments4 document.
+     *
+     * @param _doc the _doc
+     * @return the payments4 document
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal getPayments4Document(final String _doc)
         throws EFapsException
     {
@@ -1084,6 +1140,14 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Gets the attribute4 document.
+     *
+     * @param _doc the _doc
+     * @param _attribute the _attribute
+     * @return the attribute4 document
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal getAttribute4Document(final String _doc,
                                                final String _attribute)
         throws EFapsException
@@ -1100,6 +1164,13 @@ public abstract class AbstractPaymentDocument_Base
     }
 
 
+    /**
+     * Update fields4 rate currency.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4RateCurrency(final Parameter _parameter)
         throws EFapsException
     {
@@ -1125,6 +1196,13 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
+    /**
+     * Update fields4 position.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4Position(final Parameter _parameter)
         throws EFapsException
     {
@@ -1141,7 +1219,14 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
-    public String getTableName(final Parameter _parameter) {
+    /**
+     * Gets the table name.
+     *
+     * @param _parameter the _parameter
+     * @return the table name
+     */
+    public String getTableName(final Parameter _parameter)
+    {
         return "paymentTable";
     }
 
@@ -1204,6 +1289,13 @@ public abstract class AbstractPaymentDocument_Base
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
     }
 
+    /**
+     * Validate payment document.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return validatePaymentDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -1226,9 +1318,11 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     /**
+     * Validate payment document4 positions.
+     *
      * @param _parameter Parameter as passed from the EFaps API.
      * @return new Return with SNIPPLET.
-     * @throws EFapsException
+     * @throws EFapsException the e faps exception
      */
     public Return validatePaymentDocument4Positions(final Parameter _parameter)
         throws EFapsException
@@ -1291,6 +1385,13 @@ public abstract class AbstractPaymentDocument_Base
         return html2;
     }
 
+    /**
+     * Connect payment document2 document.
+     *
+     * @param _parameter the _parameter
+     * @param _createdDoc the _created doc
+     * @throws EFapsException the e faps exception
+     */
     protected void connectPaymentDocument2Document(final Parameter _parameter,
                                                    final CreatedDoc _createdDoc)
         throws EFapsException
@@ -1351,6 +1452,15 @@ public abstract class AbstractPaymentDocument_Base
 
 
 
+    /**
+     * Gets the select string4 attribute account.
+     *
+     * @param _accountId the _account id
+     * @param _select the _select
+     * @param _attribute the _attribute
+     * @return the select string4 attribute account
+     * @throws EFapsException the e faps exception
+     */
     protected String getSelectString4AttributeAccount(final String _accountId,
                                                       final SelectBuilder _select,
                                                       final CIAttribute _attribute)
@@ -1375,8 +1485,11 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     /**
+     * Add2 query bldr4 auto complete4 create document.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _queryBldr queryBuilder to add to
+     * @throws EFapsException the e faps exception
      */
     protected void add2QueryBldr4AutoComplete4CreateDocument(final Parameter _parameter,
                                                              final QueryBuilder _queryBldr)
@@ -1385,6 +1498,14 @@ public abstract class AbstractPaymentDocument_Base
         // used by implementation
     }
 
+    /**
+     * Adds the parameter4 report.
+     *
+     * @param _parameter the _parameter
+     * @param _createdDoc the _created doc
+     * @param _report the _report
+     * @throws EFapsException the e faps exception
+     */
     protected void addParameter4Report(final Parameter _parameter,
                                        final CreatedDoc _createdDoc,
                                        final StandartReport _report)
@@ -1393,14 +1514,20 @@ public abstract class AbstractPaymentDocument_Base
         // used bt implementation
     }
 
-    public Return update4StatusCanceled (final Parameter _parameter)
+    /**
+     * Update4 status canceled.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return update4StatusCanceled(final Parameter _parameter)
         throws EFapsException
     {
         inverseTransactions(_parameter, _parameter.getInstance(), true);
         final Update updatePayment = new Update(_parameter.getInstance());
         updatePayment.add(CISales.Payment.Amount, BigDecimal.ZERO);
         updatePayment.executeWithoutAccessCheck();
-
         return new StatusValue().setStatus(_parameter);
     }
 
@@ -1434,7 +1561,7 @@ public abstract class AbstractPaymentDocument_Base
             multi.execute();
             boolean updatePayment = false;
             while (multi.next()) {
-                Insert insert;
+                final Insert insert;
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionOutbound.getType())) {
                     insert = new Insert(CISales.TransactionInbound);
                 } else {
@@ -1466,6 +1593,13 @@ public abstract class AbstractPaymentDocument_Base
     }
 
 
+    /**
+     * Gets the payments4 document.
+     *
+     * @param _parameter the _parameter
+     * @return the payments4 document
+     * @throws EFapsException the e faps exception
+     */
     public Return getPayments4Document(final Parameter _parameter)
         throws EFapsException
     {
@@ -1556,6 +1690,17 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Builds the html4 execute button.
+     *
+     * @param _parameter the _parameter
+     * @param _instancesList the _instances list
+     * @param _restAmount the _rest amount
+     * @param _sumPayments the _sum payments
+     * @param _currencyActual the _currency actual
+     * @return the string builder
+     * @throws EFapsException the e faps exception
+     */
     protected StringBuilder buildHtml4ExecuteButton(final Parameter _parameter,
                                                     final List<Instance> _instancesList,
                                                     final BigDecimal _restAmount,
@@ -1585,25 +1730,30 @@ public abstract class AbstractPaymentDocument_Base
 
         final BigDecimal total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(_sumPayments);
         js.append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckWithOutDocForm.total4DiscountPay.name,
-                        total4DiscountPay == null ? BigDecimal.ZERO.toString() : NumberFormatter.get().getTwoDigitsFormatter().format(total4DiscountPay)));
+                        total4DiscountPay == null
+                                        ? BigDecimal.ZERO.toString()
+                                        : NumberFormatter.get().getTwoDigitsFormatter().format(total4DiscountPay)));
 
         return js;
     }
 
     /**
+     * Add2 map positions.
+     *
+     * @param _parameter the _parameter
      * @param _instance Instance of each document
      * @param _index index of each document
      * @param _lastPosition boolean to indicate the last position to print
      * @param _restAmount last quantity to pay
      * @param _currencyActual current currency of document
-     * @return StringBuilder
+     * @param _map the _map
      * @throws EFapsException on error
      */
     protected void add2MapPositions(final Parameter _parameter,
-                                          final Instance _instance,
-                                          final Integer _index,
-                                          final boolean _lastPosition,
-                                          final BigDecimal _restAmount,
+                                    final Instance _instance,
+                                    final Integer _index,
+                                    final boolean _lastPosition,
+                                    final BigDecimal _restAmount,
                                     final Instance _currencyActual,
                                     final Map<String, Object> _map)
         throws EFapsException
@@ -1611,14 +1761,16 @@ public abstract class AbstractPaymentDocument_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.CurrencyId);
+        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentSumAbstract.CurrencyId);
         final SelectBuilder selCurrencyInst = new SelectBuilder()
                         .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
         multi.addSelect(selCurrencyInst);
         multi.execute();
-        if (multi.next()){
+        if (multi.next()) {
             final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-            final BigDecimal rateCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final BigDecimal rateCrossTotal = multi
+                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
 
             BigDecimal pay = BigDecimal.ZERO;
             final String doc = _instance.getOid();
@@ -1626,10 +1778,12 @@ public abstract class AbstractPaymentDocument_Base
             final BigDecimal payments4Doc = getPayments4Document(doc);
             final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
             final BigDecimal amountDue = amount2Pay.subtract(pay);
-            final String symbol = getSymbol4Document(_instance.getOid(), CISales.DocumentSumAbstract.RateCurrencyId.name, CIERP.Currency.Symbol.name);
+            final String symbol = getSymbol4Document(_instance.getOid(),
+                            CISales.DocumentSumAbstract.RateCurrencyId.name, CIERP.Currency.Symbol.name);
             final StringBuilder bldr = new StringBuilder();
             bldr.append(NumberFormatter.get().getTwoDigitsFormatter().format(rateCrossTotal)).append(" / ")
-                .append(NumberFormatter.get().getTwoDigitsFormatter().format(payments4Doc)).append(" - ").append(symbol);
+                            .append(NumberFormatter.get().getTwoDigitsFormatter().format(payments4Doc)).append(" - ")
+                            .append(symbol);
 
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocument.name, _instance.getOid());
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocument.name + "AutoComplete", name);
@@ -1648,30 +1802,38 @@ public abstract class AbstractPaymentDocument_Base
 
             if (!_lastPosition) {
                 _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name, amountDue == null
-                                ? BigDecimal.ZERO.toString() : NumberFormatter.get().getTwoDigitsFormatter().format(amountDueConverted));
+                                ? BigDecimal.ZERO.toString()
+                                : NumberFormatter.get().getTwoDigitsFormatter().format(amountDueConverted));
                 pay = amountDue;
             } else {
                 if (amount2Pay.compareTo(pay) != 0) {
                     _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
                                     _restAmount == null
-                                                    ? BigDecimal.ZERO.toString() : NumberFormatter.get().getTwoDigitsFormatter().format(
+                                                    ? BigDecimal.ZERO.toString()
+                                                    : NumberFormatter.get().getTwoDigitsFormatter().format(
                                                                     amountDueConverted));
                     pay = amountDue;
                 } else {
                     _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
                                     _restAmount == null
-                                                    ? BigDecimal.ZERO.toString() : NumberFormatter.get().getTwoDigitsFormatter().format(
+                                                    ? BigDecimal.ZERO.toString()
+                                                    : NumberFormatter.get().getTwoDigitsFormatter().format(
                                                                     _restAmount));
                     pay = restAmountConverted;
                 }
             }
-
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmountDesc.name,
                             NumberFormatter.get().getTwoDigitsFormatter().format(amount2Pay.subtract(pay)));
         }
-
     }
 
+    /**
+     * Gets the doc instances.
+     *
+     * @param _parameter the _parameter
+     * @return the doc instances
+     * @throws EFapsException the e faps exception
+     */
     protected List<Instance> getDocInstances(final Parameter _parameter)
         throws EFapsException
     {
@@ -1761,7 +1923,7 @@ public abstract class AbstractPaymentDocument_Base
                 print.execute();
 
                 for (final Entry<Integer, String> field : fields.entrySet()) {
-                    String value;
+                    final String value;
                     String value2 = null;
                     if (field.getValue().equalsIgnoreCase("amount")) {
                         final BigDecimal amount =
@@ -1802,6 +1964,14 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Gets the new doc payment info.
+     *
+     * @param _parameter the _parameter
+     * @param _instance the _instance
+     * @return the new doc payment info
+     * @throws EFapsException the e faps exception
+     */
     public DocPaymentInfo getNewDocPaymentInfo(final Parameter _parameter,
                                                final Instance _instance)
         throws EFapsException

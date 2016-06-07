@@ -18,6 +18,7 @@
 package org.efaps.esjp.sales.payment;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -40,7 +42,10 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -252,22 +257,33 @@ public abstract class PaymentCheck_Base
             final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.IncomingCheck.Contact).attribute(
                             CIContacts.Contact.Name);
             print.addSelect(selContactInst, selContactName);
-            print.addAttribute(CISales.IncomingCheck.Name, CISales.IncomingCheck.Date, CISales.IncomingCheck.DueDate);
+            print.addAttribute(CISales.IncomingCheck.Name, CISales.IncomingCheck.Date, CISales.IncomingCheck.DueDate,
+                            CISales.IncomingCheck.RateNetTotal);
             print.execute();
 
             final Instance contactInst = print.getSelect(selContactInst);
             final String contactName = print.getSelect(selContactName);
 
+            final String amount = NumberFormatter.get().getTwoDigitsFormatter().format(
+                            print.<BigDecimal>getAttribute(CISales.IncomingCheck.RateNetTotal));
+
             js.append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.name.name, print.<String>getAttribute(
                             CISales.IncomingCheck.Name)))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.contact.name, contactInst.getOid(),
                                             contactName))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.contactData.name,
+                                new Contacts().getFieldValue4Contact(contactInst, false)))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.amount.name, amount))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.account.name,
                         _parameter.getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.date.name + "_eFapsDate",
                                DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.Date))))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.dueDate.name + "_eFapsDate",
                             DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))));
+
+            // store that the amount was set from the User
+            ParameterUtil.setParmeterValue(_parameter, "amount", amount);
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingCheck2ApplyDocument);
             queryBldr.addWhereAttrEqValue(CISales.IncomingCheck2ApplyDocument.FromLink, _parameter.getInstance());
@@ -285,7 +301,7 @@ public abstract class PaymentCheck_Base
                 values.add(map);
             }
 
-            for ( final Entry<String, Object> entry: getSumUpdateMap(_parameter, values, true).entrySet()) {
+            for (final Entry<String, Object> entry: getSumUpdateMap(_parameter, values, true).entrySet()) {
                 js.append(getSetFieldValue(0, entry.getKey(), String.valueOf(entry.getValue())));
             }
 
