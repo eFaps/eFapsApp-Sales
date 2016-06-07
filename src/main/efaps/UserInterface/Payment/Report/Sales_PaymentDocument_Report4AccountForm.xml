@@ -74,6 +74,7 @@
                 <property name="DBProperty05">org.efaps.esjp.sales.report.SalesReport4Account.contact</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.SalesReport4Account.switch</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.SalesReport4Account.currency</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
         <field name="salesReport">
