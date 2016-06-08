@@ -16,32 +16,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>eb91cf4f-60f7-4e94-a279-49ca8bdf1e3f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReceiptTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_ReceiptTree_Menu_Action_Edit</child>
             <child>Sales_ReceiptTree_Menu_Action_Recalculate</child>
             <child>Sales_ReceiptTree_Menu_Action_SetPaid</child>
             <child>Sales_ReceiptTree_Menu_Action_SetReplaced</child>
+            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
-
 </ui-menu>
