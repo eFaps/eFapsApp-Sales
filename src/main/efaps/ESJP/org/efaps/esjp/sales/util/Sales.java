@@ -179,6 +179,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CREDIT_ASSEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Credit.AssignEmployee")
+                    .description("Allows to assign to an Employee.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CREDIT_USENUMGEN = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Credit.UseNumberGenerator")
+                    .description("Use a NumberGenerator for the Name.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREDITNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "CreditNote.CreateFromInvoiceAutoComplete")
@@ -736,6 +750,13 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.AutoCompleteProperties4Products")
                     .description("Autocomplete Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INSTALLMENT_USENUMGEN = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Installment.UseNumberGenerator")
+                    .description("Use a NumberGenerator for the Name.");
 
     /** See description. */
     @EFapsSysConfAttribute

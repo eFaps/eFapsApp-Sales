@@ -17,17 +17,17 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>eaa2fe3c-f7cb-47a7-ab5b-1b2428c26d9c</uuid>
+    <uuid>414f6539-406b-47fa-83c1-0309ee8cd322</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditTree_Doc_Menu_Action_CreateInstallment</name>
+        <name>Sales_CreditTree_Doc_Menu_Action_CreateInstallments</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_InstallmentForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.Installment">
+            <form>Sales_Credit_CreateInstallmentsForm</form>
+            <execute method="createInstallments" program="org.efaps.esjp.sales.document.Credit">
                 <!-- Default NumberGenerator: Sales_InstallmentSequence -->
                 <property name="NumberGenerator">ebcf6479-6d1e-41e4-a689-1ceb046ba850</property>
                 <property name="StatusGroup">Sales_InstallmentStatus</property>
@@ -43,8 +43,7 @@
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Installment</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

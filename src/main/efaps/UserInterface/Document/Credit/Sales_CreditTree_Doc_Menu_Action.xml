@@ -24,6 +24,7 @@
         <name>Sales_CreditTree_Doc_Menu_Action</name>
         <childs>
             <child>Sales_CreditTree_Doc_Menu_Action_CreateInstallment</child>
+            <child>Sales_CreditTree_Doc_Menu_Action_CreateInstallments</child>
             <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
         </childs>
         <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>

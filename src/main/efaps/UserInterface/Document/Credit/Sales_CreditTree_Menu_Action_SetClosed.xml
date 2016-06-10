@@ -17,33 +17,26 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>82c65313-d632-4606-a994-55570bb91a4b</uuid>
+    <uuid>c89ac8ac-730d-40ec-86a4-f112982232d7</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditTree_Menu_Action_Edit</name>
+        <name>Sales_CreditTree_Menu_Action_SetClosed</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_CreditForm</form>
-            <execute method="edit" program="org.efaps.esjp.sales.document.Credit">
-                <!-- Sales_Employee2Credit -->
-                <property name="ConnectType01">220602c7-3ae5-44bb-9671-75a7a1d3bd7b</property>
-                <property name="ConnectCurrentLink01">ToLink</property>
-                <property name="ConnectForeignLink01">FromLink</property>
-                <property name="ConnectForeignField01">employee</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Closed</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_CreditTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                name="Sales_CreditTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
-
 </ui-command>

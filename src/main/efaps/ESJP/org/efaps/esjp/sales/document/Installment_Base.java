@@ -16,18 +16,18 @@
  */
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
-import org.efaps.esjp.erp.Naming;
 import org.efaps.util.EFapsException;
 
 /**
@@ -54,6 +54,11 @@ public abstract class Installment_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         connect2Object(_parameter, createdDoc);
 
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
     }
@@ -69,19 +74,14 @@ public abstract class Installment_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        editDoc(_parameter);
+        final EditedDoc editDoc = editDoc(_parameter);
+        updateConnection2Object(_parameter, editDoc);
+        final File file = createReport(_parameter, editDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         return ret;
-    }
-
-    @Override
-    protected void add2DocCreate(final Parameter _parameter,
-                                 final Insert _insert,
-                                 final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Naming naming = new Naming();
-        final String revision = naming.fromNumberGenerator(_parameter, CISales.Installment.getType().getName());
-        _insert.add(CISales.Installment.Revision, revision);
     }
 
     @Override

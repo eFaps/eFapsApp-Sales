@@ -14,34 +14,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>61b01db9-7e00-4f0b-8829-6080e27aca8c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives"/>
+            <application name="eFapsApp-Archives" />
         </application-dependencies>
         <name>Sales_CreditTree_File</name>
-        <!-- target definitions -->
         <target>
             <menu>Sales_CreditTree_File_Menu</menu>
             <table>Archives_ArchiveTable</table>
             <evaluate program="org.efaps.esjp.archives.ArchiveStructurBrowser">
                 <property name="Type">Archives_ArchiveRoot</property>
-                <property name="Type2Structure">Sales_Credit2ArchiveAbstract</property>
-                <property name="checkStructure">true</property>
+                <property name="Object2ArchiveType">Sales_Credit2ArchiveAbstract</property>
                 <property name="Child_Type">Archives_ArchiveNode</property>
                 <property name="Child_LinkFrom">ParentLink</property>
             </evaluate>
         </target>
-        <!-- properties -->
+        <parents>
+            <parent>Sales_CreditTree</parent>
+        </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetStructurBrowserField">name</property>

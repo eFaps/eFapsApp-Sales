@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,18 +15,30 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ab56d53f-d9f6-4776-83e2-0e08ef7fdd99</uuid>
+    <uuid>220602c7-3ae5-44bb-9671-75a7a1d3bd7b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives" />
+            <application name="eFapsApp-HumanResource" />
         </application-dependencies>
-        <name>Sales_CreditTree_File_Menu_Action</name>
-        <childs>
-            <child>Sales_CreditTree_File_Menu_Action_CreateRoot</child>
-        </childs>
+        <name>Sales_Employee2Credit</name>
+        <parent>HumanResource_Employee2DocumentAbstract</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>HumanResource_Employee</typelink>
+            <sqltable>HumanResource_Employee2DocumentSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_Credit</typelink>
+            <sqltable>HumanResource_Employee2DocumentSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,27 +14,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7b5434dd-be05-4d67-88d2-57a2ee5719a3</uuid>
-        <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives"/>
+            <application name="eFapsApp-Archives" />
         </application-dependencies>
-        <name>Sales_CreditTree_File_Menu_Action_CreateRoot</name>
+        <name>Sales_OrderOutboundTree_File_Menu_Action_CreateRoot</name>
         <access>
             <role>Archives_Admin</role>
             <role>Archives_Modifier</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Archives_ArchiveRootForm</form>
             <execute method="createRoot" program="org.efaps.esjp.archives.Archive">
@@ -44,15 +38,12 @@
                 <property name="StatusGroup">Archives_ArchiveNodeStatus</property>
                 <property name="Status">Editable</property>
             </execute>
-            <trigger program="org.efaps.esjp.archives.Archive" method="checkAccess2ArchiveRoot" 
-                name="Sales_CreditTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Type">Sales_Credit2ArchiveAbstract</property>
-                <property name="AttributeLink">FromLink</property>
-                <property name="activeAccessCheck">true</property>
+            <trigger event="UI_ACCESSCHECK" method="checkAccess2ArchiveRoot"
+                name="Sales_OrderOutboundTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
+                program="org.efaps.esjp.archives.Archive">
+                <property name="Object2ArchiveType">Sales_Credit2ArchiveAbstract</property>
             </trigger>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Archives_ArchiveRoot</property>
         <property name="TargetMode">create</property>

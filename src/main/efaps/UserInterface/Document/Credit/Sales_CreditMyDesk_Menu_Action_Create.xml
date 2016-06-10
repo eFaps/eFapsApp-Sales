@@ -14,34 +14,32 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>59a864c4-98c2-4cca-bd62-ff72d64d7004</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_CreditForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.Credit">
+                 <!-- Default NumberGenerator: Sales_CreditSequence -->
+                <property name="NumberGenerator">d636611e-e148-4c9d-9d21-1d35430f59a7</property>
                 <property name="StatusGroup">Sales_CreditStatus</property>
                 <property name="Status">Open</property>
+                <!-- Sales_Employee2Credit -->
+                <property name="ConnectType01">220602c7-3ae5-44bb-9671-75a7a1d3bd7b</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">employee</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Credit</property>
         <property name="TargetMode">create</property>
