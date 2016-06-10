@@ -65,7 +65,7 @@
         </field>
         <field name="transReport">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE"
                 method="generateReport"
                 name="Sales_AccountCashDeskBookReportForm.transReport.UI_FIELD_VALUE"

@@ -102,8 +102,10 @@
         <field name="report">
             <property name="HideLabel">true</property>
             <property name="ModeEdit">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="generateReport" name="Sales_ConciliationForm.report.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.ConciliationReport"/>
+            <property name="UIType">SNIPPLET</property>
+            <trigger event="UI_FIELD_VALUE" method="generateReport"
+                name="Sales_ConciliationForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ConciliationReport"/>
         </field>
     </definition>
 </ui-form>

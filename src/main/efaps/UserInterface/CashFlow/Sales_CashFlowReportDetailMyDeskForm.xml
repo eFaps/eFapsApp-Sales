@@ -40,7 +40,7 @@
         </field>
         <field name="cashFlowReport">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_CashFlowReportDetailMyDeskForm.salesReport.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.CashFlowReport" >

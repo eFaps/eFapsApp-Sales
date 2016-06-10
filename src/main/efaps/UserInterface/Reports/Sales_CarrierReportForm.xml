@@ -72,7 +72,7 @@
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_CarrierReportForm.report.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.CarrierReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.CarrierReport.FilterKey</property>
