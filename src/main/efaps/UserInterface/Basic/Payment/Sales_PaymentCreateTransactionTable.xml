@@ -53,7 +53,7 @@
             <property name="Label">Sales_TransactionAbstract/PaymentType.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Width">1</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getTypeDropDownFieldValue"
                 name="Sales_PaymentCreateTransactionTable.paymentType.UI_FIELD_VALUE"

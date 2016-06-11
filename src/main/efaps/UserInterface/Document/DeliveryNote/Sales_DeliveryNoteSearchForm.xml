@@ -25,7 +25,7 @@
         <name>Sales_DeliveryNoteSearchForm</name>
         <field name="jsLinkField">
             <property name="ModeSearch">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="getJSLinkField"
                 name="Sales_DeliveryNoteSearchForm.jsLinkField.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
