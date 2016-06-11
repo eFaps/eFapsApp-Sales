@@ -24,7 +24,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5d8b7bcc-65a9-497c-889c-e906aede5e19</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -33,7 +32,7 @@
         <name>Sales_Products_ProductStock4ProductRequestForm</name>
         <field name="description">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                     method="getDBPropertiesFieldValue"
                     name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
@@ -64,7 +63,7 @@
         <name>Sales_Products_ProductStock4ProductRequestForm</name>
         <field name="description">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                     method="getDBPropertiesFieldValue"
                     name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
@@ -74,7 +73,7 @@
         </field>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
              <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
                 method="setDefaultFilter"
                 name="Sales_Products_ProductStock4ProductRequestForm.filter.UI_FIELD_VALUE.1"
