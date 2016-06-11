@@ -60,6 +60,7 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_ServiceRequestPosition/UoM.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="getUoMDropDownFieldValue"
                 name="Sales_ServiceionReportPositionTable.uoM.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field" />
