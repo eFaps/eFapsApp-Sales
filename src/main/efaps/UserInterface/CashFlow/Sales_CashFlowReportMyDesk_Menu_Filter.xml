@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,36 +14,28 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>abe8ad87-89b8-43fc-82e1-5f33fa18c11a</uuid>
+    <uuid>c7ab78c0-c219-4f53-abd4-1b8c1d376d14</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CashFlowReportDetailMyDesk_Menu_DownloadExcel</name>
-        <icon>Document_Excel</icon>
+        <name>Sales_CashFlowReportMyDesk_Menu_Filter</name>
+        <icon>Filter</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
-            <execute method="exportReport"
-                program="org.efaps.esjp.sales.report.CashFlowReport">
-                <property name="Mime">xls</property>
-                <property name="Interval">WEEK</property>
+            <form>Sales_CashFlowReportFilterForm</form>
+            <execute method="setFilter" program="org.efaps.esjp.sales.report.CashFlowReport">
+                 <property name="FilterKey">org.efaps.sales.report.CashFlowReport.FilterKey</property>
             </execute>
         </target>
-
-        <!-- properties -->
-        <property name="Target">hidden</property>
-        <property name="TargetShowFile">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="Label">report.Filter</property>
+        <property name="TargetTitle">report.Filter</property>
+        <property name="FilterKey">org.efaps.sales.report.CashFlowReport.FilterKey</property>
     </definition>
 </ui-command>

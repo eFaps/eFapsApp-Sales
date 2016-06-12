@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -26,11 +23,41 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.Properties;
+import java.util.Set;
+
+import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
+import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.AbstractGroupedByDate;
+import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
+import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.cashflow.CashFlowCategory;
+import org.efaps.esjp.sales.cashflow.CashFlowGroup;
+import org.efaps.esjp.sales.cashflow.ICashFlowGroup;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -39,86 +66,20 @@ import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
-
-import org.efaps.admin.dbproperty.DBProperties;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Context;
-import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.sales.cashflow.CashFlowCategory;
-import org.efaps.esjp.sales.cashflow.CashFlowGroup;
-import org.efaps.esjp.sales.cashflow.ICashFlowCategory;
-import org.efaps.esjp.sales.cashflow.ICashFlowGroup;
-import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
- * TODO comment!
- *
+ * Report for CashFlow.
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("67b5c710-4e36-4eb2-95c0-8f04b15500ec")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class CashFlowReport_Base
+    extends FilteredReport
 {
-
-    public enum Interval
-    {
-        MONTH, WEEK;
-    }
-
-    public static ICashFlowCategory OPENCAT = new ICashFlowCategory()
-    {
-        @Override
-        public int getInt()
-        {
-            return -1;
-        }
-
-        @Override
-        public Integer getWeight()
-        {
-            return -1;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "OPEN";
-        }
-    };
-
-    public static ICashFlowGroup OPENGRP = new ICashFlowGroup()
-    {
-
-        @Override
-        public Integer getWeight()
-        {
-            return -1;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "OPEN";
-        }
-    };
 
     /**
      * Logging instance used in this class.
@@ -149,10 +110,9 @@ public abstract class CashFlowReport_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String mime = (String) props.get("Mime");
+        final String mime = getProperty(_parameter, "Mime", "pdf");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName(DBProperties.getProperty(CashFlowReport.class.getName() + ".FileName"));
+        dyRp.setFileName(getDBProperty("FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -172,155 +132,268 @@ public abstract class CashFlowReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Interval interval;
-        if (properties.containsKey("Interval")) {
-            interval = Interval.valueOf((String) properties.get("Interval"));
-        } else {
-            interval = Interval.MONTH;
-        }
-        int projection;
-        if (properties.containsKey("Projection")) {
-            projection = Integer.valueOf((String) properties.get("Projection"));
-        } else {
-            if (Interval.MONTH.equals(interval)) {
-                projection = 6;
-            } else {
-                projection = 8;
-            }
-        }
-        Integer start = 0;
-        if (properties.containsKey("Start")) {
-            start = Integer.valueOf((String) properties.get("Start"));
-        }
-        DateTime startDate;
-        if (start < 1) {
-            startDate = new DateTime().withTimeAtStartOfDay().withDayOfYear(1).plusYears(start).minusSeconds(1);
-        } else {
-            if (Interval.MONTH.equals(interval)) {
-                startDate = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).minusMonths(start).minusSeconds(1);
-            } else {
-                startDate = new DateTime().withTimeAtStartOfDay().withDayOfWeek(1).minusWeeks(start).minusSeconds(1);
-            }
-        }
-        return new CFReport(interval, startDate, projection);
+        return new DynamicCashFlowReport(this);
     }
 
     /**
      * Report class.
      */
-    public static class CFReport
+    public static class DynamicCashFlowReport
         extends AbstractDynamicReport
     {
 
+        /** The filtered report. */
+        private final CashFlowReport_Base filteredReport;
+
         /**
+         * Instantiates a new dynamic cash flow report.
          *
+         * @param _filteredReport the filtered report
          */
-        private final Map<ICashFlowGroup, Group> groups = new HashMap<ICashFlowGroup, Group>();
-
-        private final Interval interval;
-
-        private final int projection;
-
-        private final DateTime startDate;
-
-        public CFReport(final Interval _interval,
-                        final DateTime _startDate,
-                        final int _projection)
+        public DynamicCashFlowReport(final CashFlowReport_Base _filteredReport)
         {
-            this.interval = _interval;
-            this.projection = _projection;
-            this.startDate = _startDate;
+            this.filteredReport = _filteredReport;
         }
-
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final DRDataSource dataSource = new DRDataSource("group", "category", "date", "amount");
-
-            final Map<Instance, Instance> inst2inst = new HashMap<Instance, Instance>();
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selCreateInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
-            multi.addSelect(selCreateInst);
-            multi.execute();
-            while (multi.next()) {
-                final Instance payInst = multi.getCurrentInstance();
-                final Instance docInst = multi.getSelect(selCreateInst);
-                inst2inst.put(payInst, docInst);
-            }
-
-            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
-            queryBldr.addWhereAttrGreaterValue(CISales.TransactionAbstract.Date, this.startDate);
-            final MultiPrintQuery multi2 = queryBldr2.getPrint();
-            final SelectBuilder selPaymentInst = SelectBuilder.get()
-                            .linkto(CISales.TransactionAbstract.Payment).instance();
-            multi2.addSelect(selPaymentInst);
-            multi2.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date);
-            multi2.execute();
-            while (multi2.next()) {
-                final DateTime date = multi2.<DateTime>getAttribute(CISales.TransactionAbstract.Date);
-                BigDecimal amount = multi2.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                final Instance payInst = multi2.<Instance>getSelect(selPaymentInst);
-
-                final boolean out = multi2.getCurrentInstance().getType().isKindOf(
-                                CISales.TransactionOutbound.getType());
-
-                if (out) {
-                    amount = amount.negate();
+            final JRRewindableDataSource ret;
+            if (getFilteredReport().isCached(_parameter)) {
+                ret = getFilteredReport().getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    LOG.error("Catched JRException", e);
                 }
-                final Group group = getGroup(_parameter, out, payInst, inst2inst.get(payInst));
+            } else {
+                final List<DataBean> beans = new ArrayList<>();
+                final Map<Instance, Instance> inst2inst = new HashMap<Instance, Instance>();
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selCreateInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
+                                .instance();
+                multi.addSelect(selCreateInst);
+                multi.execute();
+                while (multi.next()) {
+                    final Instance payInst = multi.getCurrentInstance();
+                    final Instance docInst = multi.getSelect(selCreateInst);
+                    inst2inst.put(payInst, docInst);
+                }
 
-                final String dateStr = getDateStr(_parameter, date);
+                final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+                add2TransactionQueryBldr(_parameter, transQueryBldr);
 
-                group.add(_parameter,  out, payInst, inst2inst.get(payInst) , dateStr, amount);
-            }
+                final MultiPrintQuery multi2 = transQueryBldr.getPrint();
+                final SelectBuilder selPaymentInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Payment)
+                                .instance();
+                multi2.addSelect(selPaymentInst);
+                multi2.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date);
+                multi2.execute();
+                while (multi2.next()) {
+                    final DateTime date = multi2.<DateTime>getAttribute(CISales.TransactionAbstract.Date);
+                    BigDecimal amount = multi2.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+                    final Instance payInst = multi2.<Instance>getSelect(selPaymentInst);
 
-            addProjection(_parameter);
+                    final boolean out = multi2.getCurrentInstance().getType().isKindOf(CISales.TransactionOutbound
+                                    .getType());
 
-            final Map<String, BigDecimal> saldos = new TreeMap<String, BigDecimal>();
-            for (final Group group : this.groups.values()) {
-                final Map<String, BigDecimal> saldo = group.getSaldo(_parameter);
-                for (final Entry<String, BigDecimal> entry : saldo.entrySet()) {
-                    BigDecimal amount;
-                    if (saldos.containsKey(entry.getKey())) {
-                        amount = saldos.get(entry.getKey());
-                    } else {
-                        amount = BigDecimal.ZERO;
+                    if (out) {
+                        amount = amount.negate();
                     }
-                    saldos.put(entry.getKey(), amount.add(entry.getValue()));
+
+                    final String dateStr = "";
                 }
-            }
-            final Group open = new Group(CashFlowReport_Base.OPENGRP);
-            this.groups.put(CashFlowReport_Base.OPENGRP, open);
-            final Category cat = new Category(open, CashFlowReport_Base.OPENCAT);
-            open.getCategories().put(CashFlowReport_Base.OPENCAT, cat);
-            BigDecimal currentAmount = BigDecimal.ZERO;
-            for (final Entry<String, BigDecimal> saldo : saldos.entrySet()) {
-                cat.add(_parameter, saldo.getKey(), currentAmount);
-                currentAmount = currentAmount.add(saldo.getValue());
-            }
-            final List<Group> grpList = new ArrayList<Group>(this.groups.values());
-            Collections.sort(grpList, new Comparator<Group>()
-            {
-                @Override
-                public int compare(final Group _o1,
-                                   final Group _o2)
+
+                addProjection4Documents(_parameter, beans);
+
+                final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
+                chain.addComparator(new Comparator<DataBean>() {
+                        @Override
+                        public int compare(final DataBean _o1,
+                                           final DataBean _o2)
+                        {
+                            return _o1.getGroup().getWeight().compareTo(_o2.getGroup().getWeight());
+                        }
+                    }
+                );
+                chain.addComparator(new Comparator<DataBean>()
                 {
-                    return _o1.getWeight().compareTo(_o2.getWeight());
+                    @Override
+                    public int compare(final DataBean _o1,
+                                       final DataBean _o2)
+                    {
+                        int w1 = 0;
+                        int w2 = 0;
+                        try {
+                            w1 = _o1.getCategory().getWeight();
+                            w2 = _o2.getCategory().getWeight();
+                        } catch (final EFapsException e) {
+                            LOG.error("Catched", e);
+                        }
+                        return Integer.compare(w1, w2);
+                    }
+                });
+                if (isShowContact(_parameter)) {
+                    chain.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _o1,
+                                           final DataBean _o2)
+                        {
+                            return _o1.getContact().compareTo(_o2.getContact());
+                        }
+                    });
                 }
-            });
-            int i = 1;
-            for (final Group group : grpList) {
-                group.setNumber(i);
-                group.add2DataSource(_parameter, dataSource);
-                i++;
+                if (isShowDocTypes(_parameter)) {
+                    chain.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _o1,
+                                           final DataBean _o2)
+                        {
+                            return _o1.getDocType().compareTo(_o2.getDocType());
+                        }
+                    });
+                }
+                chain.addComparator(new Comparator<DataBean>()
+                {
+                    @Override
+                    public int compare(final DataBean _o1,
+                                       final DataBean _o2)
+                    {
+                        return _o1.getDateGroup().compareTo(_o2.getDateGroup());
+                    }
+                });
+                Collections.sort(beans, chain);
+                ret = new JRBeanCollectionDataSource(beans);
+                getFilteredReport().cache(_parameter, ret);
             }
-            return dataSource;
+            return ret;
         }
 
+        /**
+         * Adds the projection based on analysing documents.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _beans the beans
+         * @throws EFapsException on error
+         */
+        protected void addProjection4Documents(final Parameter _parameter,
+                                               final List<DataBean> _beans)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            final DateTime start;
+            final DateTime end;
+            if (filter.containsKey("dateFrom")) {
+                start = (DateTime) filter.get("dateFrom");
+            } else {
+                start = new DateTime();
+            }
+            if (filter.containsKey("dateTo")) {
+                end = (DateTime) filter.get("dateTo");
+            } else {
+                end = new DateTime();
+            }
+
+            final Properties props = Sales.CASHFLOWREPORT_CONFIG.get();
+            final boolean contact = isShowContact(_parameter);
+            for (final CashFlowGroup group : CashFlowGroup.values()) {
+                final Properties inProps = getProperties4Prefix(props, "Projection." + group.name());
+
+                final Map<Integer, String> typesMap = analyseProperty(_parameter, inProps, "Type");
+                final Map<String, Set<String>> attr2types = new HashMap<>();
+                for (final String type : typesMap.values()) {
+                    final String attr = props.getProperty(type + ".FilterDate", CISales.DocumentAbstract.Date.name);
+                    final Set<String> types;
+                    if (attr2types.containsKey(attr)) {
+                        types = attr2types.get(attr);
+                    } else {
+                        types = new HashSet<>();
+                        attr2types.put(attr, types);
+                    }
+                    types.add(type);
+                }
+                final DateGroup dateGroup = getDateGroup(_parameter);
+                final AbstractGroupedByDate groupedByDate = new AbstractGroupedByDate()
+                {
+                };
+                final DateTimeFormatter dateTimeFormatter = groupedByDate.getDateTimeFormatter(DateGroup.MONTH);
+                for (final Entry<String, Set<String>> entry : attr2types.entrySet()) {
+                    final Properties propsTmp = new Properties(props);
+                    final String formatStr = "%02d";
+                    final int i = 1;
+                    for (final String type : entry.getValue()) {
+                        propsTmp.put("Type" + String.format(formatStr, i), type);
+                    }
+                    final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, propsTmp);
+                    queryBldr.addWhereAttrGreaterValue(entry.getKey(), start.withTimeAtStartOfDay().minusMinutes(1));
+                    queryBldr.addWhereAttrLessValue(entry.getKey(), end.withTimeAtStartOfDay().plusDays(1));
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                                    .attribute(CIContacts.Contact.Name);
+                    if (contact) {
+                        multi.addSelect(selContactName);
+                    }
+                    multi.addAttribute(entry.getKey());
+                    multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
+                                    CISales.DocumentSumAbstract.RateNetTotal);
+                    multi.execute();
+                    while (multi.next()) {
+                        final BigDecimal amount;
+                        if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total",
+                                        "NET"))) {
+                            amount = multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+                        } else {
+                            amount = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                        }
+                        final DateTime date = multi.getAttribute(entry.getKey());
+                        final String partial = groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter);
+                        _beans.add(new DataBean()
+                                        .setGroup(group)
+                                        .setInstance(multi.getCurrentInstance())
+                                        .setDateGroup(partial)
+                                        .setAmount(amount)
+                                        .setContact(contact ? multi.getSelect(selContactName) : null));
+                    }
+                }
+            }
+        }
+
+        /**
+         * Add2 transaction query bldr.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _queryBldr the query bldr
+         * @throws EFapsException on error
+         */
+        protected void add2TransactionQueryBldr(final Parameter _parameter,
+                                                final QueryBuilder _queryBldr)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            final DateTime start;
+            final DateTime end;
+            if (filter.containsKey("dateFrom")) {
+                start = (DateTime) filter.get("dateFrom");
+            } else {
+                start = new DateTime();
+            }
+            if (filter.containsKey("dateTo")) {
+                end = (DateTime) filter.get("dateTo");
+            } else {
+                end = new DateTime();
+            }
+            _queryBldr.addWhereAttrGreaterValue(CISales.TransactionAbstract.Date, start.withTimeAtStartOfDay()
+                            .minusMinutes(1));
+            _queryBldr.addWhereAttrLessValue(CISales.TransactionAbstract.Date, end.withTimeAtStartOfDay().plusDays(1));
+        }
+
+/**
         protected void addProjection(final Parameter _parameter)
             throws EFapsException
         {
@@ -361,63 +434,7 @@ public abstract class CashFlowReport_Base
                 }
             }
         }
-
-        /**
-         * @param _parameter
-         * @param _data
-         * @param _out
-         * @param _payInst
-         * @param _instance
-         * @return
-         */
-        protected Group getGroup(final Parameter _parameter,
-                                 final boolean _out,
-                                 final Instance _payInst,
-                                 final Instance _instance)
-        {
-            ICashFlowGroup key;
-            if (_out) {
-                key = CashFlowGroup.OUT;
-                if (!this.groups.containsKey(key)) {
-                    this.groups.put(key, new Group(key));
-                }
-            } else {
-                key = CashFlowGroup.IN;
-                if (!this.groups.containsKey(key)) {
-                    this.groups.put(key, new Group(key));
-                }
-            }
-            return this.groups.get(key);
-        }
-
-        /**
-         * @param _parameter Parameter as passed by the eFaps API
-         * @param _date DateTime the String is wanted for
-         * @return String for Date
-         * @throws EFapsException on error
-         */
-        protected String getDateStr(final Parameter _parameter,
-                                    final DateTime _date)
-            throws EFapsException
-        {
-            String ret;
-            switch (this.interval) {
-                case MONTH:
-                    final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy/MM - MMM")
-                                    .withLocale(Context.getThreadContext().getLocale());
-                    ret = _date.toString(formatter);
-                    break;
-                case WEEK:
-                    final DateTimeFormatter wformatter = DateTimeFormat.forPattern("yyyy - ww")
-                        .withLocale(Context.getThreadContext().getLocale());
-                    ret = _date.toString(wformatter);
-                    break;
-                default:
-                    ret = _date.toString();
-                    break;
-            }
-            return ret;
-        }
+*/
 
         @Override
         protected void addColumnDefintion(final Parameter _parameter,
@@ -425,355 +442,281 @@ public abstract class CashFlowReport_Base
             throws EFapsException
         {
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
+            final List<CrosstabRowGroupBuilder<?>> rowGroups = new ArrayList<>();
+            final CrosstabRowGroupBuilder<String> groupGroup = DynamicReports.ctab.rowGroup("groupLabel", String.class);
+            final CrosstabRowGroupBuilder<String> categoryCategory = DynamicReports.ctab.rowGroup("categoryLabel",
+                            String.class);
+            Collections.addAll(rowGroups, groupGroup, categoryCategory);
+
+            if (isShowContact(_parameter)) {
+                final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
+                                String.class);
+                rowGroups.add(contactGroup);
+            }
+
+            if (isShowDocTypes(_parameter)) {
+                final CrosstabRowGroupBuilder<String> docTypeGroup = DynamicReports.ctab.rowGroup("docType",
+                                String.class);
+                rowGroups.add(docTypeGroup);
+            }
+
+            final CrosstabColumnGroupBuilder<String> dateGroup = DynamicReports.ctab.columnGroup("dateGroup",
+                            String.class).setShowTotal(false);
             final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure("amount",
                             BigDecimal.class, Calculation.SUM);
-            final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("group", String.class);
-            final CrosstabRowGroupBuilder<String> rowCategory = DynamicReports.ctab.rowGroup("category", String.class);
-            final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
-                            .columnGroup("date", String.class).setShowTotal(false);
 
-            crosstab.headerCell(DynamicReports.cmp.text(DBProperties
-                            .getProperty(CashFlowReport.class.getName() + ".HeaderCell"))
+            crosstab.headerCell(DynamicReports.cmp.text(getFilteredReport().getDBProperty("HeaderCell"))
                             .setStyle(DynamicReports.stl.style().setBold(true)))
-                            .rowGroups(rowGroup, rowCategory)
-                            .columnGroups(columnGroup)
-                            .measures(amountMeasure);
+                    .rowGroups(rowGroups.toArray(new CrosstabRowGroupBuilder[rowGroups.size()]))
+                    .columnGroups(dateGroup)
+                    .measures(amountMeasure)
+                    .setDataPreSorted(true);
             _builder.summary(crosstab);
         }
 
         /**
-         * Getter method for the instance variable {@link #groups}.
+         * Checks if is show doc types.
          *
-         * @return value of instance variable {@link #groups}
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is show doc types
+         * @throws EFapsException on error
          */
-        protected Map<ICashFlowGroup, Group> getGroups()
+        protected boolean isShowContact(final Parameter _parameter)
+            throws EFapsException
         {
-            return this.groups;
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            return BooleanUtils.isTrue((Boolean) filter.get("contactGroup"));
         }
 
         /**
-         * Getter method for the instance variable {@link #projection}.
+         * Checks if is show doc types.
          *
-         * @return value of instance variable {@link #projection}
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is show doc types
+         * @throws EFapsException on error
          */
-        protected int getProjection()
+        protected boolean isShowDocTypes(final Parameter _parameter)
+            throws EFapsException
         {
-            return this.projection;
-        }
-    }
-
-    public static class Group
-    {
-
-        private final Map<ICashFlowCategory, Category> categories = new HashMap<ICashFlowCategory, Category>();
-
-        private Integer number = 0;
-
-        private final ICashFlowGroup cashFlowGroup;
-
-        /**
-         * @param _groupName
-         */
-        public Group(final ICashFlowGroup _group)
-        {
-            this.cashFlowGroup = _group;
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            return BooleanUtils.isTrue((Boolean) filter.get("typeGroup"));
         }
 
         /**
-         * @param _parameter
-         * @param _out
-         * @param _payInst
-         * @param _instance
-         * @param _dateStr
-         * @param _amount
+         * Gets the date group.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the date group
+         * @throws EFapsException on error
          */
-        public void add(final Parameter _parameter,
-                        final boolean _out,
-                        final Instance _payInst,
-                        final Instance _docInst,
-                        final String _dateStr,
-                        final BigDecimal _amount)
+        protected DateGroup getDateGroup(final Parameter _parameter)
+            throws EFapsException
         {
-            CashFlowCategory cat;
-            if (_docInst == null) {
-                cat = CashFlowCategory.NONE;
-            } else if (_docInst.isValid()) {
-                if (_docInst.getType().isKindOf(CISales.Invoice.getType())
-                                || _docInst.getType().isKindOf(CISales.Receipt.getType())
-                                || _docInst.getType().isKindOf(CISales.Reminder.getType())
-                                || _docInst.getType().isKindOf(CISales.CreditNote.getType())) {
-                    cat = CashFlowCategory.SELL;
-                } else if (_docInst.getType().isKindOf(CISales.IncomingInvoice.getType())
-                               || _docInst.getType().isKindOf(CISales.IncomingReceipt.getType())
-                               || _docInst.getType().isKindOf(CISales.IncomingCreditNote.getType())) {
-                    cat = CashFlowCategory.BUY;
-                } else if (_docInst.getType().isKindOf(CISales.IncomingCredit.getType())
-                                || _docInst.getType().isKindOf(CISales.Credit.getType())) {
-                    cat = CashFlowCategory.CREDIT;
-                    // Payroll_Payslip
-                } else if (_docInst.isValid() && _docInst.getType().getUUID().equals(
-                                UUID.fromString("a298d361-7530-4a24-b69f-ff3a1186a081"))) {
-                    cat = CashFlowCategory.PAYROLL;
-                } else {
-                    cat = CashFlowCategory.OTHER;
-                }
+            final DateGroup dateGroup;
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
+                dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
-                cat = CashFlowCategory.OTHER;
+                dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
-            add(_parameter, _out, cat, _dateStr, _amount);
-        }
-
-        public void add(final Parameter _parameter,
-                        final boolean _out,
-                        final ICashFlowCategory _cat,
-                        final String _dateStr,
-                        final BigDecimal _amount)
-        {
-            Category category;
-            if (this.categories.containsKey(_cat)) {
-                category = this.categories.get(_cat);
-            } else {
-                category = new Category(this, _cat);
-                this.categories.put(_cat, category);
-            }
-            category.add(_parameter, _dateStr, _amount);
-        }
-
-
-        /**
-         * @param _parameter
-         * @return
-         */
-        public Map<String, BigDecimal> getSaldo(final Parameter _parameter)
-        {
-            final Map<String, BigDecimal> ret = new TreeMap<String, BigDecimal>();
-            for (final Category category : this.categories.values()) {
-                final Map<String, BigDecimal> amounts = category.getAmounts();
-                for (final Entry<String, BigDecimal> entry : amounts.entrySet()) {
-                    BigDecimal amount;
-                    if (ret.containsKey(entry.getKey())) {
-                        amount = ret.get(entry.getKey());
-                    } else {
-                        amount = BigDecimal.ZERO;
-                    }
-                    ret.put(entry.getKey(), amount.add(entry.getValue()));
-                }
-            }
-            return ret;
+            return dateGroup;
         }
 
         /**
-         * @param _dataSource
-         */
-        public void add2DataSource(final Parameter _parameter,
-                                   final DRDataSource _dataSource)
-        {
-            final List<Category> catList = new ArrayList<Category>(this.categories.values());
-            Collections.sort(catList, new Comparator<Category>()
-            {
-                @Override
-                public int compare(final Category _o1,
-                                   final Category _o2)
-                {
-                    return _o1.getWeight().compareTo(_o1.getWeight());
-                }
-            });
-            int i = 1;
-            for (final Category category : catList) {
-                category.setNumber(i);
-                category.add2DataSource(_parameter, _dataSource);
-                i++;
-            }
-        }
-
-        /**
-         * Getter method for the instance variable {@link #name}.
+         * Gets the filtered report.
          *
-         * @return value of instance variable {@link #name}
+         * @return the filtered report
          */
-        public String getName()
+        public CashFlowReport_Base getFilteredReport()
         {
-            return this.number + ". "
-                            + DBProperties.getProperty(CashFlowReport.class.getName() + ".Group." + getCashFlowGroup());
-        }
-
-        /**
-         * Getter method for the instance variable {@link #weight}.
-         *
-         * @return value of instance variable {@link #weight}
-         */
-        public Integer getWeight()
-        {
-            return this.cashFlowGroup.getWeight();
-        }
-
-        /**
-         * Getter method for the instance variable {@link #categories}.
-         *
-         * @return value of instance variable {@link #categories}
-         */
-        public Map<ICashFlowCategory, Category> getCategories()
-        {
-            return this.categories;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #number}.
-         *
-         * @return value of instance variable {@link #number}
-         */
-        public Integer getNumber()
-        {
-            return this.number;
-        }
-
-        /**
-         * Setter method for instance variable {@link #number}.
-         *
-         * @param _number value for instance variable {@link #number}
-         */
-        public void setNumber(final Integer _number)
-        {
-            this.number = _number;
-        }
-
-
-        /**
-         * Getter method for the instance variable {@link #cashFlowGroup}.
-         *
-         * @return value of instance variable {@link #cashFlowGroup}
-         */
-        public ICashFlowGroup getCashFlowGroup()
-        {
-            return this.cashFlowGroup;
+            return this.filteredReport;
         }
     }
 
     /**
-     * Category.
+     * The Class DataBean.
+     *
      */
-    public static class Category
+    public static class DataBean
     {
 
+        /** The instance. */
+        private Instance instance;
+
+        /** The group. */
+        private ICashFlowGroup group;
+
+        /** The category. */
+        private CashFlowCategory category;
+
+        /** The date group. */
+        private String dateGroup;
+
+        /** The amount. */
+        private BigDecimal amount;
+
+        /** The contact. */
+        private String contact;
+
         /**
-         * Date to amount mapping.
+         * Gets the instance.
+         *
+         * @return the instance
          */
-        private final Map<String, BigDecimal> amounts = new HashMap<String, BigDecimal>();
-
-        private final Group group;
-
-        private Integer number;
-
-        private final ICashFlowCategory cashFlowCategory;
-
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
 
         /**
-         * @param _group
-         * @param _cat
+         * Sets the instance.
+         *
+         * @param _instance the instance
+         * @return the data bean
          */
-        public Category(final Group _group,
-                        final ICashFlowCategory _cat)
+        public DataBean setInstance(final Instance _instance)
+        {
+            this.instance = _instance;
+            return this;
+        }
+
+        /**
+         * Gets the group label.
+         *
+         * @return the group label
+         */
+        public String getGroupLabel()
+        {
+            return DBProperties.getProperty(CashFlowReport.class.getName() + ".Group." + getGroup().getLabelKey());
+        }
+
+        /**
+         * Gets the group.
+         *
+         * @return the group
+         */
+        public ICashFlowGroup getGroup()
+        {
+            return this.group;
+        }
+
+        /**
+         * Sets the group.
+         *
+         * @param _group the group
+         * @return the data bean
+         */
+        public DataBean setGroup(final ICashFlowGroup _group)
         {
             this.group = _group;
-            this.cashFlowCategory = _cat;
+            return this;
         }
 
         /**
-         * @param _parameter
-         * @param _dataSource
+         * Gets the category.
+         *
+         * @return the category
+         * @throws EFapsException on error
          */
-        public void add2DataSource(final Parameter _parameter,
-                                   final DRDataSource _dataSource)
+        public CashFlowCategory getCategory()
+            throws EFapsException
         {
-            BigDecimal total = BigDecimal.ZERO;
-            for (final Entry<String, BigDecimal> entry : this.amounts.entrySet()) {
-                _dataSource.add(this.group.getName(), getName(), entry.getKey(), entry.getValue());
-                total = total.add(entry.getValue());
+            if (this.category == null) {
+                final Properties props = Sales.CASHFLOWREPORT_CONFIG.get();
+                final String catStr = props.getProperty(getInstance().getType().getName() + ".Category",
+                                CashFlowCategory.NONE.name());
+                this.category = EnumUtils.getEnum(CashFlowCategory.class, catStr);
             }
-            if (!CashFlowReport_Base.OPENCAT.equals(this.cashFlowCategory)) {
-                _dataSource.add(this.group.getName(), getName(), "Total", total);
-            }
+            return this.category;
         }
 
         /**
-         * @param _parameter
-         * @param _dateStr
-         * @param _amount
-         */
-        public void add(final Parameter _parameter,
-                        final String _dateStr,
-                        final BigDecimal _amount)
-        {
-            BigDecimal amount;
-            if (this.amounts.containsKey(_dateStr)) {
-                amount = this.amounts.get(_dateStr);
-            } else {
-                amount = BigDecimal.ZERO;
-            }
-            this.amounts.put(_dateStr, amount.add(_amount));
-        }
-
-        /**
-         * Getter method for the instance variable {@link #name}.
+         * Gets the category label.
          *
-         * @return value of instance variable {@link #name}
+         * @return the category label
+         * @throws EFapsException on error
          */
-        public String getName()
+        public String getCategoryLabel()
+            throws EFapsException
         {
-            return this.number + ". "
-                            + DBProperties.getProperty(CashFlowReport.class.getName() + ".Category."
-                                            + this.group.getCashFlowGroup() + "." + getCashFlowCategory());
+            return DBProperties.getProperty(CashFlowReport.class.getName() + ".Category." + getGroup().getLabelKey()
+                            + "." + getCategory().getLabelKey());
         }
 
         /**
-         * Getter method for the instance variable {@link #amounts}.
+         * Gets the date group.
          *
-         * @return value of instance variable {@link #amounts}
+         * @return the date group
          */
-        public Map<String, BigDecimal> getAmounts()
+        public String getDocType()
         {
-            return this.amounts;
+            return getInstance().getType().getLabel();
         }
 
         /**
-         * Getter method for the instance variable {@link #weight}.
+         * Gets the date group.
          *
-         * @return value of instance variable {@link #weight}
+         * @return the date group
          */
-        public Integer getWeight()
+        public String getDateGroup()
         {
-            return this.cashFlowCategory.getWeight();
+            return this.dateGroup;
         }
 
         /**
-         * Getter method for the instance variable {@link #number}.
+         * Sets the date group.
          *
-         * @return value of instance variable {@link #number}
+         * @param _dateGroup the date group
+         * @return the data bean
          */
-        public Integer getNumber()
+        public DataBean setDateGroup(final String _dateGroup)
         {
-            return this.number;
+            this.dateGroup = _dateGroup;
+            return this;
         }
 
         /**
-         * Setter method for instance variable {@link #number}.
+         * Gets the amount.
          *
-         * @param _number value for instance variable {@link #number}
+         * @return the amount
          */
-        public void setNumber(final Integer _number)
+        public BigDecimal getAmount()
         {
-            this.number = _number;
+            return this.amount;
         }
 
+        /**
+         * Sets the amount.
+         *
+         * @param _amount the amount
+         * @return the data bean
+         */
+        public DataBean setAmount(final BigDecimal _amount)
+        {
+            this.amount = _amount;
+            return this;
+        }
 
         /**
-         * Getter method for the instance variable {@link #cashFlowCategory}.
+         * Gets the contact.
          *
-         * @return value of instance variable {@link #cashFlowCategory}
+         * @return the contact
          */
-        public ICashFlowCategory getCashFlowCategory()
+        public String getContact()
         {
-            return this.cashFlowCategory;
+            return this.contact;
+        }
+
+        /**
+         * Sets the contact.
+         *
+         * @param _contact the new contact
+         * @return the data bean
+         */
+        public DataBean setContact(final String _contact)
+        {
+            this.contact = _contact;
+            return this;
         }
     }
 }

@@ -39,6 +39,7 @@ import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CINumGenSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
+import org.efaps.esjp.sales.cashflow.CashFlowCategory;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
@@ -101,6 +102,21 @@ public final class Sales
                     .key(BASE + "Config4Calculator")
                     .concatenate(true)
                     .description("Configuration for Calculators.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CASHFLOWREPORT_CONFIG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.CashFlowReport")
+                    .description("Properties for the  CashFlowReport.")
+                    .addDefaultValue("Projection.IN.Type01", CISales.Installment.getType().getName())
+                    .addDefaultValue("Projection.IN.Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".FilterDate",
+                                    CISales.Installment.DueDate.name)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Category",
+                                    CashFlowCategory.CREDIT.name())
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Category",
+                                    CashFlowCategory.SELL.name());
 
     /** See description. */
     @EFapsSysConfAttribute

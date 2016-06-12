@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.cashflow;
@@ -25,16 +22,38 @@ package org.efaps.esjp.sales.cashflow;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 public enum CashFlowCategory
     implements ICashFlowCategory
 {
-    SELL(1), BUY(2), CREDIT(3), PAYROLL(4), OTHER(5), NONE(6);
 
+    /** The sell. */
+    SELL(1),
+
+    /** The buy. */
+    BUY(2),
+
+    /** The credit. */
+    CREDIT(3),
+
+    /** The payroll. */
+    PAYROLL(4),
+
+    /** The other. */
+    OTHER(5),
+
+    /** The none. */
+    NONE(6);
+
+    /** The weight. */
     private int weight;
 
-    private CashFlowCategory(final int _weight)
+    /**
+     * Instantiates a new cash flow category.
+     *
+     * @param _weight the weight
+     */
+    CashFlowCategory(final int _weight)
     {
         this.weight = _weight;
     }
@@ -42,6 +61,7 @@ public enum CashFlowCategory
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getInt()
     {
         return ordinal();
@@ -51,5 +71,11 @@ public enum CashFlowCategory
     public Integer getWeight()
     {
         return this.weight;
+    }
+
+    @Override
+    public String getLabelKey()
+    {
+        return name();
     }
 }
