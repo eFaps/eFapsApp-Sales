@@ -55,6 +55,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.background.ExecutionBridge;
 import org.efaps.esjp.common.background.Service;
 import org.efaps.esjp.erp.Currency;
@@ -79,6 +80,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("65041308-73a6-47de-bd1d-3dacc37dbc6c")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class Costing_Base
+    extends AbstractCommon
     implements Job
 {
     /**
@@ -125,7 +127,8 @@ public abstract class Costing_Base
     }
 
     /**
-     * Used to mark an Costing as not "UpToDate" on a trigger.
+     * Used to mark an Costing as not "UpToDate" on a trigger
+     * of a document relation.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
@@ -152,6 +155,45 @@ public abstract class Costing_Base
             final Update update = new Update(query.getCurrentValue());
             update.add(CIProducts.CostingAbstract.UpToDate, false);
             update.executeWithoutTrigger();
+        }
+        return new Return();
+    }
+
+    /**
+     *  Used to mark an Costing as not "UpToDate" on a trigger on the Document istself.
+     *  e.g. on canceling the document
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the eFaps exception
+     */
+    public Return documentTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (containsProperty(_parameter, "OnStatus")) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(_parameter.getInstance().getType().getStatusAttribute());
+            print.executeWithoutAccessCheck();
+            final Long statusId = print.<Long>getAttribute(_parameter.getInstance().getType().getStatusAttribute());
+            if (Status.get(statusId).getKey().equals(getProperty(_parameter, "OnStatus"))) {
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
+                                _parameter.getInstance());
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
+                queryBldr.addWhereAttrInQuery(CIProducts.CostingAbstract.TransactionAbstractLink, attrQuery);
+                queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, true);
+                final InstanceQuery query = queryBldr.getQuery();
+                query.executeWithoutAccessCheck();
+                while (query.next()) {
+                    final Update update = new Update(query.getCurrentValue());
+                    update.add(CIProducts.CostingAbstract.UpToDate, false);
+                    update.executeWithoutTrigger();
+                }
+            }
         }
         return new Return();
     }
@@ -918,7 +960,8 @@ public abstract class Costing_Base
                         LOG.error("Catched EFapsException", e);
                     }
                     return ret;
-                }});
+                }
+            });
 
             for (final TransCosting transCost : costings) {
                 final QueryBuilder costBldr = new QueryBuilder(costType);
