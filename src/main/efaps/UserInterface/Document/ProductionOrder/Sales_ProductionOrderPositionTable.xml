@@ -44,7 +44,7 @@
                 method="autoComplete4Product"
                 name="Sales_ProductionOrderPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ProductionOrder" >
-                 <property name="Type">Products_StockProductAbstract</property>
+                 <property name="Type">Products_StoreableProductAbstract</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.ProductionOrder"
                 method="updateFields4Product"

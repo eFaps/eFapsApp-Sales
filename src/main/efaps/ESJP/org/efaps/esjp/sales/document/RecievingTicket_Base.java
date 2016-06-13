@@ -268,8 +268,8 @@ public abstract class RecievingTicket_Base
 
                             final SelectBuilder selProd = SelectBuilder.get()
                                             .linkto(CIProducts.TransactionIndividualOutbound.Product)
-                                            .linkfrom(CIProducts.StockProductAbstract2Batch.ToLink)
-                                            .linkto(CIProducts.StockProductAbstract2Batch.FromLink);
+                                            .linkfrom(CIProducts.StoreableProductAbstract2Batch.ToLink)
+                                            .linkto(CIProducts.StoreableProductAbstract2Batch.FromLink);
                             final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
                             final SelectBuilder selProdDescr = new SelectBuilder(selProd)
                                             .attribute(CIProducts.ProductAbstract.Description);

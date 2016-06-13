@@ -40,7 +40,7 @@
                 <!-- Sales-Configuration -->
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.ServiceRequest.AutoComplete4Products</property>
-                <property name="Type">Products_NonStockProductAbstract</property>
+                <property name="Type">Products_UnstoreableProductAbstract</property>
                 <property name="ExtraParameter">project</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.ServiceRequest" method="updateFields4Product"

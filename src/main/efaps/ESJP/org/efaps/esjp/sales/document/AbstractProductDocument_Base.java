@@ -210,9 +210,9 @@ public abstract class AbstractProductDocument_Base
                     if (inst.getType().isKindOf(CIProducts.ProductIndividualAbstract.getType())) {
                         final PrintQuery print = new PrintQuery(inst);
                         final SelectBuilder sel = SelectBuilder.get()
-                                        .linkfrom(CIProducts.StockProductAbstract2IndividualAbstract,
-                                                        CIProducts.StockProductAbstract2IndividualAbstract.ToAbstract)
-                                        .linkto(CIProducts.StockProductAbstract2IndividualAbstract.FromAbstract)
+                                        .linkfrom(CIProducts.StoreableProductAbstract2IndividualAbstract,
+                                                        CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract)
+                                        .linkto(CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract)
                                         .instance();
                         print.addSelect(sel);
                         print.addAttribute(CIProducts.ProductAbstract.Name);
@@ -448,12 +448,12 @@ public abstract class AbstractProductDocument_Base
                             final Object quantity;
                             if (ProductIndividual.BATCH.equals(prIn)) {
                                 prodType = CIProducts.ProductBatch.getType();
-                                relType = CIProducts.StockProductAbstract2Batch.getType();
+                                relType = CIProducts.StoreableProductAbstract2Batch.getType();
                                 clazz = false;
                                 quantity = multi.getAttribute(CIProducts.TransactionInOutAbstract.Quantity);
                             } else {
                                 prodType = CIProducts.ProductIndividual.getType();
-                                relType = CIProducts.StockProductAbstract2Individual.getType();
+                                relType = CIProducts.StoreableProductAbstract2Individual.getType();
                                 clazz = true;
                                 quantity = 1;
                             }
@@ -814,8 +814,8 @@ public abstract class AbstractProductDocument_Base
                                 CIProducts.ProductAbstract.Individual);
                 switch (indivual) {
                     case BATCH:
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract2Batch);
-                        attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract2Batch);
+                        attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2Batch.FromLink,
                                         _bean.getProdInstance());
                         final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
                         final Instance storInst;
@@ -829,7 +829,7 @@ public abstract class AbstractProductDocument_Base
                             invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
                         }
                         invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
-                                        attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract2Batch.ToLink));
+                                        attrQueryBldr.getAttributeQuery(CIProducts.StoreableProductAbstract2Batch.ToLink));
                         final MultiPrintQuery multi = invQueryBldr.getPrint();
                         final SelectBuilder selProd = SelectBuilder.get()
                                         .linkto(CIProducts.InventoryIndividual.Product);
@@ -996,8 +996,8 @@ public abstract class AbstractProductDocument_Base
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.PositionAbstract.UoM.name));
 
         // validate that the product is a product that can have stock
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StockProductAbstract);
-        queryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract.ID, productID[0]);
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract);
+        queryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract.ID, productID[0]);
 
         if (!queryBldr.getQuery().executeWithoutAccessCheck().isEmpty()) {
             final Insert insert = new Insert(_type);
@@ -1070,7 +1070,7 @@ public abstract class AbstractProductDocument_Base
             final Instance storageInst = posMulti.getSelect(selStorageInst);
 
             if (InstanceUtils.isValid(prodInst) && !prodInst.getType().isCIType(CIProducts.ProductInfinite)
-                            && prodInst.getType().isKindOf(CIProducts.StockProductAbstract)
+                            && prodInst.getType().isKindOf(CIProducts.StoreableProductAbstract)
                             && InstanceUtils.isValid(storageInst)) {
 
                 final CIType ciType;
@@ -1325,12 +1325,12 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         final List<Position> ret = new ArrayList<>();
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _docInst);
         queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
-                        attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract.ID));
+                        attrQueryBldr.getAttributeQuery(CIProducts.StoreableProductAbstract.ID));
         queryBldr.addOrderByAttributeAsc(CISales.PositionAbstract.PositionNumber);
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionAbstract.Product)

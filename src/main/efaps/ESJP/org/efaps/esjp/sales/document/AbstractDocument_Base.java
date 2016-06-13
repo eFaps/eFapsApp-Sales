@@ -1636,7 +1636,7 @@ public abstract class AbstractDocument_Base
             final boolean hideIndividualizable = "true".equalsIgnoreCase(properties.getProperty(typeName
                             + ".HideMarkedIndividual", "false"));
             if (hideIndividualizable) {
-                _queryBldr.addWhereAttrNotEqValue(CIProducts.StockProductAbstract.Individual,
+                _queryBldr.addWhereAttrNotEqValue(CIProducts.StoreableProductAbstract.Individual,
                                 ProductIndividual.INDIVIDUAL, ProductIndividual.BATCH);
             }
         }
