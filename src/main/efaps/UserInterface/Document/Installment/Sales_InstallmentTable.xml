@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -36,14 +36,17 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_Installment/Contact.Label</property>
             <property name="HRef">TREEMENU</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="Label">Sales_Installment/Date.Label</property>
+            <property name="FilterType">FREETEXT</property>
         </field>
         <field name="dueDate">
             <property name="Attribute">DueDate</property>
             <property name="Label">Sales_Installment/DueDate.Label</property>
+            <property name="FilterType">FREETEXT</property>
         </field>
         <field name="rateCrosstotal">
             <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
@@ -70,8 +73,11 @@
             <property name="Align">right</property>
         </field>
         <field name="status">
-            <property name="FilterType">PICKLIST</property>
-            <property name="Attribute">StatusAbstract</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Draft;Open</property>
+            <property name="Attribute">Status</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">

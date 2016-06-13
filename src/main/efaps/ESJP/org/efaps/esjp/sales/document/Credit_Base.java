@@ -168,7 +168,7 @@ public abstract class Credit_Base
         final Parameter parameter = ParameterUtil.clone(_parameter);
         ParameterUtil.setParmeterValue(parameter, "contact", print.<String>getSelect(selContactOID));
         ParameterUtil.setParmeterValue(parameter, "rateCurrencyId",
-                        String.valueOf(print.getAttribute(CISales.Credit.RateCurrencyId)));
+                        String.valueOf(print.<Long>getAttribute(CISales.Credit.RateCurrencyId)));
 
         for (int i = 0; i < quantity; i++) {
             ParameterUtil.setParmeterValue(parameter, "dueDate", dueDate.plusMonths(i).toString());

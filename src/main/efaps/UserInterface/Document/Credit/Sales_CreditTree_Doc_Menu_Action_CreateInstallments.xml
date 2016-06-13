@@ -31,7 +31,7 @@
                 <!-- Default NumberGenerator: Sales_InstallmentSequence -->
                 <property name="NumberGenerator">ebcf6479-6d1e-41e4-a689-1ceb046ba850</property>
                 <property name="StatusGroup">Sales_InstallmentStatus</property>
-                <property name="Status">Draft</property>
+                <property name="Status">Open</property>
 
                 <!-- Sales_Installment2Credit -->
                 <property name="ConnectType">e314b784-7b1a-4ff5-bc6a-5fc526cf3f01</property>
