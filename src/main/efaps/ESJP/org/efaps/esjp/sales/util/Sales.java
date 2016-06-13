@@ -37,6 +37,7 @@ import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
 import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CINumGenSales;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
 import org.efaps.esjp.sales.cashflow.CashFlowCategory;
@@ -328,7 +329,9 @@ public final class Sales
     public static final PropertiesSysConfAttribute DOCPOSREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocPositionReport")
-                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05")
+                    .addDefaultValue("productType.Type01", CIProducts.StoreableProductAbstract.getType().getName())
+                    .addDefaultValue("productType.Type02", CIProducts.UnstoreableProductAbstract.getType().getName());
 
     /** See description. */
     @EFapsSysConfAttribute

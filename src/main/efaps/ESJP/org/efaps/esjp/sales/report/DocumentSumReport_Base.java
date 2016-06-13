@@ -321,7 +321,7 @@ public abstract class DocumentSumReport_Base
             } else {
                 typeList = getTypeList(_parameter);
             }
-            final Properties props = getProperties4TypeList(_parameter);
+            final Properties props = getProperties4TypeList(_parameter, null);
             final DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
@@ -472,11 +472,9 @@ public abstract class DocumentSumReport_Base
         return ret;
     }
 
-    /* (non-Javadoc)
-     * @see org.efaps.esjp.erp.FilteredReport_Base#getProperties4TypeList(org.efaps.admin.event.Parameter)
-     */
     @Override
-    protected Properties getProperties4TypeList(final Parameter _parameter)
+    protected Properties getProperties4TypeList(final Parameter _parameter,
+                                                final String _fieldName)
         throws EFapsException
     {
         Properties ret = null;

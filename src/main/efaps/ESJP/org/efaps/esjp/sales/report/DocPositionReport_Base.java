@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -199,7 +201,7 @@ public abstract class DocPositionReport_Base
             } else {
                 typeList = getTypeList(_parameter);
             }
-            final Properties props = getProperties4TypeList(_parameter);
+            final Properties props = getProperties4TypeList(_parameter, null);
             final AbstractGroupedByDate.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
@@ -266,7 +268,8 @@ public abstract class DocPositionReport_Base
     }
 
     @Override
-    protected Properties getProperties4TypeList(final Parameter _parameter)
+    protected Properties getProperties4TypeList(final Parameter _parameter,
+                                                final String _fieldName)
         throws EFapsException
     {
         Properties ret = null;
@@ -282,8 +285,11 @@ public abstract class DocPositionReport_Base
                 ret = config.getAttributeValueAsProperties(getProperty(_parameter, "ConfigAttribute"), true);
             }
         }
-        if (ret == null) {
+        if (MapUtils.isEmpty(ret)) {
             ret = Sales.DOCPOSREPORT.get();
+        }
+        if ("productType".equals(_fieldName)) {
+            ret = getProperties4Prefix(ret, "productType", true);
         }
         return ret;
     }
@@ -333,6 +339,19 @@ public abstract class DocPositionReport_Base
                                         attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
                         break;
                 }
+            }
+        }
+
+        if (filterMap.containsKey("productType")) {
+            final TypeFilterValue filterValue = (TypeFilterValue) filterMap.get("productType");
+            if (filterValue != null && CollectionUtils.isNotEmpty(filterValue.getObject())) {
+                final Iterator<Long> iter = filterValue.getObject().iterator();
+                final QueryBuilder queryBldr = new QueryBuilder(Type.get(iter.next()));
+                while (iter.hasNext()) {
+                    queryBldr.addType(Type.get(iter.next()));
+                }
+                _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
+                                queryBldr.getAttributeQuery(CIProducts.ProductAbstract.ID));
             }
         }
     }

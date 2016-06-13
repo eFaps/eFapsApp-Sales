@@ -108,5 +108,15 @@
                 <property name="Attribute">org.efaps.sales.report.DocPositionCostReport.ActivateAlternative</property>
             </trigger>
         </field>
+        <field name="productType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">SNIPPLET</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionCostReport.productType</property>
+            <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
+                name="Sales_DocPositionCostReportFilterForm.productType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionCostReport">
+                <property name="ListType">CHECKBOX</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>

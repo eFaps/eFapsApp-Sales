@@ -139,7 +139,8 @@ public abstract class Employee2DocReport_Base
     }
 
     @Override
-    protected Properties getProperties4TypeList(final Parameter _parameter)
+    protected Properties getProperties4TypeList(final Parameter _parameter,
+                                                final String _fieldName)
         throws EFapsException
     {
         Properties ret = null;
@@ -331,7 +332,7 @@ public abstract class Employee2DocReport_Base
             } else {
                 typeList = getFilteredReport().getTypeList(_parameter);
             }
-            final Properties props = getFilteredReport().getProperties4TypeList(_parameter);
+            final Properties props = getFilteredReport().getProperties4TypeList(_parameter, null);
             final DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();

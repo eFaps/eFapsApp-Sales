@@ -25,74 +25,10 @@
             <profile name="eFaps" />
         </profiles>
         <name>Sales_DocPositionReportForm</name>
-        <field name="filter">
-            <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
-                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.1"
-                program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
-                <property name="ReportField">report</property>
-                <property name="Field01">dateFrom</property>
-                <property name="Field02">dateTo</property>
-                <property name="Field03">type</property>
-                <property name="Field04">contact</property>
-                <property name="Field05">currency</property>
-                <property name="Field06">dateGroup</property>
-                <property name="Field07">contactGroup</property>
-                <property name="Field08">typeGroup</property>
-                <property name="FilterType01">DateTime</property>
-                <property name="FilterType02">DateTime</property>
-                <property name="FilterType03">Type</property>
-                <property name="FilterType04">Instance</property>
-                <property name="FilterType05">Currency</property>
-                <property name="FilterType06">Enum</property>
-                <property name="FilterType07">Enum</property>
-                <property name="FilterType08">Boolean</property>
-                <property name="FilterDefault01">MONTH:-1</property>
-                <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03">Sales_Invoice</property>
-                <property name="FilterDefault04">-</property>
-                <property name="FilterDefault05">-</property>
-                <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault07">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
-                <property name="FilterDefault08">false</property>
-            </trigger>
-            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
-                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.2"
-                program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
-                <property name="Field01">dateFrom</property>
-                <property name="Field02">dateTo</property>
-                <property name="Field03">type</property>
-                <property name="Field04">contact</property>
-                <property name="Field05">currency</property>
-                <property name="Field06">dateGroup</property>
-                <property name="Field07">contactGroup</property>
-                <property name="Field08">typeGroup</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
-                <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.DocPositionReport.contact</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.DocPositionReport.currency</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
-                <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
-                <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
-                <property name="Contacts_Contact_Select">attribute[Name]</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_DocPositionReportForm.filter.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
-                <property name="Inverse">true</property>
-             </trigger>
-        </field>
+
         <field name="filterWithBOM">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_DocPositionReportForm.filterWithBOM.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
@@ -106,7 +42,8 @@
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
                 <property name="Field08">typeGroup</property>
-                <property name="Field09">bom</property>
+                <property name="Field09">productType</property>
+                <property name="Field10">bom</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -115,7 +52,8 @@
                 <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Boolean</property>
-                <property name="FilterType09">Boolean</property>
+                <property name="FilterType09">Type</property>
+                <property name="FilterType10">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -124,7 +62,11 @@
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault07">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
                 <property name="FilterDefault08">false</property>
-                <property name="FilterDefault09">false</property>
+                <property name="FilterDefault09">ALL</property>
+                <property name="FilterDefault10">false</property>
+                <property name="AccessAttribute10">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocPositionReportForm.filterWithBOM.UI_FIELD_VALUE.2"
@@ -138,7 +80,8 @@
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
                 <property name="Field08">typeGroup</property>
-                <property name="Field09">bom</property>
+                <property name="Field09">productType</property>
+                <property name="Field10">bom</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
@@ -147,17 +90,13 @@
                 <property name="DBProperty06">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
-                <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
+                <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_DocPositionReportForm.filterWithBOM.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+                <property name="AccessAttribute10">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
-             </trigger>
+            </trigger>
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
@@ -177,83 +116,7 @@
         <name>Sales_DocPositionReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
-                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.1"
-                program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
-                <property name="ReportField">report</property>
-                <property name="Field01">dateFrom</property>
-                <property name="Field02">dateTo</property>
-                <property name="Field03">type</property>
-                <property name="Field04">contact</property>
-                <property name="Field05">project</property>
-                <property name="Field06">currency</property>
-                <property name="Field07">dateGroup</property>
-                <property name="Field08">contactGroup</property>
-                <property name="Field09">projectGroup</property>
-                <property name="Field10">typeGroup</property>
-                <property name="FilterType01">DateTime</property>
-                <property name="FilterType02">DateTime</property>
-                <property name="FilterType03">Type</property>
-                <property name="FilterType04">Instance</property>
-                <property name="FilterType05">Instance</property>
-                <property name="FilterType06">Currency</property>
-                <property name="FilterType07">Enum</property>
-                <property name="FilterType08">Enum</property>
-                <property name="FilterType09">Boolean</property>
-                <property name="FilterType10">Boolean</property>
-                <property name="FilterDefault01">MONTH:-1</property>
-                <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03">Sales_Invoice</property>
-                <property name="FilterDefault04">-</property>
-                <property name="FilterDefault05">-</property>
-                <property name="FilterDefault06">-</property>
-                <property name="FilterDefault07">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault08">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
-                <property name="FilterDefault09">false</property>
-                <property name="FilterDefault10">false</property>
-            </trigger>
-            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
-                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.2"
-                program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
-                <property name="Field01">dateFrom</property>
-                <property name="Field02">dateTo</property>
-                <property name="Field03">type</property>
-                <property name="Field04">contact</property>
-                <property name="Field05">project</property>
-                <property name="Field06">currency</property>
-                <property name="Field07">dateGroup</property>
-                <property name="Field08">contactGroup</property>
-                <property name="Field09">projectGroup</property>
-                <property name="Field10">typeGroup</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
-                <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.DocPositionReport.contact</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.DocPositionReport.project</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.DocPositionReport.currency</property>
-                <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
-                <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
-                <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.projectGroup</property>
-                <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
-                <property name="Contacts_Contact_Select">attribute[Name]</property>
-                <property name="Projects_ProjectService_Select">attribute[Name]</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_DocPositionReportForm.filter.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
-                <property name="Inverse">true</property>
-             </trigger>
-        </field>
-        <field name="filterWithBOM">
-            <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_DocPositionReportForm.filterWithBOM.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
@@ -269,7 +132,8 @@
                 <property name="Field08">contactGroup</property>
                 <property name="Field09">projectGroup</property>
                 <property name="Field10">typeGroup</property>
-                <property name="Field11">bom</property>
+                <property name="Field11">productType</property>
+                <property name="Field12">bom</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -280,7 +144,8 @@
                 <property name="FilterType08">Enum</property>
                 <property name="FilterType09">Boolean</property>
                 <property name="FilterType10">Boolean</property>
-                <property name="FilterType11">Boolean</property>
+                <property name="FilterType11">Type</property>
+                <property name="FilterType12">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -291,7 +156,11 @@
                 <property name="FilterDefault08">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
                 <property name="FilterDefault09">false</property>
                 <property name="FilterDefault10">false</property>
-                <property name="FilterDefault11">false</property>
+                <property name="FilterDefault11">ALL</property>
+                <property name="FilterDefault12">false</property>
+                <property name="AccessAttribute12">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocPositionReportForm.filterWithBOM.UI_FIELD_VALUE.2"
@@ -307,7 +176,8 @@
                 <property name="Field08">contactGroup</property>
                 <property name="Field09">projectGroup</property>
                 <property name="Field10">typeGroup</property>
-                <property name="Field11">bom</property>
+                <property name="Field11">productType</property>
+                <property name="Field12">bom</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
@@ -318,18 +188,14 @@
                 <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.projectGroup</property>
                 <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
-                <property name="DBProperty11">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+                <property name="DBProperty11">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
+                <property name="DBProperty12">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Projects_ProjectService_Select">attribute[Name]</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_DocPositionReportForm.filterWithBOM.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+                <property name="AccessAttribute12">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
-             </trigger>
+            </trigger>
         </field>
         <field name="report">
             <property name="HideLabel">true</property>

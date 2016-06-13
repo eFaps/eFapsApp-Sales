@@ -44,8 +44,8 @@
         </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">ERP_ReportFilterForm4DateFromToType.type.Label</property>
+            <property name="UIType">SNIPPLET</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.type</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
@@ -78,7 +78,7 @@
         </field>
         <field name="dateGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -88,7 +88,7 @@
         </field>
         <field name="contactGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="Sales_DocPositionReportFilterForm.contactGroup.UI_FIELD_VALUE"
@@ -103,6 +103,16 @@
             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport" />
+        </field>
+        <field name="productType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">SNIPPLET</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
+            <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="ListType">CHECKBOX</property>
+            </trigger>
         </field>
         <field name="bom">
             <property name="ModeEdit">EDITABLE</property>
@@ -145,8 +155,8 @@
         </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">ERP_ReportFilterForm4DateFromToType.type.Label</property>
+            <property name="UIType">SNIPPLET</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
@@ -193,7 +203,7 @@
         </field>
         <field name="dateGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -203,7 +213,7 @@
         </field>
        <field name="contactGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="Sales_DocPositionReportFilterForm.contactGroup.UI_FIELD_VALUE"
@@ -227,6 +237,16 @@
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport" />
         </field>
+        <field name="productType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">SNIPPLET</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
+            <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="ListType">CHECKBOX</property>
+            </trigger>
+         </field>
          <field name="bom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
