@@ -184,6 +184,19 @@ public abstract class IncomingExchange_Base
         return new Exchange().createCalculated(_parameter);
     }
 
+    /**
+     * Reopen related.
+     *
+     * @param _paremeter the _paremeter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return reopenRelated(final Parameter _paremeter)
+        throws EFapsException
+    {
+        return new Exchange().reopenRelated(_paremeter);
+    }
+
     @Override
     public CIType getCIType()
         throws EFapsException

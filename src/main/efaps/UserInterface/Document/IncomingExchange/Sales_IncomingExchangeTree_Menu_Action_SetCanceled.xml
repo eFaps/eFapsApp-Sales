@@ -28,8 +28,11 @@
             <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <form>Sales_IncomingExchangeSetCanceledForm</form>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue" index="0">
                 <property name="Status">Canceled</property>
+            </execute>
+            <execute method="reopenRelated" program="org.efaps.esjp.sales.document.IncomingExchange" index="1">
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_IncomingExchangeTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
@@ -37,8 +40,7 @@
                 <property name="Status">!Canceled</property>
             </trigger>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
     </definition>
 </ui-command>

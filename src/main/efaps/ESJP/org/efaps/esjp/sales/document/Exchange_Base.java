@@ -34,6 +34,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -42,6 +43,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
@@ -426,6 +429,46 @@ public abstract class Exchange_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * Reopen related.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return reopenRelated(final Parameter _parameter)
+        throws EFapsException
+    {
+        if ("true".equalsIgnoreCase(
+                        _parameter.getParameterValue(CIFormSales.Sales_IncomingExchangeSetCanceledForm.reopen.name))) {
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToLink, _parameter.getInstance());
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+            queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.Document2Document4Swap.FromLink));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
+            multi.executeWithoutAccessCheck();
+            final Set<String> satusKeys = new HashSet<>();
+            satusKeys.add("Closed");
+            satusKeys.add("Paid");
+            while (multi.next()) {
+                final Status status = Status.get(multi.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
+                if (satusKeys.contains(status.getKey())) {
+                    final Status newStatus = status.getStatusGroup().get("Open");
+                    if (newStatus != null) {
+                        final Update update = new Update(multi.getCurrentInstance());
+                        update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
+                        update.executeWithoutAccessCheck();
+                    }
+                }
+            }
+        }
+        return new Return();
     }
 
     /**
