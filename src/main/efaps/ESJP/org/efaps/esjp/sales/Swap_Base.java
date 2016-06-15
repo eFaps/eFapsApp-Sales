@@ -57,6 +57,7 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
@@ -188,6 +189,18 @@ public abstract class Swap_Base
             } else if (_parameter.getParameterValue("contact") != null) {
                 final Instance inst = Instance.get(_parameter.getParameterValue("contact"));
                 ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid() ? inst : 0);
+            }
+        }
+        final Map<Integer, String> extraParas = analyseProperty(_parameter, "ExtraParameter");
+        if (extraParas.containsValue("deactivateFilter4Contact")
+            && !"true".equalsIgnoreCase(_parameter.getParameterValue("deactivateFilter4Contact"))) {
+            final Instance docInst = Instance.get(_parameter.getParameterValue("createDocument"));
+            if (InstanceUtils.isValid(docInst)) {
+                final PrintQuery print = new PrintQuery(docInst);
+                print.addAttribute(CISales.DocumentSumAbstract.Contact);
+                print.executeWithoutAccessCheck();
+                ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, print.<Long>getAttribute(
+                                CISales.DocumentSumAbstract.Contact));
             }
         }
         return ret;

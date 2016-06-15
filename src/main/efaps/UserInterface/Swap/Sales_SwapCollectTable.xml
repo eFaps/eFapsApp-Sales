@@ -20,7 +20,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f4023e02-58c3-4a67-8844-e7f78c4dd304</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_SwapCollectTable</name>
@@ -33,6 +32,8 @@
                 name="Sales_SwapCollectTable.document.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                <property name="SwapType">Collect</property>
+               <property name="ExtraParameter01">createDocument</property>
+               <property name="ExtraParameter02">deactivateFilter4Contact</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="updateFields4Document"

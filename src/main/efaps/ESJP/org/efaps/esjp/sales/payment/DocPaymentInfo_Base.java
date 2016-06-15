@@ -1006,21 +1006,34 @@ public abstract class DocPaymentInfo_Base
         }
 
         /**
+         * Gets the currency instance.
+         *
          * @return Instance of the currency
+         * @throws EFapsException the e faps exception
          */
         protected Instance getCurrencyInstance()
+            throws EFapsException
         {
+            if (this.currencyInstance == null) {
+                this.currencyInstance = Currency.getBaseCurrency();
+            }
             return this.currencyInstance;
         }
 
         /**
+         * Gets the currency inst.
+         *
          * @return CurrencyInst object for the currency of this account
+         * @throws EFapsException the e faps exception
          */
         protected CurrencyInst getCurrencyInst()
+            throws EFapsException
         {
+            if (this.currencyInst == null) {
+                this.currencyInst = CurrencyInst.get(getCurrencyInstance());
+            }
             return this.currencyInst;
         }
-
 
         /**
          * Getter method for the instance variable {@link #instance}.

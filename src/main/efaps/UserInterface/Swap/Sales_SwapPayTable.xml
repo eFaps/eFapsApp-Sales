@@ -32,6 +32,8 @@
                 name="Sales_SwapCollectTable.document.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                <property name="SwapType">Pay</property>
+               <property name="ExtraParameter01">createDocument</property>
+               <property name="ExtraParameter02">deactivateFilter4Contact</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="updateFields4Document"
