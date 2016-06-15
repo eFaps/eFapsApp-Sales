@@ -14,22 +14,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b9a5e0e8-b999-45d4-b5a5-8f8e6e9b70e3</uuid>
+    <uuid>99fa76b3-111f-4080-88e2-0a845dc15671</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingRetentionCertificateTree_Documents_Menu_Action_Disconnect</name>
+        <name>Sales_IncomingRetentionCertificateTree_Menu_Action_SetCanceled</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_Delivery</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Canceled</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_IncomingRetentionCertificateTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">!Canceled</property>
+            </trigger>
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

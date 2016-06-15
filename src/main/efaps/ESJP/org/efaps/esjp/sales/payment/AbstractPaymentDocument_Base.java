@@ -432,18 +432,32 @@ public abstract class AbstractPaymentDocument_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
-                final boolean deactFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Invoice"));
-                if (contactInst.isValid() && !deactFilter) {
-                    _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
-                } else if (!deactFilter) {
-                    // show nothing
-                    _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, 0);
-                }
+                add2QueryBldr4PickerMultiPrint(_parameter, _queryBldr);
                 super.add2QueryBldr(_parameter, _queryBldr);
             }
         };
         return mulit.execute(_parameter);
+    }
+
+    /**
+     * Add to the QueryBuilder used for the picker Multiprint..
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the QueryBuilder
+     * @throws EFapsException the eFaps exception
+     */
+    protected void add2QueryBldr4PickerMultiPrint(final Parameter _parameter,
+                                                  final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        final boolean deactFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Invoice"));
+        if (contactInst.isValid() && !deactFilter) {
+            _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+        } else if (!deactFilter) {
+            // show nothing
+            _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, 0);
+        }
     }
 
     /**

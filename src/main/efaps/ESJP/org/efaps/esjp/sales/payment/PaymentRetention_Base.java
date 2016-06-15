@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -25,7 +22,7 @@ import java.io.File;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -40,10 +37,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("903c028c-1b3a-47fc-adee-792e7f9ddcfc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentRetention_Base
     extends AbstractPaymentIn
 {
@@ -65,7 +61,6 @@ public abstract class PaymentRetention_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
-
         return ret;
     }
 
@@ -85,8 +80,16 @@ public abstract class PaymentRetention_Base
         } else {
             name = super.getDocName4Create(_parameter);
         }
-
         return name;
+    }
+
+    @Override
+    protected void add2QueryBldr4PickerMultiPrint(final Parameter _parameter,
+                                                  final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        super.add2QueryBldr4PickerMultiPrint(_parameter, _queryBldr);
+        add2QueryBldr4AutoComplete4CreateDocument(_parameter, _queryBldr);
     }
 
     @Override
@@ -97,14 +100,11 @@ public abstract class PaymentRetention_Base
         final Instance incRetCertif = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_PaymentRetentionForm.name.name));
         if (incRetCertif.isValid()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingRetentionCertificate2Invoice);
-            attrQueryBldr.addWhereAttrEqValue(CISales.IncomingRetentionCertificate2Invoice.FromLink, incRetCertif);
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingRetentionCertificate2Document);
+            attrQueryBldr.addWhereAttrEqValue(CISales.IncomingRetentionCertificate2Document.FromLink, incRetCertif);
             final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CISales.IncomingRetentionCertificate2Invoice.ToLink);
-
+                            .getAttributeQuery(CISales.IncomingRetentionCertificate2Document.ToAbstractLink);
             _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
-        } else {
-            _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.ID, 0);
         }
     }
 }

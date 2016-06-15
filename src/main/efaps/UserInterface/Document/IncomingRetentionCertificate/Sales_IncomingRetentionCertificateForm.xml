@@ -216,8 +216,8 @@
             <property name="ModeView">EDITABLE</property>
             <table>Sales_IncomingRetentionCertificate_DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom">FromAbstractLink</property>
+                <property name="Type">Sales_IncomingRetentionCertificate2Document</property>
+                <property name="LinkFrom">FromLink</property>
             </evaluate>
         </field>
         <field name="crossTotal4Read">

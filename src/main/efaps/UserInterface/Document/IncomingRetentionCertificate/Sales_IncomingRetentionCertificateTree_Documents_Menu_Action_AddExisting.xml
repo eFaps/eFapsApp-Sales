@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,15 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>23d4ad46-3621-40ce-99bd-3b0143eae78f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingRetentionCertificateTree_Documents_Menu_Action_AddExisting</name>
@@ -32,11 +29,15 @@
         <target>
             <search>Sales_IncomingRetentionCertificateTree_Documents_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Sales_IncomingRetentionCertificate2Invoice</property>
+                <property name="ConnectType01">Sales_IncomingRetentionCertificate2Invoice</property>
+                <property name="ConnectParentAttribute01">FromLink</property>
+                <property name="ConnectChildAttribute01">ToLink</property>
+                <property name="ConnectChildType01">Sales_Invoice</property>
+                <property name="ConnectType02">Sales_IncomingRetentionCertificate2Reminder</property>
+                <property name="ConnectParentAttribute02">FromLink</property>
+                <property name="ConnectChildAttribute02">ToLink</property>
+                <property name="ConnectChildType02">Sales_Reminder</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="validateConnectDocument" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>

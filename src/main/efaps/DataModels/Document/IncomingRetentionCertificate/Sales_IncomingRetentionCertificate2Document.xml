@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -18,18 +17,18 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d47eec30-cc74-429f-8d05-ce05781691b1</uuid>
+    <uuid>4e520f7f-289f-4fcb-b0d3-9d7602aae6f3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingRetentionCertificate2Invoice</name>
-        <parent>Sales_IncomingRetentionCertificate2Document</parent>
+        <name>Sales_IncomingRetentionCertificate2Document</name>
+        <parent>Sales_IncomingDocumentTax2Document</parent>
         <attribute>
-            <name>ToLink</name>
+            <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_Invoice</typelink>
+            <typelink>Sales_IncomingRetentionCertificate</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>
