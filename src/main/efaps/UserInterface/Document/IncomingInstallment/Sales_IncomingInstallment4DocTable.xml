@@ -23,11 +23,11 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInstallment4DocTable</name>
         <field name="revision">
-            <property name="HRef">TREE</property>
             <property name="Attribute">Revision</property>
             <property name="Label">Sales_IncomingInstallment/Revision.Label</property>
         </field>
         <field name="name">
+            <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_IncomingInstallment/Name.Label</property>
         </field>

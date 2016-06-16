@@ -160,10 +160,10 @@ public abstract class Credit_Base
         final DateTime dueDate = ISODateTimeFormat.dateTime().parseDateTime(_parameter.getParameterValue(
                         CIFormSales.Sales_Credit_CreateInstallmentsForm.dueDate.name));
 
-        final BigDecimal installAmmount = rateCrossTotal.setScale(8, RoundingMode.HALF_UP)
+        final BigDecimal installAmount = rateCrossTotal.setScale(8, RoundingMode.HALF_UP)
                         .divide(new BigDecimal(quantity), RoundingMode.HALF_UP);
         final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType().getName());
-        final String installAmountStr = fomatter.format(installAmmount);
+        final String installAmountStr = fomatter.format(installAmount);
 
         final Parameter parameter = ParameterUtil.clone(_parameter);
         ParameterUtil.setParmeterValue(parameter, "contact", print.<String>getSelect(selContactOID));
@@ -185,5 +185,38 @@ public abstract class Credit_Base
             }.create(parameter);
         }
         return new Return();
+    }
+
+    /**
+     * Method for update field contact or employee.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return updateFields4Quantity4createInstallments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
+        print.addAttribute(CISales.Credit.RateCrossTotal);
+        print.execute();
+
+        final BigDecimal rateCrossTotal = print.getAttribute(CISales.Credit.RateCrossTotal);
+        final int quantity = Integer.parseInt(_parameter.getParameterValue(
+                        CIFormSales.Sales_Credit_CreateInstallmentsForm.quantity.name));
+
+        final BigDecimal installAmmount = rateCrossTotal.setScale(8, RoundingMode.HALF_UP)
+                        .divide(new BigDecimal(quantity), RoundingMode.HALF_UP);
+        final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType().getName());
+        final String installAmountStr = fomatter.format(installAmmount);
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> values = new TreeMap<String, String>();
+        values.put( CIFormSales.Sales_Credit_CreateInstallmentsForm.installmentAmount.name, installAmountStr);
+        list.add(values);
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
     }
 }
