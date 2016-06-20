@@ -175,13 +175,6 @@ public abstract class Exchange_Base
             _update.add(CISales.Exchange.OnlyNumber, onlynumber);
             _createdDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
         }
-
-        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.Exchange.SituationLink.name));
-        if (situationLink != null) {
-            _update.add(CISales.Exchange.SituationLink, situationLink);
-            _createdDoc.getValues().put(CISales.Exchange.SituationLink.name, situationLink);
-        }
     }
 
     /**

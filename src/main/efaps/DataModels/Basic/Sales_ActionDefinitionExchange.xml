@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -15,24 +14,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9c0c5e95-76d7-4bf4-9291-2e8279a17705</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b1614c91-c06a-43b7-9212-d6bc822f83bf</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AttributeDefinitionExchangeSituation</name>
-        <parent>ERP_AttributeDefinitionMappingAbstract</parent>
+        <name>Sales_ActionDefinitionExchange</name>
+        <parent>ERP_ActionDefinitionAbstract</parent>
         <attribute>
             <name>Status</name>
             <type>Status</type>
-            <typelink>ERP_AttributeDefinitionStatus</typelink>
-            <sqltable>ERP_AttributeDefinitionSQLTable</sqltable>
+            <typelink>ERP_ActionDefinitionStatus</typelink>
+            <sqltable>ERP_ActionDefinitionSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger event="RANGE_VALUE"
-                name="Sales_AttributeDefinitionExchangeSituation.Status.RANGE_VALUE"
+                name="Sales_ActionDefinitionExchange.Status.RANGE_VALUE"
                 program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>

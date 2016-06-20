@@ -389,13 +389,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute EXCHANGEACTIVATESITUATION = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Exchange.ActivateSituationLink")
-                    .description("Allows to activate/deactivate the SituationLink.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute EXCHANGEUSENUMGEN = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Exchange.UseNumberGenerator")
@@ -507,13 +500,6 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.ActivateGuarantee")
                     .description("Allows to activate/deactivate the realtion to a Guarantee.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGEXCHANGEACTIVATESITUATION = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "IncomingExchange.ActivateSituationLink")
-                    .description("Allows to activate/deactivate the SituationLink.");
 
     /** See description. */
     @EFapsSysConfAttribute

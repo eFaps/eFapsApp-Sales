@@ -47,20 +47,6 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>STRING2</sqlcolumn>
         </attribute>
-        <attribute>
-            <name>SituationLink</name>
-            <type>LinkWithRanges</type>
-            <typelink>Sales_AttributeDefinitionExchangeSituation</typelink>
-            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>INTEGER1</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                     name="Sales_Exchange.SituationLink.RANGE_VALUE"
-                     event="RANGE_VALUE">
-                <property name="Value">Value</property>
-                <property name="Type">Sales_AttributeDefinitionExchangeSituation</property>
-                <property name="EmptyValue">true</property>
-            </trigger>
-        </attribute>
         <trigger event="ACCESSCHECK" name="Sales_Exchange.ACCESSCHECK"
             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>

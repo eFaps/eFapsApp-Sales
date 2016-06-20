@@ -140,13 +140,6 @@ public abstract class IncomingExchange_Base
             _update.add(CISales.IncomingExchange.OnlyNumber, onlynumber);
             _createdDoc.getValues().put(CISales.IncomingExchange.OnlyNumber.name, onlynumber);
         }
-
-        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.IncomingExchange.SituationLink.name));
-        if (situationLink != null) {
-            _update.add(CISales.IncomingExchange.SituationLink, situationLink);
-            _createdDoc.getValues().put(CISales.IncomingExchange.SituationLink.name, situationLink);
-        }
     }
 
     /**

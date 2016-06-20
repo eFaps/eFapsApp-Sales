@@ -17,31 +17,25 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>83bc4fcd-99b3-43b3-be79-53d5a37e8aa7</uuid>
+    <uuid>1b927a9e-43b7-43e7-a3e4-f643fa331bf8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ExchangeTree_Menu_Action_EditSituation</name>
+        <name>Sales_ActionDefinitionMyDesk_Menu_Action_CreateExchange</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_ExchangeEditSituationForm</form>
-            <execute method="execute" program="org.efaps.esjp.common.uiform.Edit" />
-            <trigger event="UI_ACCESSCHECK" index="1" method="configCheck"
-                name="Sales_ExchangeTree_Menu_Action_EditSituation.UI_ACCESSCHECK.1"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Exchange.ActivateSituationLink</property>
-            </trigger>
-            <trigger event="UI_ACCESSCHECK" index="2" method="check4Status"
-                name="Sales_ExchangeTree_Menu_Action_EditSituation.UI_ACCESSCHECK.2"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">!Canceled</property>
-            </trigger>
+            <form>ERP_ActionDefinitionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </execute>
         </target>
         <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionExchange</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>

@@ -105,16 +105,17 @@
             <property name="Attribute">Status</property>
             <property name="Label">Sales_Exchange/Status.Label</property>
         </field>
-        <field name="situationLink">
-            <property name="Attribute">SituationLink</property>
-            <property name="FilterType">PICKLIST</property>
-            <property name="Label">Sales_Exchange/SituationLink.Label</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck"
-                name="Sales_ExchangeTable.situationLink.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Exchange.ActivateSituationLink</property>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_Exchange_AssignActionForm.action.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_InvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.Exchange">
+                <property name="Key">Sales_Exchange</property>
+                <property name="Access">!NONE</property>
             </trigger>
         </field>
     </definition>
