@@ -48,6 +48,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.util.EFapsException;
@@ -71,7 +72,15 @@ public abstract class DocumentUpdate_Base
     public Return updateDocument(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance docInst = _parameter.getInstance();
+        Instance docInst = _parameter.getInstance();
+        if (InstanceUtils.isType(docInst, CISales.PayableDocument2Document)) {
+            final PrintQuery print = new PrintQuery(docInst);
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.PayableDocument2Document.FromLink)
+                            .instance();
+            print.addSelect(selDocInst);
+            print.executeWithoutAccessCheck();
+            docInst = print.getSelect(selDocInst);
+        }
         return updateDocument(_parameter, docInst);
     }
 
