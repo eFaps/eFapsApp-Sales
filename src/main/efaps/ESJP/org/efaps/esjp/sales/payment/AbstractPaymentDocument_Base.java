@@ -597,7 +597,9 @@ public abstract class AbstractPaymentDocument_Base
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
 
-                list.add(getPositionUpdateMap(_parameter, docInfo, false));
+                final Map<String, Object> posMap = getPositionUpdateMap(_parameter, docInfo, false);
+                posMap.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
+                list.add(posMap);
                 list.add(getSumUpdateMap(_parameter, list, true));
             } catch (final ParseException e) {
                 LOG.error("Catched ParseException", e);
@@ -621,6 +623,7 @@ public abstract class AbstractPaymentDocument_Base
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Map<String, Object> map = getPositionUpdateMap(_parameter, docInstance, false);
+        map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
         map.putAll(getSumUpdateMap(_parameter, Arrays.<Map<String, Object>>asList(new Map[]{ map }), true));
         list.add(map);
         final Return retVal = new Return();
