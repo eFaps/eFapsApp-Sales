@@ -22,35 +22,28 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckOut4PayPaymentTable</name>
-        <field name="createDocument">
-            <property name="Label">Sales_PaymentCheckOut4PayPaymentTable.createDocument.Label</property>
+        <name>Sales_PaymentCheckOut4SettleTable</name>
+         <field name="settleDocument">
+            <property name="Label">Sales_PaymentCheckOut4SettleTable.settleDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
-                method="autoComplete4FilteredDocuments"
-                name="Sales_PaymentCheckOut4PayPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">Open</property>
-                <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
-                <property name="Status01">Open</property>
-                <property name="ExtraParameter01">createExistDocument</property>
-                <property name="ExtraParameter02">filterDocuments</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4SettleDocument"
+                name="Sales_PaymentDocumentOut4SettleTable.settlementDocument.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.payment.PaymentCheckOut">
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.out.Check.PayableDocuments</property>
+                <property name="ExtraParameter01">currentDocument</property>
+                <property name="ExtraParameter02">deactivateFilter</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
-                method="updateFields4FilteredDocuments"
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4SettleDocument"
                 name="Sales_PaymentCheckOut4PayPaymentTable.product.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+                program="org.efaps.esjp.sales.payment.PaymentCheckOut" />
         </field>
         <field name="crossTotal4Read">
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Sales_PaymentCheckOut4PayPaymentTable.crossTotal4Read.Label</property>
+            <property name="Label">Sales_PaymentCheckOut4SettleTable.crossTotal4Read.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>

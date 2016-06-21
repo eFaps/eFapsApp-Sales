@@ -67,6 +67,8 @@ import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -80,8 +82,11 @@ public abstract class AbstractPaymentOut_Base
 {
 
     /**
-     * {@inheritDoc}
+     * Logger for this class.
      */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPaymentOut.class);
+
+
     @Override
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
@@ -271,7 +276,7 @@ public abstract class AbstractPaymentOut_Base
                 throws EFapsException
             {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
-                attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance());
+                attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance());
 
                 final Properties props = Sales.PAYMENTDOCUMENTOUT_TOBESETTLED.get();
                 final Properties tmpProps = new Properties();
@@ -413,6 +418,46 @@ public abstract class AbstractPaymentOut_Base
     }
 
     /**
+     * Update fields for settle document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4SettleDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+
+        final Instance docInst = Instance.get(_parameter.getParameterValues("settleDocument")[selected]);
+        if (docInst.isValid()) {
+            final SelectBuilder selCur = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                            .instance();
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            print.addSelect(selCur);
+
+            if (print.execute()) {
+                if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                    final BigDecimal amount = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+
+                    final CurrencyInst curr = new CurrencyInst(print.<Instance>getSelect(selCur));
+                    final String valueCrossTotal = curr.getSymbol() + " " + NumberFormatter.get()
+                                    .getTwoDigitsFormatter().format(amount);
+                    map.put("crossTotal4Read", valueCrossTotal);
+                    list.add(map);
+                }
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
      * Update payable documents.
      *
      * @param _parameter the _parameter
@@ -424,10 +469,10 @@ public abstract class AbstractPaymentOut_Base
     {
         final Return ret = new Return();
 
-        final Instance instDoc = Instance.get(_parameter.getParameterValue("createExistDocument"));
-        final BigDecimal amount = getAmounts2Payment(_parameter, instDoc, _parameter.getCallInstance());
+        final Instance instDoc = Instance.get(_parameter.getParameterValue("currentDocument"));
+        final BigDecimal amount = getAmount4CurrentDocument(_parameter, instDoc, _parameter.getCallInstance());
 
-        final String[] documents = _parameter.getParameterValues("createDocument");
+        final String[] documents = _parameter.getParameterValues("settleDocument");
         boolean first = true;
         if (documents != null && documents.length > 0) {
             final Map<String, Object> infoDoc = new HashMap<String, Object>();
@@ -469,10 +514,11 @@ public abstract class AbstractPaymentOut_Base
                     }
                 }
             }
-            if (amount.compareTo(getAmounts4Render(_parameter)) != 0) {
-                final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
+            final BigDecimal settleAmount = getAmount4settleDocument(_parameter);
+            if (amount.compareTo(settleAmount) != 0) {
+                final BigDecimal difference = amount.subtract(settleAmount);
                 if (checkDifference(_parameter, difference)) {
-                    createDocument(_parameter, infoDoc, difference);
+                    createDocument4Settle(_parameter, infoDoc, difference);
                 }
             }
         }
@@ -492,16 +538,17 @@ public abstract class AbstractPaymentOut_Base
         final Instance paymentInst = _parameter.getCallInstance();
         final Return ret = new Return();
         final StringBuilder error = new StringBuilder();
-        final Instance docInstance = Instance.get(_parameter.getParameterValue("createExistDocument"));
+        final Instance docInstance = Instance.get(_parameter.getParameterValue("currentDocument"));
         if (docInstance.isValid()) {
-            final BigDecimal amount = getAmounts2Payment(_parameter, docInstance, paymentInst);
-            if (amount.compareTo(getAmounts4Render(_parameter)) == 0) {
+            final BigDecimal amount = getAmount4CurrentDocument(_parameter, docInstance, paymentInst);
+            final BigDecimal settleAmount = getAmount4settleDocument(_parameter);
+            if (amount.compareTo(settleAmount) == 0) {
                 error.append(DBProperties
                                 .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
                 ret.put(ReturnValues.SNIPLETT, error.toString());
                 ret.put(ReturnValues.TRUE, true);
             } else {
-                final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
+                final BigDecimal difference = amount.subtract(settleAmount);
                 if (difference.signum() == 1) {
                     error.append(DBProperties
                                     .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
@@ -534,21 +581,18 @@ public abstract class AbstractPaymentOut_Base
     {
         boolean ret = false;
 
-        final String defaultAmount = Sales.PAYMENTAMOUNT4CREATEDDOC.get();
+        final String defaultAmount = Sales.PAYMENT_AMOUNT4CREATEDOC.get();
         if (defaultAmount != null && !defaultAmount.isEmpty()) {
             final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
             try {
                 final BigDecimal amount = (BigDecimal) fmtr.parse(defaultAmount);
-
                 if (_difference.abs().compareTo(amount) >= 0) {
                     ret = true;
                 }
             } catch (final ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error("Catched", e);
             }
         }
-
         return ret;
     }
 
@@ -560,9 +604,9 @@ public abstract class AbstractPaymentOut_Base
      * @param _difference the _difference
      * @throws EFapsException the e faps exception
      */
-    protected void createDocument(final Parameter _parameter,
-                                  final Map<String, Object> _infoDoc,
-                                  final BigDecimal _difference)
+    protected void createDocument4Settle(final Parameter _parameter,
+                                         final Map<String, Object> _infoDoc,
+                                         final BigDecimal _difference)
         throws EFapsException
     {
         final Instance currInst = Currency.getBaseCurrency();
@@ -744,9 +788,9 @@ public abstract class AbstractPaymentOut_Base
      * @return the amounts2 payment
      * @throws EFapsException the e faps exception
      */
-    protected BigDecimal getAmounts2Payment(final Parameter _parameter,
-                                            final Instance _docInst,
-                                            final Instance _payment)
+    protected BigDecimal getAmount4CurrentDocument(final Parameter _parameter,
+                                                    final Instance _docInst,
+                                                    final Instance _payment)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
@@ -772,11 +816,11 @@ public abstract class AbstractPaymentOut_Base
      * @return the amounts4 render
      * @throws EFapsException the e faps exception
      */
-    protected BigDecimal getAmounts4Render(final Parameter _parameter)
+    protected BigDecimal getAmount4settleDocument(final Parameter _parameter)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-        final String[] documents = _parameter.getParameterValues("createDocument");
+        final String[] documents = _parameter.getParameterValues("settleDocument");
         if (documents != null && documents.length > 0) {
             for (final String doc : documents) {
                 final Instance docInst = Instance.get(doc);

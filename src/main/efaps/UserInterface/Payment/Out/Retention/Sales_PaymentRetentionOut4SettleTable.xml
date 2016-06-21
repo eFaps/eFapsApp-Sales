@@ -17,32 +17,32 @@
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ca1f9620-6447-4c14-97c4-bbb0a4cdb956</uuid>
+    <uuid>47b0f1c3-9f4d-4bbf-9121-cf3345a13569</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDepositOut4SettleTable</name>
+        <name>Sales_PaymentRetentionOut4SettleTable</name>
         <field name="settleDocument">
-            <property name="Label">Sales_PaymentDepositOut4SettleTable.settleDocument.Label</property>
+            <property name="Label">Sales_PaymentRetentionOut4SettleTable.settleDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4SettleDocument"
                 name="Sales_PaymentDocumentOut4SettleTable.settlementDocument.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.payment.PaymentDepositOut">
+                program="org.efaps.esjp.sales.payment.PaymentRetentionOut">
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.out.Deposit.PayableDocuments</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.out.Retention.PayableDocuments</property>
                 <property name="ExtraParameter01">currentDocument</property>
                 <property name="ExtraParameter02">deactivateFilter</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4SettleDocument"
-                name="Sales_PaymentDepositOut4PayPaymentTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentDepositOut" />
+                name="Sales_PaymentRetentionOut4PayPaymentTable.product.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentRetentionOut" />
         </field>
         <field name="crossTotal4Read">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Sales_PaymentDepositOut4SettleTable.crossTotal4Read.Label</property>
+            <property name="Label">Sales_PaymentRetentionOut4SettleTable.crossTotal4Read.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>

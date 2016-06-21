@@ -815,7 +815,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute PAYMENTAMOUNT4CREATEDDOC = new StringSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_AMOUNT4CREATEDOC = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.Threshold4CreateOrder")
                     .description("Threshold  generated payment order or collection order.");
