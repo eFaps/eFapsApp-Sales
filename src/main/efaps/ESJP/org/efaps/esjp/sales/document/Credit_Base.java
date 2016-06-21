@@ -214,7 +214,7 @@ public abstract class Credit_Base
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> values = new TreeMap<String, String>();
-        values.put( CIFormSales.Sales_Credit_CreateInstallmentsForm.installmentAmount.name, installAmountStr);
+        values.put(CIFormSales.Sales_Credit_CreateInstallmentsForm.installmentAmount.name, installAmountStr);
         list.add(values);
         ret.put(ReturnValues.VALUES, list);
         return ret;
