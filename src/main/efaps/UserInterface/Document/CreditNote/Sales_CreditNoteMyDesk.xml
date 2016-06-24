@@ -31,12 +31,13 @@
         </access>
         <target>
             <menu>Sales_CreditNoteMyDesk_Menu</menu>
-            <table>Sales_DocumentSumTable</table>
+            <table>Sales_CreditNoteTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_CreditNote</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>
