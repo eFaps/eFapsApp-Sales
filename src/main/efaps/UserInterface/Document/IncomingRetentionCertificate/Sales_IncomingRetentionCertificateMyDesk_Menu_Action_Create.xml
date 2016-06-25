@@ -33,6 +33,17 @@
             <execute program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="create">
                 <property name="StatusGroup">Sales_IncomingRetentionCertificateStatus</property>
                 <property name="Status">Open</property>
+                 <!-- Sales_IncomingRetentionCertificate2Invoice -->
+                <property name="ConnectType01">d47eec30-cc74-429f-8d05-ce05781691b1</property>
+                <property name="ConnectCurrentLink01">FromLink</property>
+                <property name="ConnectForeignLink01">ToLink</property>
+                <property name="ConnectForeignField01">invoices</property>
+
+                <!-- Sales_IncomingRetentionCertificate2Reminder -->
+                <property name="ConnectType02">4762baf3-c774-4616-a7a2-b321008cfb2e</property>
+                <property name="ConnectCurrentLink02">FromLink</property>
+                <property name="ConnectForeignLink02">ToLink</property>
+                <property name="ConnectForeignField02">reminders</property>
             </execute>
             <command>Sales_IncomingRetentionCertificate_ShowRevision</command>
         </target>

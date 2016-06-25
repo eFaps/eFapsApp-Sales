@@ -18,6 +18,11 @@
 package org.efaps.esjp.sales.payment;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -25,13 +30,23 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -107,4 +122,82 @@ public abstract class PaymentRetention_Base
             _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
         }
     }
+
+    /**
+     * Gets the java script ui value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the java script ui value
+     * @throws EFapsException on error
+     */
+    public Return getJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        if (_parameter.getInstance() != null && _parameter.getInstance().getType().isCIType(
+                        CISales.IncomingRetentionCertificate)) {
+            final StringBuilder js = new StringBuilder();
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder selContactInst = SelectBuilder.get().linkto(
+                            CISales.IncomingRetentionCertificate.Contact).instance();
+            final SelectBuilder selContactName = SelectBuilder.get().linkto(
+                            CISales.IncomingRetentionCertificate.Contact).attribute(CIContacts.Contact.Name);
+            print.addSelect(selContactInst, selContactName);
+            print.addAttribute(CISales.IncomingRetentionCertificate.Name, CISales.IncomingRetentionCertificate.Date,
+                            CISales.IncomingRetentionCertificate.RateNetTotal);
+            print.execute();
+
+            final Instance contactInst = print.getSelect(selContactInst);
+            final String contactName = print.getSelect(selContactName);
+
+            final String amount = NumberFormatter.get().getTwoDigitsFormatter().format(print.<BigDecimal>getAttribute(
+                            CISales.IncomingRetentionCertificate.RateNetTotal));
+
+            js.append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.name.name,
+                            print.getCurrentInstance().getOid(),
+                            print.<String>getAttribute(CISales.IncomingRetentionCertificate.Name)))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.contact.name, contactInst.getOid(),
+                                            contactName))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.contactData.name,
+                                                            new Contacts().getFieldValue4Contact(contactInst, false)))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.amount.name, amount))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.account.name, _parameter
+                                    .getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.date.name + "_eFapsDate",
+                                            DateUtil.getDate4Parameter(print.<DateTime>getAttribute(
+                                                            CISales.IncomingCheck.Date))));
+            // store that the amount was set from the User
+            ParameterUtil.setParmeterValue(_parameter, "amount", amount);
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingRetentionCertificate2Document);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingRetentionCertificate2Document.FromLink,
+                            _parameter.getInstance());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocInst = SelectBuilder.get()
+                            .linkto(CISales.IncomingRetentionCertificate2Document.ToAbstractLink).instance();
+            final SelectBuilder selDocName = SelectBuilder.get()
+                            .linkto(CISales.IncomingRetentionCertificate2Document.ToAbstractLink)
+                            .attribute(CISales.DocumentSumAbstract.Name);
+            multi.addSelect(selDocInst, selDocName);
+            multi.execute();
+            final Collection<Map<String, Object>> values = new ArrayList<>();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                final Map<String, Object> map = getPositionUpdateMap(_parameter, docInst, true);
+                values.add(map);
+            }
+
+            for (final Entry<String, Object> entry : getSumUpdateMap(_parameter, values, true).entrySet()) {
+                js.append(getSetFieldValue(0, entry.getKey(), String.valueOf(entry.getValue())));
+            }
+
+            js.append(getTableRemoveScript(_parameter, CIFormSales.Sales_PaymentRetentionForm.paymentTable.name))
+                            .append(getTableAddNewRowsScript(_parameter,
+                                            CIFormSales.Sales_PaymentRetentionForm.paymentTable.name, values, null));
+            retVal.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 1500));
+        }
+        return retVal;
+    }
+
 }

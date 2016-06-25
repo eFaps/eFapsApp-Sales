@@ -18,6 +18,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -27,12 +28,17 @@ import java.util.UUID;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.util.Sales;
@@ -70,12 +76,20 @@ public abstract class IncomingRetentionCertificate_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final BigDecimal crossTotal = parseBigDecimal(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingRetentionCertificateForm.crossTotal.name));
+        final Return ret = new Return();
+        final BigDecimal crossTotal = parseBigDecimal(_parameter.getParameterValue(
+                        CIFormSales.Sales_IncomingRetentionCertificateForm.crossTotal.name));
         if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
-            createDoc(_parameter);
+            final CreatedDoc createdDoc = createDoc(_parameter);
+            connect2Object(_parameter, createdDoc);
+            final File file = createReport(_parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
+            ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         }
-        return new Return();
+        return ret;
     }
 
     @Override
@@ -160,5 +174,18 @@ public abstract class IncomingRetentionCertificate_Base
         throws EFapsException
     {
         return getRevisionSequenceFieldValue(_parameter, IncomingRetentionCertificate.REVISIONKEY);
+    }
+
+    @Override
+    protected void add2QueryBldr(final Parameter _parameter,
+                                 final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        if (InstanceUtils.isValid(contactInst)) {
+            _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInst);
+        } else {
+            super.add2QueryBldr(_parameter, _queryBldr);
+        }
     }
 }

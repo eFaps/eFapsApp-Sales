@@ -199,16 +199,55 @@
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
         <field character="Heading" name="headingDocuments">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingRetentionCertificateForm.headingDocuments.Heading</property>
-            <property name="ModeCreate">NONE</property>
+            <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+        </field>
+        <field name="invoices">
+            <property name="Label">Sales_Invoice.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Width">50</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate"
+                method="autoComplete4Doc"
+                name="Sales_IncomingRetentionCertificateForm.relationDoc.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type01">Sales_Invoice</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
+                <property name="Status01">Open</property>
+                <property name="StatusGroup02">Sales_InvoiceStatus</property>
+                <property name="Status02">Draft</property>
+                <property name="AutoType">TOKEN</property>
+                <property name="ExtraParameter">contact</property>
+            </trigger>
+        </field>
+        <field name="reminders">
+            <property name="Label">Sales_Reminder.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Width">50</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate"
+                method="autoComplete4Doc"
+                name="Sales_IncomingRetentionCertificateForm.relationDoc.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type01">Sales_Reminder</property>
+                <property name="StatusGroup01">Sales_ReminderStatus</property>
+                <property name="Status01">Open</property>
+                <property name="StatusGroup02">Sales_ReminderStatus</property>
+                <property name="Status02">Draft</property>
+                <property name="AutoType">TOKEN</property>
+                <property name="ExtraParameter">contact</property>
+            </trigger>
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">NONE</property>
