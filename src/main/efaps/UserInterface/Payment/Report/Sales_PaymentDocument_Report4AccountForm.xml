@@ -83,8 +83,6 @@
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="generateReport"
                 name="Sales_PaymentDocument_Report4AccountForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ShowDetails">true</property>
-                <property name="OppositeFilter">true</property>
-                <property name="DateFilter">month</property>
                 <property name="ReportKey">IN</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.IN.FilterKey</property>
                 <!-- Sales-Configuration -->

@@ -32,7 +32,6 @@
                 <property name="ShowDetails">true</property>
                 <property name="PageType">A4</property>
                 <property name="PageOrientation">LANDSCAPE</property>
-                <property name="DateFilter">month</property>
                 <property name="ReportKey">IN</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountCompInd.IN.FilterKey</property>
                 <!-- Sales-Configuration -->

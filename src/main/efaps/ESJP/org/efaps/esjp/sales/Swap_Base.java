@@ -24,11 +24,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -941,6 +944,75 @@ public abstract class Swap_Base
     }
 
     /**
+     * Gets the swap infos for documents.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstances the doc instances
+     * @return the swap infos 4 documents
+     * @throws EFapsException on error
+     */
+    protected static Map<Instance, Set<SwapInfo>> getSwapInfos4Documents(final Parameter _parameter,
+                                                                         final Instance... _docInstances)
+        throws EFapsException
+    {
+        final Map<Instance, Set<SwapInfo>> ret = new HashMap<>();
+        if (ArrayUtils.isNotEmpty(_docInstances)) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+            queryBldr.setOr(true);
+            queryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromLink, (Object[]) _docInstances);
+            queryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToLink, (Object[]) _docInstances);
+            final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+            final SelectBuilder selFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
+            final SelectBuilder selFromInst = new SelectBuilder(selFrom).instance();
+            final SelectBuilder selFromName = new SelectBuilder(selFrom).attribute(CISales.DocumentSumAbstract.Name);
+            final SelectBuilder selTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
+            final SelectBuilder selToInst = new SelectBuilder(selTo).instance();
+            final SelectBuilder selToName = new SelectBuilder(selTo).attribute(CISales.DocumentSumAbstract.Name);
+            final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CISales.Document2Document4Swap.CurrencyLink)
+                            .instance();
+            multi.addSelect(selCurrInst, selFromInst, selToInst, selFromName, selToName);
+            multi.addAttribute(CISales.Document2Document4Swap.Amount);
+            multi.execute();
+            while (multi.next()) {
+                final Instance fromInst = multi.<Instance>getSelect(selFromInst);
+                final Instance toInst = multi.<Instance>getSelect(selToInst);
+
+
+                final SwapInfo fromInfo = new SwapInfo().setFrom(true)
+                        .setDocInstance(toInst)
+                        .setDocName(multi.<String>getSelect(selToName))
+                        .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
+                        .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
+
+                final Set<SwapInfo> fromInfos;
+                if (ret.containsKey(fromInst)) {
+                    fromInfos = ret.get(fromInst);
+                } else {
+                    fromInfos = new HashSet<>();
+                    ret.put(fromInst, fromInfos);
+                }
+                fromInfos.add(fromInfo);
+
+                final SwapInfo toInfo = new SwapInfo().setFrom(false)
+                        .setDocInstance(fromInst)
+                        .setDocName(multi.<String>getSelect(selFromName))
+                        .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
+                        .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
+
+                final Set<SwapInfo> toInfos;
+                if (ret.containsKey(toInst)) {
+                    toInfos = ret.get(toInst);
+                } else {
+                    toInfos = new HashSet<>();
+                    ret.put(toInst, toInfos);
+                }
+                toInfos.add(toInfo);
+            }
+        }
+        return ret;
+    }
+
+    /**
      * Validation class.
      */
     public class SwapValidation
@@ -1056,7 +1128,6 @@ public abstract class Swap_Base
             return this.docInst;
         }
 
-
         /**
          * Getter method for the instance variable {@link #from}.
          *
@@ -1081,10 +1152,12 @@ public abstract class Swap_Base
          * Setter method for instance variable {@link #amount}.
          *
          * @param _amount value for instance variable {@link #amount}
+         * @return the swap info
          */
-        public void setAmount(final BigDecimal _amount)
+        public SwapInfo setAmount(final BigDecimal _amount)
         {
             this.amount = _amount;
+            return this;
         }
 
         /**
@@ -1101,10 +1174,12 @@ public abstract class Swap_Base
          * Setter method for instance variable {@link #currencyInstance}.
          *
          * @param _currencyInstance value for instance variable {@link #currencyInstance}
+         * @return the swap info
          */
-        public void setCurrencyInstance(final Instance _currencyInstance)
+        public SwapInfo setCurrencyInstance(final Instance _currencyInstance)
         {
             this.currencyInstance = _currencyInstance;
+            return this;
         }
     }
 

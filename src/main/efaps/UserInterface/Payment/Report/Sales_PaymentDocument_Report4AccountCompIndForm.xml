@@ -78,8 +78,6 @@
                 name="Sales_PaymentDocument_Report4AccountForm.salesReport.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.SalesReport4Account">
                 <property name="ShowDetails">true</property>
-                <property name="OppositeFilter">true</property>
-                <property name="DateFilter">month</property>
                 <property name="ReportKey">IN</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountCompInd.IN.FilterKey</property>
                 <!-- Sales-Configuration -->

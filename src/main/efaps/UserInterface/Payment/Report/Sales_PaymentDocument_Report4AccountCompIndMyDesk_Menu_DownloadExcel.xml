@@ -30,7 +30,6 @@
             <execute method="exportReport" program="org.efaps.esjp.sales.report.SalesReport4Account">
                 <property name="Mime">xls</property>
                 <property name="ShowDetails">true</property>
-                <property name="DateFilter">month</property>
                 <property name="ReportKey">IN</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountCompInd.IN.FilterKey</property>
                 <!-- Sales-Configuration -->

@@ -20,6 +20,7 @@ package org.efaps.esjp.sales;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -44,7 +45,6 @@ public class Swap
      */
     public static final String REQUESTKEY = Swap_Base.REQUESTKEY;
 
-
     /**
      * Gets the swap infos.
      *
@@ -60,6 +60,21 @@ public class Swap
         throws EFapsException
     {
         return Swap_Base.getSwapInfos(_parameter, _callInstance, _relInsts);
+    }
+
+    /**
+     * Gets the swap infos.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstances the doc instances
+     * @return the swap infos
+     * @throws EFapsException on error
+     */
+    public static Map<Instance, Set<SwapInfo>> getSwapInfos4Documents(final Parameter _parameter,
+                                                                      final Instance... _docInstances)
+        throws EFapsException
+    {
+        return Swap_Base.getSwapInfos4Documents(_parameter, _docInstances);
     }
 
 }

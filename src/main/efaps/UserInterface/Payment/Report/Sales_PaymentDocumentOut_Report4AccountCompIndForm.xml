@@ -79,8 +79,6 @@
                 program="org.efaps.esjp.sales.report.SalesReport4Account">
                 <property name="ShowDetails">true</property>
                 <property name="ReportKey">OUT</property>
-                <property name="OppositeFilter">true</property>
-                <property name="DateFilter">month</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountCompInd.OUT.FilterKey</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>

@@ -54,6 +54,8 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.humanresource.Employee;
+import org.efaps.esjp.sales.Swap;
+import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
@@ -274,7 +276,9 @@ public abstract class SalesReport4Account_Base
 
                 multi.addSelect(selContactInst, selContactName, selStatus);
                 multi.execute();
+                final Set<Instance> docInsts = new HashSet<>();
                 while (multi.next()) {
+                    docInsts.add(multi.getCurrentInstance());
                     final DataBean dataBean = new DataBean()
                                 .setDocInst(multi.getCurrentInstance())
                                 .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
@@ -286,17 +290,52 @@ public abstract class SalesReport4Account_Base
                                 .setDocStatus(multi.<String>getSelect(selStatus));
 
                     if (isCurrencyBase(_parameter)) {
-                        dataBean.setCurrencyBase(true).addCross(multi.<Long>getAttribute(
-                                        CISales.DocumentSumAbstract.CurrencyId), multi.<BigDecimal>getAttribute(
-                                                        CISales.DocumentSumAbstract.CrossTotal));
+                        dataBean.setCurrencyBase(true)
+                            .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
+                                        multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
                     } else {
-                        dataBean.setRate(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)).addCross(multi
-                                        .<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId), multi
-                                                        .<BigDecimal>getAttribute(
-                                                                        CISales.DocumentSumAbstract.RateCrossTotal));
+                        dataBean.setRate(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
+                            .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
+                                        multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
                     }
                     dataSource.add(dataBean);
                 }
+                if (isShowSwapInfo()) {
+                    final Map<Instance, Set<SwapInfo>> swapMap = Swap.getSwapInfos4Documents(_parameter, docInsts
+                                    .toArray(new Instance[docInsts.size()]));
+                    for (final DataBean bean : dataSource) {
+                        if (swapMap.containsKey(bean.getDocInst())) {
+                            final Set<SwapInfo> swapInfos = swapMap.get(bean.getDocInst());
+                            final StringBuilder fromStr = new StringBuilder();
+                            final StringBuilder toStr = new StringBuilder();
+                            for (final SwapInfo swapInfo : swapInfos) {
+                                if (swapInfo.isFrom()) {
+                                    if (fromStr.length() > 0) {
+                                        fromStr.append(", ");
+                                    } else {
+                                        fromStr.append(swapInfo.getDirection()).append(" ");
+                                    }
+                                    fromStr.append(swapInfo.getDocument());
+                                } else {
+                                    if (toStr.length() > 0) {
+                                        toStr.append(", ");
+                                    } else {
+                                        toStr.append(swapInfo.getDirection()).append(" ");
+                                    }
+                                    toStr.append(swapInfo.getDocument());
+                                }
+                            }
+                            final StringBuilder str = new StringBuilder();
+                            str.append(fromStr);
+                            if (str.length() > 0 && toStr.length() > 0) {
+                                str.append("\n");
+                            }
+                            str.append(toStr);
+                            bean.setSwapInfo(str.toString());
+                        }
+                    }
+                }
+
                 final FilterDate filterDate = getFilterDate(_parameter);
                 final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
                 chain.addComparator(new Comparator<DataBean>()
@@ -339,9 +378,8 @@ public abstract class SalesReport4Account_Base
                 Collections.sort(dataSource, chain);
                 final Collection<Map<String, ?>> col = new ArrayList<>();
 
-
                 for (final DataBean bean : dataSource) {
-                    col.add(bean.getMap(isShowCondition(), isShowAssigned()));
+                    col.add(bean.getMap(isShowCondition(), isShowAssigned(), isShowSwapInfo()));
                 }
                 ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
@@ -373,9 +411,9 @@ public abstract class SalesReport4Account_Base
         protected boolean isShowAssigned()
             throws EFapsException
         {
-            return Sales.SALESREPORT4ACCOUNTINASSIGENED.get()
+            return Sales.SALESREPORT4ACCOUNTIN_ASSIGENED.get()
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                            || Sales.SALESREPORT4ACCOUNTOUTASSIGENED.get()
+                            || Sales.SALESREPORT4ACCOUNTOUT_ASSIGENED.get()
                                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
         }
 
@@ -385,7 +423,24 @@ public abstract class SalesReport4Account_Base
          * @return true, if is show assigned
          * @throws EFapsException on error
          */
-        protected FilterDate getFilterDate(final Parameter _parameter) throws EFapsException
+        protected boolean isShowSwapInfo()
+            throws EFapsException
+        {
+            return Sales.SALESREPORT4ACCOUNTIN_SWAPINFO.get()
+                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
+                            || Sales.SALESREPORT4ACCOUNTOUT_SWAPINFO.get()
+                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+        }
+
+        /**
+         * Checks if is show assigned.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is show assigned
+         * @throws EFapsException on error
+         */
+        protected FilterDate getFilterDate(final Parameter _parameter)
+            throws EFapsException
         {
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
 
@@ -441,7 +496,7 @@ public abstract class SalesReport4Account_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, typeids.toArray());
                 }
             }
-            CIAttribute dateAttr;
+            final CIAttribute dateAttr;
             switch (getFilterDate(_parameter)) {
                 case CREATED:
                     dateAttr = CISales.DocumentSumAbstract.Created;
@@ -524,6 +579,10 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "Assigned"), "assigned",
                             DynamicReports.type.stringType());
 
+            final TextColumnBuilder<String> swapInfoColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "SwapInfo"), "swapInfo",
+                            DynamicReports.type.stringType()).setWidth(120);
+
             final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
@@ -558,6 +617,10 @@ public abstract class SalesReport4Account_Base
 
             if (isShowAssigned()) {
                 gridList.add(assignedColumn);
+            }
+
+            if (isShowSwapInfo()) {
+                gridList.add(swapInfoColumn);
             }
 
             gridList.add(dueDateColumn);
@@ -615,6 +678,10 @@ public abstract class SalesReport4Account_Base
 
             if (isShowAssigned()) {
                 _builder.addColumn(assignedColumn);
+            }
+
+            if (isShowSwapInfo()) {
+                _builder.addColumn(swapInfoColumn);
             }
 
             _builder.addColumn(dueDateColumn, docStatusColumn);
@@ -769,6 +836,9 @@ public abstract class SalesReport4Account_Base
         /** The condition. */
         private String condition;
 
+        /** The swapInfo. */
+        private String swapInfo;
+
         /**
          * Checks if is currency base.
          *
@@ -796,11 +866,13 @@ public abstract class SalesReport4Account_Base
          *
          * @param _showCondition the show condition
          * @param _showAssigned the show assigned
+         * @param _showSwapInfo the show swap info
          * @return the map
          * @throws EFapsException on error
          */
         public Map<String, ?> getMap(final boolean _showCondition,
-                                     final boolean _showAssigned)
+                                     final boolean _showAssigned,
+                                     final boolean _showSwapInfo)
             throws EFapsException
         {
             if (this.payments.isEmpty()) {
@@ -821,6 +893,10 @@ public abstract class SalesReport4Account_Base
             }
             if (_showAssigned) {
                 ret.put("assigned", getAssigned());
+            }
+
+            if (_showSwapInfo) {
+                ret.put("swapInfo", getSwapInfo());
             }
 
             if (isCurrencyBase()) {
@@ -1165,6 +1241,26 @@ public abstract class SalesReport4Account_Base
         {
             this.contactInst = _contactInst;
             return this;
+        }
+
+        /**
+         * Gets the swapInfo.
+         *
+         * @return the swapInfo
+         */
+        public String getSwapInfo()
+        {
+            return this.swapInfo;
+        }
+
+        /**
+         * Sets the swapInfo.
+         *
+         * @param _swapInfo the new swapInfo
+         */
+        public void setSwapInfo(final String _swapInfo)
+        {
+            this.swapInfo = _swapInfo;
         }
     }
 }
