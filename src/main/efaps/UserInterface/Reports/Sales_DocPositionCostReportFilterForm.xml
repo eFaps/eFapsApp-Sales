@@ -74,7 +74,7 @@
         </field>
         <field name="dateGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">RADIO</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionCostReport.dateGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -84,7 +84,7 @@
         </field>
         <field name="contactGroup">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">RADIO</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionCostReport.contactGroup</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="Sales_DocPositionCostReportFilterForm.contactGroup.UI_FIELD_VALUE"

@@ -71,7 +71,7 @@
         </field>
         <field name="storageDisplay">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">RADIO</property>
             <property name="Label">org.efaps.esjp.products.reports.TransactionResultReport.storageDisplay</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="Sales_Products_ProductsTransactionResultReportFilterForm.storageDisplay.UI_FIELD_VALUE"
@@ -81,7 +81,7 @@
         </field>
         <field name="valuation">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">RADIO</property>
             <property name="Label">org.efaps.esjp.sales.report.ProductsTransactionResultReport.valuation</property>
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="Sales_Products_ProductsTransactionResultReportFilterForm.valuation.UI_FIELD_VALUE"
