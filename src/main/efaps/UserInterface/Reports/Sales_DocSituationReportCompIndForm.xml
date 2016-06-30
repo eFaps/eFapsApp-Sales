@@ -27,7 +27,7 @@
         <name>Sales_DocSituationReportCompIndForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_DocSituationReportCompIndForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocSituationReport">
@@ -90,7 +90,7 @@
         <name>Sales_DocSituationReportCompIndForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_DocSituationReportCompIndForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocSituationReport">

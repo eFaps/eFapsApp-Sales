@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -31,18 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
-import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -50,7 +35,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -89,11 +74,9 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
  * grouping them by month and contact.
  *
  * @author The eFaps Team
- * @version $Id: AccountPettyCashReport_Base.java 13616 2014-08-13 22:10:22Z
- *          m.aranya@moxter.net $
  */
 @EFapsUUID("862bf037-e651-49a9-9b37-e0288c1a6e68")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AccountPettyCashReport_Base
     extends FilteredReport
 {
@@ -173,6 +156,11 @@ public abstract class AccountPettyCashReport_Base
             this.filteredReport = _report;
         }
 
+        /**
+         * Show details.
+         *
+         * @return true, if successful
+         */
         protected boolean showDetails()
         {
             return true;
@@ -423,6 +411,13 @@ public abstract class AccountPettyCashReport_Base
             _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
         }
 
+        /**
+         * Checks if is group.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is group
+         * @throws EFapsException on error
+         */
         protected boolean isGroup(final Parameter _parameter)
             throws EFapsException
         {
@@ -502,6 +497,7 @@ public abstract class AccountPettyCashReport_Base
          */
         private String action;
 
+        /** The contact name. */
         private String contactName;
 
         /**
@@ -514,6 +510,7 @@ public abstract class AccountPettyCashReport_Base
          */
         private BigDecimal net;
 
+        /** The petty cash instance. */
         private Instance pettyCashInstance;
 
         /**
@@ -521,18 +518,25 @@ public abstract class AccountPettyCashReport_Base
          */
         private Instance currencyInstance;
 
+        /** The doc name. */
         private String docName;
 
+        /** The doc type name. */
         private String docTypeName;
 
+        /** The date. */
         private DateTime date;
 
+        /** The is group. */
         private boolean isGroup;
 
+        /** The liquidation. */
         private String liquidation;
 
+        /** The base cross. */
         private BigDecimal baseCross;
 
+        /** The base net. */
         private BigDecimal baseNet;
 
         /**
@@ -550,11 +554,12 @@ public abstract class AccountPettyCashReport_Base
                 final SelectBuilder sel = SelectBuilder.get().linkto(CISales.AccountPettyCash.CurrencyLink).instance();
                 print.addSelect(sel);
                 print.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
-                print.execute();
-                ret.append(print.<String>getAttribute(CISales.AccountPettyCash.Name))
+                if (print.execute()) {
+                    ret.append(print.<String>getAttribute(CISales.AccountPettyCash.Name))
                                 .append(" - ")
                                 .append(print.<BigDecimal>getAttribute(CISales.AccountPettyCash.AmountAbstract))
                                 .append(CurrencyInst.get(print.<Instance>getSelect(sel)).getSymbol());
+                }
             } catch (final EFapsException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -563,7 +568,9 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * @param _group
+         * Sets the switch.
+         *
+         * @param _isGroup the new switch
          */
         public void setSwitch(final boolean _isGroup)
         {
@@ -571,7 +578,9 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * @param _group
+         * Gets the switch.
+         *
+         * @return the switch
          */
         public Boolean getSwitch()
         {
@@ -579,7 +588,10 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * @return
+         * Gets the map.
+         *
+         * @return the map
+         * @throws EFapsException on error
          */
         public Map<String, ?> getMap()
             throws EFapsException
@@ -601,7 +613,9 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * @return
+         * Gets the base amount.
+         *
+         * @return the base amount
          */
         private BigDecimal getBaseAmount()
         {
@@ -609,7 +623,9 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * @param _select
+         * Sets the petty cash instance.
+         *
+         * @param _pettyCashInstance the new petty cash instance
          */
         public void setPettyCashInstance(final Instance _pettyCashInstance)
         {
@@ -617,7 +633,9 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * @param _select
+         * Sets the doc type name.
+         *
+         * @param _docTypeName the new doc type name
          */
         public void setDocTypeName(final String _docTypeName)
         {
@@ -663,9 +681,14 @@ public abstract class AccountPettyCashReport_Base
             return this.action == null ? "-" : this.action;
         }
 
+        /**
+         * Gets the official.
+         *
+         * @return the official
+         */
         public String getOfficial()
         {
-            String ret;
+            final String ret;
             if (this.docTypeName == null) {
                 ret = DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".NotWithDocument");
             } else {
@@ -677,7 +700,7 @@ public abstract class AccountPettyCashReport_Base
         /**
          * Setter method for instance variable {@link #action}.
          *
-         * @param _date value for instance variable {@link #action}
+         * @param _action the new actionDef of the document
          */
         public void setAction(final String _action)
         {
@@ -697,7 +720,7 @@ public abstract class AccountPettyCashReport_Base
         /**
          * Setter method for instance variable {@link #oid}.
          *
-         * @param _oid value for instance variable {@link #oid}
+         * @param _instance the new oID of the document
          */
         public void setInstance(final Instance _instance)
         {
@@ -837,6 +860,12 @@ public abstract class AccountPettyCashReport_Base
             this.date = _date;
         }
 
+        /**
+         * Gets the liquidation.
+         *
+         * @return the liquidation
+         * @throws EFapsException
+         */
         public String getLiquidation()
             throws EFapsException
         {
@@ -860,21 +889,41 @@ public abstract class AccountPettyCashReport_Base
             return this.liquidation == null ? "" : this.liquidation;
         }
 
+        /**
+         * Sets the base net.
+         *
+         * @param _baseNet the new base net
+         */
         public void setBaseNet(final BigDecimal _baseNet)
         {
             this.baseNet = _baseNet;
         }
 
+        /**
+         * Sets the base cross.
+         *
+         * @param _baseCross the new base cross
+         */
         public void setBaseCross(final BigDecimal _baseCross)
         {
             this.baseCross = _baseCross;
         }
 
+        /**
+         * Gets the base net.
+         *
+         * @return the base net
+         */
         public BigDecimal getBaseNet()
         {
             return this.baseNet;
         }
 
+        /**
+         * Gets the base cross.
+         *
+         * @return the base cross
+         */
         public BigDecimal getBaseCross()
         {
             return this.baseCross;

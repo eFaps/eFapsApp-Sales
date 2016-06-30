@@ -14,23 +14,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>58b18f90-783f-4a0f-909d-171b793436a4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProfServReceiptReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
                 name="Sales_ProfServReceiptReportForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.ProfServReceiptReport">
@@ -41,10 +35,10 @@
                 <property name="Field03">contact</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
-                <property name="FilterType03">Contact</property>
+                <property name="FilterType03">Instance</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03" />
+                <property name="FilterDefault03" >-</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_ProfServReceiptReportForm.filter.UI_FIELD_VALUE.2"
@@ -56,6 +50,7 @@
                 <property name="DBProperty01">org.efaps.esjp.sales.report.ProfServReceiptReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.ProfServReceiptReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.ProfServReceiptReport.contact</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
         <field name="report">

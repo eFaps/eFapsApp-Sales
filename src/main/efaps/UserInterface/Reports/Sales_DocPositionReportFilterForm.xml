@@ -44,12 +44,11 @@
         </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="UIType">CHECKBOX</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.type</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="ListType">CHECKBOX</property>
             </trigger>
         </field>
         <field name="contact">
@@ -106,12 +105,11 @@
         </field>
         <field name="productType">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="UIType">CHECKBOX</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="ListType">CHECKBOX</property>
             </trigger>
         </field>
         <field name="bom">
@@ -155,12 +153,11 @@
         </field>
         <field name="type">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="UIType">CHECKBOX</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="ListType">CHECKBOX</property>
             </trigger>
         </field>
         <field name="contact">
@@ -239,12 +236,11 @@
         </field>
         <field name="productType">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="UIType">CHECKBOX</property>
             <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
-                <property name="ListType">CHECKBOX</property>
             </trigger>
          </field>
          <field name="bom">

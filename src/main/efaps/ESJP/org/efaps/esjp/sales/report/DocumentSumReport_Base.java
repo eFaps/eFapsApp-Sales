@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
-// TODO: Auto-generated Javadoc
 /**
  * TODO comment!.
  *
@@ -154,7 +153,7 @@ public abstract class DocumentSumReport_Base
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        String html = dyRp.getHtmlSnipplet(_parameter);
+        final String html = dyRp.getHtmlSnipplet(_parameter);
 
         final ValueList values = getData(_parameter).groupBy("partial", "type");
 
@@ -253,10 +252,13 @@ public abstract class DocumentSumReport_Base
             labels.add(map);
         }
         xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
+        final StringBuilder chartHtml = new StringBuilder()
+                        .append("<div style=\"position: relative;\">");
         for (final ColumnsChart chart : carts.values()) {
-            html = html + "<div style=\"float:left\">" + chart.getHtmlSnipplet() + "</div>";
+            chartHtml.append("<div style=\"float:left\">").append(chart.getHtmlSnipplet()).append("</div>");
         }
-        ret.put(ReturnValues.SNIPLETT, html);
+        chartHtml.append("</div>");
+        ret.put(ReturnValues.SNIPLETT, html + chartHtml);
         return ret;
     }
 
@@ -421,6 +423,7 @@ public abstract class DocumentSumReport_Base
                             break;
                     }
                 }
+                LOG.debug("userGrpup", _map);
             }
         };
     }

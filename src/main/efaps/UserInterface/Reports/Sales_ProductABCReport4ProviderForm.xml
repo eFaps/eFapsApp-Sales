@@ -24,7 +24,7 @@
         <name>Sales_ProductABCReport4ProviderForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1"
                 method="setDefaultFilter"
                 name="Sales_ProductABCReport4ProviderForm.filter.UI_FIELD_VALUE.1"

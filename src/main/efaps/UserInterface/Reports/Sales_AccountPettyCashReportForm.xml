@@ -14,23 +14,20 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dd4d8497-e334-45ef-92b2-c6105a1e8279</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport" method="setDefaultFilter"
-                name="Sales_AccountPettyCashReportForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE" index="1">
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport"
+                method="setDefaultFilter" name="Sales_AccountPettyCashReportForm.filter.UI_FIELD_VALUE.1"
+                event="UI_FIELD_VALUE" index="1">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
@@ -42,8 +39,9 @@
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport" method="getFilterFieldValue"
-                name="Sales_AccountPettyCashReportForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE" index="2">
+            <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport"
+                method="getFilterFieldValue" name="Sales_AccountPettyCashReportForm.filter.UI_FIELD_VALUE.2"
+                event="UI_FIELD_VALUE" index="2">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
@@ -56,8 +54,9 @@
         <field name="report">
             <property name="HideLabel">true</property>
             <property name="UIType">SNIPPLET</property>
-            <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport" method="generateReport"
-                name="Sales_AccountPettyCashReportForm.report.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport"
+                method="generateReport" name="Sales_AccountPettyCashReportForm.report.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
                 <property name="Type01">Sales_IncomingCreditNote</property>
                 <property name="StatusGroup01">Sales_IncomingCreditNoteStatus</property>
