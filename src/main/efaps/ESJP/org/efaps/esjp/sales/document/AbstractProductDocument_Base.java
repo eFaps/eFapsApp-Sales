@@ -211,7 +211,7 @@ public abstract class AbstractProductDocument_Base
                         final PrintQuery print = new PrintQuery(inst);
                         final SelectBuilder sel = SelectBuilder.get()
                                         .linkfrom(CIProducts.StoreableProductAbstract2IndividualAbstract,
-                                                        CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract)
+                                                    CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract)
                                         .linkto(CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract)
                                         .instance();
                         print.addSelect(sel);
@@ -807,6 +807,7 @@ public abstract class AbstractProductDocument_Base
         if (isUpdateBean4Individual(_parameter, _bean)) {
 
             if (Products.ACTIVATEINDIVIDUAL.get()) {
+                LOG.debug("ACTIVATEINDIVIDUAL", true);
                 final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
                 print.addAttribute(CIProducts.ProductAbstract.Individual);
                 print.execute();
@@ -829,7 +830,7 @@ public abstract class AbstractProductDocument_Base
                             invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
                         }
                         invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
-                                        attrQueryBldr.getAttributeQuery(CIProducts.StoreableProductAbstract2Batch.ToLink));
+                                    attrQueryBldr.getAttributeQuery(CIProducts.StoreableProductAbstract2Batch.ToLink));
                         final MultiPrintQuery multi = invQueryBldr.getPrint();
                         final SelectBuilder selProd = SelectBuilder.get()
                                         .linkto(CIProducts.InventoryIndividual.Product);
@@ -1217,7 +1218,7 @@ public abstract class AbstractProductDocument_Base
                 _queryBldr.addWhereAttrEqValue(CISales.ProductDocumentType.Activation, pactivt.toArray());
             };
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**

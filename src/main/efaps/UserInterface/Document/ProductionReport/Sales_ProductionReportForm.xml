@@ -20,7 +20,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>33e7f3f7-b391-42e7-9587-05f8db4ff2b9</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -74,7 +73,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"
@@ -274,7 +273,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"
