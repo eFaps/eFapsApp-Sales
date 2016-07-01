@@ -65,7 +65,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.Receipt"
                 method="getJS4SelectDocumentForm"
                 name="Sales_Receipt_SelectDocForm.javaScript.UI_Field_Value"

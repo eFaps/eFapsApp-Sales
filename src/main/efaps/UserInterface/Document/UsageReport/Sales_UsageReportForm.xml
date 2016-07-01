@@ -181,7 +181,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_UsageReportForm.storageJavaScript.UI_FIELD_VALUE"
@@ -199,7 +199,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
@@ -409,7 +409,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_UsageReportForm.storageJavaScript.UI_FIELD_VALUE"
@@ -427,7 +427,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"

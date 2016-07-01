@@ -455,7 +455,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_FundsToBeSettledReceiptForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>

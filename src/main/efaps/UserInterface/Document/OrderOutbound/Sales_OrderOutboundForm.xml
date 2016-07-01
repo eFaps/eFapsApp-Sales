@@ -389,7 +389,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
@@ -821,7 +821,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
