@@ -29,6 +29,7 @@
             <property name="Label">Sales_Document2Document4Swap/Amount.Label</property>
             <property name="Align">right</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="direction">
             <property name="Label">Sales_SwapDocumentTable.direction.Label</property>

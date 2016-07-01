@@ -112,7 +112,7 @@ public abstract class Swap_Base
         final String req = (String) _parameter.get(ParameterValues.OTHERS);
 
         final List<Map<String, String>> list = new ArrayList<>();
-        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
 
         final QueryBuilder queryBldr = getQueryBldr4Documents(_parameter);
 
@@ -140,7 +140,7 @@ public abstract class Swap_Base
             if (showContact) {
                 choice = choice + " - " + multi.getSelect(selContactName);
             }
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
@@ -277,8 +277,8 @@ public abstract class Swap_Base
     public Return updateFields4Document(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> values = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         final int idx = getSelectedRow(_parameter);
         final Instance docInst = Instance.get(_parameter.getParameterValues("document")[idx]);
         if (docInst.isValid()) {
@@ -659,8 +659,8 @@ public abstract class Swap_Base
     public Return updateFields4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> values = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final Instance docInst = Instance.get(_parameter.getParameterValue("createDocument"));
         if (docInst.isValid()) {
@@ -732,8 +732,14 @@ public abstract class Swap_Base
     public Return getSwapDocumentFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final SwapInfo info  = getInfos(_parameter).get(_parameter.getInstance());
-        return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDocument());
+        final Return ret;
+        if (_parameter.getInstance().getType().isKindOf(CIERP.DocumentAbstract)) {
+            ret = new Return().put(ReturnValues.VALUES, getDocumentInfo(_parameter, _parameter.getInstance()));
+        } else {
+            final SwapInfo info = getInfos(_parameter).get(_parameter.getInstance());
+            ret = new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDocument());
+        }
+        return ret;
     }
 
     /**
@@ -911,7 +917,7 @@ public abstract class Swap_Base
                                                           final List<Instance> _relInsts)
         throws EFapsException
     {
-        final Map<Instance, SwapInfo> ret = new HashMap<Instance, SwapInfo>();
+        final Map<Instance, SwapInfo> ret = new HashMap<>();
         final MultiPrintQuery multi = new MultiPrintQuery(_relInsts);
         final SelectBuilder selFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
         final SelectBuilder selFromInst = new SelectBuilder(selFrom).instance();
