@@ -38,6 +38,7 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -1652,34 +1653,41 @@ public abstract class AbstractDocumentSum_Base
     public Return dropDown4DocumentType(final Parameter _parameter)
         throws EFapsException
     {
-        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
-        {
-            @Override
-            protected void add2QueryBuilder4List(final Parameter _parameter,
-                                                 final QueryBuilder _queryBldr)
-                throws EFapsException
+        Return ret = new Return();
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+
+        if (uiValue.getField().isEditableDisplay((TargetMode) _parameter.get(ParameterValues.ACCESSMODE))) {
+            final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
             {
-                final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
-                final List<DocTypeActivation> pactivt = new ArrayList<DocTypeActivation>();
-                for (final String activation : activations.values()) {
-                    final DocTypeActivation pDAct = ERP.DocTypeActivation.valueOf(activation);
-                    pactivt.add(pDAct);
-                }
-                if (!pactivt.isEmpty()) {
-                    _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Activation, pactivt.toArray());
-                }
-                final Map<Integer, String> configurations = analyseProperty(_parameter, "Configuration");
-                final List<DocTypeConfiguration> configs = new ArrayList<DocTypeConfiguration>();
-                for (final String configuration : configurations.values()) {
-                    final DocTypeConfiguration config = ERP.DocTypeConfiguration.valueOf(configuration);
-                    configs.add(config);
-                }
-                if (!configs.isEmpty()) {
-                    _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration, configs.toArray());
-                }
+
+                @Override
+                protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                     final QueryBuilder _queryBldr)
+                    throws EFapsException
+                {
+                    final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
+                    final List<DocTypeActivation> pactivt = new ArrayList<DocTypeActivation>();
+                    for (final String activation : activations.values()) {
+                        final DocTypeActivation pDAct = ERP.DocTypeActivation.valueOf(activation);
+                        pactivt.add(pDAct);
+                    }
+                    if (!pactivt.isEmpty()) {
+                        _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Activation, pactivt.toArray());
+                    }
+                    final Map<Integer, String> configurations = analyseProperty(_parameter, "Configuration");
+                    final List<DocTypeConfiguration> configs = new ArrayList<DocTypeConfiguration>();
+                    for (final String configuration : configurations.values()) {
+                        final DocTypeConfiguration config = ERP.DocTypeConfiguration.valueOf(configuration);
+                        configs.add(config);
+                    }
+                    if (!configs.isEmpty()) {
+                        _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration, configs.toArray());
+                    }
+                };
             };
-        };
-        return field.dropDownFieldValue(_parameter);
+            ret = field.getOptionListFieldValue(_parameter);
+        }
+        return ret;
     }
 
     /**

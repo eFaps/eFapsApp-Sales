@@ -14,31 +14,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 8359 $
- Last Changed:    $Date: 2012-12-12 13:37:40 -0500 (Wed, 12 Dec 2012) $
- Last Changed By: $Author: jan@moxter.net $
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fb494eba-cf7a-4152-a0bb-413754c4a300</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8359 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReceipt_ShowRevision</name>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_IncomingReceiptRevisionForm</form>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetDefaultMenu">none</property>
         <property name="TargetMode">create</property>
         <property name="TargetCmdRevise">false</property>
     </definition>
-
 </ui-command>

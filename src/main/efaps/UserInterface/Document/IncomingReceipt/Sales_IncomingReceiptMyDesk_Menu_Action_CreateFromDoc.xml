@@ -14,38 +14,36 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFasp Team
- Revision:        $Rev: 7717 $
- Last Changed:    $Date: 2012-06-26 11:18:40 -0500 (Tue, 26 Jun 2012) $
- Last Changed By: $Author: m.aranya@moxter.net $
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>9a3712ba-0488-49e5-91f8-5f6477ae8c8a</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 7717 $</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc</name>
-
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Accounting</role>
-    </access>
-
-    <!-- target definitions -->
-    <target>
-      <form>Sales_IncomingReceipt_SelectDocForm</form>
-      <command>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc2</command>
-    </target>
-
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-    <property name="TargetCmdRevise">true</property>
-  </definition>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9a3712ba-0488-49e5-91f8-5f6477ae8c8a</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
+        <target>
+            <form>Sales_IncomingReceipt_SelectDocForm</form>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute01">org.efaps.sales.IncomingReceipt.CreateFromServiceOrderOutbound</property>
+                <property name="Attribute02">org.efaps.sales.IncomingReceipt.CreateFromOrderOutbound</property>
+           </trigger>
+           <command>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc2</command>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetCmdRevise">true</property>
+    </definition>
 </ui-command>

@@ -129,6 +129,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                 name="Sales_PettyCashReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
@@ -635,6 +636,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                 name="Sales_PettyCashReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
@@ -1171,6 +1173,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                 name="Sales_PettyCashReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">

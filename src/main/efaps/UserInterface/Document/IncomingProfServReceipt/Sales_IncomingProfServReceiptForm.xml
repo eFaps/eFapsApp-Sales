@@ -166,6 +166,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingProfServReceiptForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="dropDown4DocumentType"
@@ -743,6 +744,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingProfServReceiptForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="dropDown4DocumentType"

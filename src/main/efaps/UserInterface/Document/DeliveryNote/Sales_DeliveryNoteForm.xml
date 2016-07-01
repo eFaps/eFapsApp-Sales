@@ -108,6 +108,7 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_DeliveryNoteForm.productDocumentType.Label</property>
             <property name="UIType">DROPDOWN</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_DeliveryNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -529,6 +530,7 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_DeliveryNoteForm.productDocumentType.Label</property>
             <property name="UIType">DROPDOWN</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_DeliveryNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>

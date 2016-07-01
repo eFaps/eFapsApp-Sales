@@ -62,6 +62,7 @@
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="dropDown4DocumentType"
@@ -237,6 +238,7 @@
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="dropDown4DocumentType"

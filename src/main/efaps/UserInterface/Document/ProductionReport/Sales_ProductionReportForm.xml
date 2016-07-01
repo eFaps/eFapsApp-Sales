@@ -74,6 +74,7 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
             <property name="UIType">DROPDOWN</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"
@@ -274,6 +275,7 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
             <property name="UIType">DROPDOWN</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"

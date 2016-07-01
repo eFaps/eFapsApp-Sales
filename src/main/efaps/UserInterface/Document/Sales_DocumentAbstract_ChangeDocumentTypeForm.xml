@@ -15,17 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>71378e95-da98-40a2-a178-25a5e398493a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentAbstract_ChangeDocumentTypeForm</name>
@@ -35,7 +29,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_DocumentAbstractForm.documentType.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
                 name="Sales_DocumentAbstractForm.documentType.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.GenericDocumentSum">

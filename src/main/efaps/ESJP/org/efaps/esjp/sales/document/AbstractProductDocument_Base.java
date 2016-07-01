@@ -1200,25 +1200,30 @@ public abstract class AbstractProductDocument_Base
     public Return dropDown4ProdDocTypeFieldValue(final Parameter _parameter)
         throws EFapsException
     {
+        Return ret = new Return();
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        final Field field = new Field()
-        {
-
-            @Override
-            protected void add2QueryBuilder4List(final Parameter _parameter,
-                                                 final QueryBuilder _queryBldr)
-                throws EFapsException
+        if (uiValue.getField().isEditableDisplay((TargetMode) _parameter.get(ParameterValues.ACCESSMODE))) {
+            final Field field = new Field()
             {
-                final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
-                final List<ProdDocActivation> pactivt = new ArrayList<ProdDocActivation>();
-                for (final String activation : activations.values()) {
-                    final ProdDocActivation pDAct = Sales.ProdDocActivation.valueOf(activation);
-                    pactivt.add(pDAct);
-                }
-                _queryBldr.addWhereAttrEqValue(CISales.ProductDocumentType.Activation, pactivt.toArray());
+
+                @Override
+                protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                     final QueryBuilder _queryBldr)
+                    throws EFapsException
+                {
+                    final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
+                    final List<ProdDocActivation> pactivt = new ArrayList<ProdDocActivation>();
+                    for (final String activation : activations.values()) {
+                        final ProdDocActivation pDAct = Sales.ProdDocActivation.valueOf(activation);
+                        pactivt.add(pDAct);
+                    }
+                    _queryBldr.addWhereAttrEqValue(CISales.ProductDocumentType.Activation, pactivt.toArray());
+                };
             };
-        };
-        return field.getOptionListFieldValue(_parameter);
+            ret = field.getOptionListFieldValue(_parameter);
+        }
+        return ret;
     }
 
     /**
