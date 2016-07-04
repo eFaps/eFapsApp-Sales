@@ -39,7 +39,8 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getOptionListFieldValue"
                 name="Products_InventoryMoveMassiveForm.storage.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Products_DynamicStorage</property>
                 <property name="StatusGroup">Products_StorageAbstractStatus</property>
@@ -48,7 +49,7 @@
             </trigger>
         </field>
         <field name="description">
-            <property name="Columns">60</property>
+            <property name="Width">98%</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
@@ -59,8 +60,8 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Products_InventoryMoveForm.productDocumentType.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getOptionListFieldValue"
                 name="Products_InventoryMoveForm.productDocumentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
                 <property name="ValueSelect">attribute[OID]</property>
@@ -87,7 +88,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.products.Transaction"
                 method="getJavaScript4MoveInventory"
                 name="Products_InventoryMoveMassiveForm.javaScript.UI_Field_Value"

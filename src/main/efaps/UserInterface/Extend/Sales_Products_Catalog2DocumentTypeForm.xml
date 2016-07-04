@@ -35,7 +35,7 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_Products_Catalog2DocumentTypeForm.type.Label</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getTypeDropDownFieldValue"
                 name="Products_TransactionAbstractForm.type.UI_FIELD_VALUE"
