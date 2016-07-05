@@ -46,11 +46,14 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractPositionWarning;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.WarningUtil;
+import org.efaps.esjp.products.Storage;
+import org.efaps.esjp.products.Storage_Base.ClosureWarning;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
@@ -96,7 +99,9 @@ public abstract class Validation_Base
         /** Present always a warning "Are you sure". */
         AREYOUSURE,
         /** Validate the selected products for Individual.*/
-        INDIVIDUAL;
+        INDIVIDUAL,
+        /** Validate that the given date is after the last Closure date for given Storages. */
+        STOCKCLOSURE;
     }
 
     /**
@@ -116,7 +121,7 @@ public abstract class Validation_Base
     {
         final Return ret = new Return();
         final Map<Integer, String> validations = analyseProperty(_parameter, "Validation");
-        List<IWarning> warnings = new ArrayList<IWarning>();
+        List<IWarning> warnings = new ArrayList<>();
         boolean areyousure = false;
         for (final String validation : validations.values()) {
             final Validations val = Validations.valueOf(validation);
@@ -153,6 +158,10 @@ public abstract class Validation_Base
                     break;
                 case INDIVIDUAL:
                     warnings.addAll(validateIndividual(_parameter, _doc));
+                    break;
+                case STOCKCLOSURE:
+                    warnings.addAll(validateStockClosure(_parameter, _doc));
+                    break;
                 case AREYOUSURE:
                     areyousure = true;
                     break;
@@ -188,7 +197,7 @@ public abstract class Validation_Base
                                             final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
@@ -211,7 +220,7 @@ public abstract class Validation_Base
                                                       final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         final Set<Instance> prods = new HashSet<>();
@@ -237,7 +246,7 @@ public abstract class Validation_Base
                                                  final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         Instance currentProdInst = null;
@@ -263,7 +272,7 @@ public abstract class Validation_Base
                                                     final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
         int i = 0;
         BigDecimal total = BigDecimal.ZERO;
@@ -293,7 +302,7 @@ public abstract class Validation_Base
                                                    final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
         final BigDecimal total = Calculator.getNetTotal(_parameter, calcs);
         if (total.compareTo(BigDecimal.ZERO) < 1) {
@@ -326,7 +335,7 @@ public abstract class Validation_Base
                                        final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
 
         final Instance docInst = _parameter.getInstance();
 
@@ -401,7 +410,7 @@ public abstract class Validation_Base
                                          final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final Instance docInst = _parameter.getInstance();
         Type type = null;
         if (docInst != null && docInst.isValid()) {
@@ -483,7 +492,7 @@ public abstract class Validation_Base
                                                       final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final String[] quantities = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Quantity.name));
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
@@ -513,7 +522,7 @@ public abstract class Validation_Base
                                                         final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionProdDocAbstract);
         posQueryBldr.addWhereAttrEqValue(CISales.PositionProdDocAbstract.DocumentAbstractLink, _parameter
                         .getInstance());
@@ -567,7 +576,7 @@ public abstract class Validation_Base
                                                     final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         final String[] uoMs = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
@@ -632,7 +641,7 @@ public abstract class Validation_Base
                                              final AbstractDocument_Base _doc)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         if (Products.ACTIVATEINDIVIDUAL.get()) {
             final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                             CISales.PositionAbstract.Product.name));
@@ -665,6 +674,46 @@ public abstract class Validation_Base
                     }
                 }
                 idx++;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Validate individual.
+     *
+     * @param _parameter the _parameter
+     * @param _doc the _doc
+     * @return the list
+     * @throws EFapsException the e faps exception
+     */
+    public List<IWarning> validateStockClosure(final Parameter _parameter,
+                                               final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<>();
+        final DateTime date = new DateTime(_parameter.getParameterValue("date"));
+        final String[] storageArray = _parameter.getParameterValues("storage");
+        if (ArrayUtils.isNotEmpty(storageArray)) {
+            final Set<Instance> storageInsts = new HashSet<>();
+            for (final String storageStr : storageArray) {
+                final Instance storageInst = Instance.get(storageStr);
+                if (InstanceUtils.isValid(storageInst)) {
+                    storageInsts.add(storageInst);
+                }
+            }
+            for (final Instance storageInst : storageInsts) {
+                if (!Storage.validateClosureDate(_parameter, storageInst, date)) {
+                    ret.add(new ClosureWarning());
+                    break;
+                }
+            }
+        } else {
+            final Instance defStoreInst = _doc.getDefaultStorage(_parameter);
+            if (InstanceUtils.isValid(defStoreInst)) {
+                if (!Storage.validateClosureDate(_parameter, defStoreInst, date)) {
+                    ret.add(new ClosureWarning());
+                }
             }
         }
         return ret;
