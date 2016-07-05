@@ -40,7 +40,6 @@
             <property name="Label">Sales_InvoicePosition/Product.Label</property>
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_InvoiceRatePositionTable.productDesc.Label</property>
             <property name="Width">10</property>

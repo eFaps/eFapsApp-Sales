@@ -20,7 +20,7 @@
  Last Changed By: $Author$
 
 -->
-<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fbe2ff9f-eca5-4531-b164-5f925a387c53</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -51,7 +51,6 @@
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>

@@ -37,7 +37,6 @@
             <property name="Label">Sales_ProductionCostingPosition/Product.Label</property>
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_ProductionCostingRatePositionTable.productDesc.Label</property>
             <property name="Width">10</property>

@@ -57,7 +57,6 @@
                 name="Sales_DeliveryNotePositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_DeliveryNotePosition/ProductDesc.Label</property>

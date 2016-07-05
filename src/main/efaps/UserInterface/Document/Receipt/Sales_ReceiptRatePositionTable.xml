@@ -35,7 +35,6 @@
             <property name="Label">Sales_ReceiptPosition/Product.Label</property>
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_ReceiptPosition/ProductDesc.Label</property>
