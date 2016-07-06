@@ -54,7 +54,7 @@
             <property name="Label">Sales_PaymentSchedulePositionTable.contactPos.Label</property>
         </field>
         <field name="documentDesc">
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DocumentDesc</property>
@@ -137,7 +137,7 @@
             <property name="Label">Sales_PaymentSchedulePositionTable.contactPos.Label</property>
         </field>
         <field name="documentDesc">
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DocumentDesc</property>

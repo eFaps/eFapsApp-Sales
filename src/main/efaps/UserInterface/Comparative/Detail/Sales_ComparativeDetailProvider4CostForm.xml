@@ -63,7 +63,7 @@
             <property name="Select">linkto[ProviderLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.comparative.ComparativeProvider"
                 method="autoComplete4Contact"
                 name="Sales_ComparativeDetailProvider4CostForm.providerLink.UI_FIELD_AUTOCOMPLETE"
@@ -93,7 +93,7 @@
             <property name="Attribute">Comment</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>

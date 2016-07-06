@@ -98,7 +98,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.humanresource.Employee"
                 method="autoComplete4Employee"
@@ -168,14 +168,14 @@
         </field>
         <field name="name4edit">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
@@ -207,7 +207,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">100</property>
+            <property name="Width">100</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Contact"
                 name="Sales_InvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -590,7 +590,7 @@
             <property name="Label">Sales_InvoiceForm.employee.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.humanresource.Employee"
                 method="autoComplete4Employee"
@@ -660,14 +660,14 @@
         </field>
         <field name="name4edit">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
@@ -697,7 +697,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">100</property>
+            <property name="Width">100</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
@@ -731,7 +731,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -745,7 +745,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">100</property>
+            <property name="Width">100</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Contact"
                 name="Sales_InvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"

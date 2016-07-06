@@ -93,7 +93,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
@@ -165,7 +165,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_ConsignmentNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ConsignmentNote" >
@@ -197,7 +197,7 @@
             <property name="Label">Sales_ConsignmentNote/DeparturePoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger event="UI_FIELD_VALUE" method="departurePointFieldValue"
                 name="Sales_ConsignmentNoteForm.departurePoint.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>
@@ -215,7 +215,7 @@
             <property name="Label">Sales_ConsignmentNote/ArrivalPoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
         </field>
         <field name="vehicleLicencePlate">
             <property name="Attribute">VehicleLicencePlate</property>
@@ -232,7 +232,7 @@
             <property name="Label">Sales_ConsignmentNote/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Carrier"
                 name="Sales_ConsignmentNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Classification">Contacts_ClassCarrier</property>
@@ -351,7 +351,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
@@ -421,7 +421,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Project"
                 name="Sales_ConsignmentNoteForm.project.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.projects.Project">
@@ -452,7 +452,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>
@@ -466,7 +466,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_ConsignmentNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ConsignmentNote" >
@@ -498,7 +498,7 @@
             <property name="Label">Sales_ConsignmentNote/DeparturePoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger event="UI_FIELD_VALUE" method="departurePointFieldValue"
                 name="Sales_ConsignmentNoteForm.departurePoint.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>
@@ -516,7 +516,7 @@
             <property name="Label">Sales_ConsignmentNote/ArrivalPoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
         </field>
         <field name="vehicleLicencePlate">
             <property name="Attribute">VehicleLicencePlate</property>
@@ -533,7 +533,7 @@
             <property name="Label">Sales_ConsignmentNote/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Carrier"
                 name="Sales_ConsignmentNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Classification">Contacts_ClassCarrier</property>

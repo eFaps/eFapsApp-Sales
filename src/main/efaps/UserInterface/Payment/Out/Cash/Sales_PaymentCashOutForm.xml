@@ -75,7 +75,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Sales_PaymentCashOutForm.UI_FIELD_AUTOCOMPLETE"
@@ -200,7 +200,7 @@
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="note">
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="Rows">5</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

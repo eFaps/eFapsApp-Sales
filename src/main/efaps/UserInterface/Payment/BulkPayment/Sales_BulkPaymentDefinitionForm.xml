@@ -32,7 +32,7 @@
         </field>
         <field name="description">
             <property name="Attribute">Description</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>

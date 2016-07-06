@@ -54,7 +54,7 @@
                 program="org.efaps.esjp.sales.document.Reservation"/>
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
+            <property name="Width">90</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_ReservationPosition/ProductDesc.Label</property>

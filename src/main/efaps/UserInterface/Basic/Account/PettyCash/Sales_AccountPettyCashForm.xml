@@ -27,7 +27,7 @@
         </profiles>
         <name>Sales_AccountPettyCashForm</name>
         <field name="name">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -35,7 +35,7 @@
             <property name="Required">true</property>
         </field>
         <field name="description">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -56,13 +56,13 @@
             <property name="Label">Sales_AccountAbstract/CurrencyLink.Label</property>
         </field>
         <field name="amount">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
         </field>
         <field name="amountCurrent">
-            <property name="Columns">40</property>
+            
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
@@ -89,7 +89,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">60</property>
+            <property name="Width">60</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
@@ -109,10 +109,10 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field name="name">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -120,7 +120,7 @@
             <property name="Required">true</property>
         </field>
         <field name="description">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -141,13 +141,13 @@
             <property name="Label">Sales_AccountAbstract/CurrencyLink.Label</property>
         </field>
         <field name="amount">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
         </field>
         <field name="amountCurrent">
-            <property name="Columns">40</property>
+            
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>

@@ -84,7 +84,7 @@
         </field>
        <field name="name4create">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -99,7 +99,7 @@
         </field>
         <field name="name4edit">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
@@ -134,7 +134,7 @@
         </field>
         <field name="revision">
             <property name="Attribute">Revision</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
@@ -196,7 +196,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.humanresource.Employee"
                 method="autoComplete4Employee"

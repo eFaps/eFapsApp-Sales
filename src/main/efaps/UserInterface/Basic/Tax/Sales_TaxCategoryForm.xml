@@ -36,7 +36,7 @@
         <name>Sales_TaxCategoryForm</name>
         <!-- fields -->
         <field name="name">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -70,7 +70,7 @@
         </field>
         <field name="descML" character="Set">
             <property name="Label">Sales_TaxCategory/DescML.Label</property>
-            <property name="Columns">40</property>
+            
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DescML</property>
             <property name="Order">Value|LanguageID</property>

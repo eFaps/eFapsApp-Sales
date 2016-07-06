@@ -124,7 +124,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.humanresource.Employee"
                 method="autoComplete4Employee"
@@ -160,7 +160,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.GoodsIssueSlip"
                 method="autoComplete4Contact"
                 name="Sales_GoodsIssueSlipForm.contact.UI_FIELD_AUTOCOMPLETE"

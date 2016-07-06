@@ -116,7 +116,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="Required">true</property>
         </field>
         <field name="headingContact" character="Heading">
@@ -131,7 +131,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="autoComplete4Contact"
                 name="Sales_QuotationForm.contact.UI_FIELD_AUTOCOMPLETE"

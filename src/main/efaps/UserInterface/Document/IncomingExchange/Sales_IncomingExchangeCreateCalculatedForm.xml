@@ -35,7 +35,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
                 method="autoComplete4Contact"
                 name="Sales_IncomingExchangeCreateCalculatedForm.contact.UI_FIELD_AUTOCOMPLETE"

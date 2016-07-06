@@ -56,7 +56,7 @@
             <property name="Label">Sales_Document_ReportForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Contact"
                 name="Sales_Document_ReportForm.contact.UI_FIELD_AUTOCOMPLETE"

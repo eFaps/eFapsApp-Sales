@@ -108,7 +108,7 @@
         </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
@@ -130,7 +130,7 @@
         </field>
         <field name="name4edit">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
@@ -138,7 +138,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
@@ -155,7 +155,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="autoComplete4Contact"
                 name="Sales_CreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassClient</property>
@@ -234,7 +234,7 @@
             <property name="ModeView">NONE</property>
             <property name="RowSpan">4</property>
             <property name="Rows">5</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>

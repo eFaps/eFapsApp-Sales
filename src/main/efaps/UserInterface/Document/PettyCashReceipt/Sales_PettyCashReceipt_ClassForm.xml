@@ -34,21 +34,21 @@
         <name>Sales_PettyCashReceipt_ClassForm</name>
         <type>Sales_PettyCashReceipt_Class</type>
         <field name="receiptTypeLink">
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="Attribute">ReceiptTypeLink</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="name">
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="Attribute">Name</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="employeeName">
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="Attribute">EmployeeName</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

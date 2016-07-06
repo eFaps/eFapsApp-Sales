@@ -27,7 +27,7 @@
         <name>Sales_TransactionAbstractForm</name>
         <!-- fields -->
         <field name="date">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -80,7 +80,7 @@
                 name="Sales_TransactionAbstractForm/payment.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="description">
-            <property name="Columns">40</property>
+            
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>

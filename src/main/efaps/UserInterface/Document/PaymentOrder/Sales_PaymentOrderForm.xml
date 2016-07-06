@@ -78,7 +78,7 @@
             <property name="Label">Sales_PaymentOrderForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
                 method="autoComplete4Contact"
                 name="Sales_PaymentOrderForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -126,7 +126,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
         </field>
@@ -170,7 +170,7 @@
             <property name="ModeView">READONLY</property>
         </field>
         <field name="rateCrossTotal">
-            <property name="Columns">10</property>
+            <property name="Width">10</property>
             <property name="Rows">1</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

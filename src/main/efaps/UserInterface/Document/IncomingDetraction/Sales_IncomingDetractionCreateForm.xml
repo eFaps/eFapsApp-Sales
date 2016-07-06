@@ -56,7 +56,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="updateFields4DetractionPercent"

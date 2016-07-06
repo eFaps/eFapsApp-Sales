@@ -95,7 +95,7 @@
         </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
@@ -104,7 +104,7 @@
         </field>
         <field name="name4edit">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
@@ -112,7 +112,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
@@ -128,7 +128,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingRetention" method="autoComplete4Contact"
                 name="Sales_IncomingRetentionForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
@@ -178,7 +178,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Sales_IncomingRetentionCreateForm.retentionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingRetention"

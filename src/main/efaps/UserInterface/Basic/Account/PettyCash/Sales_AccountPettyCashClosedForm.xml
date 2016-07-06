@@ -27,7 +27,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashClosedForm</name>
         <field name="amountIn">
-            <property name="Columns">12</property>
+            <property name="Width">12</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountIn.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -37,7 +37,7 @@
             </trigger>
         </field>
         <field name="amountOut">
-            <property name="Columns">12</property>
+            <property name="Width">12</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountOut.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -47,7 +47,7 @@
             </trigger>
         </field>
         <field name="result">
-            <property name="Columns">12</property>
+            <property name="Width">12</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.result.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>

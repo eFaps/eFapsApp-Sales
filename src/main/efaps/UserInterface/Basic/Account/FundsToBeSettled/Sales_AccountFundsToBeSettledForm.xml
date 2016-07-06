@@ -52,7 +52,6 @@
             <property name="Attribute">Name</property>
         </field>
         <field name="description">
-            <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -60,20 +59,17 @@
             <property name="Required">true</property>
         </field>
         <field name="currencyLink">
-            <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">CurrencyLink</property>
             <property name="Required">true</property>
         </field>
         <field name="amount">
-            <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
             <property name="Required">true</property>
         </field>
         <field name="amountCurrent">
-            <property name="Columns">40</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
@@ -87,7 +83,6 @@
             <property name="Attribute">Status</property>
         </field>
         <field name="employee">
-            <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Employee</property>
@@ -129,7 +124,7 @@
             <property name="Attribute">Name</property>
         </field>
         <field name="description">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -137,20 +132,20 @@
             <property name="Required">true</property>
         </field>
         <field name="currencyLink">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">CurrencyLink</property>
             <property name="Required">true</property>
         </field>
         <field name="amount">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
             <property name="Required">true</property>
         </field>
         <field name="amountCurrent">
-            <property name="Columns">40</property>
+
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
@@ -164,7 +159,7 @@
             <property name="Attribute">Status</property>
         </field>
         <field name="employee">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Employee</property>
@@ -189,7 +184,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">60</property>
+            <property name="Width">60</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
@@ -209,7 +204,6 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">50</property>
         </field>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
@@ -233,7 +227,7 @@
             <property name="Attribute">Name</property>
         </field>
         <field name="description">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -241,20 +235,20 @@
             <property name="Required">true</property>
         </field>
         <field name="currencyLink">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">CurrencyLink</property>
             <property name="Required">true</property>
         </field>
         <field name="amount">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
             <property name="Required">true</property>
         </field>
         <field name="amountCurrent">
-            <property name="Columns">40</property>
+
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
@@ -268,7 +262,7 @@
             <property name="Attribute">Status</property>
         </field>
         <field name="employee">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Employee</property>
@@ -293,7 +287,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">60</property>
+            <property name="Width">60</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
@@ -313,7 +307,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
@@ -337,7 +331,7 @@
             <property name="Attribute">Name</property>
         </field>
         <field name="description">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -345,20 +339,20 @@
             <property name="Required">true</property>
         </field>
         <field name="currencyLink">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">CurrencyLink</property>
             <property name="Required">true</property>
         </field>
         <field name="amount">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
             <property name="Required">true</property>
         </field>
         <field name="amountCurrent">
-            <property name="Columns">40</property>
+
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
@@ -396,7 +390,7 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="responsible">
-            <property name="Columns">40</property>
+
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Employee</property>

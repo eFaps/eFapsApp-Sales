@@ -30,7 +30,7 @@
             <property name="Label">Sales_CostSheet/Name.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
                      method="autoComplete4Doc"

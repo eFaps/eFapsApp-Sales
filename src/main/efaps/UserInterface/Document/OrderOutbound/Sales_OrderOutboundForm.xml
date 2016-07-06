@@ -119,7 +119,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="Required">true</property>
         </field>
         <field name="headingContact" character="Heading">
@@ -134,7 +134,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="autoComplete4Contact"
                 name="Sales_OrderOutboundForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -264,7 +264,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="RowSpan">4</property>
             <property name="Rows">5</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>
@@ -507,7 +507,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="Required">true</property>
         </field>
         <field name="headingProject" character="Heading">
@@ -520,7 +520,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">100</property>
+            <property name="Width">100</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
@@ -551,7 +551,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">50</property>
+            <property name="Width">50</property>
         </field>
         <field name="headingContact" character="Heading">
             <property name="Level">2</property>
@@ -565,7 +565,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">98</property>
+            <property name="Width">98</property>
             <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="autoComplete4Contact"
                 name="Sales_OrderOutboundForm.contact.UI_FIELD_AUTOCOMPLETE"

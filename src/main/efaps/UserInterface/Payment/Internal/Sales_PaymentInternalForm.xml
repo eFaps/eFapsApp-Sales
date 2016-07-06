@@ -131,7 +131,7 @@
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="note">
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
             <property name="Rows">5</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
