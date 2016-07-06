@@ -568,6 +568,7 @@ public abstract class Swap_Base
         ret.put("partial", frmt.format(_setFromUI ? total4Doc : total4Doc.subtract(payments4Doc)));
         ret.put("rate", _docInfo.getRateInfo4Target().getRateUIFrmt());
         ret.put("rate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Target().isInvert());
+        ret.put("documentInfo", _docInfo.getInfoField());
         return ret;
     }
 
