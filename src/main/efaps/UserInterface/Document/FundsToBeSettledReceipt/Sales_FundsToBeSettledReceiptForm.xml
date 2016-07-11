@@ -192,9 +192,9 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="dropDownFieldValue"
+                method="getOptionListFieldValue"
                 name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ActionDefinitionFundsToBeSettledReceipt</property>
@@ -673,9 +673,9 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="dropDownFieldValue"
+                method="getOptionListFieldValue"
                 name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ActionDefinitionFundsToBeSettledReceipt</property>
@@ -1187,9 +1187,9 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="dropDownFieldValue"
+                method="getOptionListFieldValue"
                 name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ActionDefinitionFundsToBeSettledReceipt</property>

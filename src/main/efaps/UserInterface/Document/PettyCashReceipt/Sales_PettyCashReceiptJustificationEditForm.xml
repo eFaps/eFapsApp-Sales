@@ -89,9 +89,9 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="dropDownFieldValue"
+                method="getOptionListFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ActionDefinitionPettyCashReceipt</property>
