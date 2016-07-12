@@ -129,7 +129,6 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
             <property name="ModeCreate">EDITABLE</property>
@@ -561,7 +560,6 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
             <property name="ModeCreate">EDITABLE</property>
