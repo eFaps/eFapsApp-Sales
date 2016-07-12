@@ -23,6 +23,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InstallmentMyDesk_Menu_Action</name>
         <childs>
+            <child>Sales_InstallmentMyDesk_Menu_Action_SetPaid</child>
             <child>Sales_InstallmentMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
