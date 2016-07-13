@@ -23,12 +23,17 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * The Class IncomingInstallment_Base.
@@ -53,6 +58,7 @@ public abstract class IncomingInstallment_Base
         final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         connect2Object(_parameter, createdDoc);
+        updateCreditDueDate(_parameter, createdDoc.getInstance());
 
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
@@ -69,7 +75,9 @@ public abstract class IncomingInstallment_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        editDoc(_parameter);
+        final EditedDoc editDoc = editDoc(_parameter);
+        updateCreditDueDate(_parameter, editDoc.getInstance());
+
         return ret;
     }
 
@@ -98,5 +106,47 @@ public abstract class IncomingInstallment_Base
         retVal.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, add2JavaScript4DocumentContact(
                         _parameter, null, contactInst), true, 1500));
         return retVal;
+    }
+
+    /**
+     * Update credit due date to highest date.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException
+     */
+    protected void updateCreditDueDate(final Parameter _parameter,
+                                       final Instance _instance)
+        throws EFapsException
+    {
+        if (InstanceUtils.isValid(_instance)) {
+            final PrintQuery print = new PrintQuery(_instance);
+            final SelectBuilder selCreditInst = SelectBuilder.get().linkfrom(
+                            CISales.IncomingInstallment2IncomingCredit.FromLink).linkto(
+                                            CISales.IncomingInstallment2IncomingCredit.ToLink).instance();
+            print.addSelect(selCreditInst);
+            print.execute();
+            final Instance creditInst = print.getSelect(selCreditInst);
+            if (InstanceUtils.isKindOf(creditInst, CISales.Credit)) {
+
+                final QueryBuilder atrtQueryBldr = new QueryBuilder(CISales.IncomingInstallment2IncomingCredit);
+                atrtQueryBldr.addWhereAttrEqValue(CISales.IncomingInstallment2IncomingCredit.ToLink, creditInst);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInstallment);
+                queryBldr.addWhereAttrInQuery(CISales.IncomingInstallment.ID, atrtQueryBldr.getAttributeQuery(
+                                CISales.IncomingInstallment2IncomingCredit.FromLink));
+                queryBldr.addOrderByAttributeDesc(CISales.IncomingInstallment.DueDate);
+                queryBldr.setLimit(1);
+
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.IncomingInstallment.DueDate);
+                multi.execute();
+                if (multi.next()) {
+                    final Update update = new Update(creditInst);
+                    update.add(CISales.IncomingCredit.DueDate,
+                                    multi.<DateTime>getAttribute(CISales.IncomingInstallment.DueDate));
+                    update.executeWithoutAccessCheck();
+                }
+            }
+        }
     }
 }

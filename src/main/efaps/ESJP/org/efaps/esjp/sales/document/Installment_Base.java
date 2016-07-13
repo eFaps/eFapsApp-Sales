@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,16 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * The Class IncomingInstallment_Base.
@@ -40,6 +45,7 @@ import org.efaps.util.EFapsException;
 public abstract class Installment_Base
     extends AbstractSumOnlyDocument
 {
+
     /**
      * Creates the.
      *
@@ -53,6 +59,7 @@ public abstract class Installment_Base
         final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         connect2Object(_parameter, createdDoc);
+        updateCreditDueDate(_parameter, createdDoc.getInstance());
 
         final File file = createReport(_parameter, createdDoc);
         if (file != null) {
@@ -76,6 +83,8 @@ public abstract class Installment_Base
         final Return ret = new Return();
         final EditedDoc editDoc = editDoc(_parameter);
         updateConnection2Object(_parameter, editDoc);
+        updateCreditDueDate(_parameter, editDoc.getInstance());
+
         final File file = createReport(_parameter, editDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
@@ -98,5 +107,45 @@ public abstract class Installment_Base
         retVal.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, add2JavaScript4DocumentContact(
                         _parameter, null, contactInst), true, 1500));
         return retVal;
+    }
+
+    /**
+     * Update credit due date to highest date.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException
+     */
+    protected void updateCreditDueDate(final Parameter _parameter,
+                                       final Instance _instance)
+        throws EFapsException
+    {
+        if (InstanceUtils.isValid(_instance)) {
+            final PrintQuery print = new PrintQuery(_instance);
+            final SelectBuilder selCreditInst = SelectBuilder.get().linkfrom(CISales.Installment2Credit.FromLink).linkto(
+                            CISales.Installment2Credit.ToLink).instance();
+            print.addSelect(selCreditInst);
+            print.execute();
+            final Instance creditInst = print.getSelect(selCreditInst);
+            if (InstanceUtils.isKindOf(creditInst, CISales.Credit)) {
+
+                final QueryBuilder atrtQueryBldr = new QueryBuilder(CISales.Installment2Credit);
+                atrtQueryBldr.addWhereAttrEqValue(CISales.Installment2Credit.ToLink, creditInst);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Installment);
+                queryBldr.addWhereAttrInQuery(CISales.Installment.ID, atrtQueryBldr.getAttributeQuery(
+                                CISales.Installment2Credit.FromLink));
+                queryBldr.addOrderByAttributeDesc(CISales.Installment.DueDate);
+                queryBldr.setLimit(1);
+
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.Installment.DueDate);
+                multi.execute();
+                if (multi.next()) {
+                    final Update update = new Update(creditInst);
+                    update.add(CISales.Credit.DueDate, multi.<DateTime>getAttribute(CISales.Installment.DueDate));
+                    update.executeWithoutAccessCheck();
+                }
+            }
+        }
     }
 }

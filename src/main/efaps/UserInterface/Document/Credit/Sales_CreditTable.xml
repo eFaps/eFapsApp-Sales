@@ -50,22 +50,40 @@
         </field>
         <field name="dueDate">
             <property name="Attribute">DueDate</property>
+            <property name="FilterType">FREETEXT</property>
             <property name="Label">Sales_Credit/DueDate.Label</property>
         </field>
-        <field name="currency">
-            <property name="Phrase">$&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_Credit/Currency.Label</property>
-        </field>
-        <field name="crosstotal">
-            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt;</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_Credit/CrossTotal.Label</property>
-        </field>
         <field name="rateCrosstotal">
-            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt;</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[RateCrossTotal]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Credit/RateCrossTotal.Label</property>
+            <property name="Align">right</property>
+            <property name="ModePrint">NONE</property>
+            <property name="SortSelect">attribute[RateCrossTotal]</property>
+        </field>
+         <field name="rateCrosstotal4Print">
+            <property name="Select">attribute[RateCrossTotal]</property>
+            <property name="Label">Sales_Credit/RateCrossTotal.Label</property>
+            <property name="Align">right</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="crosstotal">
+            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[CrossTotal]</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_Credit/CrossTotal.Label</property>
+            <property name="Align">right</property>
+            <property name="ModePrint">NONE</property>
+            <property name="SortSelect">attribute[CrossTotal]</property>
+        </field>
+        <field name="crosstotal4Print">
+            <property name="Select">attribute[CrossTotal]</property>
+            <property name="Label">Sales_Credit/CrossTotal.Label</property>
+            <property name="Align">right</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="status">
             <property name="FilterType">STATUS</property>
