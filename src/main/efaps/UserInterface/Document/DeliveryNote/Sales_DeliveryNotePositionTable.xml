@@ -52,6 +52,9 @@
                 <property name="InStock">true</property>
                 <property name="ExtraParameter">storage</property>
                 <property name="ExtraParameter01">eFapsRSR</property>
+                <!-- Sales-Configuration for Overwrite Properties-->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.DeliveryNote.ProductAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="updateFields4Product"
                 name="Sales_DeliveryNotePositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

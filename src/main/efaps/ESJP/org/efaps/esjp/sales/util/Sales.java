@@ -61,14 +61,6 @@ public final class Sales
     public static final UUID SYSCONFUUID = UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f");
 
     /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute AUTOCOMPLETE4PRODUCT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "AutoComplete4Product")
-                    .concatenate(true)
-                    .description("General Configuration for Autocomplete for Products.");
-
-    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink DEFAULTTAXCAT4PRODUCT = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
@@ -236,6 +228,13 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DefaultCurrency4Documents")
                     .description("Activate the Remark Attribute for Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DELIVERYNOTE_PRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -751,10 +750,10 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INVOICEAUTOCOMPLETE4PRODUCTS = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INVOICE_PRODUCTAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Invoice.AutoCompleteProperties4Products")
-                    .description("Autocomplete Properties 4 Products in Invoice");
+                    .key(BASE + "Invoice.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");;
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1394,7 +1393,8 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> SERVICEORDEROUTBOUND_MIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> SERVICEORDEROUTBOUND_MIME
+        = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ServiceOrderOutbound.Mime")
                     .clazz(JasperMime.class)
@@ -1428,15 +1428,22 @@ public final class Sales
                     .description("Name of the jasperReport for CreditNote");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute USAGEREPORT_PRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
+
+    /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
+    public static final SysConfLink USAGEREPORT_DEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "UsageReport.DefaultProductDocumentType")
                     .description("Default product document type for UsageReport.");
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink USAGEREPORTDEFAULTWAREHOUSE = new SysConfLink()
+    public static final SysConfLink USAGEREPORT_DEFAULTWAREHOUSE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "UsageReport.DefaultWareHouse")
                     .description("Possibility to set a default Warehouse fo0r DeliveryNote. If not set "
@@ -1444,14 +1451,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute USAGEREPORTJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute USAGEREPORT_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "UsageReport.JasperReport")
                     .description("Name of the jasperReport for UsageReport");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> USAGEREPORTMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> USAGEREPORT_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "UsageReport.Mime")
                     .clazz(JasperMime.class)

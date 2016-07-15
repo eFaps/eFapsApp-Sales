@@ -208,7 +208,7 @@ public abstract class AbstractDocument_Base
         final Status[] status;
         if (_status == null && type.isCheckStatus()) {
             final Type statusType = type.getStatusAttribute().getLink();
-            final List<Status> statusList = new ArrayList<Status>();
+            final List<Status> statusList = new ArrayList<>();
             final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
             for (final String statusStr : statusMap.values()) {
                 final Status statusTmp = Status.find(statusType.getUUID(), statusStr);
@@ -241,8 +241,8 @@ public abstract class AbstractDocument_Base
     {
         final String req = (String) _parameter.get(ParameterValues.OTHERS);
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
 
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, _queryBldr);
         add2QueryBldr(_parameter, _queryBldr);
@@ -269,7 +269,7 @@ public abstract class AbstractDocument_Base
                 choice = choice + " - " + multi.getSelect(selContactName);
             }
             choice = choice + add2ChoiceAutoComplete4Doc(_parameter, multi.getCurrentInstance());
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
@@ -433,8 +433,8 @@ public abstract class AbstractDocument_Base
         final Return ret = new Return();
         final List<DropDownPosition> options = getSerialNumbers(_parameter);
         if (options.size() > 1) {
-            final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final List<Map<String, Object>> values = new ArrayList<>();
+            final Map<String, Object> map = new HashMap<>();
             final Collection<String> types = analyseProperty(_parameter, "Type").values();
             final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
             final String fieldName = field.getName() + "_SN";
@@ -474,8 +474,8 @@ public abstract class AbstractDocument_Base
     protected List<Map<String, Object>> updateFields4Doc(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> ret = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
         final String fieldName = field.getName();
 
@@ -649,7 +649,7 @@ public abstract class AbstractDocument_Base
                     .append(addDomReadyScript(_parameter, instances));
             } else if (instCall != null && instCall.isValid()
                             && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
-                final List<Instance> instCallLst = new ArrayList<Instance>();
+                final List<Instance> instCallLst = new ArrayList<>();
                 instCallLst.add(instCall);
                 // if no instance was detected to copy from set the default Currency
                 js.append(updateRateFields(_parameter, null)).append("\n")
@@ -1000,7 +1000,7 @@ public abstract class AbstractDocument_Base
             }
         }
 
-        final Set<String> noEscape = new HashSet<String>();
+        final Set<String> noEscape = new HashSet<>();
         noEscape.add("uoM");
 
         evaluatePositions4RelatedInstances(_parameter, values, _instance);
@@ -1062,7 +1062,7 @@ public abstract class AbstractDocument_Base
                                                           final Collection<AbstractUIPosition> _values)
         throws EFapsException
     {
-        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> ret = new ArrayList<>();
         for (final AbstractUIPosition uiPosition :_values) {
             ret.add(uiPosition.getMap4JavaScript(_parameter));
         }
@@ -1084,7 +1084,7 @@ public abstract class AbstractDocument_Base
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _editDoc.getInstance());
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
-        final Set<Instance> delIns = new HashSet<Instance>();
+        final Set<Instance> delIns = new HashSet<>();
         while (query.next()) {
             final Instance inst = query.getCurrentValue();
             if (!_editDoc.getPositions().contains(inst)) {
@@ -1156,7 +1156,7 @@ public abstract class AbstractDocument_Base
                 final Integer key = relTypeEntry.getKey();
                 final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
                 final Type relType = Type.get(relTypeEntry.getValue());
-                final Map<String, BigDecimal> prodQuantMap = new HashMap<String, BigDecimal>();
+                final Map<String, BigDecimal> prodQuantMap = new HashMap<>();
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(relType);
                 attrQueryBldr.addWhereAttrEqValue(linkFroms.get(key), (Object[]) _instances);
@@ -1166,7 +1166,7 @@ public abstract class AbstractDocument_Base
                 final Type type = Type.get(types.get(key));
                 final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
                 final String[] statusArr = status.get(key).split(";");
-                final List<Status> statusLst = new ArrayList<Status>();
+                final List<Status> statusLst = new ArrayList<>();
                 for (final String stat : statusArr) {
                     final Status st = Status.find(statusGrps.get(key), stat);
                     statusLst.add(st);
@@ -1292,7 +1292,7 @@ public abstract class AbstractDocument_Base
         }
         final Collection<AbstractUIPosition> values = valuesTmp.values();
 
-        final Set<String> noEscape = new HashSet<String>();
+        final Set<String> noEscape = new HashSet<>();
         noEscape.add("uoM");
 
         add2JavaScript4Postions(_parameter, values, noEscape);
@@ -1328,7 +1328,7 @@ public abstract class AbstractDocument_Base
      */
     protected List<Instance> getInstances4Derived(final Parameter _parameter)
     {
-        final List<Instance> ret = new ArrayList<Instance>();
+        final List<Instance> ret = new ArrayList<>();
         final String[] oids;
         if (_parameter.getParameterValues("selectedRow") != null) {
             oids = _parameter.getParameterValues("selectedRow");
@@ -1622,19 +1622,16 @@ public abstract class AbstractDocument_Base
 
         catalogFilter4productAutoComplete(_parameter, _queryBldr);
         if (Products.ACTIVATEINDIVIDUAL.get()) {
-            final Properties properties = Sales.AUTOCOMPLETE4PRODUCT.get();
-            final String typeName = getTypeName4AutoComplete4Product(_parameter);
             // show products of type Individual and Batch
-            final boolean showIndividual = "true".equalsIgnoreCase(properties.getProperty(typeName + ".ShowIndividual",
-                            "false"));
+            final boolean showIndividual = "true".equalsIgnoreCase(getProperty(_parameter, "ShowIndividual", "false"));
             if (!showIndividual) {
                 _queryBldr.addWhereAttrNotEqValue(CIProducts.ProductAbstract.Type,
                                 CIProducts.ProductIndividual.getType().getId(),
                                 CIProducts.ProductBatch.getType().getId());
             }
             // show products that are marked to use individual
-            final boolean hideIndividualizable = "true".equalsIgnoreCase(properties.getProperty(typeName
-                            + ".HideMarkedIndividual", "false"));
+            final boolean hideIndividualizable = "true".equalsIgnoreCase(getProperty(_parameter,
+                            "HideMarkedIndividual", "false"));
             if (hideIndividualizable) {
                 _queryBldr.addWhereAttrNotEqValue(CIProducts.StoreableProductAbstract.Individual,
                                 ProductIndividual.INDIVIDUAL, ProductIndividual.BATCH);
@@ -1744,7 +1741,7 @@ public abstract class AbstractDocument_Base
                                          final Integer _row4priceFromDB)
         throws EFapsException
     {
-        final List<Calculator> ret = new ArrayList<Calculator>();
+        final List<Calculator> ret = new ArrayList<>();
         final String[] quantities = _parameter.getParameterValues("quantity");
         String[] discounts = _parameter.getParameterValues("discount");
         String[] unitPrices = getUnitPricesFromUI(_parameter);
@@ -1834,7 +1831,8 @@ public abstract class AbstractDocument_Base
                                     final int _idx)
         throws EFapsException
     {
-        return new Calculator(_parameter, _oldCalc, _prodInstance, _quantity, _unitPrice, _discount, _priceFromDB, this);
+        return new Calculator(_parameter, _oldCalc, _prodInstance, _quantity, _unitPrice, _discount,
+                        _priceFromDB, this);
     }
 
     /**
@@ -2105,7 +2103,7 @@ public abstract class AbstractDocument_Base
         final String type = getProperty(_parameter, "Type");
         final Properties properties = Sales.SERIALNUMBERS.get();
         final String serialStr = properties.getProperty(type, "001");
-        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> ret = new ArrayList<>();
         final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
         boolean first = true;
         for (final String serial : serialStr.split(";")) {
@@ -2661,7 +2659,7 @@ public abstract class AbstractDocument_Base
 
         final StringBuilder ret = new StringBuilder();
         final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
-        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> values = new ArrayList<>();
 
         if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
             _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, _instance);

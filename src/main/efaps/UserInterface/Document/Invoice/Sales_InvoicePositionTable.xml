@@ -47,9 +47,9 @@
                 method="autoComplete4Product"
                 name="Sales_InvoicePositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <!-- Sales-Configuration -->
-                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="QueryBldrConfigAttribute">org.efaps.sales.Invoice.AutoCompleteProperties4Products</property>
+                <!-- Sales-Configuration for Overwrite Properties-->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.Invoice.ProductAutoComplete</property>
                 <property name="ExtraParameter">contact</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Invoice"

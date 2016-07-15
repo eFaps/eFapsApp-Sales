@@ -694,7 +694,7 @@ public abstract class Swap_Base
     public Return getDocumentInfoFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        return new Return().put(ReturnValues.VALUES, getDocumentInfo(_parameter, _parameter.getInstance()));
+        return new Return().put(ReturnValues.VALUES, getDocumentInfo(_parameter, _parameter.getCallInstance()));
     }
 
     /**
