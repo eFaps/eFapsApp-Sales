@@ -1284,6 +1284,18 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_PAYMENTSUM = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.PaymentSumReport")
+                    .description("Properties for PaymentSumReport.")
+                    .addDefaultValue("PAYMENT.IN.Type", CISales.PaymentDocumentAbstract.getType().getName())
+                    .addDefaultValue("PAYMENT.OUT.Type", CISales.PaymentDocumentOutAbstract.getType().getName())
+                    .addDefaultValue("PAYMENT.BOTH.Type", CISales.PaymentDocumentIOAbstract.getType().getName())
+                    .addDefaultValue("DOCUMENT.IN.Type", CISales.IncomingCheck.getType().getName())
+                    .addDefaultValue("DOCUMENT.BOTH.Type", CISales.IncomingCheck.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.IN")

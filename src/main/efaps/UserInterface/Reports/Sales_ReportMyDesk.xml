@@ -43,6 +43,7 @@
             <child>Sales_CarrierReportMyDesk</child>
             <child>Sales_DocPositionCostReportMyDesk</child>
             <child>Sales_PaymentReportMyDesk</child>
+            <child>Sales_PaymentSumReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
