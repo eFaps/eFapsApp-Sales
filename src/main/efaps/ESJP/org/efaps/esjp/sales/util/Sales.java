@@ -1296,6 +1296,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_SWAP = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SwapReport")
+                    .description("Properties for SwapReport.")
+                    .addDefaultValue("Type", CISales.DocumentSumAbstract.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.IN")
@@ -1335,6 +1343,8 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.OUT.ActivateSwapInfo")
                     .description("Activate the column for Swap related Infos.");
+
+
 
     /** See description. */
     @EFapsSysConfAttribute
