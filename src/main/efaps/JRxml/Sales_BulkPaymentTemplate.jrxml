@@ -5,6 +5,7 @@
     pageWidth="595" rightMargin="20" topMargin="20"
     uuid="267d1095-5a00-461d-80a1-f8a2a1fa6d0f" whenNoDataType="AllSectionsNoDetail"
     xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
+    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
     <parameter class="java.lang.String" isForPrompting="false"
         name="EFAPS_DEFINITION">
         <property name="Instance" value="true" />

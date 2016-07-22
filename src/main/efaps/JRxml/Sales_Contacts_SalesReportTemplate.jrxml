@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Contacts_SalesReportTemplate" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="648a33c9-f112-4741-82a1-5b2f96c1538d">
+    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
     <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
     <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
     <property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>

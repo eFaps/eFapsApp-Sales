@@ -2,19 +2,20 @@
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
 <!-- 2016-03-15T12:35:14 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_IncomingExchange" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a9a10161-80c6-4138-ab5a-4d530b6c23b3">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
-	<import value="org.efaps.number2words.Converter"/>
-	<parameter name="INSTANCE" class="java.lang.Object">
-		<parameterDescription><![CDATA[Object Instance]]></parameterDescription>
-		<defaultValueExpression><![CDATA[68735.50301]]></defaultValueExpression>
-	</parameter>
-	<parameter name="CompanyCity" class="java.lang.String">
-		<parameterDescription><![CDATA[Ciudad]]></parameterDescription>
-		<defaultValueExpression><![CDATA["Ciudad"]]></defaultValueExpression>
-	</parameter>
-	<queryString language="eFaps">
-		<![CDATA[print obj $P!{INSTANCE}
- select 
+    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
+    <import value="org.efaps.number2words.Converter"/>
+    <parameter name="INSTANCE" class="java.lang.Object">
+        <parameterDescription><![CDATA[Object Instance]]></parameterDescription>
+        <defaultValueExpression><![CDATA[68735.50301]]></defaultValueExpression>
+    </parameter>
+    <parameter name="CompanyCity" class="java.lang.String">
+        <parameterDescription><![CDATA[Ciudad]]></parameterDescription>
+        <defaultValueExpression><![CDATA["Ciudad"]]></defaultValueExpression>
+    </parameter>
+    <queryString language="eFaps">
+        <![CDATA[print obj $P!{INSTANCE}
+ select
  attribute[Name] as name,
  attribute[Date] as date,
  attribute[DueDate] as dueDate,
@@ -28,90 +29,90 @@
  linkto[Contact].class[Contacts_ClassLocation].attribute[LocationAdressCity] as contactAdressCity,
  linkfrom[Sales_Document2Document4Swap#ToAbstractLink].linkto[FromAbstractLink].attribute[Name] as swapName,
  linkfrom[Sales_Document2Document4Swap#ToAbstractLink].linkto[FromAbstractLink].type.label as swapType]]>
-	</queryString>
-	<field name="name" class="java.lang.String"/>
-	<field name="date" class="org.joda.time.DateTime"/>
-	<field name="dueDate" class="org.joda.time.DateTime"/>
-	<field name="crossTotal" class="java.math.BigDecimal"/>
-	<field name="revision" class="java.lang.String"/>
-	<field name="currencyName" class="java.lang.String"/>
-	<field name="currencySymbol" class="java.lang.String"/>
-	<field name="contactName" class="java.lang.String"/>
-	<field name="contactTaxNumber" class="java.lang.String"/>
-	<field name="contactAdressStreet" class="java.lang.String"/>
-	<field name="contactAdressCity" class="java.lang.String"/>
-	<field name="swapName" class="java.lang.String"/>
-	<field name="swapType" class="java.lang.String"/>
-	<pageHeader>
-		<band height="257" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="17" width="100" height="16" uuid="bdb93ddb-dd9a-4326-b288-626caf6bf5a0">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="180" y="17" width="90" height="16" uuid="cd155e30-58f7-4806-9cfa-ac5bdda59a82">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="350" y="17" width="80" height="16" uuid="2501fdf7-2c69-4040-a392-deea0bffd554"/>
-				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="270" y="17" width="80" height="16" uuid="84b3a52d-aa05-4f69-9f77-5ab9343e0606"/>
-				<textFieldExpression><![CDATA[$P{CompanyCity}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="470" y="17" width="100" height="16" uuid="c1e1ab8c-138f-4bdc-8c4d-b2f4eaa9e6db"/>
-				<box leftPadding="2"/>
-				<textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="450" y="17" width="20" height="16" uuid="8953fbcc-c817-4a20-8176-7eebe3b873a4"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="46" y="97" width="474" height="30" uuid="0482f72d-93a0-41d7-9804-0925d05e11f1"/>
-				<textFieldExpression><![CDATA[new StringBuilder().append(Converter.getMaleConverter(
+    </queryString>
+    <field name="name" class="java.lang.String"/>
+    <field name="date" class="org.joda.time.DateTime"/>
+    <field name="dueDate" class="org.joda.time.DateTime"/>
+    <field name="crossTotal" class="java.math.BigDecimal"/>
+    <field name="revision" class="java.lang.String"/>
+    <field name="currencyName" class="java.lang.String"/>
+    <field name="currencySymbol" class="java.lang.String"/>
+    <field name="contactName" class="java.lang.String"/>
+    <field name="contactTaxNumber" class="java.lang.String"/>
+    <field name="contactAdressStreet" class="java.lang.String"/>
+    <field name="contactAdressCity" class="java.lang.String"/>
+    <field name="swapName" class="java.lang.String"/>
+    <field name="swapType" class="java.lang.String"/>
+    <pageHeader>
+        <band height="257" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="17" width="100" height="16" uuid="bdb93ddb-dd9a-4326-b288-626caf6bf5a0">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement x="180" y="17" width="90" height="16" uuid="cd155e30-58f7-4806-9cfa-ac5bdda59a82">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement x="350" y="17" width="80" height="16" uuid="2501fdf7-2c69-4040-a392-deea0bffd554"/>
+                <textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="270" y="17" width="80" height="16" uuid="84b3a52d-aa05-4f69-9f77-5ab9343e0606"/>
+                <textFieldExpression><![CDATA[$P{CompanyCity}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement x="470" y="17" width="100" height="16" uuid="c1e1ab8c-138f-4bdc-8c4d-b2f4eaa9e6db"/>
+                <box leftPadding="2"/>
+                <textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="450" y="17" width="20" height="16" uuid="8953fbcc-c817-4a20-8176-7eebe3b873a4"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="46" y="97" width="474" height="30" uuid="0482f72d-93a0-41d7-9804-0925d05e11f1"/>
+                <textFieldExpression><![CDATA[new StringBuilder().append(Converter.getMaleConverter(
     new Locale("es")).convert($F{crossTotal}.longValue())).append(" y ")
     .append($F{crossTotal}.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString().replaceAll("^.*\\.", ""))
     .append("/100 ")
 .append($F{currencyName}).append("\n").toString().toUpperCase()]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="40" y="150" width="240" height="16" uuid="aa2ebace-f5d0-4ab7-892c-583c9566922a">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="40" y="166" width="240" height="16" uuid="53c0aedb-9b8e-4903-a123-4873281d2500">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$F{contactAdressStreet}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="40" y="196" width="240" height="16" uuid="caefa758-2e5d-46f1-9fda-d6e1341b63b3">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$F{contactAdressCity}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="40" y="230" width="100" height="16" uuid="a1b1dc5b-2e63-45ae-999b-f6b3749fa496">
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="100" y="17" width="80" height="30" uuid="f66799b6-9d8b-48dc-9308-0ea4d1781292"/>
-				<textFieldExpression><![CDATA[($F{revision} == null || $F{revision}.isEmpty()  ? "" :  $F{revision} + " ")
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="40" y="150" width="240" height="16" uuid="aa2ebace-f5d0-4ab7-892c-583c9566922a">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="40" y="166" width="240" height="16" uuid="53c0aedb-9b8e-4903-a123-4873281d2500">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$F{contactAdressStreet}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="40" y="196" width="240" height="16" uuid="caefa758-2e5d-46f1-9fda-d6e1341b63b3">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$F{contactAdressCity}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="40" y="230" width="100" height="16" uuid="a1b1dc5b-2e63-45ae-999b-f6b3749fa496">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="100" y="17" width="80" height="30" uuid="f66799b6-9d8b-48dc-9308-0ea4d1781292"/>
+                <textFieldExpression><![CDATA[($F{revision} == null || $F{revision}.isEmpty()  ? "" :  $F{revision} + " ")
 + ($F{swapType} == null ? "" :  $F{swapType} + " ")
 + ($F{swapName} == null ? "" :  $F{swapName})]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageHeader>
+            </textField>
+        </band>
+    </pageHeader>
 </jasperReport>
