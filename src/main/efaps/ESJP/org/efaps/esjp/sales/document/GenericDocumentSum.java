@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("f8bfc4be-139f-473f-9d5d-663b1047ed68")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class GenericDocumentSum
     extends GenericDocumentSum_Base
 {

@@ -29,6 +29,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base.ExportType;
+import org.efaps.util.EFapsException;
+
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -45,30 +61,14 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
-import org.efaps.admin.dbproperty.DBProperties;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
-import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base.ExportType;
-import org.efaps.util.EFapsException;
-
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("3dd895fe-c283-487b-9a27-e22aa81b7c67")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ConciliationReport_Base
 {
 
@@ -114,9 +114,9 @@ public abstract class ConciliationReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final List<DataBean> datasource = new ArrayList<DataBean>();
+            final List<DataBean> datasource = new ArrayList<>();
 
-            final Map<Instance, DataBean> values = new HashMap<Instance, DataBean>();
+            final Map<Instance, DataBean> values = new HashMap<>();
             _parameter.getCallInstance();
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.ConciliationPosition);
@@ -152,7 +152,7 @@ public abstract class ConciliationReport_Base
                 }
                 data.setPosition(posNumber);
                 data.setAmount(posAmount);
-                final Map<String, Object> map = new HashMap<String, Object>();
+                final Map<String, Object> map = new HashMap<>();
                 map.put("payAmount", amount);
                 map.put("payType", multi.getCurrentInstance().getType().getLabel());
                 map.put("payName", name);
@@ -302,7 +302,7 @@ public abstract class ConciliationReport_Base
     {
         private Integer position;
         private BigDecimal amount;
-        private final Collection<Map<String, Object>> positions = new ArrayList<Map<String, Object>>();
+        private final Collection<Map<String, Object>> positions = new ArrayList<>();
 
         /**
          * Getter method for the instance variable {@link #position}.

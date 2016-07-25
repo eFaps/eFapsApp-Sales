@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("1760816d-275c-4700-9b68-73189c10dfdb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class ReturnSlip extends ReturnSlip_Base
 {
 }

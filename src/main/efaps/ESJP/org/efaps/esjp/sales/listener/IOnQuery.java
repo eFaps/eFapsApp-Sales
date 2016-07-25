@@ -21,7 +21,7 @@
 package org.efaps.esjp.sales.listener;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
 import org.efaps.db.QueryBuilder;
@@ -33,10 +33,10 @@ import org.efaps.util.EFapsException;
  * against the eFaps Database like Autocompletes or MultiPrints.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("e7c522ee-861b-461b-afe7-1e9f1694da70")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public interface IOnQuery
     extends IEsjpListener
 {

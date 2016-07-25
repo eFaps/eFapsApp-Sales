@@ -14,10 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
  Original Author: Aha-Soft
  Original Name:   Calculator.png
  Original Web:    www.aha-soft.com
@@ -30,7 +26,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>622c707a-1e3f-44d3-a153-3a10111ee303</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TreasuryImg</name>

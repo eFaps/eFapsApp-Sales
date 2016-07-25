@@ -22,6 +22,6 @@
  * Classes belonging to the Comparative Tables mechanism and implementation.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 package org.efaps.esjp.sales.comparative;

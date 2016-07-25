@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("f3dea049-b17d-4380-af1a-4220c0f07f76")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PerceptionCertificate
     extends PerceptionCertificate_Base
 {

@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("facbae66-c23b-496a-81cb-71a41d045716")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class ComparativeReport
     extends ComparativeReport_Base
 {

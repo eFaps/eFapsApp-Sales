@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("873ddf05-8342-40ac-b1ac-17afe66c6f0c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class Costs
     extends Costs_Base
 {

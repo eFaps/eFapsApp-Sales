@@ -26,9 +26,8 @@ import java.io.File;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.util.EFapsException;
 
 
@@ -36,10 +35,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("016632e4-eef8-467f-9982-2d9c5b0f6507")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class QuoteRequest_Base
     extends AbstractProductDocument
 {

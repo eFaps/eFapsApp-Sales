@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: Account_Base.java 8120 2012-10-26 18:21:34Z jan@moxter.net $
  */
 @EFapsUUID("e04973c1-1095-4bd2-acb9-6ac2d125ad1a")
-@EFapsRevision("$Rev: 8120 $")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentRetentionReport
     extends PaymentRetentionReport_Base
 {

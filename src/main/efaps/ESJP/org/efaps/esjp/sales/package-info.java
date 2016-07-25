@@ -22,6 +22,6 @@
  * Base classes for the sales Package.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 package org.efaps.esjp.sales;

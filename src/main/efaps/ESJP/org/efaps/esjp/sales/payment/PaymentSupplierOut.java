@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -33,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  *          m.aranya@moxter.net $
  */
 @EFapsUUID("5e681b42-da48-477f-8658-942b069e7089")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentSupplierOut
     extends PaymentSupplierOut_Base
 {

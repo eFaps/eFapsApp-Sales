@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: Account.java 3449 2009-11-29 23:06:11Z tim.moxter $
  */
 @EFapsUUID("429b380d-5569-4bf0-981a-4d9d0ab38ee6")
-@EFapsRevision("$Rev: 3449 $")
+@EFapsApplication("eFapsApp-Sales")
 public class SalesProduct4ProviderReport
     extends SalesProduct4ProviderReport_Base
 {

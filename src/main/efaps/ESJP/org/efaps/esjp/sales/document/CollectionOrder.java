@@ -21,20 +21,20 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
  * class.
- * 
+ *
  * @author The eFaps Team
  * @version $Id: PaymentCheck.java 8100 2012-10-26 15:23:50Z m.aranya@moxter.net
  *          $
  */
 @EFapsUUID("34a9526c-d976-4589-abf8-8f4be2274a9c")
-@EFapsRevision("$Rev: 8100 $")
+@EFapsApplication("eFapsApp-Sales")
 public class CollectionOrder
     extends CollectionOrder_Base
 {

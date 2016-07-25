@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -33,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: ReturnUsageReport.java 10186 2013-09-12 11:41:31Z m.aranya@moxter.net $
  */
 @EFapsUUID("bba2774b-d078-4016-9ce6-3db8c7c48797")
-@EFapsRevision("$Rev: 10186 $")
+@EFapsApplication("eFapsApp-Sales")
 public class ServiceOrderOutbound
     extends ServiceOrderOutbound_Base
 {

@@ -25,7 +25,7 @@ import java.io.File;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
@@ -37,7 +37,7 @@ import org.efaps.util.EFapsException;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("7cb7cef0-52ce-4cf5-858c-b2ea77342ee4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentCash_Base
     extends AbstractPaymentIn
 {

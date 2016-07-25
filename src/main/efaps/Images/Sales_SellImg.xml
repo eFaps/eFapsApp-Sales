@@ -14,10 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
  Original Author: Aha-Soft
  Original Name:   3d bar chart.png
  Original Web:    www.aha-soft.com
@@ -29,8 +25,7 @@
 <ui-image xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6f4d7915-e9b1-4b71-ba6c-b5bb2dc11aef</uuid>
-    <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_SellImg</name>

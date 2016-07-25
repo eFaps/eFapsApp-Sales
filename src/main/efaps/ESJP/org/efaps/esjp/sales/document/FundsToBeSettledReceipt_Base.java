@@ -31,7 +31,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -57,10 +57,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("403479a4-9335-4fce-91ee-2c0f22cf525e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class FundsToBeSettledReceipt_Base
     extends AbstractDocumentSum
 {
@@ -178,7 +178,7 @@ public abstract class FundsToBeSettledReceipt_Base
                                                    final List<IWarning> _ret)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final boolean evaluatePositions = !"false".equalsIgnoreCase(getProperty(_parameter, "EvaluatePositions"));
         // first check the positions
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -242,8 +242,8 @@ public abstract class FundsToBeSettledReceipt_Base
     {
         final Return retVal = new Return();
         if (!evalDeducible(_parameter)) {
-            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final List<Map<String, Object>> list = new ArrayList<>();
+            final Map<String, Object> map = new HashMap<>();
             list.add(map);
             map.put(CIFormSales.Sales_FundsToBeSettledReceiptForm.name4create.name, "");
             map.put(CIFormSales.Sales_FundsToBeSettledReceiptForm.contactData.name, "");

@@ -20,20 +20,20 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
  * class.
- * 
+ *
  * @author The eFaps Team
  * @version $Id: PaymentExchangeOut.java 8221 2012-11-14 19:05:06Z
  *          m.aranya@moxter.net $
  */
 @EFapsUUID("915c4a8d-7307-43a6-89dd-2ceb1c83b441")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentDetractionOut
     extends PaymentDetractionOut_Base
 {

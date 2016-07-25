@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.comparative;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("17b749e4-4d3f-428b-a8e6-70c1a94bce19")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractComparativeContact
     extends AbstractComparativeContact_Base
 {

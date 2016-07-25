@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("c7e51aa8-d35e-4ee4-83e8-f23ce99c85af")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentCreditCard
     extends PaymentCreditCard_Base
 {

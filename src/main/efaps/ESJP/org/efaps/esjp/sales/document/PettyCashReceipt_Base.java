@@ -68,7 +68,7 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  */
 @EFapsUUID("9b1b92aa-550a-48d3-a58e-2c47e54802f9")
-@EFapsApplication("eFaspApp-Sales")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PettyCashReceipt_Base
     extends AbstractDocumentSum
 {
@@ -331,7 +331,7 @@ public abstract class PettyCashReceipt_Base
                                             final List<IWarning> _warnings)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         final boolean evaluatePositions = !"false".equalsIgnoreCase(getProperty(_parameter, "EvaluatePositions"));
         // first check the positions
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -414,8 +414,8 @@ public abstract class PettyCashReceipt_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         list.add(map);
         if (!evalDeducible(_parameter)) {
             map.put(CIFormSales.Sales_PettyCashReceiptForm.name4create.name, "");

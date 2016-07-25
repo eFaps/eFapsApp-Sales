@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("0968daa9-5b02-4cfa-a944-26d3784e3077")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentCash
     extends PaymentCash_Base
 {

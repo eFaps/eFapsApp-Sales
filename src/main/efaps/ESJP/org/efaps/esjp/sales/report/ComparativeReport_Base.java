@@ -28,24 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
-
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -58,15 +47,26 @@ import org.efaps.esjp.sales.comparative.ComparativeProvider;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
+
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("67ec3b10-e551-4bb3-b2a4-6df235e7583f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ComparativeReport_Base
 {
 
@@ -129,7 +129,7 @@ public abstract class ComparativeReport_Base
             throws EFapsException
         {
             final DRDataSource dataSource = new DRDataSource("type", "dimension", "link", "value", "comment");
-            final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+            final List<Map<String, String>> values = new ArrayList<>();
             final QueryBuilder queryBldr = new QueryBuilder(CISales.ComparativeDetailAbstract);
             queryBldr.addWhereAttrEqValue(CISales.ComparativeDetailAbstract.ComparativeAbstractLink,
                             _parameter.getInstance());
@@ -145,7 +145,7 @@ public abstract class ComparativeReport_Base
                             CISales.ComparativeDetailAbstract.AbstractStringValue);
             multi.execute();
             while (multi.next()) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 values.add(map);
                 final Type type = multi.getCurrentInstance().getType();
                 map.put("type", type.getLabel());

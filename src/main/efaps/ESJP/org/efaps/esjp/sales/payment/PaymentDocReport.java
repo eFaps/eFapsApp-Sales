@@ -20,19 +20,19 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
  * class.
- * 
+ *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("2acc77b6-8124-41e4-8194-43b69ec94365")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentDocReport
     extends PaymentDocReport_Base
 {

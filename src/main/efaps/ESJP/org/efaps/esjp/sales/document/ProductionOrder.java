@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -31,7 +31,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: ProductRequest_Base.java 10353 2013-10-02 23:30:42Z jan@moxter.net $
  */
 @EFapsUUID("5679cb10-faf3-4beb-abde-4d27aa3c7121")
-@EFapsRevision("$Rev: 10353 $")
+@EFapsApplication("eFapsApp-Sales")
 public class ProductionOrder
     extends ProductionOrder_Base
 {

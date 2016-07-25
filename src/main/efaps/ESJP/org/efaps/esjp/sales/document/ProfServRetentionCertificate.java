@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,10 +30,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("d5ab98ab-3936-4181-ad41-e75f11796263")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class ProfServRetentionCertificate
     extends ProfServRetentionCertificate_Base
 {

@@ -30,19 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
-import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
-import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -50,7 +37,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -72,16 +59,29 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
+import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 
 /**
  * Report used to analyze retention for documents
  * by grouping them by month and contact.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("7a7daab0-5142-4131-a782-81f59b68b68e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class RetentionReport_Base
     extends FilteredReport
 {
@@ -208,7 +208,7 @@ public abstract class RetentionReport_Base
 
             analyzePayments(_parameter, inst2bean);
 
-            final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
+            final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
             chain.addComparator(new Comparator<DocumentBean>() {
                     @Override
                     public int compare(final DocumentBean _o1,

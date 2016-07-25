@@ -20,8 +20,8 @@
 
 package org.efaps.esjp.fabrication;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsNoUpdate;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,10 +30,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * Projects App.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("27900cf3-6cc0-4a05-9e9c-1093f8530f58")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 @EFapsNoUpdate
 public class Process
 

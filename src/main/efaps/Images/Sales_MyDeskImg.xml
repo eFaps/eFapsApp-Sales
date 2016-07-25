@@ -14,11 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
  Original Author: Yusuke Kamiyamane.
  Original Name:   application-plus.png
  Original Web:    Fugue Icons
@@ -30,8 +25,7 @@
 <ui-image xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8e34630f-ed8d-41a6-8276-4b6894bccf76</uuid>
-    <file-application>eFapsApp-HumanResource</file-application>
-    <file-revision>$Rev$</file-revision>
+     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_MyDeskImg</name>

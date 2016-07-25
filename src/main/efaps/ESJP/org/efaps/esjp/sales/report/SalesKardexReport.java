@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("d825ecea-4f3b-4f62-9fe2-a118991bff52")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class SalesKardexReport
     extends SalesKardexReport_Base
 {

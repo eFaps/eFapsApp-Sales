@@ -26,7 +26,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CIProducts;
@@ -43,7 +43,7 @@ import org.efaps.util.EFapsException;
  *          sara.landa@efaps.org $
  */
 @EFapsUUID("791d92ae-bbf6-45c0-979e-bdcce5c48d50")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ReturnSlip_Base
     extends AbstractProductDocument
 {

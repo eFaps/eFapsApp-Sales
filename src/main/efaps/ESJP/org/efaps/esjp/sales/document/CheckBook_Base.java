@@ -32,7 +32,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -54,10 +54,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("f270918a-0c1c-4b83-b466-855412563b9d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class CheckBook_Base
     extends CommonDocument
 {
@@ -174,7 +174,7 @@ public abstract class CheckBook_Base
                                                   final List<Instance> _relInsts)
         throws EFapsException
     {
-        final Map<Instance, DocInfo> ret = new HashMap<Instance, DocInfo>();
+        final Map<Instance, DocInfo> ret = new HashMap<>();
         final MultiPrintQuery multi = new MultiPrintQuery(_relInsts);
         final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.CheckBook2PaymentCheckOut.ToLink);
         final SelectBuilder toInstSel = new SelectBuilder(toSel).instance();

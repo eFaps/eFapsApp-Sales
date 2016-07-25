@@ -18,12 +18,16 @@
 package org.efaps.esjp.sales.cashflow;
 
 import org.efaps.admin.datamodel.IEnum;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  */
+@EFapsUUID("248bf10e-7a2c-4f5f-b111-6022736b9227")
+@EFapsApplication("eFapsApp-Sales")
 public interface ICashFlowCategory
     extends IEnum
 {

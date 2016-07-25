@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("173bd968-c9ac-40b2-bdcd-2b80b3c168f6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class AccountCashDeskBookReport
     extends AccountCashDeskBookReport_Base
 {

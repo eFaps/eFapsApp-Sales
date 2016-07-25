@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: PaymentDocReport.java 8234 2012-11-22 23:41:57Z m.aranya@moxter.net $
  */
 @EFapsUUID("645a004b-6875-4d33-92a3-06b654393c7e")
-@EFapsRevision("$Rev: 8234 $")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentDocOutReport
     extends PaymentDocOutReport_Base
 {

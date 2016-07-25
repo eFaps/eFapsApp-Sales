@@ -29,7 +29,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  *          jan@moxter.net $
  */
 @EFapsUUID("7b8de4b0-eba3-4eb5-b98b-9546393d9334")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingProfServRetention_Base
     extends AbstractDocumentTax
 {

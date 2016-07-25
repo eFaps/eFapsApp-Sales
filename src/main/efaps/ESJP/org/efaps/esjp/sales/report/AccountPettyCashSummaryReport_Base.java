@@ -26,22 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -57,14 +47,24 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("8d44506c-09aa-42c7-aa66-b6c2216cb075")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AccountPettyCashSummaryReport_Base
     extends FilteredReport
 {
@@ -151,7 +151,7 @@ public abstract class AccountPettyCashSummaryReport_Base
                             .linkfrom(CISales.Document2DocumentType.DocumentLink)
                             .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(CIERP.DocumentType.Name);
 
-            final List<DataBean> datasource = new ArrayList<DataBean>();
+            final List<DataBean> datasource = new ArrayList<>();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();

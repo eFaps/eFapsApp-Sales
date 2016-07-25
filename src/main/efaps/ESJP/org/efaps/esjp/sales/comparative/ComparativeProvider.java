@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.comparative;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("1bd8cd9b-61dc-4ae9-8f1c-072362743992")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class ComparativeProvider
     extends  ComparativeProvider_Base
 {

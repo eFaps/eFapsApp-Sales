@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * This is necessary to be able to use it from any triggers.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("bdb7b256-d5c9-4099-9c96-2f4563820ac4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class GenericDocumentSum_Base
     extends AbstractDocumentSum
 {

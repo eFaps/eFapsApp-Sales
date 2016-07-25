@@ -20,16 +20,16 @@
 
 package org.efaps.esjp.sales.listener;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.util.EFapsException;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
 
 /**
  * Contains methods that are executed during the process of executing queries
@@ -40,7 +40,7 @@ import org.efaps.util.EFapsException;
  *          jan@moxter.net $
  */
 @EFapsUUID("b7b529ac-e62d-4efd-8db5-01c69ead37ad")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public interface IOnDocumentSumReport
     extends IEsjpListener
 {
