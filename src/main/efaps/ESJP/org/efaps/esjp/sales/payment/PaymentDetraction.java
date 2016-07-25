@@ -20,20 +20,20 @@
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
  * class.
- * 
+ *
  * @author The eFaps Team
  * @version $Id: PaymentCreditCard.java 8169 2012-11-07 02:50:08Z jan@moxter.net
  *          $
  */
 @EFapsUUID("59482d33-8c5c-459c-b131-e0fca17e9a17")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentDetraction
     extends PaymentDetraction_Base
 {

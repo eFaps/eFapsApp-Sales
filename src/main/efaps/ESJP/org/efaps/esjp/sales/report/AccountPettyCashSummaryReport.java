@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("da3fab56-b862-4c26-9e6b-22519841f04e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class AccountPettyCashSummaryReport
     extends AccountPettyCashSummaryReport_Base
 {

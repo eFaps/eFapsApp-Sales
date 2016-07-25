@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("0b40b5cc-90b7-4964-b799-58972a7d21eb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class IncomingProfServInsurance
     extends IncomingProfServInsurance_Base
 {

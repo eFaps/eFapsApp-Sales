@@ -29,17 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-import net.sf.jasperreports.engine.JRDataSource;
-
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -48,7 +37,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -65,6 +54,17 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.jasperreports.engine.JRDataSource;
+
 /**
  * TODO comment!
  *
@@ -72,7 +72,7 @@ import org.joda.time.DateTime;
  * @version $Id: Account_Base.java 8120 2012-10-26 18:21:34Z jan@moxter.net $
  */
 @EFapsUUID("5b06c70e-9409-4015-871c-7b2d45acad4c")
-@EFapsRevision("$Rev: 8120 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class SalesProduct4ProviderReport_Base
 {
 
@@ -144,7 +144,7 @@ public abstract class SalesProduct4ProviderReport_Base
             final DRDataSource dataSource = new DRDataSource("document", "currency", "contact", "date", "quantity",
                             "netPrice", "contactInst", "productInst", "productName", "productDesc", "productNameDesc");
 
-            final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
+            final List<Map<String, Object>> lst = new ArrayList<>();
             for (final String type : types) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
                 attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
@@ -189,7 +189,7 @@ public abstract class SalesProduct4ProviderReport_Base
                                 selCurSymbol, selProductInst, selProductName, selProductDesc);
                 multi.execute();
                 while (multi.next()) {
-                    final Map<String, Object> map = new HashMap<String, Object>();
+                    final Map<String, Object> map = new HashMap<>();
                     final Instance productInst = multi.<Instance>getSelect(selProductInst);
                     final String productName = multi.<String>getSelect(selProductName);
                     final String productDesc = multi.<String>getSelect(selProductDesc);
@@ -344,7 +344,7 @@ public abstract class SalesProduct4ProviderReport_Base
             final DRDataSource dataSource = new DRDataSource("document", "currency", "contact", "date", "quantity",
                             "netPrice", "contactInst", "productInst", "productName", "productDesc", "productNameDesc");
 
-            final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
+            final List<Map<String, Object>> lst = new ArrayList<>();
             for (final String type : types) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
                 attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
@@ -389,7 +389,7 @@ public abstract class SalesProduct4ProviderReport_Base
                                 selCurSymbol, selProductInst, selProductName, selProductDesc);
                 multi.execute();
                 while (multi.next()) {
-                    final Map<String, Object> map = new HashMap<String, Object>();
+                    final Map<String, Object> map = new HashMap<>();
                     final Instance productInst = multi.<Instance>getSelect(selProductInst);
                     final String productName = multi.<String>getSelect(selProductName);
                     final String productDesc = multi.<String>getSelect(selProductDesc);

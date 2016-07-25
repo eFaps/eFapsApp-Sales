@@ -20,17 +20,17 @@
 
 package org.efaps.esjp.sales;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * Contains method to calculate the costs for products.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("586c03e5-1e3e-41ec-852d-6bca23559f2d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Costs_Base
 {
 }

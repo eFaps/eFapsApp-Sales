@@ -21,8 +21,8 @@
 package org.efaps.esjp.projects;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsNoUpdate;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 
@@ -32,10 +32,10 @@ import org.efaps.db.Instance;
  * Projects App.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("7bc8c88f-64c3-402d-aed9-1ad0d93f5437")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 @EFapsNoUpdate
 public class Project
 {

@@ -26,7 +26,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("4b82cfd8-2332-481c-9f93-84e47d32db08")
-@EFapsApplication("efapsApp-Sales")
+@EFapsApplication("eFapsApp-Sales")
 public class Channel
     extends Channel_Base
 {

@@ -24,7 +24,7 @@ package org.efaps.esjp.sales.listener;
 import java.util.List;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
 import org.efaps.db.Instance;
@@ -36,10 +36,10 @@ import org.efaps.util.EFapsException;
  * a document from a document.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("ad2f45c6-a34f-4cbd-8e57-de16069ae8bf")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public interface IOnCreateFromDocument
     extends IEsjpListener
 {

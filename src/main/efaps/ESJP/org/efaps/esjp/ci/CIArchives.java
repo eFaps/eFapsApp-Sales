@@ -20,17 +20,19 @@
 
 package org.efaps.esjp.ci;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsNoUpdate;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
-import org.efaps.esjp.ci.CIArchives._Document2ArchiveAbstract;
-import org.efaps.esjp.ci.CIArchives._Object2ArchiveAbstract;
 
 /**
  * This class is only used in case that the Archive App is not installed
  * to be able to compile the classes.
  * @author The eFaps Team
  */
+@EFapsUUID("00a820bd-d8c1-48c6-a97c-9048f27fd061")
+@EFapsApplication("eFapsApp-Sales")
 @EFapsNoUpdate
 public final class CIArchives
 {

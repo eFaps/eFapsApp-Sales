@@ -34,12 +34,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -69,13 +68,13 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id: Account_Base.java 8120 2012-10-26 18:21:34Z jan@moxter.net $
  */
 @EFapsUUID("e04973c1-1095-4be3-adb9-6ac2d125ad0a")
-@EFapsRevision("$Rev: 8120 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentRetentionReport_Base
     extends EFapsMapDataSource
 {
     public static final String format = "0626";
 
-    public static final Map<UUID, String> typeMap = new HashMap<UUID, String>();
+    public static final Map<UUID, String> typeMap = new HashMap<>();
     static {
         typeMap.put(CISales.IncomingInvoice.uuid, "01");
         typeMap.put(CISales.IncomingCreditNote.uuid, "07");
@@ -190,7 +189,7 @@ public abstract class PaymentRetentionReport_Base
                      final Map<String, Object> _jrParameters)
         throws EFapsException
     {
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> values = new ArrayList<>();
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
 
@@ -219,7 +218,7 @@ public abstract class PaymentRetentionReport_Base
         multi.addSelect(selContact, selDocNumDni, selDocNumRuc, selCrossTotal, selDate);
         multi.execute();
         while (multi.next()) {
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<>();
             final String contactName = multi.<String>getSelect(selContact);
             String docNum = multi.<String>getSelect(selDocNumRuc);
             String docType = PaymentRetentionReport_Base.DocIdentType.RUC.getKey();
@@ -333,12 +332,12 @@ public abstract class PaymentRetentionReport_Base
             protected File getEmptyFile4TextReport()
                 throws EFapsException
             {
-                final SystemConfiguration erpConfig = ERP.getSysConfig();
+                ERP.getSysConfig();
                 final String companyNumber = ERP.COMPANYTAX.get();
                 final String dateFrom = _parameter.getParameterValue("dateFrom");
                 final String dateTo = _parameter.getParameterValue("dateTo");
                 final DateTime from = new DateTime(dateFrom);
-                final DateTime to = new DateTime(dateTo);
+                new DateTime(dateTo);
                 final String name = buildName4TextReport(format, "" + from.getYear(),
                                 "" + from.getMonthOfYear(), companyNumber);
                 final File file = new FileUtil().getFile(name, "TXT");
@@ -395,7 +394,7 @@ public abstract class PaymentRetentionReport_Base
             protected List<List<Object>> createDataSource(final Parameter _parameter)
                 throws EFapsException
             {
-                final List<List<Object>> lst = new ArrayList<List<Object>>();
+                final List<List<Object>> lst = new ArrayList<>();
 
 
                 final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
@@ -446,10 +445,10 @@ public abstract class PaymentRetentionReport_Base
                                 selCrossTotal, selTargetDocDate, selCreateDocName, selTargetDocName,
                                 selDocPersFLName, selDocPersSLName, selDocPersFName, selRateCurInst);
                 multi.execute();
-                final List<Map<String, Object>> lstMap = new ArrayList<Map<String, Object>>();
-                final Map<String, BigDecimal> totalMap = new HashMap<String, BigDecimal>();
+                final List<Map<String, Object>> lstMap = new ArrayList<>();
+                final Map<String, BigDecimal> totalMap = new HashMap<>();
                 while (multi.next()) {
-                    final Map<String, Object> map = new HashMap<String, Object>();
+                    final Map<String, Object> map = new HashMap<>();
 
                     String contactName = multi.<String>getSelect(selContact);
                     final String firstLastName = multi.<String>getSelect(selDocPersFLName);
@@ -555,7 +554,7 @@ public abstract class PaymentRetentionReport_Base
                     final BigDecimal tot = totalMap.get(docN + "_" + retVouName.toString());
                     map.put(PaymentRetentionReport_Base.Field.TOTALAMOUNT.getKey(), tot);
 
-                    final List<Object> rowLst = new ArrayList<Object>();
+                    final List<Object> rowLst = new ArrayList<>();
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.DOCNUM.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.COMPANYNAME.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.LASTNAME.getKey()));

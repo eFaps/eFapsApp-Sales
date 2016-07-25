@@ -23,16 +23,16 @@ package org.efaps.esjp.sales.report;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.util.EFapsException;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
 
 /**
  * TODO comment!
@@ -42,7 +42,7 @@ import org.efaps.util.EFapsException;
  *          m.aranya@moxter.net $
  */
 @EFapsUUID("6678c3f1-8076-4e04-8ef5-02d0924aefc0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class SalesKardexMultipleReport_Base
     extends SalesKardexReport
 {

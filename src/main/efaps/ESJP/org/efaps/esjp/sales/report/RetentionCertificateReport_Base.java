@@ -27,17 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
-
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Checkin;
@@ -57,6 +52,11 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
+
 /**
  * Report used to analyze retention for documents by grouping them by month and
  * contact.
@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  *          m.aranya@moxter.net $
  */
 @EFapsUUID("b02e955e-4cb7-4c01-bec0-4bc69a8f8789")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class RetentionCertificateReport_Base
     extends FilteredReport
 {
@@ -229,7 +229,7 @@ public abstract class RetentionCertificateReport_Base
         protected Object[] getInstances(final Parameter _parameter)
             throws EFapsException
         {
-            final List<Instance> listInstances = new ArrayList<Instance>();
+            final List<Instance> listInstances = new ArrayList<>();
             if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
                 listInstances.add(_parameter.getInstance());
             } else {

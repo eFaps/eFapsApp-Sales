@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("247c3274-7b27-4e1e-b0cc-0b3a3b54261b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class IncomingPerceptionCertificate
     extends IncomingPerceptionCertificate_Base
 {

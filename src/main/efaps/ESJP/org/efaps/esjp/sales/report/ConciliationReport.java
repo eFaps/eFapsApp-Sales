@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("3ce82ab7-14c7-4ff5-a3c6-5091ff0bdf3e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class ConciliationReport
     extends ConciliationReport_Base
 {

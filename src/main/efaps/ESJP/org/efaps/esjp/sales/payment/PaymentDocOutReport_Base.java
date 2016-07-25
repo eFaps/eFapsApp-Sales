@@ -31,7 +31,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -60,7 +60,7 @@ import net.sf.jasperreports.engine.JasperReport;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("a79e177d-ec60-4718-a4e1-c1e829bf20e9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentDocOutReport_Base
     extends EFapsMapDataSource
 {
@@ -109,7 +109,7 @@ public abstract class PaymentDocOutReport_Base
         while (multi.next()) {
             final Instance rateCurDocInst = multi.<Instance>getSelect(selRateCurInst);
             final Object[] ratesDoc = multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<>();
 
             final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Payment);
             queryBldr2.addWhereAttrEqValue(CISales.Payment.CreateDocument, multi.getCurrentInstance());
@@ -122,7 +122,7 @@ public abstract class PaymentDocOutReport_Base
             multi2.addSelect(selRatePay, selRateCurPayInst);
             multi2.execute();
 
-            final List<PaymentOut> lstPayDocs = new ArrayList<PaymentOut>();
+            final List<PaymentOut> lstPayDocs = new ArrayList<>();
             while (multi2.next()) {
                 final Instance rateCurPayInst = multi2.<Instance>getSelect(selRateCurPayInst);
                 final Object[] rate4Pay = multi2.<Object[]>getSelect(selRatePay);

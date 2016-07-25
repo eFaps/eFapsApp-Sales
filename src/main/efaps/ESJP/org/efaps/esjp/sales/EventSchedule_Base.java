@@ -64,7 +64,7 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsApplication("eFapsApp-Sales")

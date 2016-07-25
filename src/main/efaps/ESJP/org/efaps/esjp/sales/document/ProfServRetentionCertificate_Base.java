@@ -22,7 +22,7 @@ package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.QueryBuilder;
@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  *          jan@moxter.net $
  */
 @EFapsUUID("22d97ba9-4b62-4d98-b2a4-3061308e5985")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ProfServRetentionCertificate_Base
     extends AbstractDocumentSum
 {

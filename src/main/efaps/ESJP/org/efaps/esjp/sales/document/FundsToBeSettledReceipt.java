@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("452b70ec-44ac-4db4-898e-a9b1d12fb5f2")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class FundsToBeSettledReceipt
     extends FundsToBeSettledReceipt_Base
 {

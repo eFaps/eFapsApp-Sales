@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: IncomingExchange.java 10815 2013-11-08 03:05:35Z jan@moxter.net $
  */
 @EFapsUUID("cb427e94-5e68-48e1-b7a1-1d960ce46101")
-@EFapsRevision("$Rev: 10815 $")
+@EFapsApplication("eFapsApp-Sales")
 public class IncomingCredit
     extends IncomingCredit_Base
 {

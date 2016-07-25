@@ -50,7 +50,7 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  */
 @EFapsUUID("4541b746-f653-46d8-b066-9aea7e111766")
-@EFapsApplication("efapsApp-Sales")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Channel_Base
     extends CommonDocument
 {

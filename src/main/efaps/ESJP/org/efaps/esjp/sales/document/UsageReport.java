@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("f3252401-2007-4ff3-997d-5e5d1a7ab863")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class UsageReport
     extends UsageReport_Base
 {

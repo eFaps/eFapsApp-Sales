@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("d327ca01-e080-448b-99f9-de105418dd5f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class RetentionCertificate
     extends RetentionCertificate_Base
 {

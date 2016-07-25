@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,10 +30,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("82a58ea9-9153-4f6c-8558-d5a226de15a1")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class IncomingProfServRetention
     extends IncomingProfServRetention_Base
 {

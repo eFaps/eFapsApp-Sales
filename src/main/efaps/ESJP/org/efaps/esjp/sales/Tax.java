@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFasp Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("9d760033-3a06-4ef9-ac90-c67fa03c04a6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 @Deprecated
 public class Tax extends Tax_Base
 {

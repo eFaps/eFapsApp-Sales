@@ -26,7 +26,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -43,10 +43,10 @@ import org.joda.time.LocalDate;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("0c3a91e2-1497-423f-ae60-a0ae94e95451")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 @Deprecated
 public abstract class Tax_Base
     implements CacheObjectInterface
@@ -72,7 +72,7 @@ public abstract class Tax_Base
     /**
      * map of dates to rate.
      */
-    private final Map<DateTime, TaxRate> rateMap = new TreeMap<DateTime, TaxRate>();
+    private final Map<DateTime, TaxRate> rateMap = new TreeMap<>();
 
     /**
      * @param _oid      oid of this tax

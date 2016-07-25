@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("5eaccc41-8c6f-4cb0-99da-4265b80a5646")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class RetentionReport
     extends RetentionReport_Base
 {

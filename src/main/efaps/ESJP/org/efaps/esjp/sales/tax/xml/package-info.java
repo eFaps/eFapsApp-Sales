@@ -22,6 +22,6 @@
  * Xml and JAxb classes.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 package org.efaps.esjp.sales.tax.xml;

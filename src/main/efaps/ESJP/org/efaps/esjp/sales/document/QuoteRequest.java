@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("ea75197b-0e89-44f7-b1e7-d90b36f67caa")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class QuoteRequest
     extends QuoteRequest_Base
 {

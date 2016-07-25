@@ -17,12 +17,16 @@
 
 package org.efaps.esjp.sales.cashflow;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  */
+@EFapsUUID("9063d4d0-f264-4a3e-aa2e-6cf129787be6")
+@EFapsApplication("eFapsApp-Sales")
 public enum CashFlowCategory
     implements ICashFlowCategory
 {

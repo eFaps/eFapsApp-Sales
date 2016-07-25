@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("0acc9643-a76f-4af8-91e8-daa1a28e4a79")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class OrderOutbound extends OrderOutbound_Base
 {
 

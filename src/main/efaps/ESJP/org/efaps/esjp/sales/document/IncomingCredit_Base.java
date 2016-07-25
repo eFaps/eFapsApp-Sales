@@ -23,7 +23,7 @@ package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
@@ -35,7 +35,7 @@ import org.efaps.util.EFapsException;
  * @version $Id: IncomingExchange_Base.java 10816 2013-11-08 15:51:06Z jan@moxter.net $
  */
 @EFapsUUID("005e56a5-61da-405d-8a9f-d7fdfb924749")
-@EFapsRevision("$Rev: 10816 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingCredit_Base
     extends AbstractSumOnlyDocument
 {

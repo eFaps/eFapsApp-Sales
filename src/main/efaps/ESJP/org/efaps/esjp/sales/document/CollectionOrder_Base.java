@@ -23,7 +23,7 @@ package org.efaps.esjp.sales.document;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
@@ -35,7 +35,7 @@ import org.efaps.util.EFapsException;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("771297ac-8d56-42f6-a1ed-fa573b42698e")
-@EFapsRevision("$Rev: 8180 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class CollectionOrder_Base
     extends AbstractDocumentSum
 {

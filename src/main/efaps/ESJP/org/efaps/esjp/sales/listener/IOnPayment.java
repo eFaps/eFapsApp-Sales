@@ -21,7 +21,7 @@
 package org.efaps.esjp.sales.listener;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
 import org.efaps.esjp.common.listener.ITypedClass;
@@ -32,10 +32,10 @@ import org.efaps.util.EFapsException;
  * Basic listener methods belonging to PaymentDocuments.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("276db4b2-dc1c-4b25-8ddb-8311e0f066f4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public interface IOnPayment
     extends IEsjpListener
 {

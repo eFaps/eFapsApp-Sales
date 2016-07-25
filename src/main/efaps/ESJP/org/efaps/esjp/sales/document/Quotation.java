@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("18cf4ce4-fda3-420e-b864-01da4b79a3f6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class Quotation extends Quotation_Base
 {
 }

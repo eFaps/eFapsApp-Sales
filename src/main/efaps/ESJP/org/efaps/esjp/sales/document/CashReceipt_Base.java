@@ -22,7 +22,7 @@ package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
@@ -33,7 +33,7 @@ import org.efaps.util.EFapsException;
  * @version $Id: CashReceipt_Base.java 6430 2011-04-19 18:44:28Z jorge.cueva@moxter.net $
  */
 @EFapsUUID("f084c0b4-dcb0-4ae4-b84e-1841f0ea13ca")
-@EFapsRevision("$Rev: 1$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class CashReceipt_Base
     extends AbstractDocumentSum
 {

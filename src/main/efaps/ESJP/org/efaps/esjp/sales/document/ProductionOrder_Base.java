@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
 */
 @EFapsUUID("3ad10108-9a89-4c51-a99d-c22c2127cdb0")
-@EFapsApplication("eFapsApp-Sales$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ProductionOrder_Base
     extends AbstractProductDocument
 {

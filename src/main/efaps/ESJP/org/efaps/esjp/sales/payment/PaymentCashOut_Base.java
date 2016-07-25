@@ -25,7 +25,7 @@ import java.io.File;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
@@ -37,7 +37,7 @@ import org.efaps.util.EFapsException;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("e9e82cc6-1f0d-44a5-9c06-88f8ff3f4d11")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentCashOut_Base
     extends AbstractPaymentOut
 {

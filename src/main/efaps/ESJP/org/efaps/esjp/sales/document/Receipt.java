@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,10 +29,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
 @EFapsUUID("37a75dcf-4a19-4f94-aea5-40fdbb4b847c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class Receipt extends Receipt_Base
 {
 }
