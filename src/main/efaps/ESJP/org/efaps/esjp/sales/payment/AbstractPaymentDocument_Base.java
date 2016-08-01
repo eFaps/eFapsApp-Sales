@@ -494,8 +494,16 @@ public abstract class AbstractPaymentDocument_Base
         final Map<String, Object> ret = new HashMap<>();
 
         final DecimalFormat frmt = _docInfo.getFormatter();
-        final BigDecimal total4Doc = _docInfo.getCrossTotal4Target();
-        final BigDecimal payments4Doc = _docInfo.getPaid4Target();
+        final BigDecimal total4Doc;
+        final BigDecimal payments4Doc;
+        if (_docInfo.getRateCurrencyInstance().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
+            total4Doc = _docInfo.getRateCrossTotal();
+            payments4Doc = _docInfo.getRatePaid();
+        } else {
+            total4Doc = _docInfo.getCrossTotal4Target();
+            payments4Doc = _docInfo.getPaid4Target();
+        }
+
         final BigDecimal amount4PayDoc;
         final BigDecimal paymentDiscount;
         final BigDecimal paymentAmountDesc;
@@ -619,7 +627,7 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> list = new ArrayList<>();
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Map<String, Object> map = getPositionUpdateMap(_parameter, docInstance, false);
@@ -841,7 +849,7 @@ public abstract class AbstractPaymentDocument_Base
 
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
 
         final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
@@ -900,7 +908,7 @@ public abstract class AbstractPaymentDocument_Base
             if (showRevision) {
                 choice.append(" - ").append(revision);
             }
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
@@ -931,7 +939,7 @@ public abstract class AbstractPaymentDocument_Base
                 throws EFapsException
             {
                 final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
-                final List<AccountCDActivation> pactivt = new ArrayList<AccountCDActivation>();
+                final List<AccountCDActivation> pactivt = new ArrayList<>();
                 for (final String activation : activations.values()) {
                     final AccountCDActivation pDAct = AccountCDActivation.valueOf(activation);
                     pactivt.add(pDAct);
@@ -955,8 +963,8 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4AbsoluteAmount(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final Return retVal = new Return();
         final BigDecimal amount2Pay = getAmount4Pay(_parameter).abs();
         map.put("amount", NumberFormatter.get().getTwoDigitsFormatter().format(amount2Pay));
@@ -1010,8 +1018,8 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4PaymentDiscount(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final int selected = getSelectedRow(_parameter);
         final String amountStr = _parameter.getParameterValues("payment4Pay")[selected];
         final String discountStr = _parameter.getParameterValues("paymentDiscount")[selected];
@@ -1074,8 +1082,8 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4PaymentAmount(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
@@ -1191,7 +1199,7 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4RateCurrency(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(),
                         _parameter.getParameterValue("account"));
         print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
@@ -1202,7 +1210,7 @@ public abstract class AbstractPaymentDocument_Base
 
         final Instance baseInst = Currency.getBaseCurrency();
 
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
         map.put("rate", NumberFormatter.get().getFormatter(0, 3).format(rates[3]));
         map.put("rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0));
@@ -1223,8 +1231,8 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4Position(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final StringBuilder js = new StringBuilder();
         js.append(getTableRemoveScript(_parameter, getTableName(_parameter)));
 
@@ -1662,7 +1670,7 @@ public abstract class AbstractPaymentDocument_Base
         BigDecimal restAmount = getAmount4Pay(_parameter);
         BigDecimal sumPayments = BigDecimal.ZERO;
         final List<Instance> instances = getDocInstances(_parameter);
-        final List<Instance> instances2Print = new ArrayList<Instance>();
+        final List<Instance> instances2Print = new ArrayList<>();
 
         for (final Instance inst : instances) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
@@ -1728,12 +1736,12 @@ public abstract class AbstractPaymentDocument_Base
         final StringBuilder js = new StringBuilder();
         js.append(getTableRemoveScript(_parameter, "paymentTable"));
 
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> values = new ArrayList<>();
 
         int index = 0;
         boolean lastPos = false;
         for (final Instance payment : _instancesList) {
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<>();
             values.add(map);
             if (_instancesList.size() == index + 1) {
                 lastPos = true;
@@ -1854,7 +1862,7 @@ public abstract class AbstractPaymentDocument_Base
     protected List<Instance> getDocInstances(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Instance> instances = new ArrayList<Instance>();
+        final List<Instance> instances = new ArrayList<>();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final Instance contactInst = null;
 
@@ -1874,7 +1882,7 @@ public abstract class AbstractPaymentDocument_Base
                     if (props.containsKey("StatusGroup" + i)) {
                         final String statiStr = String.valueOf(props.get("Stati" + i));
                         final String[] statiAr = statiStr.split(";");
-                        final List<Object> statusList = new ArrayList<Object>();
+                        final List<Object> statusList = new ArrayList<>();
                         for (final String stati : statiAr) {
                             final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
                             if (status != null) {
@@ -1890,7 +1898,7 @@ public abstract class AbstractPaymentDocument_Base
             }
         }
 
-        final List<Long> listIds = new ArrayList<Long>();
+        final List<Long> listIds = new ArrayList<>();
         for (final Instance instanceAux : instances) {
             listIds.add(instanceAux.getId());
         }
@@ -1923,8 +1931,8 @@ public abstract class AbstractPaymentDocument_Base
 
         final Instance selectDoc = Instance.get(_parameter.getParameterValue("name"));
 
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         if (selectDoc.isValid()) {
             final SelectBuilder selContact = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact);
             final SelectBuilder selContactOid = new SelectBuilder(selContact).oid();
