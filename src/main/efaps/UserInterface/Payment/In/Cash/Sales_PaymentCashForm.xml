@@ -144,6 +144,10 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Columns">8</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
+                method="getRateFieldValue"
+                name="Sales_PaymentCashForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>

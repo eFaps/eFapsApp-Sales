@@ -153,6 +153,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="getRateFieldValue"
+                name="Sales_PaymentDetractionOutForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>

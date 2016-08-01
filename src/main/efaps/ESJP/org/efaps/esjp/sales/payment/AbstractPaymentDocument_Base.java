@@ -33,12 +33,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -46,6 +49,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIAttribute;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
@@ -66,6 +70,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
@@ -75,6 +80,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -1188,6 +1194,53 @@ public abstract class AbstractPaymentDocument_Base
         return ret == null ? BigDecimal.ZERO : ret;
     }
 
+    /**
+     * On opening the form it must be checked if an accaount in different
+     * currency is selected and therfor thwe rate must be set.
+     *
+     * @param _parameter the parameter
+     * @return the rate field value
+     * @throws EFapsException the e faps exception
+     */
+    public Return getRateFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Field accField = uiValue.getField().getCollection().getField("account");
+        final Map<String, String> propertyMap = accField.getEvents(EventType.UI_FIELD_VALUE).get(0).getPropertyMap();
+        final Parameter parameter = ParameterUtil.clone(_parameter);
+        for (final Entry<String, String> entry : propertyMap.entrySet()) {
+            ParameterUtil.setProperty(parameter, entry.getKey(), entry.getValue());
+        }
+
+        final Return retTmp = dropDown4AccountFieldValue(parameter);
+        @SuppressWarnings("unchecked")
+        final List<DropDownPosition> options = (List<DropDownPosition>) retTmp.get(ReturnValues.VALUES);
+        boolean first = true;
+        for (final DropDownPosition pos : options) {
+            if (first || pos.isSelected()) {
+                final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(),
+                                String.valueOf(pos.getValue()));
+                final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.AccountCashDesk.CurrencyLink)
+                                .instance();
+                print.addSelect(selCurInst);
+                print.execute();
+                final Instance curInstance = print.getSelect(selCurInst);
+
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, new DateTime(), curInstance);
+                final Object[] rateObj = rateInfo.getRateObject();
+                final Object[] ratesTmp = ArrayUtils.add(rateObj, curInstance.getId());
+                ret.put(ReturnValues.VALUES, ratesTmp);
+                if (first) {
+                    first = false;
+                } else {
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
 
     /**
      * Update fields4 rate currency.
@@ -1266,18 +1319,6 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         return new Contacts().updateFields4Contact(_parameter);
-    }
-
-    /**
-     * Method to get a formater.
-     *
-     * @return a formater
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getZeroDigitsformater()
-        throws EFapsException
-    {
-        return NumberFormatter.get().getZeroDigitsFormatter();
     }
 
     /**
