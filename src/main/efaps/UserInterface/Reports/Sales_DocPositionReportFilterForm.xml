@@ -112,6 +112,24 @@
                 program="org.efaps.esjp.sales.report.DocPositionReport">
             </trigger>
         </field>
+        <field name="product">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.product</property>
+             <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
+                name="Sales_DocPositionReportFilterForm.product.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="Products_ProductAbstract_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
+                name="Sales_DocPositionReportFilterForm.product.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.products.Product">
+                <property name="AutoType">TOKEN</property>
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.report.DocPositionReport.ProductAutoComplete</property>
+            </trigger>
+        </field>
         <field name="bom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>

@@ -325,22 +325,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute DOCPOSREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.DocPositionReport")
-                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05")
-                    .addDefaultValue("productType.Type01", CIProducts.StoreableProductAbstract.getType().getName())
-                    .addDefaultValue("productType.Type02", CIProducts.UnstoreableProductAbstract.getType().getName());
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute DOCPOSREPORTBOM = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.DocPositionReport.ActivateBOM")
-                    .description("Activate the Company Independent Reports.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCPOSCOSTREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocPositionCostReport")
@@ -1271,6 +1255,29 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.CarrierReport.Activate")
                     .description("Activate the CarrierReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_DOCPOS = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport")
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05")
+                    .addDefaultValue("productType.Type01", CIProducts.StoreableProductAbstract.getType().getName())
+                    .addDefaultValue("productType.Type02", CIProducts.UnstoreableProductAbstract.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_DOCPOS_BOM = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport.ActivateBOM")
+                    .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_DOCPOS_PRODAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport.ProductAutoComplete")
+                    .description("Properties to define the autocomplete for products");
 
     /** See description. */
     @EFapsSysConfAttribute

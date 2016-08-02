@@ -286,7 +286,7 @@ public abstract class DocPositionReport_Base
             }
         }
         if (MapUtils.isEmpty(ret)) {
-            ret = Sales.DOCPOSREPORT.get();
+            ret = Sales.REPORT_DOCPOS.get();
         }
         if ("productType".equals(_fieldName)) {
             ret = getProperties4Prefix(ret, "productType", true);
@@ -352,6 +352,13 @@ public abstract class DocPositionReport_Base
                 }
                 _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                 queryBldr.getAttributeQuery(CIProducts.ProductAbstract.ID));
+            }
+        }
+
+        if (filterMap.containsKey("product")) {
+            final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filterMap.get("product");
+            if (filterValue != null && CollectionUtils.isNotEmpty(filterValue.getObject())) {
+                _queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.Product, filterValue.getObject().toArray());
             }
         }
     }
