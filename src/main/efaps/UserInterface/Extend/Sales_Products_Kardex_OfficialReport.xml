@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3460a573-b8fd-4010-b2b1-d093d1aacee8</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_Kardex_OfficialReport</name>
@@ -31,12 +27,16 @@
         </access>
         <target>
             <form>Sales_Products_Kardex_OfficialReportForm</form>
-            <execute program="org.efaps.esjp.sales.report.SalesKardexReport" method="createReport">
+            <execute program="org.efaps.esjp.sales.report.SalesKardexReport"
+                method="createReport">
                 <property name="JasperReport">Sales_Products_KardexOfficial</property>
                 <property name="DataSourceClass">org.efaps.esjp.sales.report.SalesKardexReport</property>
                 <property name="Mime">xls</property>
             </execute>
         </target>
+        <parents>
+            <parent>Products_KardexMyDesk</parent>
+        </parents>
         <property name="Target">modal</property>
         <property name="TargetShowFile">true</property>
         <property name="TargetMode">create</property>
