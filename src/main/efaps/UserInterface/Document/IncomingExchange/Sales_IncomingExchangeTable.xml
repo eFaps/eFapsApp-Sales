@@ -120,5 +120,10 @@
                 <property name="Access">!NONE</property>
             </trigger>
         </field>
+         <field name="creator">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_IncomingExchange/Creator.Label</property>
+        </field>
     </definition>
 </ui-table>
