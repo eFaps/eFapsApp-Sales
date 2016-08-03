@@ -398,7 +398,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="RowSpan">4</property>
+            <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -1242,7 +1242,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="RowSpan">4</property>
+            <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -2116,7 +2116,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="RowSpan">4</property>
+            <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
