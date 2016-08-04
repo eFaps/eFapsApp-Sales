@@ -44,6 +44,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -109,4 +110,23 @@ public abstract class Receipt_Base
     {
         return CISales.Receipt.getType().getName();
     }
+
+    /**
+     * Create the TransactionDocument for this invoice.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createTransDocShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = new TransactionDocument().createDocumentShadow(_parameter);
+        final Insert insert = new Insert(CISales.Receipt2TransactionDocumentShadowOut);
+        insert.add(CISales.Receipt2TransactionDocumentShadowOut.FromLink, _parameter.getInstance());
+        insert.add(CISales.Receipt2TransactionDocumentShadowOut.ToLink, createdDoc.getInstance());
+        insert.execute();
+        return new Return();
+    }
+
 }

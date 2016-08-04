@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+ Copyright 2003 - 2016 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c3a93706-d3d1-46dc-89a9-9663e1221404</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ReceiptTree_Menu_Action_CreateTransDocShadow</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
+        <target>
+            <form>Sales_Receipt_CreateTransDocShadowForm</form>
+            <execute method="createTransDocShadow" program="org.efaps.esjp.sales.document.Receipt">
+                <property name="PositionType">Sales_TransactionDocumentShadowOutPosition</property>
+                <property name="StatusGroup">Sales_TransactionDocumentShadowOutStatus</property>
+                <property name="Status">Closed</property>
+            </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReceiptTree_Menu_Action_CreateTransDocShadow.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK" index="1">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Receipt.ActivateTransDocShadow</property>
+           </trigger>
+           <trigger event="UI_ACCESSCHECK" index="2" method="check4Status"
+                name="Sales_Receipt_CreateTransDocShadowForm.UI_ACCESSCHECK.2"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Check4CreateStatus">true</property>
+            </trigger>
+            <trigger event="UI_ACCESSCHECK" index="3" method="accessCheck4DocumentShadow"
+                name="Sales_Receipt_CreateTransDocShadowForm.UI_ACCESSCHECK.3"
+                program="org.efaps.esjp.sales.document.TransactionDocument">
+            </trigger>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_TransactionDocumentShadowOut</property>
+        <property name="WindowWidth">900</property>
+    </definition>
+</ui-command>

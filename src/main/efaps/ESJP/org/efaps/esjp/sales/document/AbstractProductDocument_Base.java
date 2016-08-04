@@ -334,7 +334,7 @@ public abstract class AbstractProductDocument_Base
                 add2DocEdit(_parameter, _update, _editDoc);
             }
         };
-        final List<FieldTable> fieldTables = new ArrayList<FieldTable>();
+        final List<FieldTable> fieldTables = new ArrayList<>();
 
         edit.updateMainElements(_parameter, command.getTargetForm(), _editDoc.getInstance(),
                         _editDoc.getValues(), fieldTables);
@@ -459,7 +459,7 @@ public abstract class AbstractProductDocument_Base
                             }
 
                             for (final String individual : individuals) {
-                                final Map<String, Object> map = new HashMap<String, Object>();
+                                final Map<String, Object> map = new HashMap<>();
                                 map.put(CIProducts.ProductAbstract.Individual.name,
                                                 Products.ProductIndividual.NONE.getInt());
                                 final Instance indInst;
@@ -542,8 +542,8 @@ public abstract class AbstractProductDocument_Base
     public Return updateFields4Storage(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         list.add(map);
 
         final StringBuilder js = new StringBuilder();
@@ -643,8 +643,8 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
         final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
@@ -748,7 +748,7 @@ public abstract class AbstractProductDocument_Base
                     values.add(map);
                 }
 
-                final Set<String> noEscape = new HashSet<String>();
+                final Set<String> noEscape = new HashSet<>();
                 noEscape.add("uoM");
 
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
@@ -1213,7 +1213,7 @@ public abstract class AbstractProductDocument_Base
                     throws EFapsException
                 {
                     final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
-                    final List<ProdDocActivation> pactivt = new ArrayList<ProdDocActivation>();
+                    final List<ProdDocActivation> pactivt = new ArrayList<>();
                     for (final String activation : activations.values()) {
                         final ProdDocActivation pDAct = Sales.ProdDocActivation.valueOf(activation);
                         pactivt.add(pDAct);
@@ -1260,29 +1260,38 @@ public abstract class AbstractProductDocument_Base
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _docInst the doc inst
+     * @param _args the args
      * @return description
      * @throws EFapsException on error
      */
     protected String getDescription4ProductTransaction(final Parameter _parameter,
-                                                       final Instance _docInst)
+                                                       final Instance _docInst,
+                                                       final Object... _args)
         throws EFapsException
     {
-        return DBProperties.getProperty(_docInst.getType().getName() + ".description4ProductTransaction");
+        return ArrayUtils.isEmpty(_args) ? DBProperties.getProperty(_docInst.getType().getName()
+                        + ".description4ProductTransaction")
+                        : DBProperties.getFormatedDBProperty(_docInst.getType().getName()
+                                        + ".description4ProductTransaction", _args);
     }
 
     /**
+     * Creates the product transaction 4 document.
+     *
      * @param _parameter    Parameter as passed from the eFaps API
      * @param _docInst      Instance of the document the transaction will be created for
      * @param _storageInst  Instance of the storage the transaction will be created for
+     * @param _args the args
      * @throws EFapsException on error
      */
     public void createProductTransaction4Document(final Parameter _parameter,
                                                   final Instance _docInst,
-                                                  final Instance _storageInst)
+                                                  final Instance _storageInst,
+                                                  final Object... _args)
         throws EFapsException
     {
         final List<Position> positions = getPositions4Document(_parameter, _docInst);
-        final String transDescr = getDescription4ProductTransaction(_parameter, _docInst);
+        final String transDescr = getDescription4ProductTransaction(_parameter, _docInst, _args);
         final PrintQuery print = new PrintQuery(_docInst);
         print.addAttribute(CIERP.DocumentAbstract.Date);
         print.execute();
@@ -1480,6 +1489,12 @@ public abstract class AbstractProductDocument_Base
                     ret = CIProducts.TransactionIndividualInbound.getType();
                 } else {
                     ret = CIProducts.TransactionInbound.getType();
+                }
+            }else if (getInstance().getType().isCIType(CISales.TransactionDocumentShadowOutPosition)) {
+                if (isIndiviudal()) {
+                    ret = CIProducts.TransactionIndividualOutbound.getType();
+                } else {
+                    ret = CIProducts.TransactionOutbound.getType();
                 }
             }
             return ret;

@@ -1177,6 +1177,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECEIPT_TRANSDOC = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.ActivateTransDocShadow")
+                    .description("Activate the possiblity to create a TransactionDocumentShadow");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink RECEIPT_DEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse for RecievingTicket-ActivateTransDocShadow. "
+                                    + "If not set the default from Products applies.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "RecievingTicket.CreateFromOrderOutbound")
@@ -1455,6 +1470,24 @@ public final class Sales
                     .key(BASE + "TransactionDocument.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TRANSDOCSHADOWIN_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "TransactionDocumentShadowOut.RevisionSequence")
+                    .defaultValue(CINumGenSales.TransactionDocumentShadowInSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TRANSDOCSHADOWOUT_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "TransactionDocumentShadowOut.RevisionSequence")
+                    .defaultValue(CINumGenSales.TransactionDocumentShadowOutSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
 
     /** See description. */
     @EFapsSysConfAttribute

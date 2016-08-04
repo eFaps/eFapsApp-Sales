@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -17,34 +18,25 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fd36dcc2-8524-42cc-b0cb-f0b56f94c6f0</uuid>
+    <uuid>7735d275-1b08-4e8d-822c-895e753aecb0</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashReceipt2TransactionDocumentShadowIn</name>
+        <name>Sales_Receipt2TransactionDocumentShadowOut</name>
         <parent>Sales_Document2TransactionDocumentShadowAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_PettyCashReceipt</typelink>
+            <typelink>Sales_Receipt</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_TransactionDocumentShadowIn</typelink>
+            <typelink>Sales_TransactionDocumentShadowOut</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
-        <trigger event="INSERT_POST" method="relationTrigger"
-            name="Sales_PettyCashReceipt2TransactionDocumentShadowIn.INSERT_POST"
-            program="org.efaps.esjp.sales.Costing" />
-        <trigger event="UPDATE_POST" method="relationTrigger"
-            name="Sales_PettyCashReceipt2TransactionDocumentShadowIn.UPDATE_POST"
-            program="org.efaps.esjp.sales.Costing" />
-        <trigger event="DELETE_PRE" method="relationTrigger"
-            name="Sales_PettyCashReceipt2TransactionDocumentShadowIn.DELETE_PRE"
-            program="org.efaps.esjp.sales.Costing" />
     </definition>
 </datamodel-type>

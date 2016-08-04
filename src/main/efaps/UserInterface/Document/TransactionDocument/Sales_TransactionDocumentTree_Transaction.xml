@@ -17,30 +17,16 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3b6adbd4-58d7-40ba-a929-cfdd4f113dc2</uuid>
+    <uuid>da473303-6f88-4530-869e-3609e9919274</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductDocumentsMyDesk</name>
-        <access>
-            <role>Sales_Delivery</role>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_TransactionDocumentTree_Transaction</name>
         <target>
-            <table>Sales_ProductDocumentsTable</table>
+            <table>Products_TransactionAbstractDocTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">Sales_ReturnSlip</property>
-                <property name="Type02">Sales_ConsignmentNote</property>
-                <property name="Type03">Sales_GoodsIssueSlip</property>
-                <property name="Type04">Sales_Reservation</property>
-                <property name="Type05">Sales_ProductionReport</property>
-                <property name="Type06">Sales_UsageReport</property>
-                <property name="Type07">Sales_RecievingTicket</property>
-                <property name="Type08">Sales_TransactionDocument</property>
-                <property name="Type09">Sales_DeliveryNote</property>
-                <property name="Type10">Sales_ReturnUsageReport</property>
-                <property name="Type11">Sales_TransactionDocumentShadowIn</property>
-                <property name="Type12">Sales_TransactionDocumentShadowOut</property>
+                <property name="Type">Products_TransactionAbstract</property>
+                <property name="LinkFrom">Document</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

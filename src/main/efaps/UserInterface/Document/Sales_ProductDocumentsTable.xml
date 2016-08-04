@@ -34,6 +34,10 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
+         <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_DocumentAbstract/Revision.Label</property>
+        </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>

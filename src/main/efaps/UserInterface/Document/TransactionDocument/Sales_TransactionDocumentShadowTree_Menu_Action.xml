@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,19 +18,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>eb91cf4f-60f7-4e94-a279-49ca8bdf1e3f</uuid>
+    <uuid>fb3cb114-624f-46d5-b50f-2e4c7f659a77</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReceiptTree_Menu_Action</name>
+        <name>Sales_TransactionDocumentShadowTree_Menu_Action</name>
         <childs>
-            <child>Sales_ReceiptTree_Menu_Action_Edit</child>
-            <child>Sales_ReceiptTree_Menu_Action_SetOpen</child>
-            <child>Sales_ReceiptTree_Menu_Action_Recalculate</child>
-            <child>Sales_ReceiptTree_Menu_Action_SetPaid</child>
-            <child>Sales_ReceiptTree_Menu_Action_SetReplaced</child>
-            <child>Sales_ReceiptTree_Menu_Action_CreateTransDocShadow</child>
-            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
+            <child>Sales_TransactionDocumentShadowTree_Menu_Action_SetCanceled</child>
+            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
