@@ -54,6 +54,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -289,7 +290,7 @@ public abstract class DocPositionReport_Base
             ret = Sales.REPORT_DOCPOS.get();
         }
         if ("productType".equals(_fieldName)) {
-            ret = getProperties4Prefix(ret, "productType", true);
+            ret = PropertiesUtil.getProperties4Prefix(ret, "productType", true);
         }
         return ret;
     }

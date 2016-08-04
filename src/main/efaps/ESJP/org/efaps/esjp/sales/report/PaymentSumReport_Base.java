@@ -42,6 +42,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
@@ -325,14 +326,12 @@ public abstract class PaymentSumReport_Base
             throws EFapsException
         {
             if (this.negTypes.isEmpty()) {
-                final Collection<String> types = analyseProperty(_parameter,
-                                getProperties4Prefix(Sales.REPORT_PAYMENTSUM.get(), "PAYMENT." + PayDoc.OUT.name()),
-                                "Type").values();
-                types.addAll(analyseProperty(_parameter,
-                                getProperties4Prefix(Sales.REPORT_PAYMENTSUM.get(), "DOCUMENT." + PayDoc.OUT.name()),
-                                "Type").values());
+                final Collection<String> types = analyseProperty(_parameter, PropertiesUtil.getProperties4Prefix(
+                                Sales.REPORT_PAYMENTSUM.get(), "PAYMENT." + PayDoc.OUT.name()), "Type").values();
+                types.addAll(analyseProperty(_parameter, PropertiesUtil.getProperties4Prefix(Sales.REPORT_PAYMENTSUM
+                                .get(), "DOCUMENT." + PayDoc.OUT.name()), "Type").values());
                 for (final String typeStr : types) {
-                    Type type;
+                    final Type type;
                     if (isUUID(typeStr)) {
                         type = Type.get(UUID.fromString(typeStr));
                     } else {

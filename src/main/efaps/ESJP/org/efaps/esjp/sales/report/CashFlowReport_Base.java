@@ -46,6 +46,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.erp.FilteredReport;
@@ -169,7 +170,7 @@ public abstract class CashFlowReport_Base
                 }
             } else {
                 final List<DataBean> beans = new ArrayList<>();
-                final Map<Instance, Instance> inst2inst = new HashMap<Instance, Instance>();
+                final Map<Instance, Instance> inst2inst = new HashMap<>();
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder selCreateInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
@@ -208,7 +209,7 @@ public abstract class CashFlowReport_Base
 
                 addProjection4Documents(_parameter, beans);
 
-                final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
+                final ComparatorChain<DataBean> chain = new ComparatorChain<>();
                 chain.addComparator(new Comparator<DataBean>() {
                         @Override
                         public int compare(final DataBean _o1,
@@ -303,7 +304,7 @@ public abstract class CashFlowReport_Base
             final Properties props = Sales.CASHFLOWREPORT_CONFIG.get();
             final boolean contact = isShowContact(_parameter);
             for (final CashFlowGroup group : CashFlowGroup.values()) {
-                final Properties inProps = getProperties4Prefix(props, "Projection." + group.name());
+                final Properties inProps = PropertiesUtil.getProperties4Prefix(props, "Projection." + group.name());
 
                 final Map<Integer, String> typesMap = analyseProperty(_parameter, inProps, "Type");
                 final Map<String, Set<String>> attr2types = new HashMap<>();

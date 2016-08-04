@@ -337,7 +337,7 @@ public abstract class SalesReport4Account_Base
                 }
 
                 final FilterDate filterDate = getFilterDate(_parameter);
-                final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
+                final ComparatorChain<DataBean> chain = new ComparatorChain<>();
                 chain.addComparator(new Comparator<DataBean>()
                 {
 
@@ -698,10 +698,10 @@ public abstract class SalesReport4Account_Base
          * @return the currency inst4 report
          * @throws EFapsException on error
          */
-        protected Set<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
+        protected Collection<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
             throws EFapsException
         {
-            Set<CurrencyInst> ret = new HashSet<>();
+            Collection<CurrencyInst> ret = new HashSet<>();
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("currency")) {
                 final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
@@ -741,7 +741,7 @@ public abstract class SalesReport4Account_Base
         protected boolean isCurrencyBase(final Parameter _parameter)
             throws EFapsException
         {
-            final Set<CurrencyInst> currencies = getCurrencyInst4Report(_parameter);
+            final Collection<CurrencyInst> currencies = getCurrencyInst4Report(_parameter);
             return currencies.size() == 1 && "BASE".equals(currencies.iterator().next().getInstance().getKey());
         }
 
