@@ -1326,6 +1326,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_INDPRODDOC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.IndividualProductDocReport")
+                    .description("Properties for IndividualProductDocReport.")
+                    .addDefaultValue("Type", CISales.DeliveryNote.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.IN")
