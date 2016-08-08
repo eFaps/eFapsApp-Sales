@@ -45,7 +45,7 @@
             <child>Sales_PaymentReportMyDesk</child>
             <child>Sales_PaymentSumReportMyDesk</child>
             <child>Sales_SwapReportMyDesk</child>
-            <child>Sales_IndividualProductDocReportMyDesk</child>
+            <child>Sales_DocProductTransactionReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

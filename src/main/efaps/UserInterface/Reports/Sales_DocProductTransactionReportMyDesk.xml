@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -17,28 +18,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>299c25ab-e016-43f6-8601-5b9fed4cec3d</uuid>
+    <uuid>b72b2ec3-2f67-4f5f-bb90-dc9c3070e2bc</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IndividualProductDocReportMyDesk_Menu_DownloadPDF</name>
-        <icon>Document_PDF</icon>
+        <name>Sales_DocProductTransactionReportMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.IndividualProductDocReport">
-                <property name="Mime">pdf</property>
-                <property name="PageType">A4</property>
-                <property name="PageOrientation">LANDSCAPE</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.IndividualProductDocReport.FilterKey</property>
-                <property name="Type">Sales_RetentionCertificate</property>
-                <property name="StatusGroup">Sales_RetentionCertificateStatus</property>
-                <property name="Status">!Canceled</property>
-            </execute>
+            <menu>Sales_DocProductTransactionReportMyDesk_Menu</menu>
+            <form>Sales_DocProductTransactionReportForm</form>
         </target>
-        <property name="Target">hidden</property>
-        <property name="TargetShowFile">true</property>
-        <property name="Label">report.DownloadPDF</property>
+        <property name="Target">content</property>
     </definition>
 </ui-command>

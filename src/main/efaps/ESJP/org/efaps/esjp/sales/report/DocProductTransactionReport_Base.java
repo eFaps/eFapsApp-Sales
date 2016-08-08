@@ -24,20 +24,25 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.listener.IOnDocProductTransactionReport;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -62,9 +67,43 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
  */
 @EFapsUUID("a5b8aeef-92cf-4cc5-b585-85bc4c8259c0")
 @EFapsApplication("eFapsApp-Sales")
-public abstract class IndividualProductDocReport_Base
+public abstract class DocProductTransactionReport_Base
     extends FilteredReport
 {
+
+    /**
+     * The Enum DocGroup.
+     *
+     * @author The eFaps Team
+     */
+    public enum DocGroup
+    {
+
+        /** The none. */
+        NONE,
+
+        /** The leftfromprod. */
+        LEFTFROMPROD;
+    }
+
+    /**
+     * The Enum DocGroup.
+     *
+     * @author The eFaps Team
+     */
+    public enum ProdType
+    {
+
+        /** The product. */
+        PRODUCT,
+
+        /** The individual. */
+        INDIVIDUAL,
+
+        /** The both. */
+        BOTH;
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -112,23 +151,25 @@ public abstract class IndividualProductDocReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new DynIndividualProductDocReport(this);
+        return new DynDocProductTransactionReport(this);
     }
 
     /**
      * The Class DynIndividualProductDocReport.
      */
-    public static class DynIndividualProductDocReport
+    public static class DynDocProductTransactionReport
         extends AbstractDynamicReport
     {
 
         /** The filtered report. */
-        private final IndividualProductDocReport_Base filteredReport;
+        private final DocProductTransactionReport_Base filteredReport;
 
         /**
-         * @param _individualProductDocReport_Base
+         * Instantiates a new dyn doc product transaction report.
+         *
+         * @param _filteredReport the filtered report
          */
-        public DynIndividualProductDocReport(final IndividualProductDocReport_Base _filteredReport)
+        public DynDocProductTransactionReport(final DocProductTransactionReport_Base _filteredReport)
         {
             this.filteredReport = _filteredReport;
         }
@@ -146,40 +187,46 @@ public abstract class IndividualProductDocReport_Base
                     e.printStackTrace();
                 }
             } else {
-                final DateGroup dateGroup = DateGroup.MONTH;
+                final DateGroup dateGroup = getDateGroup(_parameter);
                 final AbstractGroupedByDate groupedByDate = new AbstractGroupedByDate()
                 {
                 };
                 final DateTimeFormatter dateTimeFormatter = groupedByDate.getDateTimeFormatter(dateGroup);
 
                 final Collection<Map<String, ?>> values = new ArrayList<>();
-                final QueryBuilder prodDocQueryBldr = getQueryBldrFromProperties(Sales.REPORT_INDPRODDOC.get());
-                add2ProdDocQueryBuilder(_parameter, prodDocQueryBldr);
 
-                final QueryBuilder transQueryBldr = new QueryBuilder(CIProducts.TransactionAbstract);
-                transQueryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Document,
-                                prodDocQueryBldr.getAttributeQuery(CIERP.DocumentAbstract.ID));
-
-                final MultiPrintQuery multi = transQueryBldr.getPrint();
+                final MultiPrintQuery multi = getQueryBldr(_parameter).getPrint();
                 final SelectBuilder selDoc = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Document);
                 final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
+                final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
 
                 final SelectBuilder selProduct = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Product);
+                final SelectBuilder selProductInst = new SelectBuilder(selProduct).instance();
                 final SelectBuilder selProductName = new SelectBuilder(selProduct)
                                 .attribute(CIProducts.ProductAbstract.Name);
-                multi.addSelect(selProductName, selDocDate);
+                multi.addSelect(selProductInst, selProductName, selDocDate, selDocName);
                 multi.addAttribute(CIProducts.TransactionAbstract.Quantity);
                 multi.execute();
                 while (multi.next()) {
                     final Map<String, Object> map = new HashMap<>();
                     values.add(map);
                     final BigDecimal quantity = multi.getAttribute(CIProducts.TransactionAbstract.Quantity);
+                    final Instance productInst = multi.getSelect(selProductInst);
                     final String productName = multi.getSelect(selProductName);
+                    final String docName = multi.getSelect(selDocName);
                     final DateTime date = multi.getSelect(selDocDate);
                     map.put("quantity", quantity);
                     map.put("product", productName);
+                    map.put("productInst", productInst);
+                    map.put("docName", docName);
                     map.put("partial", groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter));
                 }
+
+                for (final IOnDocProductTransactionReport listener : Listener.get()
+                                .<IOnDocProductTransactionReport>invoke(IOnDocProductTransactionReport.class)) {
+                    listener.updateValues(_parameter, this, values);
+                }
+
                 ret = new JRMapCollectionDataSource(values);
                 getFilteredReport().cache(_parameter, ret);
             }
@@ -187,10 +234,60 @@ public abstract class IndividualProductDocReport_Base
         }
 
         /**
+         * Gets the query bldr.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the query bldr
+         * @throws EFapsException on error
+         */
+        protected QueryBuilder getQueryBldr(final Parameter _parameter)
+            throws EFapsException
+        {
+
+            final QueryBuilder prodDocQueryBldr = getQueryBldrFromProperties(Sales.REPORT_DOCPRODTRANS.get());
+            add2ProdDocQueryBuilder(_parameter, prodDocQueryBldr);
+
+            final QueryBuilder transQueryBldr = new QueryBuilder(CIProducts.TransactionAbstract);
+            transQueryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Document, prodDocQueryBldr
+                            .getAttributeQuery(CIERP.DocumentAbstract.ID));
+            add2TransactionQueryBuilder(_parameter, transQueryBldr);
+            return transQueryBldr;
+        }
+
+        /**
+         * Adds to the  transaction query builder.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _queryBldr the query bldr
+         * @throws EFapsException on error
+         */
+        protected void add2TransactionQueryBuilder(final Parameter _parameter,
+                                                   final QueryBuilder _queryBldr)
+            throws EFapsException
+        {
+            final ProdType prodType = getProdType(_parameter);
+            switch (prodType) {
+                case PRODUCT:
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.ProductIndividualAbstract);
+                    _queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionAbstract.Product, attrQueryBldr
+                                    .getAttributeQuery(CIProducts.ProductAbstract.ID));
+                    break;
+                case INDIVIDUAL:
+                    final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIProducts.ProductIndividualAbstract);
+                    _queryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Product, attrQueryBldr2
+                                    .getAttributeQuery(CIProducts.ProductAbstract.ID));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
          * Adds to the Product document Querybuilder.
          *
          * @param _parameter the parameter
          * @param _queryBldr the query bldr
+         * @throws EFapsException on error
          */
         protected void add2ProdDocQueryBuilder(final Parameter _parameter,
                                                final QueryBuilder _queryBldr)
@@ -209,6 +306,22 @@ public abstract class IndividualProductDocReport_Base
             } else {
                 dateTo = new DateTime();
             }
+            if (filter.containsKey("prodDocType")) {
+                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filter.get("prodDocType");
+                if (CollectionUtils.isNotEmpty(filterValue.getObject())) {
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2ProductDocumentType);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.Document2ProductDocumentType.DocumentTypeLink,
+                                    filterValue.getObject().toArray());
+                    if (filterValue.isNegate()) {
+                        _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID,
+                                    attrQueryBldr.getAttributeQuery(CISales.Document2ProductDocumentType.DocumentLink));
+                    } else {
+                        _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID,
+                                    attrQueryBldr.getAttributeQuery(CISales.Document2ProductDocumentType.DocumentLink));
+                    }
+                }
+            }
+
             _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom
                             .withTimeAtStartOfDay().minusMinutes(1));
             _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1)
@@ -227,6 +340,13 @@ public abstract class IndividualProductDocReport_Base
                             Calculation.SUM);
             crosstab.addMeasure(quantityMeasure);
 
+            final DocGroup docGroup = getDocGroup(_parameter);
+            if (DocGroup.LEFTFROMPROD.equals(docGroup)) {
+                final CrosstabRowGroupBuilder<String> docNameRowGroup = DynamicReports.ctab
+                                .rowGroup("docName", String.class);
+                crosstab.addRowGroup(docNameRowGroup);
+            }
+
             final CrosstabRowGroupBuilder<String> productRowGroup = DynamicReports.ctab
                             .rowGroup("product", String.class)
                             .setHeaderWidth(150);
@@ -244,9 +364,68 @@ public abstract class IndividualProductDocReport_Base
          *
          * @return value of instance variable {@link #filteredReport}
          */
-        public IndividualProductDocReport_Base getFilteredReport()
+        public DocProductTransactionReport_Base getFilteredReport()
         {
             return this.filteredReport;
+        }
+
+        /**
+         * Gets the doc Group.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the doc Group
+         * @throws EFapsException on error
+         */
+        protected DocGroup getDocGroup(final Parameter _parameter)
+            throws EFapsException
+        {
+            DocGroup ret = DocGroup.NONE;
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("docGroup") && filter.get("docGroup") != null) {
+                final EnumFilterValue filterValue = (EnumFilterValue) filter.get("docGroup");
+                ret = (DocGroup) filterValue.getObject();
+            }
+            return ret;
+        }
+
+        /**
+         * Gets the date group.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the date group
+         * @throws EFapsException on error
+         */
+        protected DateGroup getDateGroup(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            final AbstractGroupedByDate.DateGroup ret;
+            if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
+                ret = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
+            } else {
+                ret = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
+            }
+            return ret;
+        }
+
+        /**
+         * Gets the date group.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the date group
+         * @throws EFapsException on error
+         */
+        protected ProdType getProdType(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            final ProdType ret;
+            if (filter.containsKey("prodType") && filter.get("prodType") != null) {
+                ret = (ProdType) ((EnumFilterValue) filter.get("prodType")).getObject();
+            } else {
+                ret = ProdType.BOTH;
+            }
+            return ret;
         }
     }
 }

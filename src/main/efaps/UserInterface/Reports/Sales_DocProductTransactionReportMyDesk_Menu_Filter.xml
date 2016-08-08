@@ -22,23 +22,23 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IndividualProductDocReportMyDesk_Menu_Filter</name>
+        <name>Sales_DocProductTransactionReportMyDesk_Menu_Filter</name>
         <icon>Filter</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_IndividualProductDocReportFilterForm</form>
-            <execute method="setFilter" program="org.efaps.esjp.sales.report.IndividualProductDocReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.IndividualProductDocReport.FilterKey</property>
+            <form>Sales_DocProductTransactionReportFilterForm</form>
+            <execute method="setFilter" program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocProductTransactionReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
         <property name="TargetTitle">report.Filter</property>
-        <property name="FilterKey">org.efaps.esjp.sales.report.IndividualProductDocReport.FilterKey</property>
-        <property name="FilterTargetForm">Sales_IndividualProductDocReportForm</property>
+        <property name="FilterKey">org.efaps.esjp.sales.report.DocProductTransactionReport.FilterKey</property>
+        <property name="FilterTargetForm">Sales_DocProductTransactionReportForm</property>
         <property name="FilterTargetField">report</property>
     </definition>
 </ui-command>
