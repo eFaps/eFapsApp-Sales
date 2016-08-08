@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2016 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>a69f76a2-4292-4542-93e7-3cfc0df8ca09</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_DocProductTransactionReportFilterForm</name>
+         <field name="dateFrom">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.dateFrom</property>
+            <property name="Columns">12</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
+                name="Sales_PaymentSumReportFilterForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport" />
+        </field>
+        <field name="dateTo">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.dateFrom</property>
+            <property name="Columns">12</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
+                name="Sales_PaymentSumReportFilterForm.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport" />
+        </field>
+        <field name="dateGroup">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.dateGroup</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.dateGroup.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+                <property name="Enum">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
+            </trigger>
+        </field>
+        <field name="docGroup">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.docGroup</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.docGroup.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport" >
+                <property name="Enum">org.efaps.esjp.sales.report.DocProductTransactionReport$DocGroup</property>
+            </trigger>
+        </field>
+        <field name="prodDocTypeGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="prodDocType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.prodDocType</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
+                name="Sales_PaymentReportFilterForm.contact.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+                <property name="Sales_ProductDocumentType_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete"
+                name="Sales_DocProductTransactionReportFilterForm.prodDocType.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="AutoType">TOKEN</property>
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="SearchAttribute">Name</property>
+                <property name="Phrase4VALUE">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+            </trigger>
+        </field>
+        <field name="prodDocType_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.prodDocType_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.prodDocType_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+            </trigger>
+        </field>
+        <field name="prodType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.prodType</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.prodType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport" >
+                <property name="Enum">org.efaps.esjp.sales.report.DocProductTransactionReport$ProdType</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DocProductTransactionReportFilterForm.prodType.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
+            </trigger>
+        </field>
+         <field name="analyzeFabrication">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.analyzeFabrication</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.analyzeFabrication.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                 name="Sales_DocProductTransactionReportFilterForm.analyzeFabrication.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                    <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

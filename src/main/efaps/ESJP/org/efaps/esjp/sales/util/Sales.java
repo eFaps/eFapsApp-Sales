@@ -1326,6 +1326,28 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_DOCPRODTRANS = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocProductTransactionReport")
+                    .description("Properties for DocProductTransactionReport.")
+                    .addDefaultValue("Type", CISales.DeliveryNote.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_DOCPRODTRANS_ACTPRODTYPE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocProductTransactionReport.ActivateProdType")
+                    .description("Activate the ProductType field for the DocProductTransactionReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_DOCPRODTRANS_FAB = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocProductTransactionReport.AnalyzeFabrication")
+                    .description("Activate the Anlization for fabrication for the DocProductTransactionReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.IN")
