@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -40,6 +42,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -85,10 +88,31 @@ public abstract class DocProductTransactionReport_Base
     {
 
         /** The none. */
-        NONE,
+        PROD,
 
-        /** The leftfromprod. */
-        LEFTFROMPROD;
+        /** The doc prod. */
+        DOC_PROD,
+
+        /** The doc contact prod. */
+        DOC_CONTACT_PROD,
+
+        /** The contact prod. */
+        CONTACT_PROD,
+
+        /** The contact doc prod. */
+        CONTACT_DOC_PROD,
+
+        /** The prod doc. */
+        PROD_DOC,
+
+        /** The prod contact. */
+        PROD_CONTACT,
+
+        /** The prod contact doc. */
+        PROD_CONTACT_DOC,
+
+        /** The prod doc contact. */
+        PROD_DOC_CONTACT
     }
 
     /**
@@ -212,13 +236,17 @@ public abstract class DocProductTransactionReport_Base
                 final SelectBuilder selDoc = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Document);
                 final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
                 final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
-
+                final SelectBuilder selDocContact = new SelectBuilder(selDoc)
+                                .linkto(CIERP.DocumentAbstract.Contact)
+                                .attribute(CIContacts.ContactAbstract.Name);
                 final SelectBuilder selProduct = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Product);
                 final SelectBuilder selProductInst = new SelectBuilder(selProduct).instance();
                 final SelectBuilder selProductName = new SelectBuilder(selProduct)
                                 .attribute(CIProducts.ProductAbstract.Name);
-                multi.addSelect(selProductInst, selProductName, selDocDate, selDocName);
-                multi.addAttribute(CIProducts.TransactionAbstract.Quantity);
+                final SelectBuilder selProductDescr = new SelectBuilder(selProduct)
+                                .attribute(CIProducts.ProductAbstract.Description);
+                multi.addSelect(selProductInst, selProductName, selProductDescr, selDocDate, selDocName, selDocContact);
+                multi.addAttribute(CIProducts.TransactionAbstract.Quantity, CIProducts.TransactionAbstract.UoM);
                 multi.execute();
                 while (multi.next()) {
                     final Map<String, Object> map = new HashMap<>();
@@ -226,12 +254,18 @@ public abstract class DocProductTransactionReport_Base
                     final BigDecimal quantity = multi.getAttribute(CIProducts.TransactionAbstract.Quantity);
                     final Instance productInst = multi.getSelect(selProductInst);
                     final String productName = multi.getSelect(selProductName);
+                    final String productDescr = multi.getSelect(selProductDescr);
                     final String docName = multi.getSelect(selDocName);
+                    final String docContact = multi.getSelect(selDocContact);
                     final DateTime date = multi.getSelect(selDocDate);
+                    final UoM uoM = Dimension.getUoM(multi.getAttribute(CIProducts.TransactionAbstract.UoM));
+                    map.put("uoM", uoM.getName());
                     map.put("quantity", quantity);
                     map.put("product", productName);
+                    map.put("productDescr", productDescr);
                     map.put("productInst", productInst);
                     map.put("docName", docName);
+                    map.put("docContact", docContact);
                     map.put("partial", groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter));
                 }
 
@@ -372,17 +406,53 @@ public abstract class DocProductTransactionReport_Base
                             Calculation.SUM);
             crosstab.addMeasure(quantityMeasure);
 
-            final DocGroup docGroup = getDocGroup(_parameter);
-            if (DocGroup.LEFTFROMPROD.equals(docGroup)) {
-                final CrosstabRowGroupBuilder<String> docNameRowGroup = DynamicReports.ctab
-                                .rowGroup("docName", String.class);
-                crosstab.addRowGroup(docNameRowGroup);
-            }
-
+            final CrosstabRowGroupBuilder<String> docNameRowGroup = DynamicReports.ctab
+                            .rowGroup("docName", String.class);
+            final CrosstabRowGroupBuilder<String> docContactRowGroup = DynamicReports.ctab
+                        .rowGroup("docContact", String.class);
             final CrosstabRowGroupBuilder<String> productRowGroup = DynamicReports.ctab
-                            .rowGroup("product", String.class)
-                            .setHeaderWidth(150);
-            crosstab.addRowGroup(productRowGroup);
+                        .rowGroup("product", String.class);
+            final CrosstabRowGroupBuilder<String> productDescrRowGroup = DynamicReports.ctab
+                        .rowGroup("productDescr", String.class)
+                        .setHeaderWidth(150).setShowTotal(false);
+            final CrosstabRowGroupBuilder<String> uomRowGroup = DynamicReports.ctab
+                        .rowGroup("uoM", String.class).setShowTotal(false);
+
+            final DocGroup docGroup = getDocGroup(_parameter);
+            switch (docGroup) {
+                case DOC_PROD:
+                    crosstab.addRowGroup(docNameRowGroup, productRowGroup, productDescrRowGroup, uomRowGroup);
+                    break;
+                case DOC_CONTACT_PROD:
+                    crosstab.addRowGroup(docNameRowGroup, docContactRowGroup, productRowGroup, productDescrRowGroup,
+                                    uomRowGroup);
+                    break;
+                case CONTACT_PROD:
+                    crosstab.addRowGroup(docContactRowGroup, productRowGroup, productDescrRowGroup, uomRowGroup);
+                    break;
+                case CONTACT_DOC_PROD:
+                    crosstab.addRowGroup(docContactRowGroup, docNameRowGroup, productRowGroup, productDescrRowGroup,
+                                    uomRowGroup);
+                    break;
+                case PROD_DOC:
+                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docNameRowGroup);
+                    break;
+                case PROD_CONTACT_DOC:
+                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docContactRowGroup,
+                                    docNameRowGroup);
+                    break;
+                case PROD_DOC_CONTACT:
+                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docNameRowGroup,
+                                    docContactRowGroup);
+                    break;
+                case PROD_CONTACT:
+                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docContactRowGroup);
+                    break;
+                case PROD:
+                default:
+                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup);
+                    break;
+            }
 
             final CrosstabColumnGroupBuilder<String> partialColumnGroup = DynamicReports.ctab.columnGroup("partial",
                             String.class);
@@ -411,7 +481,7 @@ public abstract class DocProductTransactionReport_Base
         protected DocGroup getDocGroup(final Parameter _parameter)
             throws EFapsException
         {
-            DocGroup ret = DocGroup.NONE;
+            DocGroup ret = DocGroup.PROD;
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
             if (filter.containsKey("docGroup") && filter.get("docGroup") != null) {
                 final EnumFilterValue filterValue = (EnumFilterValue) filter.get("docGroup");
