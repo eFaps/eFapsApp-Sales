@@ -96,7 +96,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * List of PaymendDoc .
      */
-    private final List<PayPos> payPos = new ArrayList<PayPos>();
+    private final List<PayPos> payPos = new ArrayList<>();
 
     /**
      * Instance of the currency.
@@ -688,7 +688,7 @@ public abstract class DocPaymentInfo_Base
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
 
-        final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<Instance>(instance2info.keySet()));
+        final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<>(instance2info.keySet()));
         final SelectBuilder selContactName = new SelectBuilder()
                         .linkto(CISales.DocumentAbstract.Contact).attribute(CIContacts.Contact.Name);
         final SelectBuilder selCurInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.CurrencyId)
@@ -839,7 +839,8 @@ public abstract class DocPaymentInfo_Base
 
     /**
      * Register Swap information a payments. Only the "from" one is payed,
-     * the "to" one is the one paying.
+     * the "to" one is the one paying. Only will be added as a payment
+     * position if none of the documents has the status canceled.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _infos infos to be initialized with the base information
@@ -864,13 +865,21 @@ public abstract class DocPaymentInfo_Base
                         .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
         final SelectBuilder selDocFromInst = SelectBuilder.get()
                         .linkto(CISales.Document2Document4Swap.FromAbstractLink).instance();
-        swapMulti.addSelect(selCur3, selDocFromInst);
+
+        final SelectBuilder selDocFromStatus = SelectBuilder.get()
+                        .linkto(CISales.Document2Document4Swap.FromAbstractLink).status().key();
+        final SelectBuilder selDocToStatus = SelectBuilder.get()
+                        .linkto(CISales.Document2Document4Swap.ToAbstractLink).status().key();
+        swapMulti.addSelect(selCur3, selDocFromInst, selDocFromStatus, selDocToStatus);
         swapMulti.executeWithoutAccessCheck();
         while (swapMulti.next()) {
             if (!verifySet.contains(swapMulti.getCurrentInstance())) {
                 verifySet.add(swapMulti.getCurrentInstance());
                 final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
-                if (instance2info.containsKey(docFromInst)) {
+                final String key1 = swapMulti.getSelect(selDocFromStatus);
+                final String key2 = swapMulti.getSelect(selDocToStatus);
+                if (instance2info.containsKey(docFromInst) && !"Canceled".equals(key1) && !"Canceled".equals(key2)
+                                && !"Replaced".equals(key1) && !"Replaced".equals(key2)) {
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
                     final Instance curInst = swapMulti.getSelect(selCur3);
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
