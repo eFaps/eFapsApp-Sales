@@ -36,6 +36,12 @@
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_IncomingInvoice.ACCESSCHECK" event="ACCESSCHECK" />
+        <trigger program="org.efaps.esjp.sales.Costing"
+            method="documentTrigger"
+            name="Sales_IncomingInvoice.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="Select4DocInst">linkfrom[Sales_IncomingInvoice2RecievingTicket#FromLink].linkto[ToLink].instance</property>
+        </trigger>
         <index msgPhrase="Sales_IndexDocumentWithRevsionMsgPhrase">
             <field id="revisionLong" select="attribute[Revision]" key="index.Revision" type="SEARCHLONG"
                 transform="org.efaps.esjp.admin.index.transformer.StringRight2Long"/>

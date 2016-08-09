@@ -20,9 +20,11 @@ package org.efaps.esjp.sales;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -71,7 +73,6 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * TODO comment!.
  *
@@ -137,24 +138,26 @@ public abstract class Costing_Base
     public Return relationTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CISales.Document2DocumentAbstract.ToAbstractLink);
-        print.executeWithoutAccessCheck();
+        if (Sales.COSTINGACTIVATE.get()) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CISales.Document2DocumentAbstract.ToAbstractLink);
+            print.executeWithoutAccessCheck();
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
-                        print.<Long>getAttribute(CISales.Document2DocumentAbstract.ToAbstractLink));
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
+                            print.<Long>getAttribute(CISales.Document2DocumentAbstract.ToAbstractLink));
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
-        queryBldr.addWhereAttrInQuery(CIProducts.CostingAbstract.TransactionAbstractLink, attrQuery);
-        queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, true);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.executeWithoutAccessCheck();
-        while (query.next()) {
-            final Update update = new Update(query.getCurrentValue());
-            update.add(CIProducts.CostingAbstract.UpToDate, false);
-            update.executeWithoutTrigger();
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
+            queryBldr.addWhereAttrInQuery(CIProducts.CostingAbstract.TransactionAbstractLink, attrQuery);
+            queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, true);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            while (query.next()) {
+                final Update update = new Update(query.getCurrentValue());
+                update.add(CIProducts.CostingAbstract.UpToDate, false);
+                update.executeWithoutTrigger();
+            }
         }
         return new Return();
     }
@@ -170,18 +173,36 @@ public abstract class Costing_Base
     public Return documentTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        if (containsProperty(_parameter, "OnStatus")) {
-            final PrintQuery print = new PrintQuery(_parameter.getInstance());
-            print.addAttribute(_parameter.getInstance().getType().getStatusAttribute());
-            print.executeWithoutAccessCheck();
-            final Long statusId = print.<Long>getAttribute(_parameter.getInstance().getType().getStatusAttribute());
-            if (Status.get(statusId).getKey().equals(getProperty(_parameter, "OnStatus"))) {
-
+        if (Sales.COSTINGACTIVATE.get()) {
+            final Set<Instance> docInsts = new HashSet<>();
+            if (containsProperty(_parameter, "OnStatus")) {
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                print.addAttribute(_parameter.getInstance().getType().getStatusAttribute());
+                print.executeWithoutAccessCheck();
+                final Long statusId = print.<Long>getAttribute(_parameter.getInstance().getType().getStatusAttribute());
+                if (Status.get(statusId).getKey().equals(getProperty(_parameter, "OnStatus"))) {
+                    docInsts.add(_parameter.getInstance());
+                }
+            }
+            if (containsProperty(_parameter, "Select4DocInst")) {
+                final String select4DocInst = getProperty(_parameter, "Select4DocInst");
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                print.addSelect(select4DocInst);
+                print.executeWithoutAccessCheck();
+                final Object docInstTmp = print.getSelect(select4DocInst);
+                if (docInstTmp instanceof Collection) {
+                    for (final Object docInst : (Collection<?>) docInstTmp) {
+                        docInsts.add((Instance) docInst);
+                    }
+                } else if (docInstTmp instanceof Instance) {
+                    docInsts.add((Instance) docInstTmp);
+                }
+            }
+            for (final Instance docInst : docInsts) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-                attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
-                                _parameter.getInstance());
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
+                attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document, docInst);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                                CIProducts.TransactionInOutAbstract.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
                 queryBldr.addWhereAttrInQuery(CIProducts.CostingAbstract.TransactionAbstractLink, attrQuery);
@@ -309,7 +330,7 @@ public abstract class Costing_Base
             runs++;
             Costing_Base.LOG.debug("Executing run Number: {}", runs);
             repeat = false;
-            final Set<Instance> updateCost = new LinkedHashSet<Instance>();
+            final Set<Instance> updateCost = new LinkedHashSet<>();
             // only run it the first time
             if (runs == 1) {
                 // check for costing that must be updated
@@ -351,7 +372,7 @@ public abstract class Costing_Base
             multi.setEnforceSorted(true);
             multi.executeWithoutAccessCheck();
 
-            final Set<TransCosting> costingTmp = new LinkedHashSet<TransCosting>();
+            final Set<TransCosting> costingTmp = new LinkedHashSet<>();
             int count = 0;
             while (multi.next()) {
                 final TransCosting transCost = getTransCosting()
@@ -379,7 +400,7 @@ public abstract class Costing_Base
                 }
             }
 
-            final Map<Instance, TransCosting> prod2cost = new HashMap<Instance, TransCosting>();
+            final Map<Instance, TransCosting> prod2cost = new HashMap<>();
             for (final Instance inst : updateCost) {
                 final TransCosting transCost = updateCosting(_currencyInstance, inst);
                 prod2cost.put(transCost.getProductInstance(), transCost);
@@ -483,7 +504,7 @@ public abstract class Costing_Base
         TransCosting ret = null;
         Costing_Base.LOG.debug("Update Costing for: {}", _costingInstance);
 
-        final List<TransCosting> tcList = new ArrayList<TransCosting>();
+        final List<TransCosting> tcList = new ArrayList<>();
 
         final TransCosting transCosting = getTransCosting()
                         .setCostingInstance(_costingInstance)

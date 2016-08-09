@@ -665,8 +665,8 @@ public abstract class SalesReport4Account_Base
             _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
 
             _builder.addColumn(typeColumn.setFixedWidth(120),
-                            createdColumn,
                             dateColumn,
+                            dueDateColumn,
                             nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(140),
                             revisionColumn);
 
@@ -684,7 +684,7 @@ public abstract class SalesReport4Account_Base
                 _builder.addColumn(swapInfoColumn);
             }
 
-            _builder.addColumn(dueDateColumn, docStatusColumn);
+            _builder.addColumn(createdColumn, docStatusColumn);
             if (!showDetails) {
                 _builder.setShowColumnValues(false);
             }
