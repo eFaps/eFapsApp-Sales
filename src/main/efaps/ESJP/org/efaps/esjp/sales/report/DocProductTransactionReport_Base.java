@@ -22,9 +22,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -143,6 +148,14 @@ public abstract class DocProductTransactionReport_Base
         return ret;
     }
 
+    @Override
+    protected Properties getProperties4TypeList(final Parameter _parameter,
+                                                final String _fieldName)
+        throws EFapsException
+    {
+        return Sales.REPORT_DOCPRODTRANS.get();
+    }
+
     /**
      * @param _parameter Parameter as passed by the eFasp API
      * @return the report class
@@ -243,8 +256,27 @@ public abstract class DocProductTransactionReport_Base
         protected QueryBuilder getQueryBldr(final Parameter _parameter)
             throws EFapsException
         {
+            final List<Type> types = getFilteredReport().getTypeList(_parameter);
+            final QueryBuilder prodDocQueryBldr;
+            if (CollectionUtils.isNotEmpty(types)) {
+                prodDocQueryBldr = new QueryBuilder(types.get(0));
+                boolean first = true;
+                for (final Iterator<Type> iterator = types.iterator(); iterator.hasNext();) {
+                    final Type type = iterator.next();
+                    if (first) {
+                        first = false;
+                    } else {
+                        prodDocQueryBldr.addType(type);
+                    }
+                }
+            } else {
+                prodDocQueryBldr = new QueryBuilder(CISales.DeliveryNote);
+            }
 
-            final QueryBuilder prodDocQueryBldr = getQueryBldrFromProperties(Sales.REPORT_DOCPRODTRANS.get());
+            final List<Status> statusList = getStatusListFromProperties(_parameter, Sales.REPORT_DOCPRODTRANS.get());
+            if (CollectionUtils.isNotEmpty(statusList)) {
+                prodDocQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, statusList.toArray());
+            }
             add2ProdDocQueryBuilder(_parameter, prodDocQueryBldr);
 
             final QueryBuilder transQueryBldr = new QueryBuilder(CIProducts.TransactionAbstract);

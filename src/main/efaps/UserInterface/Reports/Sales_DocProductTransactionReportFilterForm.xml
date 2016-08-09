@@ -40,6 +40,15 @@
                 name="Sales_PaymentSumReportFilterForm.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocProductTransactionReport" />
         </field>
+        <field name="type">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">CHECKBOX</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.type</property>
+            <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.type.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+            </trigger>
+        </field>
         <field name="dateGroup">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">RADIO</property>
