@@ -56,8 +56,8 @@
                 <property name="FilterDefault08">false</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="AccessAttribute06">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
-                <property name="AccessAttribute07">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
+                <property name="AccessAttribute07">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
+                <property name="AccessAttribute08">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocProductTransactionReportForm.filter.UI_FIELD_VALUE.2"
@@ -82,8 +82,8 @@
                 <property name="Sales_ProductDocumentType_Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="AccessAttribute06">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
-                <property name="AccessAttribute07">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
+                <property name="AccessAttribute07">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
+                <property name="AccessAttribute08">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
             </trigger>
         </field>
         <field name="report">
