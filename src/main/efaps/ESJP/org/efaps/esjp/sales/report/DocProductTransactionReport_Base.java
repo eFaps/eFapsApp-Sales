@@ -290,7 +290,18 @@ public abstract class DocProductTransactionReport_Base
         protected QueryBuilder getQueryBldr(final Parameter _parameter)
             throws EFapsException
         {
-            final List<Type> types = getFilteredReport().getTypeList(_parameter);
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            final List<Type> types;
+            if (filter.containsKey("type")) {
+                types = new ArrayList<>();
+                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+                for (final Long typeid : filters.getObject()) {
+                    types.add(Type.get(typeid));
+                }
+            } else {
+                types = getFilteredReport().getTypeList(_parameter);
+            }
+
             final QueryBuilder prodDocQueryBldr;
             if (CollectionUtils.isNotEmpty(types)) {
                 prodDocQueryBldr = new QueryBuilder(types.get(0));
