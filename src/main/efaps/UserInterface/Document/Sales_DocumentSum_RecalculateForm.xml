@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,19 +16,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>102abd6d-7112-4e8c-a543-775a20d9c897</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentSum_RecalculateForm</name>
@@ -37,9 +31,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
             <trigger program="org.efaps.esjp.sales.document.GenericDocumentSum"
-                method="update4DateOnRecalculate"
-                name="Sales_DocumentSum_RecalculateForm.date.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
+                method="update4DateOnRecalculate" name="Sales_DocumentSum_RecalculateForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rate">
             <property name="ModeCreate">READONLY</property>

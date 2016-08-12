@@ -65,6 +65,7 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -83,8 +84,10 @@ import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * Class is the abstract instance for all documents of type DocumentSum.
@@ -442,8 +445,8 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
 
@@ -469,8 +472,8 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
 
@@ -568,8 +571,8 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -594,8 +597,8 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         final int selected = getSelectedRow(_parameter);
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -619,8 +622,8 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
@@ -650,8 +653,8 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -699,10 +702,10 @@ public abstract class AbstractDocumentSum_Base
     public Return updateFields4RateCurrency(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
 
         final Instance newInst = getRateCurrencyInstance(_parameter, null);
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         Instance currentInst = new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId_eFapsPrevious");
         final Instance baseInst = Currency.getBaseCurrency();
         if (currentInst == null || currentInst != null && !currentInst.isValid()) {
@@ -718,9 +721,9 @@ public abstract class AbstractDocumentSum_Base
 
             final StringBuilder js = new StringBuilder();
             int i = 0;
-            final Map<Integer, Map<String, Object>> values = new TreeMap<Integer, Map<String, Object>>();
+            final Map<Integer, Map<String, Object>> values = new TreeMap<>();
             for (final Calculator calculator : calculators) {
-                final Map<String, Object> map2 = new HashMap<String, Object>();
+                final Map<String, Object> map2 = new HashMap<>();
                 if (!calculator.isEmpty()) {
                     calculator.applyRate(newInst, RateInfo.getRate(_parameter, rateInfos[2],
                                     getTypeName4SysConf(_parameter)));
@@ -733,7 +736,7 @@ public abstract class AbstractDocumentSum_Base
                 i++;
             }
 
-            final Set<String> noEscape = new HashSet<String>();
+            final Set<String> noEscape = new HashSet<>();
             add2SetValuesString4Postions4CurrencyUpdate(_parameter, calculators, values, noEscape);
             js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
 
@@ -828,8 +831,8 @@ public abstract class AbstractDocumentSum_Base
     public Return updateFields4Date(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final Instance newCurrInst = getRateCurrencyInstance(_parameter, null);
         final String date = _parameter.getParameterValue("date_eFapsDate");
 
@@ -860,8 +863,8 @@ public abstract class AbstractDocumentSum_Base
     public Return updateFields4RateCurrencyFromDate(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final Instance newInst = getRateCurrencyInstance(_parameter, null);
 
         final Currency currency = new Currency();
@@ -872,9 +875,9 @@ public abstract class AbstractDocumentSum_Base
 
         final StringBuilder js = new StringBuilder();
         int i = 0;
-        final Map<Integer, Map<String, Object>> values = new TreeMap<Integer, Map<String, Object>>();
+        final Map<Integer, Map<String, Object>> values = new TreeMap<>();
         for (final Calculator calculator : calculators) {
-            final Map<String, Object> map2 = new HashMap<String, Object>();
+            final Map<String, Object> map2 = new HashMap<>();
             if (!calculator.isEmpty()) {
                 final QueryBuilder qlb = new QueryBuilder(CISales.PositionAbstract);
                 qlb.addWhereAttrEqValue(CISales.PositionAbstract.Product, Instance.get(calculator.getOid()));
@@ -894,7 +897,7 @@ public abstract class AbstractDocumentSum_Base
             i++;
         }
 
-        final Set<String> noEscape = new HashSet<String>();
+        final Set<String> noEscape = new HashSet<>();
         add2SetValuesString4Postions4CurrencyUpdate(_parameter, calculators, values, noEscape);
         js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
 
@@ -1151,13 +1154,13 @@ public abstract class AbstractDocumentSum_Base
         }
 
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> list = new ArrayList<>();
         final List<Calculator> calcList = analyseTable(_parameter, row4priceFromDB);
         int i = 0;
         for (final Calculator cal : calcList) {
             // always add the first and than only the ones visible in the userinterface
             if (i == 0 || !cal.isBackground()) {
-                final Map<String, Object> map = new HashMap<String, Object>();
+                final Map<String, Object> map = new HashMap<>();
                 _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
                 add2Map4UpdateField(_parameter, map, calcList, cal, i == 0);
                 list.add(map);
@@ -1179,87 +1182,114 @@ public abstract class AbstractDocumentSum_Base
     public Return recalculateRate(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance docInst = _parameter.getInstance();
-        if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-            final PrintQuery print = new PrintQuery(docInst);
-            final SelectBuilder selRateCurInst = SelectBuilder.get()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-            print.addSelect(selRateCurInst);
-            print.execute();
+        final List<Instance> instances;
+        final Instance instance = _parameter.getInstance();
+        if (InstanceUtils.isValid(instance)) {
+            instances = new ArrayList<>();
+            instances.add(instance);
+        } else {
+            instances = getInstances(_parameter, "", true);
+        }
+        for (final Instance docInst : instances) {
+            if (InstanceUtils.isKindOf(docInst, CISales.DocumentSumAbstract)) {
+                final PrintQuery print = new PrintQuery(docInst);
+                final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(
+                                CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                print.addSelect(selRateCurInst);
+                print.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.Rate);
+                print.execute();
 
-            final Instance baseCurrInst = Currency.getBaseCurrency();
-            final Instance rateCurrInst = print.<Instance>getSelect(selRateCurInst);
-            if (!baseCurrInst.equals(rateCurrInst)) {
+                final Instance baseCurrInst = Currency.getBaseCurrency();
+                final Instance rateCurrInst = print.<Instance>getSelect(selRateCurInst);
+                if (!baseCurrInst.equals(rateCurrInst)) {
 
-                final String dateStr = _parameter.getParameterValue(
-                                CIFormSales.Sales_DocumentSum_RecalculateForm.date.name + "_eFapsDate");
+                    final String dateStr = _parameter.getParameterValue(
+                                    CIFormSales.Sales_DocumentSum_RecalculateForm.date.name + "_eFapsDate");
+                    DateTime date;
+                    if (dateStr == null) {
+                        date = print.getAttribute(CISales.DocumentSumAbstract.Date);
+                    } else {
+                        date = DateUtil.getDateFromParameter(dateStr);
+                    }
+                    final Currency currency = new Currency();
+                    final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, date, rateCurrInst);
+                    final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, docInst.getType().getName());
+                    final Object[] rateObj = RateInfo.getRateObject(_parameter, rateInfo, docInst.getType().getName());
 
-                final Currency currency = new Currency();
-                final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, dateStr, rateCurrInst);
-                final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, docInst.getType().getName());
-                final Object[] rateObj = RateInfo.getRateObject(_parameter, rateInfo, docInst.getType().getName());
+                    final Object[] currentRateObj = print.getAttribute(CISales.DocumentSumAbstract.Rate);
 
-                final DecimalFormat frmt = NumberFormatter.get().getFormatter();
+                    if (((BigDecimal) currentRateObj[0]).compareTo((BigDecimal) rateObj[0]) != 0
+                                    || ((BigDecimal) currentRateObj[1]).compareTo((BigDecimal) rateObj[1]) != 0) {
 
-                final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
-                final int scale = totalFrmt.getMaximumFractionDigits();
+                        final DecimalFormat frmt = NumberFormatter.get().getFormatter();
 
-                final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
-                final int uScale = unitFrmt.getMaximumFractionDigits();
+                        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(
+                                        _parameter));
+                        final int scale = totalFrmt.getMaximumFractionDigits();
 
-                final List<Calculator> calcList = new ArrayList<Calculator>();
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, docInst);
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selProdOid = SelectBuilder.get().linkto(CISales.PositionSumAbstract.Product).oid();
-                multi.addSelect(selProdOid);
-                multi.addAttribute(CISales.PositionSumAbstract.Quantity,
-                                CISales.PositionSumAbstract.RateNetUnitPrice,
-                                CISales.PositionSumAbstract.Discount);
-                multi.execute();
-                while (multi.next()) {
-                    //read the ratevalues
-                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-                    final BigDecimal unitPrice = multi
-                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
-                    final BigDecimal discount = multi
-                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
-                    final String prodOid = multi.<String>getSelect(selProdOid);
-                    final Calculator calc = getCalculator(_parameter, null, prodOid, frmt.format(quantity),
-                                    unitFrmt.format(unitPrice), frmt.format(discount), false, 0);
-                    calcList.add(calc);
+                        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(
+                                        _parameter));
+                        final int uScale = unitFrmt.getMaximumFractionDigits();
 
-                    // update the base values for the position
-                    final Update update = new Update(multi.getCurrentInstance());
-                    update.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
-                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
-                    update.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
-                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
-                    update.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
-                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
-                    update.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
-                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
-                    update.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
-                    update.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
-                    update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
-                    update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
-                    update.add(CISales.PositionSumAbstract.Rate, rateObj);
-                    update.execute();
+                        final List<Calculator> calcList = new ArrayList<>();
+                        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+                        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, docInst);
+                        final MultiPrintQuery multi = queryBldr.getPrint();
+                        final SelectBuilder selProdOid = SelectBuilder.get().linkto(CISales.PositionSumAbstract.Product)
+                                        .oid();
+                        multi.addSelect(selProdOid);
+                        multi.addAttribute(CISales.PositionSumAbstract.Quantity,
+                                        CISales.PositionSumAbstract.RateNetUnitPrice,
+                                        CISales.PositionSumAbstract.Discount);
+                        multi.execute();
+                        while (multi.next()) {
+                            // read the ratevalues
+                            final BigDecimal quantity = multi.<BigDecimal>getAttribute(
+                                            CISales.PositionSumAbstract.Quantity);
+                            final BigDecimal unitPrice = multi.<BigDecimal>getAttribute(
+                                            CISales.PositionSumAbstract.RateNetUnitPrice);
+                            final BigDecimal discount = multi.<BigDecimal>getAttribute(
+                                            CISales.PositionSumAbstract.Discount);
+                            final String prodOid = multi.<String>getSelect(selProdOid);
+                            final Calculator calc = getCalculator(_parameter, null, prodOid, frmt.format(quantity),
+                                            unitFrmt.format(unitPrice), frmt.format(discount), false, 0);
+                            calcList.add(calc);
+
+                            // update the base values for the position
+                            final Update update = new Update(multi.getCurrentInstance());
+                            update.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice().divide(rate,
+                                            BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                            update.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice().divide(rate,
+                                            BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                            update.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice().divide(rate,
+                                            BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                            update.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice().divide(rate,
+                                            BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                            update.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
+                            update.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
+                            update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                                            .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale,
+                                                            BigDecimal.ROUND_HALF_UP));
+                            update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
+                            update.add(CISales.PositionSumAbstract.Rate, rateObj);
+                            update.execute();
+                        }
+                        // update the base values for the document
+                        final Update update = new Update(docInst);
+                        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate,
+                                        BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP);
+                        update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+
+                        update.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate,
+                                        baseCurrInst));
+
+                        final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate,
+                                        BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP);
+                        update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+                        update.add(CISales.DocumentSumAbstract.Rate, rateObj);
+                        update.execute();
+                    }
                 }
-                // update the base values for the document
-                final Update update = new Update(docInst);
-                final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(scale, BigDecimal.ROUND_HALF_UP);
-                update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
-
-                update.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
-
-                final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
-                update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
-                update.add(CISales.DocumentSumAbstract.Rate, rateObj);
-                update.execute();
             }
         }
         return new Return();
@@ -1294,8 +1324,8 @@ public abstract class AbstractDocumentSum_Base
             formater.applyPattern("#,##0.############");
             formater.setRoundingMode(RoundingMode.HALF_UP);
             final String rateStr = formater.format(rate);
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, String>> list = new ArrayList<>();
+            final Map<String, String> map = new HashMap<>();
             map.put("rate", rateStr);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
@@ -1358,7 +1388,7 @@ public abstract class AbstractDocumentSum_Base
                               final Instance _currencyInst)
         throws EFapsException
     {
-        final Map<Tax, BigDecimal> values = new HashMap<Tax, BigDecimal>();
+        final Map<Tax, BigDecimal> values = new HashMap<>();
         for (final Calculator calc : _calcList) {
             if (!calc.isWithoutTax()) {
                 final Map<Tax, BigDecimal> valMap = calc.getTaxesAmounts();
@@ -1427,7 +1457,7 @@ public abstract class AbstractDocumentSum_Base
                                                   final Collection<Instance> _excludes)
         throws EFapsException
     {
-        final List<Calculator> ret = new ArrayList<Calculator>();
+        final List<Calculator> ret = new ArrayList<>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _docInst);
         queryBldr.addOrderByAttributeAsc(CISales.PositionSumAbstract.PositionNumber);
@@ -1666,7 +1696,7 @@ public abstract class AbstractDocumentSum_Base
                     throws EFapsException
                 {
                     final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
-                    final List<DocTypeActivation> pactivt = new ArrayList<DocTypeActivation>();
+                    final List<DocTypeActivation> pactivt = new ArrayList<>();
                     for (final String activation : activations.values()) {
                         final DocTypeActivation pDAct = ERP.DocTypeActivation.valueOf(activation);
                         pactivt.add(pDAct);
@@ -1675,7 +1705,7 @@ public abstract class AbstractDocumentSum_Base
                         _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Activation, pactivt.toArray());
                     }
                     final Map<Integer, String> configurations = analyseProperty(_parameter, "Configuration");
-                    final List<DocTypeConfiguration> configs = new ArrayList<DocTypeConfiguration>();
+                    final List<DocTypeConfiguration> configs = new ArrayList<>();
                     for (final String configuration : configurations.values()) {
                         final DocTypeConfiguration config = ERP.DocTypeConfiguration.valueOf(configuration);
                         configs.add(config);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,26 +14,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 10227 $
- Last Changed:    $Date: 2013-09-18 06:31:01 -0500 (mié, 18 sep 2013) $
- Last Changed By: $Author: m.aranya@moxter.net $
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>418ac090-5d19-464b-a59f-bf8a32d93dd2</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10227 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReminderMyDesk_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_IncomingReminderMyDesk_Menu_Action_Create</child>
             <child>Sales_IncomingReminderMyDesk_Menu_Action_CreateFromDoc</child>
             <child>Sales_IncomingReminderMyDesk_Menu_Action_Delete</child>
+            <child>Sales_IncomingReminderMyDesk_Menu_Action_Recalculate</child>
         </childs>
     </definition>
-
 </ui-menu>
