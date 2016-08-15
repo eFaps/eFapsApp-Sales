@@ -235,7 +235,7 @@
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_CreditForm.rateCurrencyData.Label</property>
