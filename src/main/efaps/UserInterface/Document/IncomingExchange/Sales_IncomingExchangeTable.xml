@@ -65,7 +65,7 @@
             <property name="FilterType">FREETEXT</property>
             <property name="FilterBase">DATABASE</property>
             <property name="FilterRequired">true</property>
-            <property name="FilterDefault">YEAR</property>
+            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_IncomingExchange/Date.Label</property>
         </field>
