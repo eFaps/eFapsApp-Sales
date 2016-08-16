@@ -1569,6 +1569,20 @@ public final class Sales
                     .key(BASE + "Reservation.ActivateTransactionTrigger")
                     .description(" Activate the reservation trigger mechanism on transactions..");
 
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink EXTEND_PRODDOC4MOVEMASS = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "extend.ProductDocumentType4MoveMassive")
+                    .description("Default Product Document type for move massive.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink EXTEND_PRODDOC4MOVE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "extend.ProductDocumentType4Move")
+                    .description("Default Product Document type for move.");
+
     /**
      * Singelton.
      */
