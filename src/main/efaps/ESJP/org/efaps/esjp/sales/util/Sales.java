@@ -812,6 +812,22 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_DETRACTIONACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.Detraction.Activate")
+                    .defaultValue(true)
+                    .description("Activate the possiblity to use Detraction as a payment.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_RETENTIONACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.Retention.Activate")
+                    .defaultValue(true)
+                    .description("Activate the possiblity to use Retention as a payment.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENT_CASH_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.in.Cash.PayableDocuments")

@@ -14,7 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7ebc17fe-afbb-4480-b903-c2c1b8b38fa1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
@@ -23,7 +25,6 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentDetractionForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDetraction">
@@ -33,8 +34,15 @@
                 <property name="Status">Open</property>
             </execute>
             <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetraction"/>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.payment.in.Detraction.Activate</property>
+                <property name="Default">true</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentDetraction</property>
         <property name="TargetMode">create</property>
