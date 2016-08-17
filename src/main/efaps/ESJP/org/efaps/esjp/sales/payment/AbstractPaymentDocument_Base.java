@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
@@ -1208,34 +1209,36 @@ public abstract class AbstractPaymentDocument_Base
         final Return ret = new Return();
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Field accField = uiValue.getField().getCollection().getField("account");
-        final Map<String, String> propertyMap = accField.getEvents(EventType.UI_FIELD_VALUE).get(0).getPropertyMap();
         final Parameter parameter = ParameterUtil.clone(_parameter);
-        for (final Entry<String, String> entry : propertyMap.entrySet()) {
-            ParameterUtil.setProperty(parameter, entry.getKey(), entry.getValue());
-        }
+        if (CollectionUtils.isNotEmpty(accField.getEvents(EventType.UI_FIELD_VALUE))) {
+            final Map<String, String> propertyMap = accField.getEvents(EventType.UI_FIELD_VALUE)
+                            .get(0).getPropertyMap();
+            for (final Entry<String, String> entry : propertyMap.entrySet()) {
+                ParameterUtil.setProperty(parameter, entry.getKey(), entry.getValue());
+            }
+            final Return retTmp = dropDown4AccountFieldValue(parameter);
+            @SuppressWarnings("unchecked")
+            final List<DropDownPosition> options = (List<DropDownPosition>) retTmp.get(ReturnValues.VALUES);
+            boolean first = true;
+            for (final DropDownPosition pos : options) {
+                if (first || pos.isSelected()) {
+                    final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(),
+                                    String.valueOf(pos.getValue()));
+                    final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.AccountCashDesk.CurrencyLink)
+                                    .instance();
+                    print.addSelect(selCurInst);
+                    print.execute();
+                    final Instance curInstance = print.getSelect(selCurInst);
 
-        final Return retTmp = dropDown4AccountFieldValue(parameter);
-        @SuppressWarnings("unchecked")
-        final List<DropDownPosition> options = (List<DropDownPosition>) retTmp.get(ReturnValues.VALUES);
-        boolean first = true;
-        for (final DropDownPosition pos : options) {
-            if (first || pos.isSelected()) {
-                final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(),
-                                String.valueOf(pos.getValue()));
-                final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.AccountCashDesk.CurrencyLink)
-                                .instance();
-                print.addSelect(selCurInst);
-                print.execute();
-                final Instance curInstance = print.getSelect(selCurInst);
-
-                final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, new DateTime(), curInstance);
-                final Object[] rateObj = rateInfo.getRateObject();
-                final Object[] ratesTmp = ArrayUtils.add(rateObj, curInstance.getId());
-                ret.put(ReturnValues.VALUES, ratesTmp);
-                if (first) {
-                    first = false;
-                } else {
-                    break;
+                    final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, new DateTime(), curInstance);
+                    final Object[] rateObj = rateInfo.getRateObject();
+                    final Object[] ratesTmp = ArrayUtils.add(rateObj, curInstance.getId());
+                    ret.put(ReturnValues.VALUES, ratesTmp);
+                    if (first) {
+                        first = false;
+                    } else {
+                        break;
+                    }
                 }
             }
         }
@@ -1256,19 +1259,18 @@ public abstract class AbstractPaymentDocument_Base
         final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(),
                         _parameter.getParameterValue("account"));
         print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
-        print.execute();
+        if (print.execute()) {
+            final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                            print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
 
-        final Instance newInst = Instance.get(CIERP.Currency.getType(),
-                        print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
+            final Instance baseInst = Currency.getBaseCurrency();
 
-        final Instance baseInst = Currency.getBaseCurrency();
-
-        final Map<String, String> map = new HashMap<>();
-        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
-        map.put("rate", NumberFormatter.get().getFormatter(0, 3).format(rates[3]));
-        map.put("rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0));
-        list.add(map);
-
+            final Map<String, String> map = new HashMap<>();
+            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+            map.put("rate", NumberFormatter.get().getFormatter(0, 3).format(rates[3]));
+            map.put("rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0));
+            list.add(map);
+        }
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
