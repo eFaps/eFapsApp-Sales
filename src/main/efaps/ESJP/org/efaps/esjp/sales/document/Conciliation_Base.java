@@ -21,18 +21,19 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -46,6 +47,8 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.sales.listener.IOnPayment;
+import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -228,7 +231,7 @@ public abstract class Conciliation_Base
         throws EFapsException
     {
         final boolean single = "true".equalsIgnoreCase(getProperty(_parameter, "Single", "true"));
-        final Map<Instance, BigDecimal> inst2amount = new HashMap<Instance, BigDecimal>();
+        final Map<Instance, BigDecimal> inst2amount = new HashMap<>();
         Instance posInst = null;
         for (final Instance paymentInst : _paymentInsts) {
             if (single || posInst == null) {
@@ -375,50 +378,44 @@ public abstract class Conciliation_Base
     }
 
     /**
+     * Execute automation for payments.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
      * @throws EFapsException on error
      */
-    @Override
-    public Return updatePostTrigger(final Parameter _parameter)
+    public Return executeAutomation4Payments(final Parameter _parameter)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked")
-        final Map<Attribute, Object> values = (Map<Attribute, Object>) _parameter.get(ParameterValues.NEW_VALUES);
-        for (final Entry<Attribute, Object> entry : values.entrySet()) {
-            if (CISales.Conciliation.Status.name.equals(entry.getKey().getName())
-                            || CISales.Conciliation.StatusAbstract.name.equals(entry.getKey().getName())) {
-                final Object objID = ((Object[]) entry.getValue())[0];
-                final Long statusid = objID instanceof String ? Long.valueOf((String) objID) : (Long) objID;
-                final Status status = Status.get(statusid);
-                if (CISales.ConciliationStatus.Closed.key.equals(status.getKey())) {
-                    final QueryBuilder posAttrQueryBldr = new QueryBuilder(CISales.ConciliationPosition);
-                    posAttrQueryBldr.addWhereAttrEqValue(CISales.ConciliationPosition.ConciliationLink,
-                                    _parameter.getInstance());
-                    final AttributeQuery posAttrQuery = posAttrQueryBldr
-                                    .getAttributeQuery(CISales.ConciliationPosition.ID);
+        final QueryBuilder posAttrQueryBldr = new QueryBuilder(CISales.ConciliationPosition);
+        posAttrQueryBldr.addWhereAttrEqValue(CISales.ConciliationPosition.ConciliationLink, _parameter.getInstance());
+        final AttributeQuery posAttrQuery = posAttrQueryBldr.getAttributeQuery(CISales.ConciliationPosition.ID);
 
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentIOAbstract);
-                    queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentIOAbstract.ConciliationPositionLink,
-                                    posAttrQuery);
-                    final InstanceQuery query = queryBldr.getQuery();
-                    query.executeWithoutAccessCheck();
-                    while (query.next()) {
-                        final Instance payInst = query.getCurrentValue();
-                        final PrintQuery print = new PrintQuery(payInst);
-                        print.addAttribute(CISales.PaymentDocumentIOAbstract.StatusAbstract);
-                        print.executeWithoutAccessCheck();
-                        final Status currentStatus = Status.get(print.<Long>getAttribute(
-                                        CISales.PaymentDocumentIOAbstract.StatusAbstract));
-                        final Status payStatus = Status.find(payInst.getType().getStatusAttribute().getLink().getUUID(),
-                                        "Closed");
-                        if (payStatus != null && !currentStatus.getKey().equalsIgnoreCase("Booked")) {
-                            final Update update = new Update(payInst);
-                            update.add(CISales.PaymentDocumentIOAbstract.StatusAbstract, payStatus);
-                            update.execute();
-                        }
-                    }
-                }
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentIOAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentIOAbstract.ConciliationPositionLink, posAttrQuery);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        final Set<Instance> payInsts = new HashSet<>();
+        while (query.next()) {
+            final Instance payInst = query.getCurrentValue();
+            payInsts.add(payInst);
+            final PrintQuery print = new PrintQuery(payInst);
+            print.addAttribute(CISales.PaymentDocumentIOAbstract.StatusAbstract);
+            print.executeWithoutAccessCheck();
+            final Status currentStatus = Status.get(print.<Long>getAttribute(
+                            CISales.PaymentDocumentIOAbstract.StatusAbstract));
+            final Status payStatus = Status.find(payInst.getType().getStatusAttribute().getLink().getUUID(), "Closed");
+            if (payStatus != null && !currentStatus.getKey().equalsIgnoreCase("Booked")) {
+                final Update update = new Update(payInst);
+                update.add(CISales.PaymentDocumentIOAbstract.StatusAbstract, payStatus);
+                update.execute();
+            }
+        }
+        for (final Instance payInst  :payInsts) {
+            for (final IOnPayment listener : Listener.get().<IOnPayment>invoke(IOnPayment.class)) {
+                final CreatedDoc createdDoc = new CreatedDoc();
+                createdDoc.setInstance(payInst);
+                listener.executeAutomation(new AbstractPaymentDocument(){}, _parameter, createdDoc);
             }
         }
         return new Return();

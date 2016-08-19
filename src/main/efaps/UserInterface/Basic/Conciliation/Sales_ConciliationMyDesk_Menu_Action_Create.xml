@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3a7d2738-e9eb-4b45-802f-27274e7c8cbe</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ConciliationMyDesk_Menu_Action_Create</name>
@@ -33,7 +27,7 @@
         </access>
         <target>
             <form>Sales_ConciliationForm</form>
-            <execute program="org.efaps.esjp.sales.document.Conciliation" method="create" >
+            <execute program="org.efaps.esjp.sales.document.Conciliation" method="create">
                 <property name="StatusGroup">Sales_ConciliationStatus</property>
                 <property name="Status">Open</property>
             </execute>
@@ -42,7 +36,7 @@
         <property name="TargetCreateType">Sales_Conciliation</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowWidth">900</property>
         <property name="HRef">TREE</property>
     </definition>
 </ui-command>

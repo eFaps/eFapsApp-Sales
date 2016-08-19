@@ -59,8 +59,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue"
+            <property name="UIType">DROPDOWN</property>
+            <trigger event="UI_FIELD_VALUE" method="getOptionListFieldValue"
                 name="Sales_ConciliationForm.account.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
                 <property name="Type">Sales_AccountCashDesk</property>
