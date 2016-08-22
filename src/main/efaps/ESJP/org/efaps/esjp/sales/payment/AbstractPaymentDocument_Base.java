@@ -75,6 +75,7 @@ import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -1518,8 +1519,6 @@ public abstract class AbstractPaymentDocument_Base
         }
     }
 
-
-
     /**
      * Gets the select string4 attribute account.
      *
@@ -1593,10 +1592,43 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         inverseTransactions(_parameter, _parameter.getInstance(), true);
-        final Update updatePayment = new Update(_parameter.getInstance());
-        updatePayment.add(CISales.Payment.Amount, BigDecimal.ZERO);
-        updatePayment.executeWithoutAccessCheck();
+        reverseStatus4CreateDocument(_parameter, _parameter.getInstance());
         return new StatusValue().setStatus(_parameter);
+    }
+
+    /**
+     * Sets the status for the relatrd create document to the previous status.
+     *
+     * @param _parameter the parameter
+     * @param _targetInst the target inst
+     * @throws EFapsException the e faps exception
+     */
+    protected void reverseStatus4CreateDocument(final Parameter _parameter,
+                                                final Instance _targetInst)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _targetInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCreateDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+        final SelectBuilder selCreateDocStatus = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
+                        .attribute(CIERP.DocumentAbstract.StatusAbstract);
+        multi.addSelect(selCreateDocInst, selCreateDocStatus);
+        multi.execute();
+        while (multi.next()) {
+            final Instance createDocInst = multi.getSelect(selCreateDocInst);
+            final Long statusID = multi.getSelect(selCreateDocStatus);
+            if (InstanceUtils.isValid(createDocInst) && statusID != null) {
+                final Status status = Status.get(statusID);
+                if ("Paid".equals(status.getKey()) || "Paid".equals(status.getKey())) {
+                    final Update update = new Update(createDocInst);
+                    update.add(CIERP.DocumentAbstract.StatusAbstract,
+                                    Status.find(createDocInst.getType().getStatusAttribute().getLink().getUUID(),
+                                                    "Open"));
+                    update.execute();
+                }
+            }
+        }
     }
 
     /**
@@ -1659,7 +1691,6 @@ public abstract class AbstractPaymentDocument_Base
             }
         }
     }
-
 
     /**
      * Gets the payments4 document.
