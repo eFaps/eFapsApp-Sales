@@ -74,9 +74,17 @@ import net.sf.jasperreports.engine.JRRewindableDataSource;
 public abstract class ProductABCReport_Base
     extends FilteredReport
 {
+
+    /**
+     * The Enum ReportType.
+     */
     public enum ReportType
     {
+
+        /** The provider. */
         PROVIDER,
+
+        /** The product. */
         PRODUCT;
     }
 
@@ -231,12 +239,12 @@ public abstract class ProductABCReport_Base
                 ret = new DRDataSource("productInst", "productName", "lines", "linesAbc",
                                 "items", "itemsAbc", "amount", "amountAbc");
 
-                final Map<String, ProductABC> map = new HashMap<String, ProductABC>();
+                final Map<String, ProductABC> map = new HashMap<>();
                 BigDecimal netPriceSum = BigDecimal.ZERO;
                 BigDecimal quantitySum = BigDecimal.ZERO;
                 BigDecimal linesSum = BigDecimal.ZERO;
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter,
-                                Sales.PRODUCTABCREPORT4PROD.get());
+                                Sales.REPORT_PRODUCTABC4PROD.get());
                 add2QueryBuilder(_parameter, attrQueryBldr);
 
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
@@ -281,7 +289,7 @@ public abstract class ProductABCReport_Base
                     quantitySum = quantitySum.add(quantity);
                 }
 
-                final List<ProductABC> lst = new ArrayList<ProductABC>();
+                final List<ProductABC> lst = new ArrayList<>();
                 lst.addAll(map.values());
 
                 setLinesAbc(lst, linesSum);
@@ -400,12 +408,12 @@ public abstract class ProductABCReport_Base
                 ret = new DRDataSource("contactInst", "contactName", "lines", "linesAbc",
                                                                 "amount", "amountAbc");
 
-                final Map<String, ProductABC> map = new HashMap<String, ProductABC>();
+                final Map<String, ProductABC> map = new HashMap<>();
                 BigDecimal netPriceSum = BigDecimal.ZERO;
                 BigDecimal linesSum = BigDecimal.ZERO;
 
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter,
-                                Sales.PRODUCTABCREPORT4PROV.get());
+                                Sales.REPORT_PRODUCTABC4PROV.get());
                 add2QueryBuilder(_parameter, attrQueryBldr);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
@@ -443,7 +451,7 @@ public abstract class ProductABCReport_Base
                 }
 
 
-                final List<ProductABC> lst = new ArrayList<ProductABC>();
+                final List<ProductABC> lst = new ArrayList<>();
                 lst.addAll(map.values());
 
                 setLinesAbc(lst, linesSum);
@@ -519,9 +527,9 @@ public abstract class ProductABCReport_Base
     {
         Properties props;
         if (this.reportType.equals(ReportType.PRODUCT)) {
-            props = Sales.PRODUCTABCREPORT4PROD.get();
+            props = Sales.REPORT_PRODUCTABC4PROD.get();
         } else {
-            props = Sales.PRODUCTABCREPORT4PROV.get();
+            props = Sales.REPORT_PRODUCTABC4PROV.get();
         }
         final String constantA = props.getProperty("PercentA", "80");
         final String constantB = props.getProperty("PercentB", "5");
@@ -566,9 +574,9 @@ public abstract class ProductABCReport_Base
     {
         Properties props;
         if (this.reportType.equals(ReportType.PRODUCT)) {
-            props = Sales.PRODUCTABCREPORT4PROD.get();
+            props = Sales.REPORT_PRODUCTABC4PROD.get();
         } else {
-            props = Sales.PRODUCTABCREPORT4PROV.get();
+            props = Sales.REPORT_PRODUCTABC4PROV.get();
         }
         final String constantA =  props.getProperty("PercentA", "80");
         final String constantB = props.getProperty("PercentB", "5");
@@ -612,9 +620,9 @@ public abstract class ProductABCReport_Base
     {
         Properties props;
         if (this.reportType.equals(ReportType.PRODUCT)) {
-            props = Sales.PRODUCTABCREPORT4PROD.get();
+            props = Sales.REPORT_PRODUCTABC4PROD.get();
         } else {
-            props = Sales.PRODUCTABCREPORT4PROV.get();
+            props = Sales.REPORT_PRODUCTABC4PROV.get();
         }
         final String constantA =  props.getProperty("PercentA", "80");
         final String constantB =  props.getProperty("PercentB", "5");

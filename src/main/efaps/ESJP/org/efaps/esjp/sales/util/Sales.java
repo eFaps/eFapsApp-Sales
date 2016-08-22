@@ -1022,22 +1022,7 @@ public final class Sales
                     .key(BASE + "PettyCashReceipt.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROV = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Config4ProductABCReport4Provider")
-                    .description("Configures the ABC Report for Providers.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROD = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Config4ProductABCReport4Product")
-                    .description("Configures the ABC Report for Products..");
-
-    /** See description. */
+   /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PRODUCTREQUEST_ASSDEP = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
@@ -1361,6 +1346,22 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocProductTransactionReport.AnalyzeFabrication")
                     .description("Activate the Anlization for fabrication for the DocProductTransactionReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_PRODUCTABC4PROV = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.ProductABCReport4Provider")
+                    .addDefaultValue("Type", CISales.Invoice.getType().getName())
+                    .description("Configures the ABC Report for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_PRODUCTABC4PROD = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.ProductABCReport4Product")
+                    .addDefaultValue("Type", CISales.Invoice.getType().getName())
+                    .description("Configures the ABC Report for Products..");
 
     /** See description. */
     @EFapsSysConfAttribute
