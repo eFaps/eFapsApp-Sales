@@ -35,7 +35,7 @@
             <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeSearch">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="description">
