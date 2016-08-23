@@ -120,7 +120,7 @@ public abstract class PettyCashReceipt_Base
         final String contactpicker = _parameter
                         .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contactPicker.name);
         if (contactpicker != null) {
-            ParameterUtil.setParmeterValue(_parameter, CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+            ParameterUtil.setParameterValues(_parameter, CIFormSales.Sales_PettyCashReceiptForm.contact.name,
                             contactpicker);
         }
     }

@@ -282,7 +282,7 @@ public abstract class PaymentCheck_Base
                             DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))));
 
             // store that the amount was set from the User
-            ParameterUtil.setParmeterValue(_parameter, "amount", amount);
+            ParameterUtil.setParameterValues(_parameter, "amount", amount);
             Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingCheck2ApplyDocument);

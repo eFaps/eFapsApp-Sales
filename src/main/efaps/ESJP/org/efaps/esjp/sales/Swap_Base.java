@@ -374,7 +374,7 @@ public abstract class Swap_Base
             final String[] partialArray = _parameter.getParameterValues("partial");
             partialArray[idx] = frmt.format(partial);
             final Parameter parameter = ParameterUtil.clone(_parameter);
-            ParameterUtil.setParmeterValue(parameter, "partial", partialArray);
+            ParameterUtil.setParameterValues(parameter, "partial", partialArray);
             ret = updateFields4Partial(parameter);
         }
         return ret;

@@ -212,14 +212,14 @@ public abstract class Exchange_Base
                                     .getRateFrmt();
                     final Parameter parameter = ParameterUtil.clone(_parameter);
                     if (!ArrayUtils.isEmpty(nameAr) && nameAr.length > i) {
-                        ParameterUtil.setParmeterValue(parameter, "name4create", nameAr[i]);
+                        ParameterUtil.setParameterValues(parameter, "name4create", nameAr[i]);
                     }
-                    ParameterUtil.setParmeterValue(parameter, "rate", rate);
-                    ParameterUtil.setParmeterValue(parameter, "rateCrossTotal", crossAr[i]);
-                    ParameterUtil.setParmeterValue(parameter, "rateCurrencyId", currAr[i]);
-                    ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
+                    ParameterUtil.setParameterValues(parameter, "rate", rate);
+                    ParameterUtil.setParameterValues(parameter, "rateCrossTotal", crossAr[i]);
+                    ParameterUtil.setParameterValues(parameter, "rateCurrencyId", currAr[i]);
+                    ParameterUtil.setParameterValues(parameter, getFieldName4Attribute(_parameter,
                                     CISales.DocumentSumAbstract.Date.name), dateAr[i]);
-                    ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
+                    ParameterUtil.setParameterValues(parameter, getFieldName4Attribute(_parameter,
                                     CISales.DocumentSumAbstract.DueDate.name), dueDateAr[i]);
 
                     final CreatedDoc createdDoc = createDoc(parameter);

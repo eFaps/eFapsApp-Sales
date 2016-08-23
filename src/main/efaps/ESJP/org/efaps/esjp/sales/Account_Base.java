@@ -219,7 +219,7 @@ public abstract class Account_Base
         if (instance != null && CISales.AccountFundsToBeSettled.getType().equals(instance.getType())) {
             final FundsToBeSettledBalance ftbs = new FundsToBeSettledBalance();
             final Parameter parameter = ParameterUtil.clone(_parameter, (Object) null);
-            ParameterUtil.setParmeterValue(parameter, "startAmount", "0");
+            ParameterUtil.setParameterValues(parameter, "startAmount", "0");
             final Instance balanceInst = ftbs.createBalanceDoc(parameter);
             final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
             ftbs.createDoc4Account(parameter, balanceInst);

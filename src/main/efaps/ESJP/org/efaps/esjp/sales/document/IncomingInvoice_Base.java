@@ -778,7 +778,7 @@ public abstract class IncomingInvoice_Base
         final String descr = print.getAttribute(CIERP.AttributeDefinitionMappingAbstract.Description);
         if (descr.matches("[0-9]+")) {
             map.put("detractionPercent", descr);
-            ParameterUtil.setParmeterValue(_parameter, CIFormSales.Sales_IncomingInvoiceForm.detractionPercent.name,
+            ParameterUtil.setParameterValues(_parameter, CIFormSales.Sales_IncomingInvoiceForm.detractionPercent.name,
                             descr);
         }
 

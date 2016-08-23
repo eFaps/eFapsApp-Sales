@@ -166,14 +166,14 @@ public abstract class Credit_Base
         final String installAmountStr = fomatter.format(installAmount);
 
         final Parameter parameter = ParameterUtil.clone(_parameter);
-        ParameterUtil.setParmeterValue(parameter, "contact", print.<String>getSelect(selContactOID));
-        ParameterUtil.setParmeterValue(parameter, "rateCurrencyId",
+        ParameterUtil.setParameterValues(parameter, "contact", print.<String>getSelect(selContactOID));
+        ParameterUtil.setParameterValues(parameter, "rateCurrencyId",
                         String.valueOf(print.<Long>getAttribute(CISales.Credit.RateCurrencyId)));
 
         for (int i = 0; i < quantity; i++) {
-            ParameterUtil.setParmeterValue(parameter, "dueDate", dueDate.plusMonths(i).toString());
-            ParameterUtil.setParmeterValue(parameter, "revision", String.valueOf(i + 1));
-            ParameterUtil.setParmeterValue(parameter, "rateCrossTotal", installAmountStr);
+            ParameterUtil.setParameterValues(parameter, "dueDate", dueDate.plusMonths(i).toString());
+            ParameterUtil.setParameterValues(parameter, "revision", String.valueOf(i + 1));
+            ParameterUtil.setParameterValues(parameter, "rateCrossTotal", installAmountStr);
             new Installment()
             {
                 @Override

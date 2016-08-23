@@ -104,14 +104,14 @@ public abstract class PaymentDetractionOut_Base
         if (detractionDocs != null) {
             final BulkPaymentDetraction bulk = new BulkPaymentDetraction();
             final Parameter bulkParameter = ParameterUtil.clone(_parameter);
-            ParameterUtil.setParmeterValue(bulkParameter, "account4create", _parameter.getParameterValues("account"));
+            ParameterUtil.setParameterValues(bulkParameter, "account4create", _parameter.getParameterValues("account"));
             final CreatedDoc bulkDoc = bulk.createDoc(bulkParameter);
             for (int i = 0; i < paymentAmounts.length; i++) {
                 final Parameter parameter = ParameterUtil.clone(_parameter);
-                ParameterUtil.setParmeterValue(parameter, "amount", paymentAmounts[i]);
-                ParameterUtil.setParmeterValue(parameter, "paymentAmount", paymentAmounts[i]);
-                ParameterUtil.setParmeterValue(parameter, "createDocument", detractionDocs[i]);
-                ParameterUtil.setParmeterValue(parameter, "detractionDoc", detractionDocs[i]);
+                ParameterUtil.setParameterValues(parameter, "amount", paymentAmounts[i]);
+                ParameterUtil.setParameterValues(parameter, "paymentAmount", paymentAmounts[i]);
+                ParameterUtil.setParameterValues(parameter, "createDocument", detractionDocs[i]);
+                ParameterUtil.setParameterValues(parameter, "detractionDoc", detractionDocs[i]);
                 addParameter2DocValues(parameter);
                 final CreatedDoc createdDoc = createDoc(parameter);
                 createPayment(parameter, createdDoc);
@@ -140,8 +140,8 @@ public abstract class PaymentDetractionOut_Base
             print.addSelect(selContact, selServiceId);
             print.execute();
 
-            ParameterUtil.setParmeterValue(_parameter, "contact", print.<String>getSelect(selContact));
-            ParameterUtil.setParmeterValue(_parameter, "serviceType", String.valueOf(print.<Long>getSelect(selServiceId)));
+            ParameterUtil.setParameterValues(_parameter, "contact", print.<String>getSelect(selContact));
+            ParameterUtil.setParameterValues(_parameter, "serviceType", String.valueOf(print.<Long>getSelect(selServiceId)));
         }
     }
 

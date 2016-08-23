@@ -74,7 +74,7 @@ public abstract class CreditNote_Base
         final List<Instance> ret = super.connect2Derived(_parameter, _createdDoc);
         final String[] deriveds = _parameter.getParameterValues("derived");
 
-        ParameterUtil.setParmeterValue(_parameter, "invoices", deriveds);
+        ParameterUtil.setParameterValues(_parameter, "invoices", deriveds);
         return ret;
     }
 
