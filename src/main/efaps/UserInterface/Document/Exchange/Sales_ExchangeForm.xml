@@ -232,19 +232,6 @@
                 <property name="Attribute">org.efaps.sales.Exchange.ActivateGuarantee</property>
             </trigger>
          </field>
-         <field name="situationLink">
-            <property name="Attribute">SituationLink</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Label">Sales_Exchange/SituationLink.Label</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck"
-                name="Sales_Exchangeorm.situationLink.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Exchange.ActivateSituationLink</property>
-            </trigger>
-        </field>
         <field character="Heading" name="headingTotal">
             <property name="Level">2</property>
             <property name="Label">Sales_ExchangeForm.headingTotal.Heading</property>
