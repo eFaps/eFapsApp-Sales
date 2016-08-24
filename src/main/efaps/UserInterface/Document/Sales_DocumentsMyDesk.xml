@@ -42,7 +42,6 @@
             <child>Sales_OrderOutboundMyDesk</child>
             <child>Sales_ServiceOrderOutboundMyDesk</child>
             <child>Sales_QuoteRequestMyDesk</child>
-            <child>Sales_Document_ReportMyDesk</child>
             <child>Sales_UsageReportMyDesk</child>
             <child>Sales_ProductRequestMyDesk</child>
             <child>Sales_ServiceRequestMyDesk</child>

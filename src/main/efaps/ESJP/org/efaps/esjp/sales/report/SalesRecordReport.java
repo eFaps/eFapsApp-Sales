@@ -32,8 +32,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("9d08a6fa-0ae2-45f7-8122-17b44c8bc686")
 @EFapsApplication("eFapsApp-Sales")
-public class DocReport
-    extends DocReport_Base
+public class SalesRecordReport
+    extends SalesRecordReport_Base
 {
 
 }

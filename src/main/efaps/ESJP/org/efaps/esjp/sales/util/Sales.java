@@ -1327,6 +1327,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_SALESRECORD = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesRecordReport")
+                    .description("Properties for SalesRecordReport.")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("Type03", CISales.CreditNote.getType().getName())
+                    .addDefaultValue("Type04", CISales.Reminder.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute REPORT_DOCPRODTRANS = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocProductTransactionReport")

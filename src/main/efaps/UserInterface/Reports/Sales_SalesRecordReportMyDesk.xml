@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
  Copyright 2003 - 2016 The eFaps Team
@@ -24,22 +23,15 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Document_Report</name>
+        <name>Sales_SalesRecordReportMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_Document_ReportForm</form>
-            <execute program="org.efaps.esjp.sales.report.DocReport" method="createDocReport">
-                <property name="JasperReport">Sales_DocReport</property>
-                <property name="DataSourceClass">org.efaps.esjp.sales.report.DocReport</property>
-            </execute>
+            <menu>Sales_SalesRecordReportMyDesk_Menu</menu>
+            <form>Sales_SalesRecordReportForm</form>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetShowFile">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_Quotation</property>
-        <property name="NoUpdateAfterCOMMAND">true</property>
-        <property name="WindowWidth">900</property>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>
