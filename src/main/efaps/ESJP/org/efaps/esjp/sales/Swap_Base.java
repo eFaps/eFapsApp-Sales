@@ -142,7 +142,7 @@ public abstract class Swap_Base
             }
             final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), choice);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
             tmpMap.put(choice, map);
         }
