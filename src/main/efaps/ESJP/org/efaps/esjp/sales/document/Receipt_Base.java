@@ -95,6 +95,7 @@ public abstract class Receipt_Base
         final Return ret = new Return();
         final EditedDoc editedDoc = editDoc(_parameter);
         updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
 
         final File file = createReport(_parameter, editedDoc);
         if (file != null) {

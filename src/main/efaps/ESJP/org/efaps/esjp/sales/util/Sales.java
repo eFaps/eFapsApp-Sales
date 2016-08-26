@@ -1162,6 +1162,13 @@ public final class Sales
                     .description("Activate the mechanism to assign a condition in Receipt");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink  RECEIPT_DEFAULTCONDITION = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.DefaultCondition")
+                    .description("Set the default condition for Receipt");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute RECEIPT_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)

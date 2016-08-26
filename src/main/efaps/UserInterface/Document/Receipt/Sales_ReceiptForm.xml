@@ -209,6 +209,9 @@
                 <property name="Select">attribute[Name]</property>
                 <property name="ValueSelect">oid</property>
                 <property name="SetSelected">true</property>
+                <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.Receipt.DefaultCondition</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4Condition"
@@ -686,6 +689,9 @@
                 <property name="Select">attribute[Name]</property>
                 <property name="ValueSelect">oid</property>
                 <property name="SetSelected">true</property>
+                <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.Receipt.DefaultCondition</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4Condition"
