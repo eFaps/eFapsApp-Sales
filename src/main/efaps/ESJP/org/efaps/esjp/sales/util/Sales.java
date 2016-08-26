@@ -1360,6 +1360,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_DOCBALANCE= new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocBalanceReport")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.CreditNote.getType().getName())
+                    .addDefaultValue("Type03", CISales.Reminder.getType().getName())
+                    .addDefaultValue("Type04", CISales.IncomingExchange.getType().getName())
+                    .description("Configures the ABC Report for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute REPORT_PRODUCTABC4PROV = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.ProductABCReport4Provider")
