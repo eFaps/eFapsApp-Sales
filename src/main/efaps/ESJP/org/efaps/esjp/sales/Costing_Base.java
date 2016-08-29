@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Status;
@@ -60,6 +61,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.background.ExecutionBridge;
 import org.efaps.esjp.common.background.Service;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.Cost;
@@ -400,18 +402,23 @@ public abstract class Costing_Base
                 }
             }
 
-            final Map<Instance, TransCosting> prod2cost = new HashMap<>();
+            final Map<Instance, List<TransCosting>> prod2cost = new HashMap<>();
             for (final Instance inst : updateCost) {
-                final TransCosting transCost = updateCosting(_currencyInstance, inst);
-                prod2cost.put(transCost.getProductInstance(), transCost);
-                Costing_Base.LOG.debug(" Updated TransCosting: {}", transCost);
+                final List<TransCosting> transCostList = updateCosting(_currencyInstance, inst);
+                if (CollectionUtils.isNotEmpty(transCostList)) {
+                    prod2cost.put(transCostList.get(0).getProductInstance(), transCostList);
+                    Costing_Base.LOG.debug(" Updated TransCosting: {}", transCostList);
+                }
                 if (_bridge != null) {
                     _bridge.registerProgress();
                 }
             }
 
-            for (final TransCosting transCost : prod2cost.values()) {
+            for (final List<TransCosting> transCost : prod2cost.values()) {
                 updateCost(_currencyInstance, transCost);
+                if (_bridge != null) {
+                    _bridge.registerProgress();
+                }
             }
 
             if (repeat) {
@@ -450,43 +457,52 @@ public abstract class Costing_Base
      * @throws EFapsException on error
      */
     protected void updateCost(final Instance _currencyInstance,
-                              final TransCosting _transCost)
+                              final List<TransCosting> _transCostList)
         throws EFapsException
     {
-        BigDecimal currPrice = BigDecimal.ZERO;
+        if (CollectionUtils.isNotEmpty(_transCostList)) {
+            List<TransCosting> transCostList;
 
-        final DateTime date = new DateTime().withTimeAtStartOfDay();
+            if (Sales.COSTING_ONECOST.get()) {
+                transCostList = new ArrayList<>();
+                transCostList.add(_transCostList.get(_transCostList.size() - 1));
+            } else {
+                transCostList = _transCostList;
+            }
 
-        final CIType ciType = _transCost.getCostingInstance().getType().isCIType(CIProducts.Costing)
-                         ? CIProducts.ProductCost : CIProducts.ProductCostAlternative;
+            for (final TransCosting transCost : transCostList) {
+                final DateTime date;
+                if (Sales.COSTING_ONECOST.get()) {
+                    date = new DateTime().withTimeAtStartOfDay();
+                } else {
+                    date = transCost.getDate();
+                }
 
-        final QueryBuilder costBldr = new QueryBuilder(ciType);
-        costBldr.addWhereAttrEqValue(CIProducts.ProductCostAbstract.ProductLink, _transCost.getProductInstance());
-        costBldr.addWhereAttrGreaterValue(CIProducts.ProductCostAbstract.ValidUntil, date.minusMinutes(1));
-        costBldr.addWhereAttrLessValue(CIProducts.ProductCostAbstract.ValidFrom, date.plusMinutes(1));
-        if (ciType.equals(CIProducts.ProductCostAlternative)) {
-            costBldr.addWhereAttrEqValue(CIProducts.ProductCostAlternative.CurrencyLink, _currencyInstance);
-        }
+                BigDecimal cost;
+                if (InstanceUtils.isType(transCost.getCostingInstance(), CIProducts.Costing)) {
+                    cost = Cost.getCost4Currency(new Parameter(), date, transCost.getProductInstance(),
+                                    _currencyInstance);
+                } else {
+                    cost = Cost.getAlternativeCost4Currency(new Parameter(), date, _currencyInstance, transCost
+                                    .getProductInstance(), _currencyInstance);
+                }
 
-        final MultiPrintQuery costMulti = costBldr.getPrint();
-        costMulti.addAttribute(CIProducts.ProductCostAbstract.Price);
-        costMulti.executeWithoutAccessCheck();
-        if (costMulti.next()) {
-            currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCostAbstract.Price);
-        }
-        if (_transCost.getResult().compareTo(BigDecimal.ZERO) != 0 && currPrice.compareTo(_transCost.getResult()
-                        .setScale(currPrice.scale(), RoundingMode.HALF_UP)) != 0) {
-            Costing_Base.LOG.debug(" Updating Cost for: {}", _transCost);
-            final Insert insert = new Insert(ciType);
-            insert.add(CIProducts.ProductCostAbstract.ProductLink, _transCost.getProductInstance());
-            insert.add(CIProducts.ProductCostAbstract.Price, _transCost.getResult());
-            insert.add(CIProducts.ProductCostAbstract.ValidFrom, date);
-            insert.add(CIProducts.ProductCostAbstract.ValidUntil, date.plusYears(10));
-            insert.add(CIProducts.ProductCostAbstract.CurrencyLink, _currencyInstance);
-            insert.executeWithoutAccessCheck();
+                if (transCost.getResult().setScale(cost.scale(), RoundingMode.HALF_UP).compareTo(cost) != 0) {
+                    final Insert insert = new Insert(InstanceUtils.isType(transCost.getCostingInstance(),
+                                    CIProducts.Costing) ? CIProducts.ProductCost : CIProducts.ProductCostAlternative);
+                    insert.add(CIProducts.ProductCostAbstract.ProductLink, transCost.getProductInstance());
+                    insert.add(CIProducts.ProductCostAbstract.Price, transCost.getResult());
+                    insert.add(CIProducts.ProductCostAbstract.ValidFrom, transCost.getDate().withTimeAtStartOfDay());
+                    insert.add(CIProducts.ProductCostAbstract.ValidUntil, transCost.getDate().plusYears(10)
+                                    .withTimeAtStartOfDay());
+                    insert.add(CIProducts.ProductCostAbstract.CurrencyLink, _currencyInstance);
+                    insert.add(CIProducts.ProductCostAbstract.StatusAbstract,
+                                    Status.find(CIProducts.ProductCostStatus.Active));
+                    insert.executeWithoutAccessCheck();
+                }
+            }
         }
     }
-
 
     /**
      * Update costing.
@@ -497,11 +513,11 @@ public abstract class Costing_Base
      * @return last TransCosting containing the final result for the product
      * @throws EFapsException on error
      */
-    protected TransCosting updateCosting(final Instance _currencyInstance,
-                                         final Instance _costingInstance)
+    protected List<TransCosting> updateCosting(final Instance _currencyInstance,
+                                               final Instance _costingInstance)
         throws EFapsException
     {
-        TransCosting ret = null;
+        final List<TransCosting> ret = new ArrayList<>();
         Costing_Base.LOG.debug("Update Costing for: {}", _costingInstance);
 
         final List<TransCosting> tcList = new ArrayList<>();
@@ -568,6 +584,9 @@ public abstract class Costing_Base
                         current.setResult(prev.getResult());
                         update = true;
                     }
+                    if (!current.isUpToDate()) {
+                        update = true;
+                    }
                 } else {
                     if (!current.isUpToDate() || forceCostFromDoc) {
                         final BigDecimal cost = current.getCostFromDocument();
@@ -614,7 +633,7 @@ public abstract class Costing_Base
                     current.setCostingQuantity(newCostQuantity);
                     update = true;
                 }
-                if (update) {
+                if (update || !current.isUpToDate()) {
                     current.updateCosting();
                     Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
                 }
@@ -632,10 +651,12 @@ public abstract class Costing_Base
                     }
                     current.updateCosting();
                     Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
+                } else if (!current.isUpToDate()) {
+                    current.updateCosting();
                 }
             }
             prev = current;
-            ret = current;
+            ret.add(current);
         }
         return ret;
     }

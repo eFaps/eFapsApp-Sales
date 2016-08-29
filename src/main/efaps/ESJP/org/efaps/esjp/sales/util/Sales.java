@@ -165,6 +165,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute COSTING_ONECOST = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Costing.OverallResultOnly")
+                    .description("Register only one amount with the overall result in Cost");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final IntegerSysConfAttribute COSTINGMAXTRANSACTION = new IntegerSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Costing.MaxTransaction")
