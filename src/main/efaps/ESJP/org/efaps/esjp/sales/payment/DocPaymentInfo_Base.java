@@ -50,6 +50,7 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -348,9 +349,7 @@ public abstract class DocPaymentInfo_Base
             if (getCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
-                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(getParameter(),
-                                getDate(), pos.getCurrencyInstance(), getCurrencyInstance());
-                ret = ret.add(pos.getAmount().divide(rateInfos[2].getRate(), BigDecimal.ROUND_HALF_UP));
+                ret = ret.add(pos.getAmount4Currency(getParameter(), getCurrencyInstance()));
             }
         }
         return ret;
@@ -370,9 +369,7 @@ public abstract class DocPaymentInfo_Base
             if (getRateCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
-                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(getParameter(),
-                                getDate(), pos.getCurrencyInstance(), getRateCurrencyInstance());
-                ret = ret.add(pos.getAmount().divide(rateInfos[2].getRate(), BigDecimal.ROUND_HALF_UP));
+                ret = ret.add(pos.getAmount4Currency(getParameter(), getRateCurrencyInstance()));
             }
         }
         return ret;
@@ -737,7 +734,9 @@ public abstract class DocPaymentInfo_Base
                         CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
         final SelectBuilder selDocInst = new SelectBuilder().linkto(
                         CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).instance();
-        multi.addSelect(selCurInst, selDocInst);
+        final SelectBuilder selPaymentDocInst = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink).instance();
+        multi.addSelect(selCurInst, selDocInst, selPaymentDocInst);
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
             final Instance docInst = multi.getSelect(selDocInst);
@@ -745,7 +744,8 @@ public abstract class DocPaymentInfo_Base
             final Instance curInst = multi.getSelect(selCurInst);
             final DateTime dateTmp = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
             final BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
-            info.payPos.add(new PayPos(dateTmp, amount, curInst));
+            final Instance paymentDocInst = multi.getSelect(selPaymentDocInst);
+            info.payPos.add(new PayPos(dateTmp, amount, curInst).setLabel(paymentDocInst.getType().getLabel()));
         }
     }
 
@@ -785,7 +785,8 @@ public abstract class DocPaymentInfo_Base
             final Instance curInst = taxMulti.getSelect(selTaxCurInst);
             final DateTime dateTmp = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
             final BigDecimal amount = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
-            info.payPos.add(new PayPos(dateTmp, amount, curInst));
+            info.payPos.add(new PayPos(dateTmp, amount, curInst)
+                            .setLabel(CISales.IncomingDetraction.getType().getLabel()));
         }
     }
 
@@ -833,7 +834,8 @@ public abstract class DocPaymentInfo_Base
             final Instance curInst = retMulti.getSelect(retSelCur);
             final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
             final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
-            info.payPos.add(new PayPos(dateTmp, amount, curInst));
+            info.payPos.add(new PayPos(dateTmp, amount, curInst)
+                            .setLabel(CISales.IncomingRetention.getType().getLabel()));
         }
     }
 
@@ -865,17 +867,19 @@ public abstract class DocPaymentInfo_Base
                         .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
         final SelectBuilder selDocFromInst = SelectBuilder.get()
                         .linkto(CISales.Document2Document4Swap.FromAbstractLink).instance();
-
+        final SelectBuilder selDocToInst = SelectBuilder.get()
+                        .linkto(CISales.Document2Document4Swap.ToAbstractLink).instance();
         final SelectBuilder selDocFromStatus = SelectBuilder.get()
                         .linkto(CISales.Document2Document4Swap.FromAbstractLink).status().key();
         final SelectBuilder selDocToStatus = SelectBuilder.get()
                         .linkto(CISales.Document2Document4Swap.ToAbstractLink).status().key();
-        swapMulti.addSelect(selCur3, selDocFromInst, selDocFromStatus, selDocToStatus);
+        swapMulti.addSelect(selCur3, selDocFromInst, selDocToInst, selDocFromStatus, selDocToStatus);
         swapMulti.executeWithoutAccessCheck();
         while (swapMulti.next()) {
             if (!verifySet.contains(swapMulti.getCurrentInstance())) {
                 verifySet.add(swapMulti.getCurrentInstance());
                 final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
+                final Instance docToInst = swapMulti.getSelect(selDocToInst);
                 final String key1 = swapMulti.getSelect(selDocFromStatus);
                 final String key2 = swapMulti.getSelect(selDocToStatus);
                 if (instance2info.containsKey(docFromInst) && !"Canceled".equals(key1) && !"Canceled".equals(key2)
@@ -883,7 +887,7 @@ public abstract class DocPaymentInfo_Base
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
                     final Instance curInst = swapMulti.getSelect(selCur3);
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
-                    info.payPos.add(new PayPos(info.date, amount, curInst));
+                    info.payPos.add(new PayPos(info.date, amount, curInst).setLabel(docToInst.getType().getLabel()));
                 }
             }
         }
@@ -909,6 +913,106 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
+     * Gets the detailed info.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the detailed info
+     * @throws EFapsException on error
+     */
+    public static CharSequence getInfoHtml(final Parameter _parameter,
+                                           final Instance _docInst)
+        throws EFapsException
+    {
+        final DocPaymentInfo payInfo = new DocPaymentInfo(_docInst)
+                        .setTargetDocInst(_docInst);
+
+        final DecimalFormat formatter = NumberFormatter.get().getFrmt4Total(
+                        _parameter.getInstance().getType().getName());
+
+        final Set<Instance> currencies = new HashSet<>();
+        if (!payInfo.getRateCurrencyInstance().equals(Currency.getBaseCurrency())) {
+            currencies.add(payInfo.getRateCurrencyInstance());
+        }
+        final Table table = (Table) new Table()
+            .addRow()
+                .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".LabelColumn"), 3)
+                .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".AmountColumn"))
+                .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CurrencyColumn"))
+            .addRow()
+                .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"), 3)
+                .addColumn(formatter.format(payInfo.getCrossTotal()))
+                .addColumn(CurrencyInst.get(payInfo.getCurrencyInstance()).getSymbol());
+
+        for (final PayPos payPos  : payInfo.getPayPos()) {
+            table.addRow()
+                .addColumn(payPos.getLabel());
+            if (!payPos.getCurrencyInstance().equals(Currency.getBaseCurrency())) {
+                currencies.add(payPos.getCurrencyInstance());
+                table.addColumn(formatter.format(payPos.getAmount()))
+                    .addColumn(CurrencyInst.get(payPos.getCurrencyInstance()).getSymbol())
+                    .addColumn(formatter.format(payPos.getAmount4Currency(_parameter, Currency.getBaseCurrency())))
+                    .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
+            } else {
+                table.getCurrentColumn().setColSpan(3)
+                    .getCurrentTable()
+                    .addColumn(formatter.format(payPos.getAmount()))
+                    .addColumn(CurrencyInst.get(payPos.getCurrencyInstance()).getSymbol());
+            }
+        }
+
+        table
+            .addRow()
+                .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Paid"), 3)
+                .addColumn(formatter.format(payInfo.getPaid()))
+                .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol())
+            .addRow()
+                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"), 3)
+                    .addColumn(formatter.format(payInfo.getCrossTotal().subtract(payInfo.getPaid())))
+                    .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
+
+        for (final Instance currencyInst : currencies) {
+            table
+                .addRow()
+                    .addColumn("&nbsp;")
+                .addRow()
+                    .addColumn(CurrencyInst.get(currencyInst).getName()).getCurrentColumn()
+                        .setStyle("font-weight:bold").getCurrentTable()
+                .addRow()
+                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"), 3)
+                    .addColumn(formatter.format(payInfo.getRateCrossTotal()))
+                    .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol());
+            for (final PayPos payPos  : payInfo.getPayPos()) {
+                table.addRow()
+                    .addColumn(payPos.getLabel());
+                if (!payPos.getCurrencyInstance().equals(currencyInst)) {
+                    currencies.add(payPos.getCurrencyInstance());
+
+                    table.addColumn(formatter.format(payPos.getAmount()))
+                        .addColumn(CurrencyInst.get(payPos.getCurrencyInstance()).getSymbol())
+                        .addColumn(formatter.format(payPos.getAmount4Currency(_parameter, currencyInst)))
+                        .addColumn(CurrencyInst.get(currencyInst).getSymbol());
+                } else {
+                    table.getCurrentColumn().setColSpan(3)
+                        .getCurrentTable()
+                        .addColumn(formatter.format(payPos.getAmount()))
+                        .addColumn(CurrencyInst.get(currencyInst).getSymbol());
+                }
+            }
+            table.addRow()
+                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Paid"), 3)
+                    .addColumn(formatter.format(payInfo.getPaid4Target()))
+                    .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol())
+                .addRow()
+                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"), 3)
+                    .addColumn(formatter.format(payInfo.getRateCrossTotal().subtract(payInfo.getRatePaid())))
+                    .addColumn(CurrencyInst.get(currencyInst).getSymbol());
+        }
+        return table.toHtml();
+    }
+
+
+    /**
      * Internal class that converts the related PaymentDocuments in positions
      * for easier calculation.
      */
@@ -929,6 +1033,9 @@ public abstract class DocPaymentInfo_Base
          * instance of the Currency.
          */
         private final Instance currencyInstance;
+
+        /** The label. */
+        private String label;
 
         /**
          * @param _date Date of he Payment
@@ -972,6 +1079,43 @@ public abstract class DocPaymentInfo_Base
         public Instance getCurrencyInstance()
         {
             return this.currencyInstance;
+        }
+
+        /**
+         * Gets the label.
+         *
+         * @return the label
+         */
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        /**
+         * Sets the label.
+         *
+         * @param _label the label
+         * @return the pay pos
+         */
+        public PayPos setLabel(final String _label)
+        {
+            this.label = _label;
+            return this;
+        }
+
+        /**
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _currency the currency
+         * @return value of instance variable {@link #amount}
+         * @throws EFapsException on error
+         */
+        public BigDecimal getAmount4Currency(final Parameter _parameter,
+                                             final Instance _currency)
+            throws EFapsException
+        {
+            final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, getDate(), getCurrencyInstance(),
+                            _currency);
+            return getAmount().divide(rateInfos[2].getRate(), BigDecimal.ROUND_HALF_UP);
         }
 
         @Override
@@ -1020,7 +1164,7 @@ public abstract class DocPaymentInfo_Base
          * @return Instance of the currency
          * @throws EFapsException the e faps exception
          */
-        protected Instance getCurrencyInstance()
+        public Instance getCurrencyInstance()
             throws EFapsException
         {
             if (this.currencyInstance == null) {
@@ -1035,7 +1179,7 @@ public abstract class DocPaymentInfo_Base
          * @return CurrencyInst object for the currency of this account
          * @throws EFapsException the e faps exception
          */
-        protected CurrencyInst getCurrencyInst()
+        public CurrencyInst getCurrencyInst()
             throws EFapsException
         {
             if (this.currencyInst == null) {

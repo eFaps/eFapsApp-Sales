@@ -32,6 +32,7 @@
         <type>Sales_Reminder</type>
         <childs>
             <child>Sales_ReminderTree_Payment</child>
+            <child>Sales_ReminderTree_PaymentAnalysis</child>
             <child>Sales_ReminderTree_Position</child>
             <child>Sales_ReminderTree_Doc</child>
         </childs>

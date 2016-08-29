@@ -22,7 +22,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>22a08697-2de1-4ef7-9dbb-10b2a61553cd</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditNoteTree</name>
@@ -32,7 +31,9 @@
         </target>
         <type>Sales_CreditNote</type>
         <childs>
+            <child>Sales_CreditNoteTree_Payment</child>
             <child>Sales_CreditNoteTree_Position</child>
+            <child>Sales_CreditNoteTree_PaymentAnalysis</child>
             <child>Sales_CreditNoteTree_Doc</child>
         </childs>
         <property name="Target">content</property>

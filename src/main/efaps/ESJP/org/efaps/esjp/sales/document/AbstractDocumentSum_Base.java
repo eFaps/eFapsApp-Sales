@@ -79,6 +79,7 @@ import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.payment.DocPaymentInfo_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
@@ -1893,7 +1894,6 @@ public abstract class AbstractDocumentSum_Base
                         + " - " + print.<String>getAttribute(CISales.DocumentAbstract.Name));
     }
 
-
     /**
      * Gets the currency from ui.
      *
@@ -1905,5 +1905,20 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         return new Currency().getCurrencyFromUI(_parameter);
+    }
+
+    /**
+     * Gets the payment analysis.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the payment analysis
+     * @throws EFapsException on error
+     */
+    public Return getPaymentAnalysisFieldValueUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, DocPaymentInfo_Base.getInfoHtml(_parameter, _parameter.getInstance()));
+        return ret;
     }
 }

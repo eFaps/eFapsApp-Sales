@@ -28,6 +28,7 @@
         </target>
         <type>Sales_IncomingCreditNote</type>
         <childs>
+            <child>Sales_IncomingCreditNoteTree_PaymentAnalysis</child>
             <child>Sales_IncomingCreditNoteTree_Position</child>
             <child>Sales_IncomingCreditNoteTree_Doc</child>
         </childs>

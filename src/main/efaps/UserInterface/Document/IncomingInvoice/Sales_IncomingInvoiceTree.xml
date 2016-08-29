@@ -33,6 +33,7 @@
             <child>Sales_IncomingInvoiceTree_Position</child>
             <child>Sales_IncomingInvoiceTree_Doc</child>
             <child>Sales_IncomingInvoiceTree_Payment</child>
+            <child>Sales_IncomingInvoiceTree_PaymentAnalysis</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

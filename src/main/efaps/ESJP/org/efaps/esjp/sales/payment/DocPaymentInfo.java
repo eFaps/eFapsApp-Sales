@@ -127,4 +127,19 @@ public class DocPaymentInfo
     {
         DocPaymentInfo_Base.initSwap(_parameter, _infos);
     }
+
+    /**
+     * Gets the detailed info.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the detailed info
+     * @throws EFapsException on error
+     */
+    public static CharSequence getDetailedInfo(final Parameter _parameter,
+                                               final Instance _docInst)
+        throws EFapsException
+    {
+        return DocPaymentInfo_Base.getInfoHtml(_parameter, _docInst);
+    }
 }
