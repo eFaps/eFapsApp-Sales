@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -65,13 +62,35 @@ public abstract class PaymentDeposit_Base
         return ret;
     }
 
-    public Return createWithOutDoc(final Parameter _parameter)
+    /**
+     * Creates the 4 doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return create4Doc(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
-        return new Return();
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPayment4Doc(_parameter, createdDoc);
+        executeAutomation(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
+    /**
+     * Adds the doc 2 payment doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return addDoc2PaymentDoc(final Parameter _parameter)
         throws EFapsException
     {
@@ -87,6 +106,13 @@ public abstract class PaymentDeposit_Base
         return ret;
     }
 
+    /**
+     * Gets the creates the doc 2 add payment.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the creates the doc 2 add payment
+     * @throws EFapsException on error
+     */
     protected CreatedDoc getCreateDoc2addPayment(final Parameter _parameter)
         throws EFapsException
     {
@@ -101,12 +127,20 @@ public abstract class PaymentDeposit_Base
 
         final CreatedDoc createDoc = new CreatedDoc(_parameter.getInstance());
         createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Name.name), name);
-        createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.RateCurrencyLink.name), curId);
+        createDoc.getValues().put(getFieldName4Attribute(_parameter,
+                        CISales.PaymentCheck.RateCurrencyLink.name), curId);
         createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Date.name), date);
 
         return createDoc;
     }
 
+    /**
+     * Drop down field value 4 account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return dropDownFieldValue4Account(final Parameter _parameter)
         throws EFapsException
     {

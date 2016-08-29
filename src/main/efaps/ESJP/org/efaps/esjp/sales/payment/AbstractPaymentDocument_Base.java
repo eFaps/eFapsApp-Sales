@@ -197,10 +197,9 @@ public abstract class AbstractPaymentDocument_Base
 
         final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Contact.name));
-        if (contact != null && Instance.get(contact).isValid()) {
-            insert.add(CISales.PaymentDocumentAbstract.Contact, Instance.get(contact).getId());
-            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Contact.name,
-                            Instance.get(contact).getId());
+        if (InstanceUtils.isValid(Instance.get(contact))) {
+            insert.add(CISales.PaymentDocumentAbstract.Contact, Instance.get(contact));
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Contact.name, Instance.get(contact));
         }
 
         final Object rateObj = _parameter.getParameterValue("rate");
@@ -760,6 +759,57 @@ public abstract class AbstractPaymentDocument_Base
 
             transIns.execute();
         }
+    }
+
+    /**
+     * Creates the payment for a document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
+     */
+    protected void createPayment4Doc(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String amount = _parameter.getParameterValue("amount");
+
+        final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
+        final Insert transIns;
+        if (getType4DocCreate(_parameter) != null
+                    && getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
+                || _parameter.getInstance() != null
+                    && _parameter.getInstance().isValid()
+                    && _parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+            transIns = new Insert(CISales.TransactionInbound);
+        } else {
+            transIns = new Insert(CISales.TransactionOutbound);
+        }
+
+        payInsert.add(CISales.Payment.CreateDocument, _parameter.getCallInstance());
+        payInsert.add(CISales.Payment.RateCurrencyLink, getNewDocPaymentInfo(_parameter, _parameter.getCallInstance())
+                        .getRateCurrencyInstance());
+        payInsert.add(CISales.Payment.Amount, amount);
+        transIns.add(CISales.TransactionAbstract.Amount, amount);
+        payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
+        payInsert.add(CISales.Payment.CurrencyLink,
+                        _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
+        payInsert.add(CISales.Payment.Date,
+                        _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
+        payInsert.add(CISales.Payment.Rate, getRateObject(_parameter, "rate", 0));
+        add2PaymentCreate(_parameter, payInsert, _createdDoc, 0);
+        payInsert.execute();
+
+        transIns.add(CISales.TransactionAbstract.CurrencyId,
+                        _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
+        transIns.add(CISales.TransactionAbstract.Payment, payInsert.getId());
+        transIns.add(CISales.TransactionAbstract.Date,
+                        _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
+        transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
+        _createdDoc.getValues().put(CISales.TransactionAbstract.Account.name,
+                        _parameter.getParameterValue("account"));
+        transIns.execute();
+
     }
 
     /**
