@@ -107,8 +107,9 @@ public abstract class ProductsTransactionResultReport_Base
         final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final String key = value.getField().getName();
         final Map<String, Object> map = getFilterMap(_parameter);
-        final String selected = map.containsKey(key) ? ((CostTypeFilterValue) map.get(key)).getObject() : "DEFAULT";
-        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final String selected = map.containsKey(key) && map.get(key) instanceof CostTypeFilterValue
+                        ? ((CostTypeFilterValue) map.get(key)).getObject() : "DEFAULT";
+        final List<DropDownPosition> values = new ArrayList<>();
         values.add(new Field.DropDownPosition("DEFAULT", new CostTypeFilterValue().getLabel(_parameter))
                         .setSelected(selected == null || "DEFAULT".equals(selected)));
         for (final String oid : Sales.COSTINGALTINSTS.get()) {
@@ -276,8 +277,13 @@ public abstract class ProductsTransactionResultReport_Base
         protected Instance getCostTypeInstance(final Parameter _parameter)
             throws EFapsException
         {
-            final CostTypeFilterValue filter = (CostTypeFilterValue) getFilteredReport().getFilterMap(_parameter).get(
-                            "costType");
+            final CostTypeFilterValue filter;
+            if (getFilteredReport().getFilterMap(_parameter).containsKey("costType") && getFilteredReport()
+                            .getFilterMap(_parameter).get("costType") instanceof CostTypeFilterValue) {
+                filter = (CostTypeFilterValue) getFilteredReport().getFilterMap(_parameter).get("costType");
+            } else {
+                filter = null;
+            }
             return filter == null ? Instance.get("") : Instance.get(filter.getObject());
         }
     }

@@ -453,7 +453,7 @@ public abstract class Costing_Base
      * Update cost.
      *
      * @param _currencyInstance the currency instance
-     * @param _transCost TransCosting containing the information to register the cost
+     * @param _transCostList TransCosting containing the information to register the cost
      * @throws EFapsException on error
      */
     protected void updateCost(final Instance _currencyInstance,
@@ -461,7 +461,7 @@ public abstract class Costing_Base
         throws EFapsException
     {
         if (CollectionUtils.isNotEmpty(_transCostList)) {
-            List<TransCosting> transCostList;
+            final List<TransCosting> transCostList;
 
             if (Sales.COSTING_ONECOST.get()) {
                 transCostList = new ArrayList<>();
@@ -478,7 +478,7 @@ public abstract class Costing_Base
                     date = transCost.getDate();
                 }
 
-                BigDecimal cost;
+                final BigDecimal cost;
                 if (InstanceUtils.isType(transCost.getCostingInstance(), CIProducts.Costing)) {
                     cost = Cost.getCost4Currency(new Parameter(), date, transCost.getProductInstance(),
                                     _currencyInstance);
