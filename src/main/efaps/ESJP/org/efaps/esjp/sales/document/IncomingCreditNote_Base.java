@@ -252,8 +252,8 @@ public abstract class IncomingCreditNote_Base
     protected List<Map<String, Object>> updateFields4Doc(final Parameter _parameter)
         throws EFapsException
     {
-        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        List<Map<String, Object>> ret = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final Instance instance = _parameter.getInstance();
 
@@ -293,5 +293,23 @@ public abstract class IncomingCreditNote_Base
         throws EFapsException
     {
         return CISales.IncomingCreditNote;
+    }
+
+    /**
+     * Create the TransactionDocument for this invoice.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createTransDocShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = new TransactionDocument().createDocumentShadow(_parameter);
+        final Insert insert = new Insert(CISales.IncomingCreditNote2TransactionDocumentShadowIn);
+        insert.add(CISales.IncomingCreditNote2TransactionDocumentShadowIn.FromLink, _parameter.getInstance());
+        insert.add(CISales.IncomingCreditNote2TransactionDocumentShadowIn.ToLink, createdDoc.getInstance());
+        insert.execute();
+        return new Return();
     }
 }

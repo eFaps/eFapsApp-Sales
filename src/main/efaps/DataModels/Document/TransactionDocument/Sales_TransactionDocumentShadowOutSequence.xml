@@ -22,7 +22,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TransactionDocumentShadowOutSequence</name>
-        <format>SdI-%05d</format>
+        <format>SdS-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>

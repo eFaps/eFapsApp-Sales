@@ -470,6 +470,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  INCOMINGCREDITNOTE_TRANSDOC = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingCreditNote.ActivateTransDocShadow")
+                    .description("Activate the possiblity to create a TransactionDocumentShadow");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink INCOMINGCREDITNOTE_DEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingCreditNote.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse for IncomingCreditNote-TransDocShadow. "
+                                    + "If not set the default from Products applies.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute INCOMINGEXCHANGEJASPERREPORT
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
@@ -508,7 +523,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUND = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FROMORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutbound")
                     .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and "
@@ -516,7 +531,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
@@ -524,7 +539,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUND = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FROMSERVORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromServiceOrderOutbound")
                     .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and "
@@ -532,7 +547,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMSERVORDEROUTBOUNDAC
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete")
@@ -541,7 +556,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKET = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FROMRECIEVINGTICKET = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromRecievingTicket")
                     .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice "
@@ -549,7 +564,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKETAC
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMRECIEVINGTICKETAC
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromRecievingTicketAutoComplete")
@@ -558,39 +573,56 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEACTIVATECONDITION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEACTIVATEREGPURPRICE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_ACTIVATEREGPURPRICE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.ActivateRegisterOfPuchasePrice")
                     .description("Allows to activate/deactivate the registering of the prices during a purchase.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEACTPERC = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_ACTPERC = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.ActivatePerception")
                     .description("Activate the calculation of Perception.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEACTRET = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_ACTRET = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.ActivateRetention")
                     .description("Activate the calculation of Retention.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute INCOMINGINVOICEREVSEQ = new StringSysConfAttribute()
+    public static final StringSysConfAttribute INCOMINGINVOICE_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  INCOMINGINVOICE_TRANSDOC = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.ActivateTransDocShadow")
+                    .description("Activate the possiblity to create a TransactionDocumentShadow");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink INCOMINGINVOICE_DEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse for IncomingCreditNote-TransDocShadow. "
+                                    + "If not set the default from Products applies.");
+
+
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1374,7 +1406,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute REPORT_DOCBALANCE= new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute REPORT_DOCBALANCE = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocBalanceReport")
                     .addDefaultValue("Type01", CISales.Invoice.getType().getName())

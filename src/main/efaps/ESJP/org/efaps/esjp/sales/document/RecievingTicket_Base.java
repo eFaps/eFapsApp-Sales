@@ -86,7 +86,7 @@ public abstract class RecievingTicket_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        createIndiviuals(_parameter, createdDoc);
+        createIndividuals(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);

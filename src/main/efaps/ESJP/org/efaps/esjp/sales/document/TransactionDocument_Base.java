@@ -46,6 +46,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -128,10 +129,13 @@ public abstract class TransactionDocument_Base
                         CIERP.DocumentAbstract.Contact);
         print.execute();
         final String docName = print.<String>getAttribute(CIERP.DocumentAbstract.Name);
+        final DateTime date = print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date);
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         insert.add(CIERP.DocumentAbstract.Name, docName);
-        insert.add(CIERP.DocumentAbstract.Date, print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date));
+        insert.add(CIERP.DocumentAbstract.Date, date);
         insert.add(CIERP.DocumentAbstract.Contact, print.<Long>getAttribute(CIERP.DocumentAbstract.Contact));
+        ret.getValues().put(CISales.DocumentStockAbstract.Date.name, date);
+
         addStatus2DocCreate(_parameter, insert, ret);
         add2DocCreate(_parameter, insert, ret);
         insert.execute();
@@ -142,6 +146,7 @@ public abstract class TransactionDocument_Base
 
         final List<Position> positions = getPositions4Document(_parameter, _docInst);
         final Map<Instance, Set<Instance>> prod2ind = getProduct2IndividualMap(_parameter);
+        final List<String> prodOids = new ArrayList<>();
         int i = 1;
         for (final Position pos : positions) {
             final Insert posIns = new Insert(getType4PositionCreate(_parameter));
@@ -169,10 +174,18 @@ public abstract class TransactionDocument_Base
             posIns.add(CISales.PositionAbstract.Product, pos.getProdInstance());
             posIns.execute();
             i++;
+            prodOids.add(pos.getProdInstance().getOid());
         }
         createProductTransaction4Document(_parameter, ret.getInstance(),
                         Instance.get(_parameter.getParameterValue("storage")),
                         _docInst.getType().getLabel(), docName);
+
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "CreateIndividuals", "false"))) {
+            final Parameter parameter = ParameterUtil.clone(_parameter);
+            ParameterUtil.setParameterValues(parameter, getFieldName4Attribute(parameter,
+                            CISales.PositionAbstract.Product.name), prodOids.toArray(new String[prodOids.size()]));
+            createIndividuals(parameter, ret);
+        }
         return ret;
     }
 
@@ -238,16 +251,79 @@ public abstract class TransactionDocument_Base
      * @return the products4 doc shadow field value
      * @throws EFapsException on error
      */
-    public Return getProducts4DocShadowFieldValue(final Parameter _parameter)
+    public Return getProducts4DocShadowOutFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final Instance docInst = _parameter.getCallInstance();
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder()
-                        .append("<span id=\"positionInfoTable\">")
-                        .append(getPositionInfoSnipplet(_parameter, docInst, getDefaultStorage(_parameter)))
-                        .append("</span>");
+                .append("<span id=\"positionInfoTable\">")
+                .append(getPositionInfoSnipplet(_parameter, docInst, getDefaultStorage(_parameter)))
+                .append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
+     * Gets the products 4 doc shadow in field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the products 4 doc shadow in field value
+     * @throws EFapsException on error
+     */
+    public Return getProducts4DocShadowInFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInst = _parameter.getCallInstance();
+        final Return ret = new Return();
+        final Table table = new Table();
+
+        final List<Position> positions = getPositions4Document(_parameter, docInst);
+        table.addRow()
+                .addHeaderColumn(getDBProperty("Quantity"))
+                .addHeaderColumn(getDBProperty("UoM"))
+                .addHeaderColumn(getDBProperty("ProdName"))
+                .addHeaderColumn(getDBProperty("ProdDescr"));
+
+        if (Products.ACTIVATEINDIVIDUAL.get()) {
+            table.addHeaderColumn(getDBProperty("Individual"));
+        }
+
+        for (final Position pos : positions) {
+            final StringBuilder stockHtml = new StringBuilder();
+            ProductIndividual individual = ProductIndividual.NONE;
+            if (Products.ACTIVATEINDIVIDUAL.get()) {
+                final PrintQuery print = new PrintQuery(pos.getProdInstance());
+                print.addAttribute(CIProducts.ProductAbstract.Individual);
+                print.execute();
+                individual = print.getAttribute(CIProducts.ProductAbstract.Individual);
+            }
+            switch (individual) {
+                case INDIVIDUAL:
+                    for (int i = 0; i < pos.getQuantity().intValue(); i++) {
+                        if (i > 0) {
+                            stockHtml.append("<br/>");
+                        }
+                        stockHtml.append("<label>").append(i + 1).append(".</label>")
+                            .append("<input name=\"").append(pos.getProdInstance().getOid()).append("\">");
+                    }
+                    break;
+                default:
+                    stockHtml.append("-");
+                    break;
+            }
+            table.addRow()
+                .addColumn(pos.getQuantity().toString())
+                .addColumn(pos.getUoM().getName())
+                .addColumn(pos.getProdName())
+                .addColumn(pos.getDescr());
+
+            if (Products.ACTIVATEINDIVIDUAL.get()) {
+                table.addColumn(stockHtml);
+            }
+        }
+
+        ret.put(ReturnValues.SNIPLETT, table.toHtml());
         return ret;
     }
 

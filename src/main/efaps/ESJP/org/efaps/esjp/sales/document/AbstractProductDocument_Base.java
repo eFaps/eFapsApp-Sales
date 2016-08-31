@@ -405,8 +405,8 @@ public abstract class AbstractProductDocument_Base
      * @param _createdDoc the created document
      * @throws EFapsException on error
      */
-    protected void createIndiviuals(final Parameter _parameter,
-                                    final CreatedDoc _createdDoc)
+    protected void createIndividuals(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
         throws EFapsException
     {
         if (Products.ACTIVATEINDIVIDUAL.get()) {

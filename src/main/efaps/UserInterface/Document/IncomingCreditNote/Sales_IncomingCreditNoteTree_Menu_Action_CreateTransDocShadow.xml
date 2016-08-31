@@ -17,37 +17,35 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b502014b-f079-4130-9c1b-420da08aacf3</uuid>
+    <uuid>34bc5652-fe78-4d85-85d5-9ecbce1dff72</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoiceTree_Menu_Action_CreateTransDocShadow</name>
+        <name>Sales_IncomingCreditNoteTree_Menu_Action_CreateTransDocShadow</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_IncomingInvoice_CreateTransDocShadowForm</form>
-            <execute method="createTransDocShadow"
-                program="org.efaps.esjp.sales.document.IncomingInvoice" >
+            <form>Sales_IncomingCreditNote_CreateTransDocShadowForm</form>
+            <execute method="createTransDocShadow" program="org.efaps.esjp.sales.document.IncomingCreditNote">
                 <property name="PositionType">Sales_TransactionDocumentShadowInPosition</property>
                 <property name="StatusGroup">Sales_TransactionDocumentShadowInStatus</property>
                 <property name="Status">Closed</property>
-                <property name="CreateIndividuals">true</property>
             </execute>
-             <trigger event="UI_ACCESSCHECK" index="1" method="configCheck"
-                name="Sales_IncomingInvoiceTree_Menu_Action_CreateTransDocShadow.UI_ACCESSCHECK.1"
+            <trigger event="UI_ACCESSCHECK" index="1" method="configCheck"
+                name="Sales_IncomingCreditNoteTree_Menu_Action_CreateTransDocShadow.UI_ACCESSCHECK.1"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateTransDocShadow</property>
+                <property name="Attribute">org.efaps.sales.IncomingCreditNote.ActivateTransDocShadow</property>
             </trigger>
             <trigger event="UI_ACCESSCHECK" index="2" method="check4Status"
-                name="Sales_IncomingInvoice_CreateTransDocShadowForm.UI_ACCESSCHECK.2"
+                name="Sales_IncomingCreditNote_CreateTransDocShadowForm.UI_ACCESSCHECK.2"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Check4CreateStatus">true</property>
             </trigger>
             <trigger event="UI_ACCESSCHECK" index="3" method="accessCheck4DocumentShadow"
-                name="Sales_IncomingInvoice_CreateTransDocShadowForm.UI_ACCESSCHECK.3"
+                name="Sales_IncomingCreditNote_CreateTransDocShadowForm.UI_ACCESSCHECK.3"
                 program="org.efaps.esjp.sales.document.TransactionDocument">
             </trigger>
         </target>

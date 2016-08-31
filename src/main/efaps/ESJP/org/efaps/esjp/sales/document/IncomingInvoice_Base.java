@@ -29,7 +29,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -223,7 +222,6 @@ public abstract class IncomingInvoice_Base
         insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.FromLink, _parameter.getInstance());
         insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.ToLink, createdDoc.getInstance());
         insert.execute();
-
         return new Return();
     }
 
@@ -236,7 +234,7 @@ public abstract class IncomingInvoice_Base
                                           final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        if (Sales.INCOMINGINVOICEACTIVATEREGPURPRICE.get()) {
+        if (Sales.INCOMINGINVOICE_ACTIVATEREGPURPRICE.get()) {
             @SuppressWarnings("unchecked")
             final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
                             AbstractDocument_Base.CALCULATORS_VALUE);
@@ -284,56 +282,13 @@ public abstract class IncomingInvoice_Base
         }
     }
 
-    /**
-     * Method to do a transaction of all the products of a Incoming Invoice when
-     * it is created.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _createdDoc instance of Incoming Invoice document recently created
-     * @throws EFapsException on error
-     */
-    protected void incomingInvoiceCreateTransaction(final Parameter _parameter,
-                                                    final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final String storage = _parameter.getParameterValue("storage");
-        final String date = _parameter.getParameterValue("date");
-
-        if (storage != null) {
-            final List<Instance> positions = _createdDoc.getPositions();
-            for (final Instance instance : positions) {
-                final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CISales.IncomingInvoicePosition.Product, CISales.IncomingInvoicePosition.Quantity,
-                                CISales.IncomingInvoicePosition.IncomingInvoice, CISales.IncomingInvoicePosition.UoM);
-                print.execute();
-
-                final Object productID = print.<Object>getAttribute(CISales.IncomingInvoicePosition.Product);
-                final Object quantity = print.<Object>getAttribute(CISales.IncomingInvoicePosition.Quantity);
-                final Object incomingInvoiceId = print
-                                .<Object>getAttribute(CISales.IncomingInvoicePosition.IncomingInvoice);
-                final Object uom = print.<Object>getAttribute(CISales.IncomingInvoicePosition.UoM);
-
-                final Insert insert = new Insert(CIProducts.TransactionInbound);
-                insert.add(CIProducts.TransactionInbound.Quantity, quantity);
-                insert.add(CIProducts.TransactionInbound.Storage, storage);
-                insert.add(CIProducts.TransactionInbound.Product, productID);
-                insert.add(CIProducts.TransactionInbound.Description,
-                         DBProperties.getProperty("org.efaps.esjp.sales.document.IncomingInvoice.description4Trigger"));
-                insert.add(CIProducts.TransactionInbound.Date, date == null ? new DateTime() : date);
-                insert.add(CIProducts.TransactionInbound.Document, incomingInvoiceId);
-                insert.add(CIProducts.TransactionInbound.UoM, uom);
-                insert.execute();
-            }
-        }
-    }
-
     @Override
     protected void add2DocCreate(final Parameter _parameter,
                                  final Insert _insert,
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String seqKey = Sales.INCOMINGINVOICEREVSEQ.get();
+        final String seqKey = Sales.INCOMINGINVOICE_REVSEQ.get();
         final NumberGenerator numgen = isUUID(seqKey)
                         ? NumberGenerator.get(UUID.fromString(seqKey))
                         : NumberGenerator.get(seqKey);
@@ -413,20 +368,20 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
-        if (Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()) {
-            final Properties props = Sales.INCOMINGINVOICEFROMORDEROUTBOUNDAC.get();
+        if (Sales.INCOMINGINVOICE_FROMORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICE_FROMORDEROUTBOUNDAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.orderOutbounds.name, queryBldr));
         }
-        if (Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUND.get()) {
-            final Properties props = Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC.get();
+        if (Sales.INCOMINGINVOICE_FROMSERVORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICE_FROMSERVORDEROUTBOUNDAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.serviceOrderOutbounds.name, queryBldr));
         }
-        if (Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get()) {
-            final Properties props = Sales.INCOMINGINVOICEFROMRECIEVINGTICKETAC.get();
+        if (Sales.INCOMINGINVOICE_FROMRECIEVINGTICKET.get()) {
+            final Properties props = Sales.INCOMINGINVOICE_FROMRECIEVINGTICKETAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name, queryBldr));
@@ -451,20 +406,20 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
-        if (Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()) {
-            final Properties props = Sales.INCOMINGINVOICEFROMORDEROUTBOUNDAC.get();
+        if (Sales.INCOMINGINVOICE_FROMORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICE_FROMORDEROUTBOUNDAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.orderOutbounds.name, queryBldr));
         }
-        if (Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUND.get()) {
-            final Properties props = Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC.get();
+        if (Sales.INCOMINGINVOICE_FROMSERVORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICE_FROMSERVORDEROUTBOUNDAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.serviceOrderOutbounds.name, queryBldr));
         }
-        if (Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get()) {
-            final Properties props = Sales.INCOMINGINVOICEFROMRECIEVINGTICKETAC.get();
+        if (Sales.INCOMINGINVOICE_FROMRECIEVINGTICKET.get()) {
+            final Properties props = Sales.INCOMINGINVOICE_FROMRECIEVINGTICKETAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name, queryBldr));
@@ -479,7 +434,7 @@ public abstract class IncomingInvoice_Base
         boolean ret = super.docIsSelected4JS4Doc4Contact(_parameter, _docInst);
         // not marked selected already but it is an order Outbound or a recieving ticket makr related
         if (!ret && !getInstances4Derived(_parameter).isEmpty()
-                    && Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get() && Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()
+                    && Sales.INCOMINGINVOICE_FROMRECIEVINGTICKET.get() && Sales.INCOMINGINVOICE_FROMORDEROUTBOUND.get()
                         && (_docInst.getType().isCIType(CISales.OrderOutbound)
                         ||  _docInst.getType().isCIType(CISales.RecievingTicket))) {
             final boolean isOrder = _docInst.getType().isCIType(CISales.OrderOutbound);
@@ -702,8 +657,8 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
@@ -724,8 +679,8 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
@@ -746,8 +701,8 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
@@ -768,8 +723,8 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
         final Instance inst = Instance.get(_parameter.getParameterValue("detractionServiceType"));
         final PrintQuery print = new PrintQuery(inst);
         print.addAttribute(CIERP.AttributeDefinitionMappingAbstract.MappingKey,
@@ -910,7 +865,7 @@ public abstract class IncomingInvoice_Base
     public List<IWarning> validatTaxDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<IWarning> ret = new ArrayList<>();
         if ("false".equalsIgnoreCase(_parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc.name))) {
             final boolean isPerception = "true".equalsIgnoreCase(_parameter
@@ -954,6 +909,9 @@ public abstract class IncomingInvoice_Base
         }
         return ret;
     }
+
+
+
 
     /**
      * Warning class.
