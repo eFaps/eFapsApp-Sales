@@ -225,7 +225,7 @@ public abstract class SalesProductReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            JRRewindableDataSource ret;
+            final JRRewindableDataSource ret;
             if (getFilteredReport().isCached(_parameter)) {
                 ret = getFilteredReport().getDataSourceFromCache(_parameter);
                 try {
@@ -245,14 +245,25 @@ public abstract class SalesProductReport_Base
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter);
                 add2QueryBuilder(_parameter, attrQueryBldr);
                 if (getContactInst(_parameter).length > 0) {
-                    attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, getContactInst(_parameter));
+                    if (isContactNegate(_parameter)) {
+                        attrQueryBldr.addWhereAttrNotEqValue(CISales.DocumentSumAbstract.Contact,
+                                        getContactInst(_parameter));
+                    } else {
+                        attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
+                                        getContactInst(_parameter));
+                    }
                 }
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
                 queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
                 if (getProductInst(_parameter).length > 0) {
-                    queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst(_parameter));
+                    if (isProductNegate(_parameter)) {
+                        queryBldr.addWhereAttrNotEqValue(CISales.PositionSumAbstract.Product,
+                                        getProductInst(_parameter));
+                    } else {
+                        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst(_parameter));
+                    }
                 }
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.PositionSumAbstract.Quantity,
@@ -327,8 +338,8 @@ public abstract class SalesProductReport_Base
                     dataBean.setQuantity(quantityTmp).setProductUoM(uoM.getName());
 
                     final Instance curInst = multi.getSelect(selCurInst);
-                    BigDecimal unitPrice;
-                    BigDecimal price;
+                    final BigDecimal unitPrice;
+                    final BigDecimal price;
                     if (currencyInst.getInstance().equals(curInst)) {
                         unitPrice = PriceConfig.NET.equals(priceConfig) ? multi.<BigDecimal>getAttribute(
                                         CISales.PositionSumAbstract.RateNetUnitPrice) : multi.<BigDecimal>getAttribute(
@@ -590,7 +601,7 @@ public abstract class SalesProductReport_Base
         protected DateConfig evaluateDateConfig(final Parameter _parameter)
             throws EFapsException
         {
-            DateConfig ret;
+            final DateConfig ret;
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             final EnumFilterValue value = (EnumFilterValue) filter.get("dateConfig");
             if (value != null) {
@@ -611,7 +622,7 @@ public abstract class SalesProductReport_Base
         protected PriceConfig evaluatePriceConfig(final Parameter _parameter)
             throws EFapsException
         {
-            PriceConfig ret;
+            final PriceConfig ret;
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             final EnumFilterValue value = (EnumFilterValue) filter.get("priceConfig");
             if (value != null) {
@@ -632,7 +643,7 @@ public abstract class SalesProductReport_Base
         protected GroupConfig evaluateGroupConfig(final Parameter _parameter)
             throws EFapsException
         {
-            GroupConfig ret;
+            final GroupConfig ret;
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             final EnumFilterValue value = (EnumFilterValue) filter.get("groupConfig");
             if (value != null) {
@@ -727,6 +738,25 @@ public abstract class SalesProductReport_Base
         }
 
         /**
+         * Checks if is contact negate.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is contact negate
+         * @throws EFapsException on error
+         */
+        protected boolean isContactNegate(final Parameter _parameter)
+            throws EFapsException
+        {
+            boolean ret = false;
+            if (!isContact(_parameter)) {
+                final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+                final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
+                ret = filter != null && filter.isNegate();
+            }
+            return ret;
+        }
+
+        /**
          * Checks if the report is in a product instance.
          *
          * @param _parameter the _parameter
@@ -747,7 +777,7 @@ public abstract class SalesProductReport_Base
         protected Object[] getProductInst(final Parameter _parameter)
             throws EFapsException
         {
-            Object[] ret;
+            final Object[] ret;
             if (isProduct(_parameter)) {
                 ret = new Object[] { _parameter.getInstance() };
             } else {
@@ -758,6 +788,25 @@ public abstract class SalesProductReport_Base
                 } else {
                     ret = filter.getObject().toArray();
                 }
+            }
+            return ret;
+        }
+
+        /**
+         * Checks if is contact negate.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is contact negate
+         * @throws EFapsException on error
+         */
+        protected boolean isProductNegate(final Parameter _parameter)
+            throws EFapsException
+        {
+            boolean ret = false;
+            if (!isProduct(_parameter)) {
+                final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+                final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
+                ret = filter != null && filter.isNegate();
             }
             return ret;
         }
@@ -1131,7 +1180,7 @@ public abstract class SalesProductReport_Base
         {
             final BigDecimal quantitySumValue = _reportParameters.getValue(this.quantity);
             final BigDecimal priceSumValue = _reportParameters.getValue(this.price);
-            BigDecimal ret;
+            final BigDecimal ret;
             if (priceSumValue.compareTo(BigDecimal.ZERO) == 0) {
                 ret = BigDecimal.ZERO;
             } else {

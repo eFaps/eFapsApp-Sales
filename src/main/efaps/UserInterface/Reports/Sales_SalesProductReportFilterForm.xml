@@ -101,6 +101,10 @@
                 <property name="ShowEmptyValue">false</property>
             </trigger>
         </field>
+        <field name="contactGroup" character="Group">
+            <property name="ModeEdit">READONLY</property>
+            <property name="GroupCount">2</property>
+        </field>
         <field name="contact">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -118,6 +122,20 @@
                   <property name="AutoType">TOKEN</property>
             </trigger>
         </field>
+        <field name="contact_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.contact_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_SalesProductReportFilterForm.contact_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+            </trigger>
+        </field>
+        <field name="productGroup" character="Group">
+            <property name="ModeEdit">READONLY</property>
+            <property name="GroupCount">2</property>
+        </field>
         <field name="product">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -133,6 +151,16 @@
                  name="Sales_SalesProductReportFilterForm.product.UI_FIELD_AUTOCOMPLETE"
                  program="org.efaps.esjp.products.Product">
                  <property name="AutoType">TOKEN</property>
+            </trigger>
+        </field>
+         <field name="product_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.product_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_SalesProductReportFilterForm.product_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
             </trigger>
         </field>
         <field name="employee">
