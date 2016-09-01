@@ -32,5 +32,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class TransactionDocument
     extends TransactionDocument_Base
 {
+    /**
+     * Used to store the Revision in the Context.
+     */
+    public static final String REVISIONKEY = TransactionDocument_Base.REVISIONKEY;
 
 }

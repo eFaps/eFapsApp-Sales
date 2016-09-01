@@ -48,6 +48,7 @@
                 name="Sales_IncomingCreditNote_CreateTransDocShadowForm.UI_ACCESSCHECK.3"
                 program="org.efaps.esjp.sales.document.TransactionDocument">
             </trigger>
+            <command>Sales_TransactionDocumentShadow_ShowRevision</command>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>

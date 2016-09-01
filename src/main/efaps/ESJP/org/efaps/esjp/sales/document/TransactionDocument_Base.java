@@ -37,6 +37,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -70,6 +71,11 @@ import org.joda.time.DateTime;
 public abstract class TransactionDocument_Base
     extends AbstractProductDocument
 {
+
+    /**
+     * Used to store the Revision in the Context.
+     */
+    protected static final String REVISIONKEY = TransactionDocument.class.getName() + ".RevisionKey";
 
     /**
      * Access check4 document shadow.
@@ -210,6 +216,7 @@ public abstract class TransactionDocument_Base
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             _insert.add(CISales.DocumentAbstract.Revision, revision);
+            Context.getThreadContext().setSessionAttribute(TransactionDocument.REVISIONKEY, revision);
         }
     }
 
@@ -510,6 +517,17 @@ public abstract class TransactionDocument_Base
             set.add(individual);
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
+    public Return showRevisionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getRevisionSequenceFieldValue(_parameter, TransactionDocument.REVISIONKEY);
     }
 
 }
