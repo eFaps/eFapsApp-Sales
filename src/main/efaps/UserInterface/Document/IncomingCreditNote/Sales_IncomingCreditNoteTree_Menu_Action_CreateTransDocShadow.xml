@@ -28,8 +28,8 @@
         <target>
             <form>Sales_IncomingCreditNote_CreateTransDocShadowForm</form>
             <execute method="createTransDocShadow" program="org.efaps.esjp.sales.document.IncomingCreditNote">
-                <property name="PositionType">Sales_TransactionDocumentShadowInPosition</property>
-                <property name="StatusGroup">Sales_TransactionDocumentShadowInStatus</property>
+                <property name="PositionType">Sales_TransactionDocumentShadowOutPosition</property>
+                <property name="StatusGroup">Sales_TransactionDocumentShadowOutStatus</property>
                 <property name="Status">Closed</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" index="1" method="configCheck"
@@ -51,7 +51,7 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_TransactionDocumentShadowIn</property>
+        <property name="TargetCreateType">Sales_TransactionDocumentShadowOut</property>
         <property name="WindowWidth">900</property>
     </definition>
 </ui-command>
