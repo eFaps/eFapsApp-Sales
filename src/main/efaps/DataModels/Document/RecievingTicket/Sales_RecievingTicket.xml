@@ -38,6 +38,12 @@
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_RecievingTicket.ACCESSCHECK" event="ACCESSCHECK" />
+        <trigger program="org.efaps.esjp.sales.Costing"
+            method="documentTrigger"
+            name="Sales_RecievingTicket.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="OnStatus">Canceled</property>
+        </trigger>
         <index msgPhrase="Sales_IndexDocumentWithRevsionMsgPhrase">
             <field id="revisionLong" select="attribute[Revision]" key="index.Revision"
                 type="SEARCHLONG" transform="org.efaps.esjp.admin.index.transformer.StringRight2Long" />
