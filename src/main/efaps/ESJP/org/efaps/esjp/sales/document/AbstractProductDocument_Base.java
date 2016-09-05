@@ -655,9 +655,10 @@ public abstract class AbstractProductDocument_Base
         }
 
         if (prodInst.isValid()) {
-            if (storInst != null && storInst.isValid()) {
+            if (InstanceUtils.isValid(storInst)) {
                 map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
                                 getStock4ProductInStorage(_parameter, prodInst, storInst));
+                InterfaceUtils.appendScript4FieldUpdate(map, getAlternateIndividualJS(_parameter, prodInst, storInst));
             }
             add2UpdateField4Product(_parameter, map, prodInst);
             list.add(map);
@@ -779,7 +780,6 @@ public abstract class AbstractProductDocument_Base
             ret.append("\u221e");
         } else {
             final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
-
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
             queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, _storageInst);
             queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, _productinst);
@@ -789,13 +789,54 @@ public abstract class AbstractProductDocument_Base
             if (multi.next()) {
                 final BigDecimal quantity = multi.getAttribute(CIProducts.InventoryAbstract.Quantity);
                 final BigDecimal quantityReserved = multi.getAttribute(CIProducts.InventoryAbstract.Reserved);
-
                 ret.append(qtyFrmt.format(quantity)).append(" / ").append(qtyFrmt.format(quantityReserved));
             } else {
                 ret.append("0 / 0");
             }
         }
         return ret.toString();
+    }
+
+    /**
+     * Gets the alternate individual.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _productinst the productinst
+     * @param _storageInst the storage inst
+     * @return the alternate individual
+     * @throws EFapsException on error
+     */
+    protected CharSequence getAlternateIndividualJS(final Parameter _parameter,
+                                                    final Instance _productinst,
+                                                    final Instance _storageInst)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        if (InstanceUtils.isKindOf(_productinst, CIProducts.ProductIndividual)) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract2Individual);
+            attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2Individual.ToLink, _productinst);
+
+            final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIProducts.StoreableProductAbstract2Individual);
+            attrQueryBldr2.addWhereAttrInQuery(CIProducts.StoreableProductAbstract2Individual.FromLink, attrQueryBldr
+                            .getAttributeQuery(CIProducts.StoreableProductAbstract2Individual.FromLink));
+
+            final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
+            invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, _storageInst);
+            invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product, attrQueryBldr2.getAttributeQuery(
+                            CIProducts.StoreableProductAbstract2Individual.ToLink));
+            final MultiPrintQuery multi2 = invQueryBldr.getPrint();
+            final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
+            final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+            final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+            final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(
+                            CIProducts.ProductAbstract.Description);
+            multi2.addSelect(selProdInst, selProdName, selProdDescr);
+            multi2.execute();
+            while (multi2.next()) {
+
+            }
+        }
+        return ret;
     }
 
     @Override
@@ -805,7 +846,6 @@ public abstract class AbstractProductDocument_Base
     {
         final List<AbstractUIPosition> ret = new ArrayList<>();
         if (isUpdateBean4Individual(_parameter, _bean)) {
-
             if (Products.ACTIVATEINDIVIDUAL.get()) {
                 LOG.debug("ACTIVATEINDIVIDUAL", true);
                 final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
@@ -815,77 +855,10 @@ public abstract class AbstractProductDocument_Base
                                 CIProducts.ProductAbstract.Individual);
                 switch (indivual) {
                     case BATCH:
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract2Batch);
-                        attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2Batch.FromLink,
-                                        _bean.getProdInstance());
-                        final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
-                        final Instance storInst;
-                        if (_bean.getStorageInst() != null) {
-                            storInst = _bean.getStorageInst();
-                        } else {
-                            storInst = getDefaultStorage(_parameter);
-                        }
-
-                        if (storInst != null && storInst.isValid()) {
-                            invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
-                        }
-                        invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
-                                    attrQueryBldr.getAttributeQuery(CIProducts.StoreableProductAbstract2Batch.ToLink));
-                        final MultiPrintQuery multi = invQueryBldr.getPrint();
-                        final SelectBuilder selProd = SelectBuilder.get()
-                                        .linkto(CIProducts.InventoryIndividual.Product);
-                        final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
-                        final SelectBuilder selProdName = new SelectBuilder(selProd)
-                                        .attribute(CIProducts.ProductAbstract.Name);
-                        final SelectBuilder selProdDescr = new SelectBuilder(selProd)
-                                        .attribute(CIProducts.ProductAbstract.Description);
-                        final SelectBuilder selProdCreated = new SelectBuilder(selProd)
-                                        .attribute(CIProducts.ProductAbstract.Created);
-                        multi.addSelect(selProdInst, selProdName, selProdDescr, selProdCreated);
-                        multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
-                        multi.execute();
-
-                        // FIFO
-                        final Map<DateTime, AbstractUIPosition> fifoMap = new TreeMap<>();
-                        while (multi.next()) {
-                            final Instance prodInst = multi.getSelect(selProdInst);
-                            _bean.setDoc(null);
-                            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
-                            bean.setProdInstance(prodInst)
-                                            .setProdName(multi.<String>getSelect(selProdName))
-                                            .setProdDescr(multi.<String>getSelect(selProdDescr))
-                                            .setQuantity(multi.<BigDecimal>getAttribute(
-                                                            CIProducts.InventoryIndividual.Quantity));
-                            bean.setDoc(this);
-                            fifoMap.put(multi.<DateTime>getSelect(selProdCreated), bean);
-                        }
-
-                        BigDecimal currentQty = _bean.getQuantity();
-                        boolean complete = false;
-                        for (final AbstractUIPosition tmpPos : fifoMap.values()) {
-                            ret.add(tmpPos);
-                            if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
-                                tmpPos.setQuantity(currentQty);
-                                complete = true;
-                                break;
-                            } else {
-                                currentQty = currentQty.subtract(tmpPos.getQuantity());
-                            }
-                        }
-                        if (!complete && currentQty.compareTo(BigDecimal.ZERO) > 0) {
-                            // to be able to serialize, ensure that the document is not set
-                            final AbstractDocument_Base docTmp = _bean.getDoc();
-                            _bean.setDoc(null);
-                            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
-                            bean.setDoc(this)
-                                .setProdInstance(Instance.get(""))
-                                .setProdName("NOSTOCK")
-                                .setProdDescr(multi.<String>getSelect(selProdDescr))
-                                .setQuantity(currentQty);
-                            ret.add(bean);
-                            // back to original state
-                            _bean.setDoc(docTmp);
-                        }
+                        ret.addAll(updateBean4Batch(_parameter, _bean));
+                        break;
+                    case INDIVIDUAL:
+                        ret.addAll(updateBean4Individual(_parameter, _bean));
                         break;
                     default:
                         ret.add(_bean);
@@ -896,6 +869,154 @@ public abstract class AbstractProductDocument_Base
             }
         } else {
             ret.addAll(super.updateBean4Indiviual(_parameter, _bean));
+        }
+        return ret;
+    }
+
+    /**
+     * Update bean for batch.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _bean the bean
+     * @return the list< abstract UI position>
+     * @throws EFapsException on error
+     */
+    protected List<AbstractUIPosition> updateBean4Batch(final Parameter _parameter,
+                                                        final AbstractUIPosition _bean)
+        throws EFapsException
+    {
+        final List<AbstractUIPosition> ret = new ArrayList<>();
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract2Batch);
+        attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2Batch.FromLink, _bean.getProdInstance());
+        final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
+        final Instance storInst;
+        if (_bean.getStorageInst() != null) {
+            storInst = _bean.getStorageInst();
+        } else {
+            storInst = getDefaultStorage(_parameter);
+        }
+
+        if (storInst != null && storInst.isValid()) {
+            invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
+        }
+        invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product, attrQueryBldr.getAttributeQuery(
+                        CIProducts.StoreableProductAbstract2Batch.ToLink));
+        final MultiPrintQuery multi = invQueryBldr.getPrint();
+        final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
+        final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+        final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
+        final SelectBuilder selProdCreated = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Created);
+        multi.addSelect(selProdInst, selProdName, selProdDescr, selProdCreated);
+        multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
+        multi.execute();
+
+        // FIFO
+        final Map<DateTime, AbstractUIPosition> fifoMap = new TreeMap<>();
+        while (multi.next()) {
+            final Instance prodInst = multi.getSelect(selProdInst);
+            _bean.setDoc(null);
+            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+            bean.setProdInstance(prodInst)
+                .setProdName(multi.<String>getSelect(selProdName))
+                .setProdDescr(multi.<String>getSelect(selProdDescr))
+                .setQuantity(multi.<BigDecimal>getAttribute(CIProducts.InventoryIndividual.Quantity));
+            bean.setDoc(this);
+            fifoMap.put(multi.<DateTime>getSelect(selProdCreated), bean);
+        }
+
+        BigDecimal currentQty = _bean.getQuantity();
+        boolean complete = false;
+        for (final AbstractUIPosition tmpPos : fifoMap.values()) {
+            ret.add(tmpPos);
+            if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
+                tmpPos.setQuantity(currentQty);
+                complete = true;
+                break;
+            } else {
+                currentQty = currentQty.subtract(tmpPos.getQuantity());
+            }
+        }
+        if (!complete && currentQty.compareTo(BigDecimal.ZERO) > 0) {
+            // to be able to serialize, ensure that the document is not set
+            final AbstractDocument_Base docTmp = _bean.getDoc();
+            _bean.setDoc(null);
+            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+            bean.setDoc(this)
+                .setProdInstance(Instance.get(""))
+                .setProdName("NOSTOCK")
+                .setProdDescr(multi.<String>getSelect(selProdDescr))
+                .setQuantity(currentQty);
+            ret.add(bean);
+            // back to original state
+            _bean.setDoc(docTmp);
+        }
+        return ret;
+    }
+
+    /**
+     * Update bean for Individual.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _bean the bean
+     * @return the list< abstract UI position>
+     * @throws EFapsException on error
+     */
+    protected List<AbstractUIPosition> updateBean4Individual(final Parameter _parameter,
+                                                             final AbstractUIPosition _bean)
+        throws EFapsException
+    {
+        final List<AbstractUIPosition> ret = new ArrayList<>();
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract2Individual);
+        attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2Individual.FromLink,
+                        _bean.getProdInstance());
+        final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
+        final Instance storInst;
+        if (_bean.getStorageInst() != null) {
+            storInst = _bean.getStorageInst();
+        } else {
+            storInst = getDefaultStorage(_parameter);
+        }
+
+        if (storInst != null && storInst.isValid()) {
+            invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
+        }
+        invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product, attrQueryBldr.getAttributeQuery(
+                        CIProducts.StoreableProductAbstract2Individual.ToLink));
+        final MultiPrintQuery multi = invQueryBldr.getPrint();
+        final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
+        final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+        final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
+        multi.addSelect(selProdInst, selProdName, selProdDescr);
+        multi.execute();
+        int count = _bean.getQuantity().intValue();
+        while (multi.next() && count > 0) {
+            final Instance prodInst = multi.getSelect(selProdInst);
+            _bean.setDoc(null);
+            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+            bean.setProdInstance(prodInst)
+                .setProdName(multi.<String>getSelect(selProdName))
+                .setProdDescr(multi.<String>getSelect(selProdDescr))
+                .setQuantity(BigDecimal.ONE);
+            bean.setDoc(this);
+            ret.add(bean);
+            count--;
+        }
+
+        if (count > 0) {
+            // to be able to serialize, ensure that the document is not set
+            final AbstractDocument_Base docTmp = _bean.getDoc();
+            _bean.setDoc(null);
+            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+            bean.setDoc(this)
+                .setProdInstance(Instance.get(""))
+                .setProdName("NOSTOCK")
+                .setProdDescr(multi.<String>getSelect(selProdDescr))
+                .setQuantity(BigDecimal.ONE);
+            ret.add(bean);
+            // back to original state
+            _bean.setDoc(docTmp);
         }
         return ret;
     }

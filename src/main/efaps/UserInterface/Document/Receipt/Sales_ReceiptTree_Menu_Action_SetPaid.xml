@@ -35,7 +35,8 @@
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_ReceiptTree_Menu_Action_SetPaid.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status01">Open</property>
+                <property name="Status02">Draft</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

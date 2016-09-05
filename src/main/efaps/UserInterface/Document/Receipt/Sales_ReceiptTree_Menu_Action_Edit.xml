@@ -54,8 +54,8 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

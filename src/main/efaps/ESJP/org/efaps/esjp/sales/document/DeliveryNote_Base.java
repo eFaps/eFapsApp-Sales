@@ -262,11 +262,11 @@ public abstract class DeliveryNote_Base
         if (input.isEmpty() || "*".equals(input)) {
             all = true;
         }
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         final List<String> depPoints = Sales.DELIVERYNOTE_DEFAULTDEPARTUREPOINTS.get();
         for (final String depPoint : depPoints) {
             if (all || StringUtils.startsWithIgnoreCase(depPoint, input)) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), depPoint);
                 list.add(map);
             }
@@ -461,7 +461,7 @@ public abstract class DeliveryNote_Base
             all = true;
         }
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
 
         final Instance contactInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.contact.name));
@@ -472,7 +472,7 @@ public abstract class DeliveryNote_Base
             print.execute();
             final String address = print.getMsgPhrase(msgPhrase);
             if (all || StringUtils.startsWithIgnoreCase(address, input)) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), getFormatedDBProperty("ContactArrivalPoint", address));
                 list.add(map);
@@ -494,7 +494,7 @@ public abstract class DeliveryNote_Base
                 while (multi.next()) {
                     final String loAddress = multi.getMsgPhrase(subMsgPhrase);
                     if (all || StringUtils.startsWithIgnoreCase(loAddress, input)) {
-                        final Map<String, String> map = new HashMap<String, String>();
+                        final Map<String, String> map = new HashMap<>();
                         map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), loAddress);
                         map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
                                         getFormatedDBProperty("SubContactArrivalPoint", loAddress, idx,
@@ -515,7 +515,7 @@ public abstract class DeliveryNote_Base
             print.execute();
             final String address = print.getMsgPhrase(msgPhrase);
             if (all || StringUtils.startsWithIgnoreCase(address, input)) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), getFormatedDBProperty("CarrierArrivalPoint", address));
                 list.add(map);
@@ -526,7 +526,7 @@ public abstract class DeliveryNote_Base
         int idx = 1;
         for (final String destination : destinations) {
             if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
                                 getFormatedDBProperty("ConfiguredArrivalPoint", destination, idx));
@@ -601,7 +601,7 @@ public abstract class DeliveryNote_Base
             String quantitystring = qauntity[0].toString();
             quantitystring = quantitystring.replace(",", "");
             BigDecimal quantity = new BigDecimal(quantitystring);
-            final Map<Instance, Map<Instance, BigDecimal>> res2pos = new HashMap<Instance, Map<Instance, BigDecimal>>();
+            final Map<Instance, Map<Instance, BigDecimal>> res2pos = new HashMap<>();
             if (contactInst.isValid()) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Reservation);
                 attrQueryBldr.addWhereAttrEqValue(CISales.Reservation.Status,
@@ -643,7 +643,7 @@ public abstract class DeliveryNote_Base
                         if (res2pos.containsKey(resInst)) {
                             pos2Reserved = res2pos.get(resInst);
                         } else {
-                            pos2Reserved = new HashMap<Instance, BigDecimal>();
+                            pos2Reserved = new HashMap<>();
                             res2pos.put(resInst, pos2Reserved);
                         }
                         pos2Reserved.put(multi.getCurrentInstance(), reservedTmp);
@@ -693,7 +693,7 @@ public abstract class DeliveryNote_Base
                 final MultiPrintQuery multi = queryBuilder.getPrint();
                 while (multi.next()) {
                     final Insert insert = new Insert(CISales.ReservationPosition);
-                    final Set<String> added = new HashSet<String>();
+                    final Set<String> added = new HashSet<>();
                     added.add(CISales.ReservationPosition.getType()
                                     .getAttribute(CISales.ReservationPosition.Reservation.name).getSqlColNames()
                                     .toString());
@@ -738,14 +738,6 @@ public abstract class DeliveryNote_Base
         revision.revise(parameter);
     }
 
-    @Override
-    public String getTypeName4AutoComplete4Product(final Parameter _parameter)
-        throws EFapsException
-    {
-        return CISales.DeliveryNote.getType().getName();
-    }
-
-
     /**
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
@@ -761,7 +753,7 @@ public abstract class DeliveryNote_Base
             all = true;
         }
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
 
         final Instance carrierInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
@@ -781,7 +773,7 @@ public abstract class DeliveryNote_Base
                     final List<String> values = (ArrayList<String>) dataCarrier.get("Make");
                     for (final String val : values) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
-                            final Map<String, String> map = new HashMap<String, String>();
+                            final Map<String, String> map = new HashMap<>();
                             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
                             list.add(map);
                         }
@@ -808,7 +800,7 @@ public abstract class DeliveryNote_Base
             all = true;
         }
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
 
         final Instance carrierInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
@@ -827,7 +819,7 @@ public abstract class DeliveryNote_Base
                     final List<String> values = (ArrayList<String>) dataCarrier.get("Registration");
                     for (final String val : values) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
-                            final Map<String, String> map = new HashMap<String, String>();
+                            final Map<String, String> map = new HashMap<>();
                             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
                             list.add(map);
                         }
@@ -854,7 +846,7 @@ public abstract class DeliveryNote_Base
             all = true;
         }
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
 
         final Instance carrierInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
@@ -873,7 +865,7 @@ public abstract class DeliveryNote_Base
                     final List<String> values = (ArrayList<String>) dataCarrier.get("License");
                     for (final String val : values) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
-                            final Map<String, String> map = new HashMap<String, String>();
+                            final Map<String, String> map = new HashMap<>();
                             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
                             list.add(map);
                         }
