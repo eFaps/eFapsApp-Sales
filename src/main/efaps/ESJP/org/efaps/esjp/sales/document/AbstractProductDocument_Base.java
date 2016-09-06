@@ -71,6 +71,7 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
@@ -658,7 +659,8 @@ public abstract class AbstractProductDocument_Base
             if (InstanceUtils.isValid(storInst)) {
                 map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
                                 getStock4ProductInStorage(_parameter, prodInst, storInst));
-                InterfaceUtils.appendScript4FieldUpdate(map, getAlternateIndividualJS(_parameter, prodInst, storInst));
+                InterfaceUtils.appendScript4FieldUpdate(map, getAlternateIndividualJS(_parameter, selected,
+                                prodInst, storInst));
             }
             add2UpdateField4Product(_parameter, map, prodInst);
             list.add(map);
@@ -801,18 +803,29 @@ public abstract class AbstractProductDocument_Base
      * Gets the alternate individual.
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _selected the selected
      * @param _productinst the productinst
      * @param _storageInst the storage inst
      * @return the alternate individual
      * @throws EFapsException on error
      */
     protected CharSequence getAlternateIndividualJS(final Parameter _parameter,
+                                                    final int _selected,
                                                     final Instance _productinst,
                                                     final Instance _storageInst)
         throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
+        StringBuilder ret = new StringBuilder();
+        boolean add = false;
         if (InstanceUtils.isKindOf(_productinst, CIProducts.ProductIndividual)) {
+            ret.append("var nl = query('.field[name=\\'quantityInStock\\']');\n")
+                .append("var myTooltipDialog = new TooltipDialog({\n")
+                .append(" onMouseLeave: function () {\n")
+                .append(" popup.close(myTooltipDialog);\n")
+                .append("}\n")
+                .append("});\n")
+                .append(" var ul = domConstruct.create('div');\n");
+
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract2Individual);
             attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2Individual.ToLink, _productinst);
 
@@ -824,17 +837,47 @@ public abstract class AbstractProductDocument_Base
             invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, _storageInst);
             invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product, attrQueryBldr2.getAttributeQuery(
                             CIProducts.StoreableProductAbstract2Individual.ToLink));
-            final MultiPrintQuery multi2 = invQueryBldr.getPrint();
+            final MultiPrintQuery multi = invQueryBldr.getPrint();
             final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
             final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
             final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
             final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(
                             CIProducts.ProductAbstract.Description);
-            multi2.addSelect(selProdInst, selProdName, selProdDescr);
-            multi2.execute();
-            while (multi2.next()) {
+            multi.addSelect(selProdInst, selProdName, selProdDescr);
+            multi.execute();
 
+            while (multi.next()) {
+                add = true;
+                final String prodName = multi.getSelect(selProdName);
+                final Instance prodInst = multi.getSelect(selProdInst);
+                ret.append(" var li = domConstruct.create('div', { innerHTML: \"").append(prodName).append("\" });\n")
+                    .append("on(li, 'click', function () {\n")
+                    .append("eFapsSetFieldValue(").append(_selected).append(",'product', '").append(prodInst.getOid())
+                    .append("', '").append(prodName).append("');\n")
+                    .append("});\n")
+                    .append("domConstruct.place(li, ul);\n");
             }
+            ret.append("myTooltipDialog.set('content', ul);\n")
+                .append("nl[").append(_selected).append("].innerHTML='+';")
+                .append("var oH = nl[").append(_selected).append("].outerHTML;")
+                .append("var n = domConstruct.place(oH, nl[").append(_selected).append("], 'replace');\n")
+                .append("domStyle.set(n, \"cursor\", \"pointer\");\n")
+                .append("on(n, 'click', function () {\n")
+                .append(" popup.open({\n")
+                .append(" popup: myTooltipDialog,\n")
+                .append(" around: n\n")
+                .append("});\n")
+                .append(" });\n");
+        }
+        if (add) {
+            ret = InterfaceUtils.wrapInDojoRequire(_parameter, ret, DojoLibs.ON, DojoLibs.DOMCONSTRUCT, DojoLibs.QUERY,
+                        DojoLibs.TOOLTIPDIALOG, DojoLibs.POPUP, DojoLibs.DOMSTYLE, DojoLibs.NLTRAVERSE);
+        } else {
+            ret = new StringBuilder()
+                .append("var nl = query('.field[name=\\'quantityInStock\\']');\n")
+                .append("var oH = nl[").append(_selected).append("].outerHTML;")
+                .append("var n = domConstruct.place(oH, nl[").append(_selected).append("], 'replace');\n");
+            ret = InterfaceUtils.wrapInDojoRequire(_parameter, ret, DojoLibs.DOMCONSTRUCT, DojoLibs.QUERY);
         }
         return ret;
     }
