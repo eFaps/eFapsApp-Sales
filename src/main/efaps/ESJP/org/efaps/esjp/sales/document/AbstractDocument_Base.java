@@ -1015,7 +1015,7 @@ public abstract class AbstractDocument_Base
         } else {
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
                             .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
-                                            getOnCompleteScript(_parameter), false, false, noEscape));
+                                        getOnCompleteScript(_parameter, values, _instance), false, false, noEscape));
         }
         js.append("\n");
         return js;
@@ -1046,7 +1046,7 @@ public abstract class AbstractDocument_Base
      */
     protected AbstractUIPosition getUIPosition(final Parameter _parameter)
     {
-        return new AbstractUIPosition(this)
+        return new AbstractUIPosition(_parameter, this)
         {
             private static final long serialVersionUID = 1L;
         };
@@ -1316,7 +1316,8 @@ public abstract class AbstractDocument_Base
         } else {
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
                 .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
-                            getOnCompleteScript(_parameter), false, false, noEscape));
+                            getOnCompleteScript(_parameter, values,
+                                        _instances.toArray(new Instance[_instances.size()])), false, false, noEscape));
         }
         js.append("\n");
         return js;
@@ -1429,7 +1430,9 @@ public abstract class AbstractDocument_Base
      * @return new StringBuilder with the additional fields.
      * @throws EFapsException on error
      */
-    protected StringBuilder getOnCompleteScript(final Parameter _parameter)
+    protected StringBuilder getOnCompleteScript(final Parameter _parameter,
+                                                final Collection<AbstractUIPosition> _values,
+                                                final Instance... _docInsts)
         throws EFapsException
     {
         return new StringBuilder();
@@ -2752,6 +2755,9 @@ public abstract class AbstractDocument_Base
         /** The doc. */
         private AbstractDocument_Base doc;
 
+        /** The parameter. */
+        private Parameter parameter;
+
         /** The prod instance. */
         private Instance prodInstance;
 
@@ -2801,8 +2807,10 @@ public abstract class AbstractDocument_Base
          *
          * @param _doc the _doc
          */
-        public AbstractUIPosition(final AbstractDocument_Base _doc)
+        public AbstractUIPosition(final Parameter _parameter,
+                                  final AbstractDocument_Base _doc)
         {
+            this.parameter = _parameter;
             this.doc = _doc;
         }
 
@@ -3135,6 +3143,26 @@ public abstract class AbstractDocument_Base
         {
             this.doc = _doc;
             return this;
+        }
+
+        /**
+         * Gets the parameter.
+         *
+         * @return the parameter
+         */
+        public Parameter getParameter()
+        {
+            return this.parameter;
+        }
+
+        /**
+         * Sets the parameter.
+         *
+         * @param _parameter the new parameter
+         */
+        public void setParameter(final Parameter _parameter)
+        {
+            this.parameter = _parameter;
         }
     }
 }

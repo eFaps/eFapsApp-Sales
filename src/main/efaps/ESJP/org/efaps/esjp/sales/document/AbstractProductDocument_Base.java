@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.efaps.admin.datamodel.Attribute;
@@ -741,8 +742,7 @@ public abstract class AbstractProductDocument_Base
                         uomId = dim.getBaseUoM().getId();
                     }
                     map.put("uoM", getUoMFieldStr(uomId, dim.getId()));
-                    map.put("quantity",
-                                    multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+                    map.put("quantity", multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
 
                     final Instance storageInst = multi.getSelect(selStorageInst);
                     final String quantityInStock = getStock4ProductInStorage(_parameter, prodInst, storageInst);
@@ -755,8 +755,8 @@ public abstract class AbstractProductDocument_Base
                 noEscape.add("uoM");
 
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                                .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
-                                                getOnCompleteScript(_parameter), false, false, noEscape));
+                        .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
+                                                getOnCompleteScript(_parameter, null), false, false, noEscape));
             }
         }
         return js;
@@ -797,6 +797,30 @@ public abstract class AbstractProductDocument_Base
             }
         }
         return ret.toString();
+    }
+
+    /**
+     * Method for acon complete script.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @return new StringBuilder with the additional fields.
+     * @throws EFapsException on error
+     */
+    @Override
+    protected StringBuilder getOnCompleteScript(final Parameter _parameter,
+                                                final Collection<AbstractUIPosition> _values,
+                                                final Instance... _docInsts)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.getOnCompleteScript(_parameter, _values, _docInsts);
+        if (CollectionUtils.isNotEmpty(_values)) {
+            final int i = 0;
+            for (final AbstractUIPosition position: _values) {
+                ret.append(getAlternateIndividualJS(_parameter, i, position.getProdInstance(),
+                                position.getStorageInst()));
+            }
+        }
+        return ret;
     }
 
     /**
@@ -850,12 +874,13 @@ public abstract class AbstractProductDocument_Base
                 add = true;
                 final String prodName = multi.getSelect(selProdName);
                 final Instance prodInst = multi.getSelect(selProdInst);
-                ret.append(" var li = domConstruct.create('div', { innerHTML: \"").append(prodName).append("\" });\n")
-                    .append("on(li, 'click', function () {\n")
+                ret.append(" var d = domConstruct.create('div', { innerHTML: \"").append(prodName).append("\" });\n")
+                    .append("domClass.add(d, \"alternateIndividual\");\n")
+                    .append("on(d, 'click', function () {\n")
                     .append("eFapsSetFieldValue(").append(_selected).append(",'product', '").append(prodInst.getOid())
                     .append("', '").append(prodName).append("');\n")
                     .append("});\n")
-                    .append("domConstruct.place(li, ul);\n");
+                    .append("domConstruct.place(d, ul);\n");
             }
             ret.append("myTooltipDialog.set('content', ul);\n")
                 .append("nl[").append(_selected).append("].innerHTML='+';")
@@ -871,7 +896,8 @@ public abstract class AbstractProductDocument_Base
         }
         if (add) {
             ret = InterfaceUtils.wrapInDojoRequire(_parameter, ret, DojoLibs.ON, DojoLibs.DOMCONSTRUCT, DojoLibs.QUERY,
-                        DojoLibs.TOOLTIPDIALOG, DojoLibs.POPUP, DojoLibs.DOMSTYLE, DojoLibs.NLTRAVERSE);
+                        DojoLibs.TOOLTIPDIALOG, DojoLibs.POPUP, DojoLibs.DOMSTYLE, DojoLibs.DOMCLASS,
+                        DojoLibs.NLTRAVERSE);
         } else {
             ret = new StringBuilder()
                 .append("var nl = query('.field[name=\\'quantityInStock\\']');\n")
@@ -1535,7 +1561,7 @@ public abstract class AbstractProductDocument_Base
     @Override
     protected AbstractUIPosition getUIPosition(final Parameter _parameter)
     {
-        return new UIProductDocumentPosition(this);
+        return new UIProductDocumentPosition(_parameter, this);
     }
 
     /**
@@ -1555,9 +1581,33 @@ public abstract class AbstractProductDocument_Base
          *
          * @param _doc the _doc
          */
-        public UIProductDocumentPosition(final AbstractDocument_Base _doc)
+        public UIProductDocumentPosition(final Parameter _parameter,
+                                         final AbstractDocument_Base _doc)
         {
-            super(_doc);
+            super(_parameter, _doc);
+        }
+
+        @Override
+        public Instance getStorageInst()
+        {
+            Instance ret = super.getStorageInst();
+            if (!InstanceUtils.isValid(ret)) {
+                final AbstractProductDocument_Base tmpDoc;
+                if (getDoc() instanceof AbstractProductDocument_Base) {
+                    tmpDoc = (AbstractProductDocument_Base) getDoc();
+                } else {
+                    tmpDoc = new AbstractProductDocument()
+                    {
+                    };
+                }
+                try {
+                    ret = tmpDoc.getDefaultStorage(getParameter());
+                    super.setStorageInst(ret);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched error.", e);
+                }
+            }
+            return ret;
         }
 
         @Override
@@ -1573,14 +1623,7 @@ public abstract class AbstractProductDocument_Base
                 {
                 };
             }
-
-            final Instance storInst;
-            if (getStorageInst() != null) {
-                storInst = getStorageInst();
-            } else {
-                storInst = tmpDoc.getDefaultStorage(_parameter);
-            }
-
+            final Instance storInst = getStorageInst();
             if (storInst.isValid()) {
                 if (getProdInstance().isValid()) {
                     final String quantityInStock = tmpDoc.getStock4ProductInStorage(_parameter, getProdInstance(),
@@ -1654,7 +1697,7 @@ public abstract class AbstractProductDocument_Base
                 } else {
                     ret = CIProducts.TransactionInbound.getType();
                 }
-            }else if (getInstance().getType().isCIType(CISales.TransactionDocumentShadowOutPosition)) {
+            } else if (getInstance().getType().isCIType(CISales.TransactionDocumentShadowOutPosition)) {
                 if (isIndiviudal()) {
                     ret = CIProducts.TransactionIndividualOutbound.getType();
                 } else {

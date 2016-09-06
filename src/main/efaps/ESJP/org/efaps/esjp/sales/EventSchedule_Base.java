@@ -64,7 +64,7 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsApplication("eFapsApp-Sales")
@@ -82,7 +82,7 @@ public abstract class EventSchedule_Base
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
         final Instance contact;
@@ -107,7 +107,7 @@ public abstract class EventSchedule_Base
             }
         } .getInstances(_parameter);
 
-        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
         final SelectBuilder selrateCurrSymbol = new SelectBuilder()
                         .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
         if (!query.isEmpty()) {
@@ -139,7 +139,7 @@ public abstract class EventSchedule_Base
                 }
                 choice.append(rateCurrSymbol + getTotalFmtStr(total));
 
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
@@ -177,8 +177,8 @@ public abstract class EventSchedule_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final int selected = getSelectedRow(_parameter);
         final Instance docInst = Instance.get(_parameter.getParameterValues("document")[selected]);
@@ -482,7 +482,8 @@ public abstract class EventSchedule_Base
                 }
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
                                 .append(getTableAddNewRowsScript(_parameter, "positionTable", valuesTmp.values(),
-                                                getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
+                                                getOnCompleteScript(_parameter, null),
+                                                false, false, new HashSet<String>()));
             }
 
         }
