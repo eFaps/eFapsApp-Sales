@@ -1081,7 +1081,6 @@ public abstract class AbstractProductDocument_Base
             bean.setDoc(this)
                 .setProdInstance(Instance.get(""))
                 .setProdName("NOSTOCK")
-                .setProdDescr(multi.<String>getSelect(selProdDescr))
                 .setQuantity(BigDecimal.ONE);
             ret.add(bean);
             // back to original state
