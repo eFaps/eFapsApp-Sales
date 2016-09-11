@@ -901,8 +901,11 @@ public abstract class AbstractProductDocument_Base
         } else {
             ret = new StringBuilder()
                 .append("var nl = query('.field[name=\\'quantityInStock\\']');\n")
+                .append("if(typeof nl !== \"undefined\" && typeof nl[")
+                    .append(_selected).append("] !== 'undefined') {\n")
                 .append("var oH = nl[").append(_selected).append("].outerHTML;")
-                .append("var n = domConstruct.place(oH, nl[").append(_selected).append("], 'replace');\n");
+                .append("var n = domConstruct.place(oH, nl[").append(_selected).append("], 'replace');\n")
+                .append("}\n");
             ret = InterfaceUtils.wrapInDojoRequire(_parameter, ret, DojoLibs.DOMCONSTRUCT, DojoLibs.QUERY);
         }
         return ret;
