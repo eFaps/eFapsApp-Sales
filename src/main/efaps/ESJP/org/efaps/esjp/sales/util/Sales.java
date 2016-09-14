@@ -830,10 +830,12 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTTHRESHOLD4PAID = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute PAYMENT_PAIDRULES = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.Threshold4Paid")
-                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+                    .key(BASE + "payment.PaidRules")
+                    .description("Properties to define a paid thresholds for types. e.g. \n"
+                                    + "Sales_Invoice.Threshold=0.05\n"
+                                    + "Sales_Invoice.PerPayment=false");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -844,7 +846,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PAYMENTCREDITCARDACTIVATE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENT_CREDITCARDACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.in.CreditCard.Activate")
                     .description("Deactivate the automatic generation of a code for every Payment Documents.");

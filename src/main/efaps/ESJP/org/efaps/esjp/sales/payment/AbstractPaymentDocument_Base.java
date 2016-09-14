@@ -30,11 +30,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -505,7 +507,10 @@ public abstract class AbstractPaymentDocument_Base
         final BigDecimal payments4Doc;
         if (_docInfo.getRateCurrencyInstance().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
             total4Doc = _docInfo.getRateCrossTotal();
-            payments4Doc = _docInfo.getRatePaid(false);
+            final Properties props = Sales.PAYMENT_PAIDRULES.get();
+            final boolean pp = BooleanUtils.toBoolean(
+                            props.getProperty(_docInfo.getInstance().getType().getName() + ".PerPayment"));
+            payments4Doc = _docInfo.getRatePaid(pp);
         } else {
             total4Doc = _docInfo.getCrossTotal4Target();
             payments4Doc = _docInfo.getPaid4Target();

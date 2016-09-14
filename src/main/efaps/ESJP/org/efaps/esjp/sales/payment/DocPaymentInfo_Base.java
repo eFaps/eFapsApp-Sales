@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -322,17 +323,20 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        final Properties props = Sales.PAYMENTTHRESHOLD4PAID.get();
+        final Properties props = Sales.PAYMENT_PAIDRULES.get();
         BigDecimal threshold = BigDecimal.ZERO;
         try {
             final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
             format.setParseBigDecimal(true);
-            threshold = (BigDecimal) format.parse(props.getProperty(this.instance.getType().getName(), "0"));
+            threshold = (BigDecimal) format.parse(props.getProperty(
+                            this.instance.getType().getName() + ".Threshold", "0"));
         } catch (final ParseException e) {
             throw new EFapsException("catched ParseException", e);
         }
-        return this.crossTotal.subtract(getPaid(false)).abs().compareTo(threshold) <= 0
-                        || this.rateCrossTotal.subtract(getRatePaid(false)).abs().compareTo(threshold) <= 0;
+        final boolean pp = BooleanUtils.toBoolean(
+                        props.getProperty(this.instance.getType().getName() + ".PerPayment"));
+        return this.crossTotal.subtract(getPaid(pp)).abs().compareTo(threshold) <= 0
+                        || this.rateCrossTotal.subtract(getRatePaid(pp)).abs().compareTo(threshold) <= 0;
     }
 
     /**
@@ -1049,7 +1053,7 @@ public abstract class DocPaymentInfo_Base
                                         && !Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
                             currencies.add(payPos.getCurrencyInstance());
                         }
-                        BigDecimal rateAmount;
+                        final BigDecimal rateAmount;
                         if (i > 0) {
                             if (Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
                                 rateAmount = payPos.getAmount4Currency(_parameter, payInfo.getRateCurrencyInstance());
@@ -1223,10 +1227,10 @@ public abstract class DocPaymentInfo_Base
         {
             final BigDecimal ret;
             if (Currency.getBaseCurrency().equals(getCurrencyInstance())) {
-                ret = getAmount().divide( getRateInfo().isInvert() ? getRateInfo().getRateUI()
+                ret = getAmount().divide(getRateInfo().isInvert() ? getRateInfo().getRateUI()
                                 : getRateInfo().getRate(), BigDecimal.ROUND_HALF_UP);
             } else {
-                ret = getAmount().multiply( getRateInfo().isInvert() ? getRateInfo().getRateUI()
+                ret = getAmount().multiply(getRateInfo().isInvert() ? getRateInfo().getRateUI()
                                 : getRateInfo().getRate());
             }
             return ret;
