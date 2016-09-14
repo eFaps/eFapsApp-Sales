@@ -505,7 +505,7 @@ public abstract class AbstractPaymentDocument_Base
         final BigDecimal payments4Doc;
         if (_docInfo.getRateCurrencyInstance().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
             total4Doc = _docInfo.getRateCrossTotal();
-            payments4Doc = _docInfo.getRatePaid();
+            payments4Doc = _docInfo.getRatePaid(false);
         } else {
             total4Doc = _docInfo.getCrossTotal4Target();
             payments4Doc = _docInfo.getPaid4Target();

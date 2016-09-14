@@ -27,9 +27,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -279,7 +281,7 @@ public abstract class SalesReport4Account_Base
                 final Set<Instance> docInsts = new HashSet<>();
                 while (multi.next()) {
                     docInsts.add(multi.getCurrentInstance());
-                    final DataBean dataBean = new DataBean()
+                    final DataBean dataBean = new DataBean(getFilteredReport().getReportKey())
                                 .setDocInst(multi.getCurrentInstance())
                                 .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
                                 .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
@@ -839,6 +841,18 @@ public abstract class SalesReport4Account_Base
         /** The swapInfo. */
         private String swapInfo;
 
+        /** The report key. */
+        private final ReportKey reportKey;
+        /**
+         * Instantiates a new data bean.
+         *
+         * @param _reportKey the report key
+         */
+        public DataBean(final ReportKey _reportKey)
+        {
+            this.reportKey = _reportKey;
+        }
+
         /**
          * Checks if is currency base.
          *
@@ -1119,8 +1133,11 @@ public abstract class SalesReport4Account_Base
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
                 setDocContactName(docPayInfo.getContactName());
                 setDocName(docPayInfo.getName());
-                this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid());
-                this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid());
+                final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.SALESREPORT4ACCOUNTIN.get()
+                                : Sales.SALESREPORT4ACCOUNTOUT.get();
+                final boolean perpay = BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment"));
+                this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay));
+                this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid(perpay));
             }
         }
 

@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -191,7 +192,9 @@ public abstract class DocSituationReport_Base
                     final Instance docInstance = (Instance) map.get("docInstance");
                     if (docInstance != null && docInstance.isValid()) {
                         final DocPaymentInfo info = infos.get(docInstance);
-                        BigDecimal paid = info.getPaid();
+                        final boolean perpay = BooleanUtils.toBoolean(props.getProperty(
+                                        docInstance.getType().getName() + ".PaymentPerPayment"));
+                        BigDecimal paid = info.getPaid(perpay);
                         if ("true".equals(props.getProperty(docInstance.getType().getName() + ".Negate"))) {
                             paid = paid.negate();
                         }

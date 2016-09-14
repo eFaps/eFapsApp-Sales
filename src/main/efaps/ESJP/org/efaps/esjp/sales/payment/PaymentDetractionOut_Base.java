@@ -188,7 +188,7 @@ public abstract class PaymentDetractionOut_Base
     public Return getJavaScript4SelectableRowsValues(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Instance> instances = new ArrayList<Instance>();
+        final List<Instance> instances = new ArrayList<>();
         if (_parameter.get(ParameterValues.INSTANCE) == null) {
             evaluateStatusDocs(_parameter, instances);
         }
@@ -350,8 +350,8 @@ public abstract class PaymentDetractionOut_Base
     public Return updateFields4CreateDocumentMassive(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
@@ -361,7 +361,7 @@ public abstract class PaymentDetractionOut_Base
             docInfo.setAccountInst(accInstance);
 
             final BigDecimal total4Doc = docInfo.getCrossTotal();
-            final BigDecimal payments4Doc = docInfo.getPaid();
+            final BigDecimal payments4Doc = docInfo.getPaid(false);
             final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
 
             map.put("createDocument", docInfo.getInstance().getOid());
@@ -381,7 +381,8 @@ public abstract class PaymentDetractionOut_Base
                 map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
             } else {
                 final BigDecimal amount = parseBigDecimal(_parameter.getParameterValue("amount"));
-                map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(amount.subtract(totalPay4Position)));
+                map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter()
+                                .format(amount.subtract(totalPay4Position)));
             }
             list.add(map);
         }
