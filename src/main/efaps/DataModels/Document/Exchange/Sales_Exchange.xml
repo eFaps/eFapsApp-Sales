@@ -49,5 +49,9 @@
         </attribute>
         <trigger event="ACCESSCHECK" name="Sales_Exchange.ACCESSCHECK"
             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+        <index msgPhrase="ERP_IndexDocumentMsgPhrase">
+            <field id="onlyNumber" select="attribute[OnlyNumber]" key="index.ERP_DocumentAbstract.Name" type="STRING"/>
+            <field id="reference" select="attribute[Reference]" key="index.ERP_DocumentAbstract.Name" type="STRING"/>
+        </index>
     </definition>
 </datamodel-type>
