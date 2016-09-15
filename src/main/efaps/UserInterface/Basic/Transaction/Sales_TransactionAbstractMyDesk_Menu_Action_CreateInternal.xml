@@ -26,14 +26,18 @@
         <target>
             <form>Sales_TransactionInternalForm</form>
             <execute program="org.efaps.esjp.sales.Transaction" method="createInternalTransfer">
+                <!-- default Numbergenerator Sales_TransferDocumentSequence-->
+                <property name="NumberGenerator">d37cfef7-5569-4e97-95f0-13a995b2d72d</property>
+
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
             </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_TransferDocument</property>
         <property name="WindowHeight">460</property>
-        <property name="WindowWidth">600</property>
+        <property name="WindowWidth">900</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

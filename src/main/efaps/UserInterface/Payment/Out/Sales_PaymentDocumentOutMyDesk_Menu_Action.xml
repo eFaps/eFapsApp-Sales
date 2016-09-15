@@ -29,6 +29,7 @@
             <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCashOut</child>
             <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentRetentionOut</child>
             <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDetractionOut</child>
+            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentInternalOut</child>
             <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,27 +14,25 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 3449 $
- Last Changed:    $Date: 2009-11-29 18:06:11 -0500 (Sun, 29 Nov 2009) $
- Last Changed By: $Author: tim.moxter $
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>249e7a2a-5fc3-4ce4-97e6-7469f85f8f45</uuid>
+    <uuid>014c2c7b-8bca-44b5-8820-3d9238616556</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 3449 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentInternalMyDesk_Menu_Action_Delete</name>
+        <name>Sales_TransferDocumentMyDesk</name>
         <access>
-            <role>Administration</role>
+            <role>Sales_Admin</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+            <table>Sales_TransferDocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_TransferDocument</property>
+            </evaluate>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>

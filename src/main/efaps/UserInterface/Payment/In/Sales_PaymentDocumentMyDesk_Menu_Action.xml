@@ -31,6 +31,7 @@
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCard</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentRetention</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentInternal</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

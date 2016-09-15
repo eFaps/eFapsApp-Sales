@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -16,29 +14,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
--->
 
+-->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ea88a6b0-7523-4373-bd5a-7ea07e888457</uuid>
+    <uuid>f5887a62-7e3a-4fc6-be27-a00f7473b074</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionAbstractMyDesk_Menu_Action_CreateOutbound</name>
+        <name>Sales_PaymentInternalOutTree_Menu_Action_SetCanceled</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
-            <form>Sales_TransactionAbstractForm</form>
-            <execute program="org.efaps.esjp.sales.Transaction" method="create">
-                <!-- default Numbergenerator Sales_TransferDocumentSequence-->
-                <property name="NumberGenerator">d37cfef7-5569-4e97-95f0-13a995b2d72d</property>
-                <property name="JasperReport">Sales_PaymentDocumentReport</property>
-                <property name="Mime">pdf</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Canceled</property>
             </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_PaymentInternalOutTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_TransactionOutbound</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
-        <property name="TargetShowFile">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

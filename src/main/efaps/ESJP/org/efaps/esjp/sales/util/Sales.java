@@ -911,6 +911,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_INTERNAL_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.Internal.Activate")
+                    .description("Activate the Internal Payment Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENT_INTERNAL_PAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.Internal.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENT_RETENTION_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.in.Retention.PayableDocuments")
@@ -1027,6 +1041,20 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.out.Exchange.PayableDocuments")
                     .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTOUT_INTERNAL_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Internal.Activate")
+                    .description("Activate the Internal Payment Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUT_INTERNAL_PAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Internal.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1764,7 +1792,9 @@ public final class Sales
         /** TAX. */
         TAX,
         /** EXCHANGE. */
-        EXCHANGE;
+        EXCHANGE,
+        /** The internal. */
+        INTERNAL;
 
         /**
          * {@inheritDoc}

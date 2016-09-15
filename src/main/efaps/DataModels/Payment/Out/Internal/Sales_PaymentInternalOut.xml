@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,21 +14,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b6a9be07-c4cb-4441-9f37-abe87bad2ef7</uuid>
+    <uuid>643337b6-7ed9-4b13-a0ba-400b66057e57</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentInternalSequence</name>
-        <format>PI-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_PaymentInternalOut</name>
+        <parent>Sales_PaymentDocumentOutAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_PaymentInternalOutStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE" name="Sales_PaymentInternal.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue" />
+        </attribute>
     </definition>
-</numbergenerator>
+</datamodel-type>
