@@ -1135,7 +1135,8 @@ public abstract class SalesReport4Account_Base
                 setDocName(docPayInfo.getName());
                 final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.SALESREPORT4ACCOUNTIN.get()
                                 : Sales.SALESREPORT4ACCOUNTOUT.get();
-                final boolean perpay = BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment"));
+                final Boolean perpay =  props.containsKey("PaymentPerPayment")
+                                ? BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment")) : null;
                 this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay));
                 this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid(perpay));
             }

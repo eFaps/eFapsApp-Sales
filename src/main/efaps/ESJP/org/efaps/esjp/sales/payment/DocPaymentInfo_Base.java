@@ -315,6 +315,20 @@ public abstract class DocPaymentInfo_Base
         return this.rateCurrencyInstance;
     }
 
+
+    /**
+     * Checks if is per payment.
+     *
+     * @return true, if is per payment
+     * @throws EFapsException on error
+     */
+    protected boolean isPerPayment()
+        throws EFapsException
+    {
+        final Properties props = Sales.PAYMENT_PAIDRULES.get();
+        return BooleanUtils.toBoolean(props.getProperty(this.instance.getType().getName() + ".PerPayment"));
+    }
+
     /**
      * @return true if paid completely
      * @throws EFapsException on error
@@ -333,20 +347,19 @@ public abstract class DocPaymentInfo_Base
         } catch (final ParseException e) {
             throw new EFapsException("catched ParseException", e);
         }
-        final boolean pp = BooleanUtils.toBoolean(
-                        props.getProperty(this.instance.getType().getName() + ".PerPayment"));
-        return this.crossTotal.subtract(getPaid(pp)).abs().compareTo(threshold) <= 0
-                        || this.rateCrossTotal.subtract(getRatePaid(pp)).abs().compareTo(threshold) <= 0;
+
+        return this.crossTotal.subtract(getPaid(null)).abs().compareTo(threshold) <= 0
+                        || this.rateCrossTotal.subtract(getRatePaid(null)).abs().compareTo(threshold) <= 0;
     }
 
     /**
      * Gets the paid.
      *
-     * @param _perPayment the per payment
+     * @param _perPayment the perpayment
      * @return the paid amount in the base currency of the document.
      * @throws EFapsException on error
      */
-    public BigDecimal getPaid(final boolean _perPayment)
+    public BigDecimal getPaid(final Boolean _perPayment)
         throws EFapsException
     {
         initialize();
@@ -357,7 +370,8 @@ public abstract class DocPaymentInfo_Base
             if (getCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
-                if (_perPayment) {
+                final boolean pp = _perPayment == null ? isPerPayment() : _perPayment;
+                if (pp) {
                     ret = ret.add(pos.getRateAmount(getParameter()));
                 } else {
                     ret = ret.add(pos.getAmount4Currency(getParameter(), getCurrencyInstance()));
@@ -374,7 +388,7 @@ public abstract class DocPaymentInfo_Base
      * @return the paid amount in the rate currency of the document.
      * @throws EFapsException on error
      */
-    public BigDecimal getRatePaid(final boolean _perPayment)
+    public BigDecimal getRatePaid(final Boolean _perPayment)
         throws EFapsException
     {
         initialize();
@@ -384,7 +398,8 @@ public abstract class DocPaymentInfo_Base
             if (getRateCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
-                if (_perPayment) {
+                final boolean pp = _perPayment == null ? isPerPayment() : _perPayment;
+                if (pp) {
                     ret = ret.add(pos.getRateAmount(getParameter()));
                 } else {
                     if (Currency.getBaseCurrency().equals(getCurrencyInstance())) {
@@ -820,23 +835,47 @@ public abstract class DocPaymentInfo_Base
                         attrTaxQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink));
         final MultiPrintQuery taxMulti = taxQueryBldr.getPrint();
         taxMulti.addAttribute(CIERP.Document2PaymentDocumentAbstract.Date,
-                        CIERP.Document2PaymentDocumentAbstract.Amount);
+                        CIERP.Document2PaymentDocumentAbstract.Amount,
+                        CIERP.Document2PaymentDocumentAbstract.Rate);
         final SelectBuilder selTaxCurInst = SelectBuilder.get().linkto(
                         CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
+        final SelectBuilder selRateCurInst = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.RateCurrencyLink).instance();
         final SelectBuilder selDocInst = SelectBuilder.get()
                         .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
                         .linkfrom(CISales.IncomingDetraction2IncomingInvoice.FromLink)
                         .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink).instance();
-        taxMulti.addSelect(selTaxCurInst, selDocInst);
+        final SelectBuilder selPaymentDocRate = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
+                        .attribute(CIERP.PaymentDocumentAbstract.Rate);
+        taxMulti.addSelect(selTaxCurInst, selDocInst, selRateCurInst, selPaymentDocRate);
         taxMulti.executeWithoutAccessCheck();
         while (taxMulti.next()) {
             final Instance docInst = taxMulti.getSelect(selDocInst);
             final DocPaymentInfo_Base info = instance2info.get(docInst);
+            final Instance rateCurInst = taxMulti.getSelect(selRateCurInst);
             final Instance curInst = taxMulti.getSelect(selTaxCurInst);
             final DateTime dateTmp = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
             final BigDecimal amount = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+
+            final RateInfo rateInfo;
+            // payment was in the same currency
+            if (curInst.equals(rateCurInst)) {
+                // the applied currency was the base currency
+                if (Currency.getBaseCurrency().equals(rateCurInst)) {
+                    rateInfo = RateInfo.getRateInfo(taxMulti.<Object[]>getAttribute(
+                                    CIERP.Document2PaymentDocumentAbstract.Rate));
+                } else {
+                    rateInfo = RateInfo.getRateInfo(taxMulti.<Object[]>getSelect(selPaymentDocRate));
+                }
+            } else {
+                // different currencies use the one registered in the relation
+                rateInfo = RateInfo.getRateInfo(taxMulti.<Object[]>getAttribute(
+                                CIERP.Document2PaymentDocumentAbstract.Rate));
+            }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
-                            .setLabel(CISales.IncomingDetraction.getType().getLabel()));
+                            .setLabel(CISales.IncomingDetraction.getType().getLabel())
+                            .setRateInfo(rateInfo));
         }
     }
 
@@ -873,10 +912,13 @@ public abstract class DocPaymentInfo_Base
         final MultiPrintQuery retMulti = retQueryBldr.getPrint();
         retMulti.addAttribute(CISales.IncomingRetention.CrossTotal, CISales.IncomingRetention.Date);
         final SelectBuilder retSelCur = new SelectBuilder().linkto(CISales.IncomingRetention.CurrencyId).instance();
+        final SelectBuilder selRateCurInst = new SelectBuilder().linkto(CISales.IncomingRetention.RateCurrencyId)
+                        .instance();
+        final SelectBuilder selRateObj = new SelectBuilder().linkto(CISales.IncomingRetention.Rate);
         final SelectBuilder selDocInst = SelectBuilder.get()
                         .linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
                         .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink).instance();
-        retMulti.addSelect(retSelCur, selDocInst);
+        retMulti.addSelect(retSelCur, selDocInst, selRateCurInst, selRateObj);
         retMulti.executeWithoutAccessCheck();
         while (retMulti.next()) {
             final Instance docInst = retMulti.getSelect(selDocInst);
@@ -884,8 +926,12 @@ public abstract class DocPaymentInfo_Base
             final Instance curInst = retMulti.getSelect(retSelCur);
             final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
             final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
+
+
+            final RateInfo rateInfo = RateInfo.getRateInfo(retMulti.<Object[]>getSelect(selRateObj));
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
-                            .setLabel(CISales.IncomingRetention.getType().getLabel()));
+                            .setLabel(CISales.IncomingRetention.getType().getLabel())
+                            .setRateInfo(rateInfo));
         }
     }
 
@@ -913,17 +959,20 @@ public abstract class DocPaymentInfo_Base
         final Set<Instance> verifySet = new HashSet<>();
         final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
         swapMulti.addAttribute(CISales.Document2Document4Swap.Amount);
-        final SelectBuilder selCur3 = new SelectBuilder()
+        final SelectBuilder selCurInst = new SelectBuilder()
                         .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
-        final SelectBuilder selDocFromInst = SelectBuilder.get()
-                        .linkto(CISales.Document2Document4Swap.FromAbstractLink).instance();
-        final SelectBuilder selDocToInst = SelectBuilder.get()
-                        .linkto(CISales.Document2Document4Swap.ToAbstractLink).instance();
-        final SelectBuilder selDocFromStatus = SelectBuilder.get()
-                        .linkto(CISales.Document2Document4Swap.FromAbstractLink).status().key();
-        final SelectBuilder selDocToStatus = SelectBuilder.get()
-                        .linkto(CISales.Document2Document4Swap.ToAbstractLink).status().key();
-        swapMulti.addSelect(selCur3, selDocFromInst, selDocToInst, selDocFromStatus, selDocToStatus);
+        final SelectBuilder selDocFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromAbstractLink);
+        final SelectBuilder selDocFromInst = new SelectBuilder(selDocFrom).instance();
+        final SelectBuilder selDocFromStatus = new SelectBuilder(selDocFrom).status().key();
+        final SelectBuilder selDocFromRate = new SelectBuilder(selDocFrom).attribute(CISales.DocumentSumAbstract.Rate);
+
+        final SelectBuilder selDocTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToAbstractLink);
+        final SelectBuilder selDocToInst = new SelectBuilder(selDocTo).instance();
+        final SelectBuilder selDocToStatus = new SelectBuilder(selDocTo).status().key();
+        final SelectBuilder selDocToRate = new SelectBuilder(selDocTo).attribute(CISales.DocumentSumAbstract.Rate);
+
+        swapMulti.addSelect(selCurInst, selDocFromInst, selDocFromRate, selDocToInst, selDocFromStatus, selDocToStatus,
+                        selDocToRate);
         swapMulti.executeWithoutAccessCheck();
         while (swapMulti.next()) {
             if (!verifySet.contains(swapMulti.getCurrentInstance())) {
@@ -935,9 +984,20 @@ public abstract class DocPaymentInfo_Base
                 if (instance2info.containsKey(docFromInst) && !"Canceled".equals(key1) && !"Canceled".equals(key2)
                                 && !"Replaced".equals(key1) && !"Replaced".equals(key2)) {
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
-                    final Instance curInst = swapMulti.getSelect(selCur3);
+                    final Instance curInst = swapMulti.getSelect(selCurInst);
+                    final RateInfo docRateInfo = new Currency().evaluateRateInfo(info.getParameter(),
+                                    swapMulti.<Object[]>getSelect(selDocFromRate));
+                    RateInfo rateInfo = null;
+                    if (docRateInfo.getCurrencyInstance().equals(curInst)) {
+                        rateInfo = docRateInfo;
+                    } else {
+                        rateInfo = new Currency().evaluateRateInfo(info.getParameter(),
+                                        swapMulti.<Object[]>getSelect(selDocToRate));;
+                    }
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
-                    info.payPos.add(new PayPos(info.date, amount, curInst).setLabel(docToInst.getType().getLabel()));
+                    info.payPos.add(new PayPos(info.date, amount, curInst)
+                                    .setLabel(docToInst.getType().getLabel())
+                                    .setRateInfo(rateInfo));
                 }
             }
         }
