@@ -37,6 +37,7 @@
                 method="getOptionListFieldValue" name="Sales_TransactionInternalForm.charger.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
+                <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt; - $&lt;linkto[CurrencyLink].attribute[Symbol]&gt;</property>
                 <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
@@ -77,6 +78,7 @@
                 method="getOptionListFieldValue" name="Sales_TransactionInternalForm.payment.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
+                <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt; - $&lt;linkto[CurrencyLink].attribute[Symbol]&gt;</property>
                 <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>

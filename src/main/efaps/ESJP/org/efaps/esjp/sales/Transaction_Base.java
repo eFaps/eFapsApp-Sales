@@ -95,7 +95,7 @@ public abstract class Transaction_Base
     {
         final List<Instance> transInstances = new ArrayList<>();
         transInstances.add((Instance) new Create().execute(_parameter).get(ReturnValues.INSTANCE));
-        final File file = createTransferDocument(_parameter, transInstances);
+        final File file = createTransferDocument(_parameter, transInstances, false);
         final Return ret = new Return();
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
@@ -105,13 +105,17 @@ public abstract class Transaction_Base
     }
 
     /**
+     * Creates the transfer document.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _transInstances   list of transaction instances
+     * @param _combine the combine
      * @return file created or null
      * @throws EFapsException on error
      */
     protected File createTransferDocument(final Parameter _parameter,
-                                          final List<Instance> _transInstances)
+                                          final List<Instance> _transInstances,
+                                          final boolean _combine)
         throws EFapsException
     {
         final Map<String, TransInfo> key2info = new LinkedHashMap<>();
@@ -156,27 +160,31 @@ public abstract class Transaction_Base
                 noteStr = noteStr + note;
             }
         }
-
+        Instance currentDocInst = null;
+        String currentName = null;
         final List<File> files = new ArrayList<>();
         for (final TransInfo info : key2info.values()) {
             final TransferDocument transDoc = new TransferDocument();
             final CurrencyInst curInst = info.getCurrencyInst();
             final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, curInst.getInstance());
-            final String name = transDoc.getDocName4Create(_parameter);
-            final Insert docInsert = new Insert(CISales.TransferDocument);
-            docInsert.add(CISales.TransferDocument.Name, name);
-            docInsert.add(CISales.TransferDocument.CurrencyLink, Currency.getBaseCurrency());
-            docInsert.add(CISales.TransferDocument.Amount, info.getAmount());
-            docInsert.add(CISales.TransferDocument.RateCurrencyLink, curInst.getInstance());
-            docInsert.add(CISales.TransferDocument.Rate, rateInfo.getRateObject());
-            docInsert.add(CISales.TransferDocument.Date, date);
-            docInsert.add(CISales.TransferDocument.Note, noteStr);
-            docInsert.add(CISales.TransferDocument.Status, Status.find(CISales.TransferDocumentStatus.Open));
-            docInsert.execute();
+            if (!_combine || currentDocInst == null) {
+                currentName = transDoc.getDocName4Create(_parameter);
+                final Insert docInsert = new Insert(CISales.TransferDocument);
+                docInsert.add(CISales.TransferDocument.Name, currentName);
+                docInsert.add(CISales.TransferDocument.CurrencyLink, Currency.getBaseCurrency());
+                docInsert.add(CISales.TransferDocument.Amount, info.getAmount());
+                docInsert.add(CISales.TransferDocument.RateCurrencyLink, curInst.getInstance());
+                docInsert.add(CISales.TransferDocument.Rate, rateInfo.getRateObject());
+                docInsert.add(CISales.TransferDocument.Date, date);
+                docInsert.add(CISales.TransferDocument.Note, noteStr);
+                docInsert.add(CISales.TransferDocument.Status, Status.find(CISales.TransferDocumentStatus.Open));
+                docInsert.execute();
+                currentDocInst = docInsert.getInstance();
+            }
 
             final Insert payInsert = new Insert(CISales.Payment);
             payInsert.add(CISales.Payment.Date, date);
-            payInsert.add(CISales.Payment.TargetDocument, docInsert.getInstance());
+            payInsert.add(CISales.Payment.TargetDocument, currentDocInst);
             payInsert.add(CISales.Payment.Amount, info.getAmount());
             payInsert.add(CISales.Payment.Rate, rateInfo.getRateObject());
             payInsert.add(CISales.Payment.RateCurrencyLink, curInst.getInstance());
@@ -189,12 +197,15 @@ public abstract class Transaction_Base
                 update.execute();
             }
 
-            final CreatedDoc createdDoc = new CreatedDoc(docInsert.getInstance());
-            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Name.name, name);
+            final CreatedDoc createdDoc = new CreatedDoc(currentDocInst);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Name.name, currentName);
             createdDoc.getValues().put("accountName", info.getAccountName());
             createdDoc.getValues().put("accountCurrencyName", curInst.getName());
             final File file = transDoc.createReport(_parameter, createdDoc);
             if (file != null) {
+                if (_combine && !files.isEmpty()) {
+                    files.clear();
+                }
                 files.add(file);
             }
         }
@@ -581,7 +592,7 @@ public abstract class Transaction_Base
         // transaction inbound
         transInst.addAll(createInternalTransaction(_parameter, CISales.TransactionInbound.getType(), payment,
                         costInStr, currIdInStr, amountInStr));
-        final File file = createTransferDocument(_parameter, transInst);
+        final File file = createTransferDocument(_parameter, transInst, true);
         final Return ret = new Return();
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);

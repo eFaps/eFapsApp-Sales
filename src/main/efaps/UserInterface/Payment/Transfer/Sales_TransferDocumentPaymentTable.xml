@@ -17,61 +17,20 @@
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9c01253c-1cad-4fcc-a0f0-2716b840292e</uuid>
+    <uuid>cf4858c2-ed46-4d30-8172-e5ff1d68aff5</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentInternalOutPaymentTable</name>
+        <name>Sales_TransferDocumentPaymentTable</name>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_Payment/Date.Label</property>
         </field>
-        <field name="createDocumentType">
-            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
-            <property name="Select">linkto[CreateDocument].type.label</property>
-            <property name="Label">Sales_PaymentInternalOutPaymentTable.createDocumentType.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="createDocument4Read">
-            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
-            <property name="Select">linkto[CreateDocument].attribute[Name]</property>
-            <property name="Label">Sales_PaymentInternalOutPaymentTable.createDocument.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-        </field>
-        <field name="createDocument">
-            <property name="Label">Sales_PaymentInternalOutPaymentTable.createDocument.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument"
-                name="Sales_PaymentInternalPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.payment.PaymentInternal">
-                <!-- Sales-Configuration -->
-                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.out.Internal.PayableDocuments</property>
-                <property name="ExtraParameter">contact</property>
-                <property name="ExtraParameter01">checkbox4Invoice</property>
-            </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument"
-                name="Sales_PaymentInternalPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentInternal" />
-        </field>
-        <field name="createDocumentDesc">
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_PaymentInternalOutPaymentTable.createDocumentDesc.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
         <field name="paymentRate">
-            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentRate"
-                name="Sales_PaymentInternalOutPaymentTable.paymentRate.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentInternal" />
         </field>
         <field name="payment4Pay">
             <property name="ModeEdit">NONE</property>
@@ -107,8 +66,8 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink">
-            <property name="SelectAlternateOID">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].oid</property>
-            <property name="Select">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].oid</property>
+            <property name="Select">linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentInternalOutPaymentTable.accountLink.Label</property>
         </field>

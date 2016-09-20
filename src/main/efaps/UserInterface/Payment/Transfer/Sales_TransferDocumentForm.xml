@@ -142,7 +142,7 @@
         </field>
         <field character="Target" name="paymentTable">
             <property name="ModeCreate">EDITABLE</property>
-            <table>Sales_PaymentInternalOutPaymentTable</table>
+            <table>Sales_TransferDocumentPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>
                 <property name="LinkFrom">TargetDocument</property>

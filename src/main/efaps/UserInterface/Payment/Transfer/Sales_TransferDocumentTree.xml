@@ -23,6 +23,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TransferDocumentTree</name>
         <target>
+            <menu>Sales_TransferDocumentTree_Menu</menu>
             <form>Sales_TransferDocumentForm</form>
         </target>
         <type>Sales_TransferDocument</type>
