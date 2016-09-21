@@ -357,6 +357,30 @@ public abstract class DocProductTransactionReport_Base
                 default:
                     break;
             }
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("product") && filter.get("product") != null) {
+                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filter.get("product");
+                if (CollectionUtils.isNotEmpty(filterValue.getObject())) {
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(
+                                    CIProducts.StoreableProductAbstract2IndividualAbstract);
+                    attrQueryBldr.addWhereAttrEqValue(
+                                    CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract,
+                                    filterValue.getObject().toArray());
+
+                    final QueryBuilder prodQueryBldr = new QueryBuilder(CIProducts.ProductAbstract);
+                    prodQueryBldr.setOr(true);
+                    prodQueryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.ID, filterValue.getObject().toArray());
+                    prodQueryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQueryBldr.getAttributeQuery(
+                                    CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract));
+                    if (filterValue.isNegate()) {
+                        _queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionAbstract.Product, prodQueryBldr
+                                        .getAttributeQuery(CIProducts.ProductAbstract.ID));
+                    } else {
+                        _queryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Product, prodQueryBldr
+                                        .getAttributeQuery(CIProducts.ProductAbstract.ID));
+                    }
+                }
+            }
         }
 
         /**

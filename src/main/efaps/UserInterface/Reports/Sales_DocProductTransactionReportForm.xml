@@ -36,28 +36,31 @@
                 <property name="Field04">dateGroup</property>
                 <property name="Field05">docGroup</property>
                 <property name="Field06">prodDocType</property>
-                <property name="Field07">prodType</property>
-                <property name="Field08">analyzeFabrication</property>
+                <property name="Field07">product</property>
+                <property name="Field08">prodType</property>
+                <property name="Field09">analyzeFabrication</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
                 <property name="FilterType04">ENUM</property>
                 <property name="FilterType05">ENUM</property>
                 <property name="FilterType06">InstanceSet</property>
-                <property name="FilterType07">ENUM</property>
-                <property name="FilterType08">Boolean</property>
+                <property name="FilterType07">InstanceSet</property>
+                <property name="FilterType08">ENUM</property>
+                <property name="FilterType09">Boolean</property>
                 <property name="FilterDefault01">MONTHS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">ALL</property>
                 <property name="FilterDefault04">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault05">org.efaps.esjp.sales.report.DocProductTransactionReport_Base$DocGroup</property>
                 <property name="FilterDefault06">-</property>
-                <property name="FilterDefault07">org.efaps.esjp.sales.report.DocProductTransactionReport_Base$ProdType</property>
-                <property name="FilterDefault08">false</property>
+                <property name="FilterDefault07">-</property>
+                <property name="FilterDefault08">org.efaps.esjp.sales.report.DocProductTransactionReport_Base$ProdType</property>
+                <property name="FilterDefault09">false</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="AccessAttribute07">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
-                <property name="AccessAttribute08">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
+                <property name="AccessAttribute08">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
+                <property name="AccessAttribute09">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocProductTransactionReportForm.filter.UI_FIELD_VALUE.2"
@@ -69,21 +72,24 @@
                 <property name="Field04">dateGroup</property>
                 <property name="Field05">docGroup</property>
                 <property name="Field06">prodDocType</property>
-                <property name="Field07">prodType</property>
-                <property name="Field08">analyzeFabrication</property>
+                <property name="Field07">product</property>
+                <property name="Field08">prodType</property>
+                <property name="Field09">analyzeFabrication</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocProductTransactionReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocProductTransactionReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocProductTransactionReport.type</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.DocProductTransactionReport.dateGroup</property>
                 <property name="DBProperty05">org.efaps.esjp.sales.report.DocProductTransactionReport.docGroup</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.DocProductTransactionReport.prodDocType</property>
-                <property name="DBProperty07">org.efaps.esjp.sales.report.DocProductTransactionReport.prodType</property>
-                <property name="DBProperty08">org.efaps.esjp.sales.report.DocProductTransactionReport.analyzeFabrication</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.DocProductTransactionReport.product</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.DocProductTransactionReport.prodType</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.DocProductTransactionReport.analyzeFabrication</property>
                 <property name="Sales_ProductDocumentType_Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="Products_ProductAbstract_Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="AccessAttribute07">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
-                <property name="AccessAttribute08">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
+                <property name="AccessAttribute08">org.efaps.sales.report.DocProductTransactionReport.ActivateProdType</property>
+                <property name="AccessAttribute09">org.efaps.sales.report.DocProductTransactionReport.AnalyzeFabrication</property>
             </trigger>
         </field>
         <field name="report">

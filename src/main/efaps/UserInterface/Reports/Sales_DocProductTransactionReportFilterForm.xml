@@ -100,6 +100,45 @@
                 program="org.efaps.esjp.sales.report.DocProductTransactionReport">
             </trigger>
         </field>
+         <field name="productGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="product">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.product</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
+                name="Sales_PaymentReportFilterForm.contact.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+                <property name="Products_ProductAbstract_Select">attribute[Name]</property>
+            </trigger>
+             <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4Product"
+                 name="Sales_SalesProductReportFilterForm.product.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.products.Product">
+                 <property name="AutoType">TOKEN</property>
+                 <property name="Type">Products_StoreableProductAbstract</property>
+                 <property name="Type01">!Products_ProductIndividualAbstract</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete"
+                name="Sales_DocProductTransactionReportFilterForm.prodDocType.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="AutoType">TOKEN</property>
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="SearchAttribute">Name</property>
+                <property name="Phrase4VALUE">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+            </trigger>
+        </field>
+        <field name="product_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocProductTransactionReport.product_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_DocProductTransactionReportFilterForm.product_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocProductTransactionReport">
+            </trigger>
+        </field>
         <field name="prodType">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">RADIO</property>
