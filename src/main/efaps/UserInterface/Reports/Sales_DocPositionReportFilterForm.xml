@@ -130,6 +130,14 @@
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.DocPositionReport.ProductAutoComplete</property>
             </trigger>
         </field>
+        <field name="unitPrice">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.unitPrice</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.unitPrice.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport" />
+        </field>
         <field name="bom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
@@ -261,6 +269,14 @@
                 program="org.efaps.esjp.sales.report.DocPositionReport">
             </trigger>
          </field>
+         <field name="unitPrice">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.unitPrice</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.unitPrice.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport" />
+        </field>
          <field name="bom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>

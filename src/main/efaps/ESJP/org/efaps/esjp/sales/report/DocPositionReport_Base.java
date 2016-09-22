@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +41,6 @@ import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -67,19 +67,24 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabVariableBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DocPositionReport_Base.
  *
  * @author The eFaps Team
  */
@@ -111,6 +116,8 @@ public abstract class DocPositionReport_Base
     private ValueList valueList;
 
     /**
+     * Generate report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
@@ -126,6 +133,8 @@ public abstract class DocPositionReport_Base
     }
 
     /**
+     * Export report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing the file
      * @throws EFapsException on error
@@ -149,6 +158,8 @@ public abstract class DocPositionReport_Base
     }
 
     /**
+     * Gets the report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return the report class
      * @throws EFapsException on error
@@ -160,6 +171,8 @@ public abstract class DocPositionReport_Base
     }
 
     /**
+     * Gets the data.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return list of DataBeans
      * @throws EFapsException on error
@@ -268,6 +281,9 @@ public abstract class DocPositionReport_Base
         return this.valueList;
     }
 
+    /* (non-Javadoc)
+     * @see org.efaps.esjp.erp.FilteredReport_Base#getProperties4TypeList(org.efaps.admin.event.Parameter, java.lang.String)
+     */
     @Override
     protected Properties getProperties4TypeList(final Parameter _parameter,
                                                 final String _fieldName)
@@ -296,6 +312,8 @@ public abstract class DocPositionReport_Base
     }
 
     /**
+     * Adds the 2 query builder.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _queryBldr queryBuilder to add to
      * @throws EFapsException on error
@@ -387,6 +405,8 @@ public abstract class DocPositionReport_Base
 
     /**
      * Dynamic Report.
+     *
+     * @author The eFaps Team
      */
     public static class DynDocPositionReport
         extends AbstractDynamicReport
@@ -398,6 +418,8 @@ public abstract class DocPositionReport_Base
         private final DocPositionReport_Base filteredReport;
 
         /**
+         * Instantiates a new dyn doc position report.
+         *
          * @param _filteredReport report
          */
         public DynDocPositionReport(final DocPositionReport_Base _filteredReport)
@@ -405,6 +427,9 @@ public abstract class DocPositionReport_Base
             this.filteredReport = _filteredReport;
         }
 
+        /* (non-Javadoc)
+         * @see org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base#createDataSource(org.efaps.admin.event.Parameter)
+         */
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
@@ -571,6 +596,7 @@ public abstract class DocPositionReport_Base
             final List<CrosstabRowGroupBuilder<?>> rowGrpBldrs = new ArrayList<>();
             final List<CrosstabColumnGroupBuilder<?>> colGrpBldrs = new ArrayList<>();
             final List<CrosstabMeasureBuilder<?>> measureGrpBldrs = new ArrayList<>();
+            final List<CrosstabVariableBuilder<?>> variableGrpBldrs = new ArrayList<>();
 
             boolean base = false;
             CurrencyInst selected = null;
@@ -600,7 +626,7 @@ public abstract class DocPositionReport_Base
             }
 
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
-                            DBProperties.getProperty(DocPositionReport.class.getName() + ".quantity"),
+                            this.filteredReport.getDBProperty("quantity"),
                             "quantity", BigDecimal.class, Calculation.SUM);
             measureGrpBldrs.add(quantityMeasure);
 
@@ -612,18 +638,27 @@ public abstract class DocPositionReport_Base
                                         currency.getSymbol(),
                                         currency.getISOCode(), BigDecimal.class, Calculation.SUM);
                             measureGrpBldrs.add(amountMeasure);
+                            addUnitPrice(_parameter, currency.getSymbol()
+                                            + " " + this.filteredReport.getDBProperty("unitPriceLabel"),
+                                            currency.getISOCode(),
+                                            variableGrpBldrs, measureGrpBldrs);
                         }
                     }
-                    final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                    DBProperties.getProperty(DocPositionReport.class.getName() + ".BASE")
-                                                    + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
+                    final String title = this.filteredReport.getDBProperty("BASE") + " "
+                                    + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol();
+                    final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(title,
                                     "BASE", BigDecimal.class, Calculation.SUM);
                     measureGrpBldrs.add(amountMeasure);
+                    addUnitPrice(_parameter, title + " " + this.filteredReport.getDBProperty("unitPriceLabel"),
+                                    "BASE", variableGrpBldrs, measureGrpBldrs);
                 } else {
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                     selected.getSymbol(),
                                     selected.getISOCode(), BigDecimal.class, Calculation.SUM);
                     measureGrpBldrs.add(amountMeasure);
+                    addUnitPrice(_parameter, selected.getSymbol() + " "
+                                    + this.filteredReport.getDBProperty("unitPriceLabel"),
+                                    selected.getISOCode(), variableGrpBldrs, measureGrpBldrs);
                 }
             }
             final CrosstabRowGroupBuilder<String> rowColGroup = DynamicReports.ctab
@@ -662,7 +697,38 @@ public abstract class DocPositionReport_Base
             for (final CrosstabMeasureBuilder<?> measureGrpBldr : measureGrpBldrs) {
                 crosstab.addMeasure(measureGrpBldr);
             }
+            for (final CrosstabVariableBuilder<?> variableGrpBldr : variableGrpBldrs) {
+                crosstab.variables(variableGrpBldr);
+            }
             _builder.addSummary(crosstab);
+        }
+
+        /**
+         * Adds the unit price.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _title the title
+         * @param _key the key
+         * @param _variableGrpBldrs the variable grp bldrs
+         * @param _measureGrpBldrs the measure grp bldrs
+         * @throws EFapsException on error
+         */
+        protected void addUnitPrice(final Parameter _parameter,
+                                    final String _title,
+                                    final String _key,
+                                    final List<CrosstabVariableBuilder<?>> _variableGrpBldrs,
+                                    final List<CrosstabMeasureBuilder<?>> _measureGrpBldrs)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+            if (filterMap.containsKey("unitPrice") &&  BooleanUtils.isTrue((Boolean) filterMap.get("unitPrice"))) {
+                final CrosstabVariableBuilder<BigDecimal> unitPriceVariable = DynamicReports.ctab.variable(
+                                new UnitPriceExpression(_key), Calculation.NOTHING);
+                _variableGrpBldrs.add(unitPriceVariable);
+
+                _measureGrpBldrs.add(DynamicReports.ctab.measure(_title, new UnitPriceMessuredExpression(
+                                unitPriceVariable)).setDataType(DynamicReports.type.bigDecimalType()));
+            }
         }
 
         /**
@@ -688,5 +754,70 @@ public abstract class DocPositionReport_Base
         {
             return this.filteredReport;
         }
+    }
+
+    /**
+     * The Class UnitPriceMeasureExpression.
+     *
+     * @author The eFaps Team
+     */
+    public static class UnitPriceExpression
+        extends AbstractSimpleExpression<BigDecimal>
+    {
+
+        /** The Constant serialVersionUID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The amount field. */
+        private final String amountField;
+
+        /**
+         * Instantiates a new unit price measure expression.
+         *
+         * @param _amountField the amount field
+         */
+        public UnitPriceExpression(final String _amountField) {
+            this.amountField = _amountField;
+        }
+
+        @Override
+        public BigDecimal evaluate(final ReportParameters _reportParameters)
+        {
+            final BigDecimal quantity = _reportParameters.getValue("quantity");
+            final BigDecimal amount = _reportParameters.getValue(this.amountField);
+            return amount.divide(quantity, 2, RoundingMode.HALF_UP);
+        }
+    }
+
+    /**
+     * The Class UnitPriceMeasureExpression.
+     *
+     * @author The eFaps Team
+     */
+    public static class UnitPriceMessuredExpression
+        extends AbstractSimpleExpression<BigDecimal>
+    {
+        /** The Constant serialVersionUID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The unit price variable. */
+        private final CrosstabVariableBuilder<BigDecimal> unitPriceVariable;
+
+        /**
+         * Instantiates a new unit price messured expression.
+         *
+         * @param _unitPriceVariable the unit price variable
+         */
+        public UnitPriceMessuredExpression(final CrosstabVariableBuilder<BigDecimal> _unitPriceVariable)
+        {
+            this.unitPriceVariable = _unitPriceVariable;
+        }
+
+        @Override
+        public BigDecimal evaluate(final ReportParameters _reportParameters)
+        {
+            return _reportParameters.getValue(this.unitPriceVariable);
+        }
+
     }
 }

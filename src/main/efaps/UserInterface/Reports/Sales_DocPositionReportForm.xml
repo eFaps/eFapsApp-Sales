@@ -43,7 +43,8 @@
                 <property name="Field08">typeGroup</property>
                 <property name="Field09">productType</property>
                 <property name="Field10">product</property>
-                <property name="Field11">bom</property>
+                <property name="Field11">unitPrice</property>
+                <property name="Field12">bom</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -55,6 +56,7 @@
                 <property name="FilterType09">Type</property>
                 <property name="FilterType10">InstanceSet</property>
                 <property name="FilterType11">Boolean</property>
+                <property name="FilterType12">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -66,7 +68,8 @@
                 <property name="FilterDefault09">ALL</property>
                 <property name="FilterDefault10">-</property>
                 <property name="FilterDefault11">false</property>
-                <property name="AccessAttribute11">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="FilterDefault12">false</property>
+                <property name="AccessAttribute12">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
@@ -84,7 +87,8 @@
                 <property name="Field08">typeGroup</property>
                 <property name="Field09">productType</property>
                 <property name="Field10">product</property>
-                <property name="Field11">bom</property>
+                <property name="Field11">unitPrice</property>
+                <property name="Field12">bom</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
@@ -95,7 +99,8 @@
                 <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
                 <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionReport.product</property>
-                <property name="DBProperty11">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+                <property name="DBProperty11">org.efaps.esjp.sales.report.DocPositionReport.unitPrice</property>
+                <property name="DBProperty12">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Products_ProductAbstract_Select">attribute[Name]</property>
                 <property name="AccessAttribute11">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
@@ -139,7 +144,8 @@
                 <property name="Field10">typeGroup</property>
                 <property name="Field11">productType</property>
                 <property name="Field12">product</property>
-                <property name="Field13">bom</property>
+                <property name="Field13">unitPrice</property>
+                <property name="Field14">bom</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -153,6 +159,7 @@
                 <property name="FilterType11">Type</property>
                 <property name="FilterType12">InstanceSet</property>
                 <property name="FilterType13">Boolean</property>
+                <property name="FilterType14">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -166,7 +173,8 @@
                 <property name="FilterDefault11">ALL</property>
                 <property name="FilterDefault12">-</property>
                 <property name="FilterDefault13">false</property>
-                <property name="AccessAttribute13">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="FilterDefault14">false</property>
+                <property name="AccessAttribute14">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
@@ -186,7 +194,8 @@
                 <property name="Field10">typeGroup</property>
                 <property name="Field11">productType</property>
                 <property name="Field12">product</property>
-                <property name="Field13">bom</property>
+                <property name="Field13">unitPrice</property>
+                <property name="Field14">bom</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
@@ -199,11 +208,12 @@
                 <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
                 <property name="DBProperty11">org.efaps.esjp.sales.report.DocPositionReport.productType</property>
                 <property name="DBProperty12">org.efaps.esjp.sales.report.DocPositionReport.product</property>
-                <property name="DBProperty13">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+                <property name="DBProperty13">org.efaps.esjp.sales.report.DocPositionReport.unitPrice</property>
+                <property name="DBProperty14">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Projects_ProjectService_Select">attribute[Name]</property>
                 <property name="Products_ProductAbstract_Select">attribute[Name]</property>
-                <property name="AccessAttribute13">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="AccessAttribute14">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
