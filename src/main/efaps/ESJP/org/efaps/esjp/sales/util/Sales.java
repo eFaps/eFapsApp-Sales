@@ -531,7 +531,8 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMORDEROUTBOUNDAC
+        = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
@@ -622,7 +623,12 @@ public final class Sales
                     .description("Possibility to set a default Warehouse for IncomingCreditNote-TransDocShadow. "
                                     + "If not set the default from Products applies.");
 
-
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_PRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
 
     /** See description. */
     @EFapsSysConfAttribute
