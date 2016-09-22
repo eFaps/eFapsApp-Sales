@@ -15,23 +15,28 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0a09c536-e3e0-417a-844a-0393f2e0f0b4</uuid>
+    <uuid>224002f5-ad26-4519-9789-3c8f686153a3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingCheckTree_Menu_Action</name>
-        <childs>
-            <child>Sales_IncomingCheckTree_Menu_Action_Edit</child>
-            <child>Sales_IncomingCheckTree_Menu_Action_CreatePaymentCheck</child>
-            <child>Sales_IncomingCheckTree_Menu_Action_SetClosed</child>
-            <child>Sales_IncomingCheckTree_Menu_Action_SetCanceled</child>
-            <child>Sales_IncomingCheckTree_Menu_Action_AssignAction</child>
-            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_ActionDefinitionIncomingCheck2Document</name>
+        <parent>ERP_ActionDefinition2DocumentAbstract</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_ActionDefinitionCheck</typelink>
+            <sqltable>ERP_ActionDefinition2ObjectSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_IncomingCheck</typelink>
+            <sqltable>ERP_ActionDefinition2ObjectSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

@@ -31,6 +31,7 @@
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateFundsToBeSettledReceipt</child>
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateIncomingExchange</child>
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateExchange</child>
+            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateIncomingCheck</child>
         </childs>
         <parents>
             <parent>ERP_ActionDefinitionMyDesk_Menu</parent>
