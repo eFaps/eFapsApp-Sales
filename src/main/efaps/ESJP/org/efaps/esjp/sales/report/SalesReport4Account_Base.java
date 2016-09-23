@@ -604,8 +604,9 @@ public abstract class SalesReport4Account_Base
             }
 
             gridList.add(typeColumn);
-            gridList.add(createdColumn);
             gridList.add(dateColumn);
+            gridList.add(dueDateColumn);
+
             gridList.add(nameColumn);
             if (Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)) {
                 gridList.add(revisionColumn);
@@ -625,7 +626,7 @@ public abstract class SalesReport4Account_Base
                 gridList.add(swapInfoColumn);
             }
 
-            gridList.add(dueDateColumn);
+            gridList.add(createdColumn);
             gridList.add(docStatusColumn);
 
             for (final CurrencyInst currency : getCurrencyInst4Report(_parameter)) {
