@@ -54,7 +54,28 @@ public abstract class PaymentDepositOut_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
 
+    /**
+     * Creates the 4 doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return create4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPayment4Doc(_parameter, createdDoc);
+        executeAutomation(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         return ret;
     }
 }

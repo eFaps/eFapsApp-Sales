@@ -24,6 +24,7 @@
         <name>Sales_IncomingExchangeTree_Payment_Menu_Action</name>
         <childs>
             <child>Sales_IncomingExchangeTree_Payment_Menu_Action_CreatePaymentDeposit</child>
+            <child>Sales_IncomingExchangeTree_Payment_Menu_Action_CreatePaymentDepositOut</child>
         </childs>
     </definition>
 </ui-menu>
