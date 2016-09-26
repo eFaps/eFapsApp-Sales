@@ -85,7 +85,6 @@ import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -637,6 +636,43 @@ public abstract class AbstractProductDocument_Base
     }
 
     /**
+     * Method is executed as an update event of the field containing the
+     * quantity of products to calculate the new totals.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the list
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Quantity(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+
+        if (Products.ACTIVATEINDIVIDUAL.get()) {
+            final int selected = getSelectedRow(_parameter);
+            final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
+            if (InstanceUtils.isValid(prodInst)) {
+                final PrintQuery print = new PrintQuery(prodInst);
+                print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
+                                CIProducts.ProductAbstract.Dimension,
+                                CIProducts.ProductAbstract.DefaultUoM,
+                                CIProducts.ProductAbstract.Individual);
+                print.execute();
+                final String name = print.getAttribute(CIProducts.ProductAbstract.Name);
+                final String desc = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
+                add4Individual(_parameter, prodInst,
+                                print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual), map,
+                                prodInst.getOid(), name +  "-" + desc);
+                list.add(map);
+                retVal.put(ReturnValues.VALUES, list);
+            }
+        }
+        return retVal;
+    }
+
+    /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @throws EFapsException on error
      * @return listmap for update
@@ -666,12 +702,6 @@ public abstract class AbstractProductDocument_Base
             add2UpdateField4Product(_parameter, map, prodInst);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
-        } else {
-            list.add(map);
-            retVal.put(ReturnValues.VALUES, list);
-            final StringBuilder js = new StringBuilder();
-            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
     }
@@ -878,7 +908,12 @@ public abstract class AbstractProductDocument_Base
                     .append("domClass.add(d, \"alternateIndividual\");\n")
                     .append("on(d, 'click', function () {\n")
                     .append("eFapsSetFieldValue(").append(_selected).append(",'product', '").append(prodInst.getOid())
-                    .append("', '").append(prodName).append("');\n")
+                        .append("', '").append(prodName).append("');\n")
+                    .append("eFapsSetFieldValue(").append(_selected).append(",'eFapsRSR','")
+                        .append(_selected).append("');\n")
+                    .append("var it = query(\"input[name='product']\");\n")
+                    .append("var pW = registry.getEnclosingWidget(it[").append(_selected).append("]);\n")
+                    .append("pW.onChange()\n")
                     .append("});\n")
                     .append("domConstruct.place(d, ul);\n");
             }
@@ -897,7 +932,7 @@ public abstract class AbstractProductDocument_Base
         if (add) {
             ret = InterfaceUtils.wrapInDojoRequire(_parameter, ret, DojoLibs.ON, DojoLibs.DOMCONSTRUCT, DojoLibs.QUERY,
                         DojoLibs.TOOLTIPDIALOG, DojoLibs.POPUP, DojoLibs.DOMSTYLE, DojoLibs.DOMCLASS,
-                        DojoLibs.NLTRAVERSE);
+                        DojoLibs.NLTRAVERSE, DojoLibs.REGISTRY);
         } else {
             ret = new StringBuilder()
                 .append("var nl = query('.field[name=\\'quantityInStock\\']');\n")
@@ -1430,20 +1465,18 @@ public abstract class AbstractProductDocument_Base
     {
         final Return retVal = new Return();
         final StringBuilder js = new StringBuilder();
-        js.append("<script type=\"text/javascript\">\n")
-            .append("require([\"dojo/topic\",\"dojo/query\"], function(topic,query){\n")
-                .append("topic.subscribe(\"eFaps/addRow/positionTable\", function(){\n")
-                    .append("query(\"input[name=storageSetter]\").forEach(function(node){\n")
-                        .append("if (node.value!==\"\") {")
-                            .append("query(\"select[name=storage]\").forEach(function(node2){\n")
-                                .append("node2.value=node.value;\n")
-                             .append("});\n")
-                         .append("}")
-                     .append("});\n")
+        js.append("topic.subscribe(\"eFaps/addRow/positionTable\", function(){\n")
+                .append("query(\"input[name=storageSetter]\").forEach(function(node){\n")
+                    .append("if (node.value!==\"\") {")
+                        .append("query(\"select[name=storage]\").forEach(function(node2){\n")
+                            .append("node2.value=node.value;\n")
+                         .append("});\n")
+                     .append("}")
                  .append("});\n")
-            .append("});\n")
-            .append("</script>");
-        retVal.put(ReturnValues.SNIPLETT, js.toString());
+             .append("});\n");
+        retVal.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter,
+                        InterfaceUtils.wrapInDojoRequire(_parameter, js,
+                                        DojoLibs.TOPIC, DojoLibs.QUERY), true, 0).toString());
         return retVal;
     }
 
@@ -1581,6 +1614,7 @@ public abstract class AbstractProductDocument_Base
         /**
          * Instantiates a new UI product document position.
          *
+         * @param _parameter Parameter as passed by the eFaps API
          * @param _doc the _doc
          */
         public UIProductDocumentPosition(final Parameter _parameter,

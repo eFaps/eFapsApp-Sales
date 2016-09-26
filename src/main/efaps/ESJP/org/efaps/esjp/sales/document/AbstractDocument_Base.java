@@ -1427,6 +1427,8 @@ public abstract class AbstractDocument_Base
      * Method for acon complete script.
      *
      * @param _parameter Paramter as passed by the eFaps API
+     * @param _values the values
+     * @param _docInsts the doc insts
      * @return new StringBuilder with the additional fields.
      * @throws EFapsException on error
      */
@@ -1520,40 +1522,59 @@ public abstract class AbstractDocument_Base
                     quantity = 1;
                     break;
             }
-            js.append("require([\"dojo/query\", \"dojo/dom\",\"dojo/dom-construct\",\"dojo/number\"],")
-                .append(" function(query, dom, domConstruct,number){")
-                .append("var ind = query(\"[name='").append(fieldName).append("']\")[0];")
-                .append("if (typeof(ind)!=='undefined') {")
-                .append("domConstruct.destroy(\"in").append(_key).append("\");")
-                .append(" var x = domConstruct.create(\"span\", { id: \"in").append(_key)
-                .append("\", class: \"eFapsIndividual\"}, ind);")
-                .append(" var fs=  domConstruct.create(\"fieldset\", { }, x);")
-                .append("domConstruct.create(\"legend\", { innerHTML: \"")
-                    .append(StringEscapeUtils.escapeEcmaScript(_legend)).append("\"}, fs);");
+            js.append("var ind = query(\"[name='").append(fieldName).append("']\")[0];")
+                .append("if (typeof(ind)!=='undefined') {\n");
 
             if (_individual.equals(ProductIndividual.INDIVIDUAL)) {
-                if (quantity > 5) {
-                    js.append("var j = 0;");
-                }
-                if (quantity > 1) {
-                    js.append("for (var i=1;i < ").append(quantity + 1).append("; i++) {");
-                }
-                js.append(" domConstruct.create(\"label\", { innerHTML: number.format(i, {pattern:'00'}) +\".\"}, fs);")
-                    .append(" domConstruct.create(\"input\", { name: \"").append(_key).append("\"}, fs);");
+                js.append("var ins = dom.byId(\"in").append(_key).append("\");\n")
+                    .append("var fs;\n")
+                    .append("if (ins === null) {\n")
+                    .append("ins = domConstruct.create(\"span\", { id: \"in").append(_key)
+                        .append("\", class: \"eFapsIndividual\"}, ind);\n")
+                    .append("var fs =  domConstruct.create(\"fieldset\", {}, ins);\n")
+                    .append("domConstruct.create(\"legend\", { innerHTML: \"")
+                        .append(StringEscapeUtils.escapeEcmaScript(_legend)).append("\"}, fs);\n")
+                    .append("} else {\n")
+                    .append("fs = query('fieldset', ins) [0];\n")
+                    .append("}\n")
+                    .append("var j = 1;\n")
+                    .append("for (var i=1;i < ").append(quantity + 1).append("; i++) {\n")
+                    .append("var sps = query('span', fs);\n")
+                    .append("if (sps.length < i) {\n")
+                    .append("var sp = domConstruct.create(\"span\", {}, fs);\n")
+                    .append("domConstruct.create(\"label\",{ innerHTML: ")
+                        .append("number.format(i, {pattern:'00'}) +\".\"}, sp);\n")
+                    .append(" domConstruct.create(\"input\", { name: \"").append(_key).append("\"}, sp);\n")
+                    .append("if (j==5) {\n")
+                    .append("j=0;\n")
+                    .append("domConstruct.create(\"br\", {}, sp);\n")
+                    .append("}\n")
+                    .append("}\n")
+                    .append("j++;\n")
+                    .append("}\n")
+                    .append("var sps = query('span', fs).forEach(function (node, i) {\n")
+                    .append("if (i + 1 > ").append(quantity).append(") {\n")
+                    .append("domConstruct.destroy(node);\n")
+                    .append("}\n")
+                    .append("});\n");
 
-                if (quantity > 5) {
-                    js.append("j++;")
-                        .append("if (j==5) {")
-                        .append("j=0;")
-                        .append("domConstruct.create(\"br\", {}, fs);")
-                        .append("}");
-                }
-                if (quantity > 1) {
-                    js.append("}");
-                }
+                // remove the ones not any more necessary
+                js.append("query('.eFapsIndividual input:first-of-type').forEach(function (node) {\n")
+                    .append("var ind = query(\"input[value='\" + node.name + \"']\");\n")
+                    .append("if (ind.length === 0) {\n")
+                    .append("domConstruct.destroy(\"in\" + node.name);\n")
+                    .append("}\n")
+                    .append("});\n");
+
             } else if (_individual.equals(ProductIndividual.BATCH)) {
                 final String id = RandomStringUtils.randomAlphabetic(8);
-                js.append(" domConstruct.create(\"input\", { name: \"").append(_key)
+                js.append("domConstruct.destroy(\"in").append(_key).append("\");")
+                    .append(" var x = domConstruct.create(\"span\", { id: \"in").append(_key)
+                    .append("\", class: \"eFapsIndividual\"}, ind);")
+                    .append(" var fs=  domConstruct.create(\"fieldset\", { }, x);")
+                    .append("domConstruct.create(\"legend\", { innerHTML: \"")
+                    .append(StringEscapeUtils.escapeEcmaScript(_legend)).append("\"}, fs);")
+                    .append(" domConstruct.create(\"input\", { name: \"").append(_key)
                     .append("\" , checked: \"checked\", type:\"radio\", value: \"").append(ProductIndividual.BATCH)
                     .append("\", id:\"").append(id).append("\"}, fs);")
                     .append(" domConstruct.create(\"label\", { innerHTML: \"")
@@ -1576,10 +1597,9 @@ public abstract class AbstractDocument_Base
                     }
                 }
             }
-            js.append("}")
-                .append("});");
-
-            InterfaceUtils.appendScript4FieldUpdate(_map, js);
+            js.append("}");
+            InterfaceUtils.appendScript4FieldUpdate(_map, InterfaceUtils.wrapInDojoRequire(_parameter, js,
+                            DojoLibs.QUERY, DojoLibs.DOM, DojoLibs.DOMCONSTRUCT, DojoLibs.NUMBER));
         }
         return js;
     }
@@ -2805,6 +2825,7 @@ public abstract class AbstractDocument_Base
         /**
          * Instantiates a new UI abstract position.
          *
+         * @param _parameter Parameter as passed by the eFaps API
          * @param _doc the _doc
          */
         public AbstractUIPosition(final Parameter _parameter,
