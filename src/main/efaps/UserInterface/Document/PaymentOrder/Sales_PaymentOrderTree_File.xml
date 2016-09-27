@@ -25,7 +25,7 @@
         </application-dependencies>
         <name>Sales_PaymentOrderTree_File</name>
         <target>
-            <menu>Sales_PaymentOrderTree_File_Menu</menu>
+            <menu>Archives_DocumentTree_File_Menu</menu>
             <table>Archives_ArchiveTable</table>
             <evaluate program="org.efaps.esjp.archives.ArchiveStructurBrowser">
                 <property name="Type">Archives_ArchiveRoot</property>
@@ -33,6 +33,10 @@
                 <property name="Child_Type">Archives_ArchiveNode</property>
                 <property name="Child_LinkFrom">ParentLink</property>
             </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="checkAccess4Object2Archive"
+                name="Sales_PaymentOrderTree_File.UI_ACCESSCHECK"
+                program="org.efaps.esjp.archives.Archive">
+            </trigger>
         </target>
         <parents>
             <parent>Sales_PaymentOrderTree</parent>
