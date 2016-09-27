@@ -1921,4 +1921,19 @@ public abstract class AbstractDocumentSum_Base
         ret.put(ReturnValues.SNIPLETT, DocPaymentInfo_Base.getInfoHtml(_parameter, _parameter.getInstance()));
         return ret;
     }
+
+    /**
+     * Gets the payment info field value UI.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the payment info field value UI
+     * @throws EFapsException
+     */
+    public Return getPaymentInfoFieldValueUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, DocPaymentInfo_Base.getInfoValue(_parameter, _parameter.getInstance()));
+        return ret;
+    }
 }

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -26,6 +27,7 @@
             <property name="Attribute">Type</property>
             <property name="Label">Sales_DocumentAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
@@ -42,6 +44,10 @@
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+        </field>
+         <field name="dueDate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_DocumentAbstract/DueDate.Label</property>
         </field>
         <field name="crosstotal">
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
@@ -66,6 +72,15 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/RateNetTotal.Label</property>
             <property name="Align">right</property>
+        </field>
+        <field name="paymentInfo">
+            <property name="Label">Sales_ExchangePicker4DocumentsTable.paymentInfo.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
+                name="Sales_IncomingExchangePicker4DocumentsTable.paymentInfo.UI_FIELD_VALUE"
+                method="getPaymentInfoFieldValueUI"
+                event="UI_FIELD_VALUE">
+            </trigger>
         </field>
     </definition>
 </ui-table>

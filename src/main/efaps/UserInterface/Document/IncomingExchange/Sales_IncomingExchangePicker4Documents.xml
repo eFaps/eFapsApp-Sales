@@ -36,6 +36,6 @@
         <property name="TargetShowCheckBoxes">true</property>
         <property name="NoUpdateAfterCOMMAND">true</property>
         <property name="WindowHeight">500</property>
-        <property name="WindowWidth">800</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

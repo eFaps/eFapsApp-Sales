@@ -992,7 +992,7 @@ public abstract class DocPaymentInfo_Base
                         rateInfo = docRateInfo;
                     } else {
                         rateInfo = new Currency().evaluateRateInfo(info.getParameter(),
-                                        swapMulti.<Object[]>getSelect(selDocToRate));;
+                                        swapMulti.<Object[]>getSelect(selDocToRate));
                     }
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
                     info.payPos.add(new PayPos(info.date, amount, curInst)
@@ -1165,6 +1165,22 @@ public abstract class DocPaymentInfo_Base
         return ret;
     }
 
+    /**
+     * Gets the info value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the info value
+     * @throws EFapsException on error
+     */
+    public static CharSequence getInfoValue(final Parameter _parameter,
+                                            final Instance _docInst)
+        throws EFapsException
+    {
+        final DocPaymentInfo payInfo = new DocPaymentInfo(_docInst)
+                        .setTargetDocInst(_docInst);
+        return payInfo.getInfoField();
+    }
 
     /**
      * Internal class that converts the related PaymentDocuments in positions
