@@ -27,7 +27,7 @@
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_ActionDefinitionCheck</typelink>
+            <typelink>Sales_ActionDefinitionIncomingCheck</typelink>
             <sqltable>ERP_ActionDefinition2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
