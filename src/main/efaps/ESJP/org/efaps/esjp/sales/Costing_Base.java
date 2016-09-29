@@ -1759,6 +1759,9 @@ public abstract class Costing_Base
          */
         private Instance productInst;
 
+        /** The comment. */
+        private String comment;
+
         /**
          * Instantiates a new cost doc.
          *
@@ -1785,200 +1788,27 @@ public abstract class Costing_Base
                 // if the transaction was canceled do not search for cost, it must be inherited
                 boolean found = isCanceledTransaction(getBaseDocInst());
                 if (!found) {
-
-                    final SelectBuilder docInstSel = SelectBuilder.get().linkto(
-                                    CISales.PositionAbstract.DocumentAbstractLink).instance();
-                    final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
-                                    CISales.PositionSumAbstract.RateCurrencyId).instance();
-                    final SelectBuilder docStatusSel = SelectBuilder.get().linkto(
-                                    CISales.PositionAbstract.DocumentAbstractLink).status();
                     if (CISales.RecievingTicket.getType().equals(getBaseDocInst().getType())) {
                         // first priority are the special relation for costing
                         // "Sales_AcquisitionCosting2RecievingTicket"
-                        final QueryBuilder acRelAttrQueryBldr = new QueryBuilder(
-                                        CISales.AcquisitionCosting2RecievingTicket);
-                        acRelAttrQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCosting2RecievingTicket.ToLink,
-                                        getBaseDocInst());
-                        final AttributeQuery acRelAttrQuery = acRelAttrQueryBldr.getAttributeQuery(
-                                        CISales.AcquisitionCosting2RecievingTicket.FromLink);
-                        final QueryBuilder acPosQueryBldr = new QueryBuilder(CISales.AcquisitionCostingPosition);
-                        acPosQueryBldr.addWhereAttrInQuery(CISales.AcquisitionCostingPosition.DocumentAbstractLink,
-                                        acRelAttrQuery);
-                        acPosQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCostingPosition.Product,
-                                        getProductInst());
-                        final MultiPrintQuery acPosMulti = acPosQueryBldr.getPrint();
-                        acPosMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        acPosMulti.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice,
-                                        CISales.AcquisitionCostingPosition.RateNetUnitPrice);
-                        acPosMulti.execute();
-                        while (acPosMulti.next() && !found) {
-                            if (validStatus(acPosMulti.<Status>getSelect(docStatusSel))) {
-                                found = true;
-                                setCost(acPosMulti.<BigDecimal>getAttribute(
-                                                CISales.AcquisitionCostingPosition.NetUnitPrice));
-                                setRateCost(acPosMulti.<BigDecimal>getAttribute(
-                                                CISales.AcquisitionCostingPosition.RateNetUnitPrice));
-                                setRateCurrencyInstance(acPosMulti.<Instance>getSelect(rateCurrencyInstSel));
-                                setCostDocInst(acPosMulti.<Instance>getSelect(docInstSel));
-                            }
-                        }
+                        found = evalRecievingTicket4AcquisitionCosting();
                         if (!found) {
-                            final QueryBuilder relAttrQueryBldr = new QueryBuilder(
-                                            CISales.IncomingInvoice2RecievingTicket);
-                            relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
-                                            getBaseDocInst());
-                            final AttributeQuery relAttrQuery = relAttrQueryBldr.getAttributeQuery(
-                                            CISales.IncomingInvoice2RecievingTicket.FromLink);
-                            final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                            posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
-                                            relAttrQuery);
-                            posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
-                            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                            posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                            posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
-                            posMulti.execute();
-                            while (posMulti.next() && !found) {
-                                if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
-                                    found = true;
-                                    setCost(posMulti.<BigDecimal>getAttribute(
-                                                    CISales.IncomingInvoicePosition.NetUnitPrice));
-                                    setRateCost(posMulti.<BigDecimal>getAttribute(
-                                                    CISales.IncomingInvoicePosition.RateNetUnitPrice));
-                                    setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
-                                    setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
-                                }
-                            }
+                            found = evalRecievingTicket4Invoice();
                         }
                         // if not found yet, try other relations
                         if (!found) {
-                            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
-                            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From,
-                                            getBaseDocInst());
-                            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                                            CISales.Document2DerivativeDocument.To);
-                            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                            queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
-                                            attrQuery);
-                            queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
-                            final MultiPrintQuery multi = queryBldr.getPrint();
-                            multi.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                            multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
-                            multi.execute();
-                            while (multi.next() && !found) {
-                                if (validStatus(multi.<Status>getSelect(docStatusSel))) {
-                                    setCost(multi.<BigDecimal>getAttribute(
-                                                    CISales.IncomingInvoicePosition.NetUnitPrice));
-                                    setRateCost(multi.<BigDecimal>getAttribute(
-                                                    CISales.IncomingInvoicePosition.RateNetUnitPrice));
-                                    setRateCurrencyInstance(multi.<Instance>getSelect(rateCurrencyInstSel));
-                                    setCostDocInst(multi.<Instance>getSelect(docInstSel));
-                                    found = true;
-                                }
-                            }
+                            found = evalRecievingTicket4Others();
                         }
                         // if activated use the OrderOutbound as last chance
                         if (!found && Sales.COSTINGOO4RT.get()) {
-                            final QueryBuilder relAttrQueryBldr = new QueryBuilder(
-                                            CISales.OrderOutbound2RecievingTicket);
-                            relAttrQueryBldr.addWhereAttrEqValue(CISales.OrderOutbound2RecievingTicket.ToLink,
-                                            getBaseDocInst());
-                            final AttributeQuery relAttrQuery = relAttrQueryBldr.getAttributeQuery(
-                                            CISales.OrderOutbound2RecievingTicket.FromLink);
-                            final QueryBuilder posQueryBldr = new QueryBuilder(CISales.OrderOutboundPosition);
-                            posQueryBldr.addWhereAttrInQuery(CISales.OrderOutboundPosition.DocumentAbstractLink,
-                                            relAttrQuery);
-                            posQueryBldr.addWhereAttrEqValue(CISales.OrderOutboundPosition.Product, getProductInst());
-                            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                            posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                            posMulti.addAttribute(CISales.OrderOutboundPosition.NetUnitPrice,
-                                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
-                            posMulti.execute();
-                            while (posMulti.next() && !found) {
-                                if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
-                                    found = true;
-                                    setCost(posMulti.<BigDecimal>getAttribute(
-                                                    CISales.OrderOutboundPosition.NetUnitPrice));
-                                    setRateCost(posMulti.<BigDecimal>getAttribute(
-                                                    CISales.OrderOutboundPosition.RateNetUnitPrice));
-                                    setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
-                                    setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
-                                }
-                            }
+                            found = evalRecievingTicket4OrderOutbound();
                         }
                     } else if (CISales.IncomingInvoice.getType().equals(getBaseDocInst().getType())) {
-                        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                        queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.DocumentAbstractLink,
-                                        getBaseDocInst());
-                        queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
-                        final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                        CISales.IncomingInvoicePosition.RateNetUnitPrice);
-                        multi.execute();
-                        while (multi.next() && !found) {
-                            if (validStatus(multi.<Status>getSelect(docStatusSel))) {
-                                setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                                setRateCost(multi.<BigDecimal>getAttribute(
-                                                CISales.IncomingInvoicePosition.RateNetUnitPrice));
-                                setRateCurrencyInstance(multi.<Instance>getSelect(rateCurrencyInstSel));
-                                setCostDocInst(multi.<Instance>getSelect(docInstSel));
-                                found = true;
-                            }
-                        }
+                        found = evalIncomingInvoice();
                     } else if (CISales.TransactionDocumentShadowIn.getType().equals(getBaseDocInst().getType())) {
-                        final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
-                        relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
-                                        getBaseDocInst());
-                        final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                        posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
-                                        relAttrQueryBldr.getAttributeQuery(
-                                                        CISales.Document2DocumentAbstract.FromAbstractLink));
-                        posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
-                        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                        posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
-                                        CISales.PositionSumAbstract.RateNetUnitPrice);
-                        posMulti.execute();
-                        while (posMulti.next() && !found) {
-                            if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
-                                found = true;
-                                setCost(posMulti.<BigDecimal>getAttribute(
-                                                CISales.IncomingInvoicePosition.NetUnitPrice));
-                                setRateCost(posMulti.<BigDecimal>getAttribute(
-                                                CISales.PositionSumAbstract.RateNetUnitPrice));
-                                setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
-                                setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
-                                found = true;
-                            }
-                        }
+                       found = evalDocShadow();
                     } else if (CISales.ProductionReport.getType().equals(getBaseDocInst().getType())) {
-                        final QueryBuilder relAttrQueryBldr = new QueryBuilder(
-                                        CISales.ProductionCosting2ProductionReport);
-                        relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
-                                        getBaseDocInst());
-                        final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                        posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
-                                        relAttrQueryBldr.getAttributeQuery(
-                                                        CISales.Document2DocumentAbstract.FromAbstractLink));
-                        posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
-                        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                        posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
-                                        CISales.PositionSumAbstract.RateNetUnitPrice);
-                        posMulti.execute();
-                        while (posMulti.next() && !found) {
-                            if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
-                                found = true;
-                                setCost(posMulti.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice));
-                                setRateCost(posMulti.<BigDecimal>getAttribute(
-                                                CISales.PositionSumAbstract.RateNetUnitPrice));
-                                setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
-                                setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
-                                found = true;
-                            }
-                        }
+                       found = evalProductionReport();
                     }
                 }
                 if (!found) {
@@ -1987,7 +1817,381 @@ public abstract class Costing_Base
                 if (!found) {
                     setCostDocInst(getBaseDocInst());
                 }
+                verify4IncomingInvoice();
             }
+        }
+
+        /**
+         * Verify for incoming invoice.
+         * For an invoice check if an credit note must be applied, but only
+         * if the creditnote was not used with a movement. (ShadowDoc)
+         * In case their is a creditnote a new cost per unit must be
+         * calculated.
+         * @throws EFapsException
+         */
+        protected void verify4IncomingInvoice()
+            throws EFapsException
+        {
+            if (getCostDocInst().getType().isCIType(CISales.IncomingInvoice)) {
+                final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingCreditNote2IncomingInvoice);
+                relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingCreditNote2IncomingInvoice.ToLink,
+                                getCostDocInst());
+
+                final QueryBuilder icnAttrQueryBldr = new QueryBuilder(CISales.IncomingCreditNote);
+                icnAttrQueryBldr.addWhereAttrNotEqValue(CISales.IncomingCreditNote.Status,
+                                Status.find(CISales.IncomingCreditNoteStatus.Replaced));
+
+                final QueryBuilder tdsAttrQueryBldr = new QueryBuilder(
+                                CISales.IncomingCreditNote2TransactionDocumentShadowIn);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingCreditNotePosition);
+                queryBldr.addWhereAttrEqValue(CISales.IncomingCreditNotePosition.Product, getProductInst());
+                queryBldr.addWhereAttrInQuery(CISales.IncomingCreditNotePosition.IncomingCreditNote,
+                                icnAttrQueryBldr.getAttributeQuery(CISales.IncomingCreditNote.ID));
+                queryBldr.addWhereAttrInQuery(CISales.IncomingCreditNotePosition.IncomingCreditNote,
+                            relAttrQueryBldr.getAttributeQuery(CISales.IncomingCreditNote2IncomingInvoice.FromLink));
+                queryBldr.addWhereAttrNotInQuery(CISales.IncomingCreditNotePosition.IncomingCreditNote,
+                                tdsAttrQueryBldr.getAttributeQuery(
+                                                CISales.IncomingCreditNote2TransactionDocumentShadowIn.FromLink));
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder docNameSel = SelectBuilder.get()
+                                .linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                                .attribute(CISales.IncomingCreditNote.Name);
+                final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
+                                CISales.PositionSumAbstract.RateCurrencyId).instance();
+                multi.addSelect(docNameSel, rateCurrencyInstSel);
+                multi.addAttribute(CISales.IncomingCreditNotePosition.NetPrice,
+                                CISales.IncomingCreditNotePosition.RateNetPrice,
+                                CISales.IncomingCreditNotePosition.RateCurrencyId);
+                multi.execute();
+                if (multi.next()) {
+                    final QueryBuilder invQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                    invQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+                    invQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.IncomingInvoice, getCostDocInst());
+                    final MultiPrintQuery invMulti = invQueryBldr.getPrint();
+                    invMulti.addAttribute(CISales.IncomingInvoicePosition.NetPrice,
+                                    CISales.IncomingInvoicePosition.RateNetPrice,
+                                    CISales.IncomingInvoicePosition.RateCurrencyId,
+                                    CISales.IncomingInvoicePosition.Quantity);
+                    invMulti.execute();
+                    invMulti.next();
+                    // only if the same Currency
+                    if (invMulti.getAttribute(CISales.IncomingInvoicePosition.RateCurrencyId).equals(
+                                    multi.getAttribute(CISales.IncomingCreditNotePosition.RateCurrencyId))) {
+                        setComment(DBProperties.getFormatedDBProperty(Costing.class.getName()
+                                        + ".ApplyCreditNote.Applied", multi.<Object>getSelect(docNameSel)));
+
+                        final BigDecimal invPrice = invMulti.getAttribute(CISales.IncomingInvoicePosition.NetPrice);
+                        final BigDecimal invRatePrice = invMulti.getAttribute(
+                                        CISales.IncomingInvoicePosition.RateNetPrice);
+                        final BigDecimal invQty = invMulti.getAttribute(CISales.IncomingInvoicePosition.Quantity);
+
+                        final BigDecimal cnPrice = multi.getAttribute(CISales.IncomingCreditNotePosition.NetPrice);
+                        final BigDecimal cnRatePrice = multi.getAttribute(
+                                        CISales.IncomingCreditNotePosition.RateNetPrice);
+
+                        setCost(invPrice.subtract(cnPrice).divide(invQty, 8, RoundingMode.HALF_UP));
+                        setRateCost(invRatePrice.subtract(cnRatePrice).divide(invQty, 8,RoundingMode.HALF_UP));
+                    } else {
+                        setComment(DBProperties.getProperty(Costing.class.getName()
+                                        + ".ApplyCreditNote.DifferentCurrency"));
+                        LOG.warn("Could not calculate applied CreditNote");
+                    }
+                }
+            }
+        }
+
+        /**
+         * Eval recieving ticket for acquisition costing.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalRecievingTicket4AcquisitionCosting()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder acRelAttrQueryBldr = new QueryBuilder(CISales.AcquisitionCosting2RecievingTicket);
+            acRelAttrQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCosting2RecievingTicket.ToLink, getBaseDocInst());
+            final AttributeQuery acRelAttrQuery = acRelAttrQueryBldr.getAttributeQuery(
+                            CISales.AcquisitionCosting2RecievingTicket.FromLink);
+            final QueryBuilder acPosQueryBldr = new QueryBuilder(CISales.AcquisitionCostingPosition);
+            acPosQueryBldr.addWhereAttrInQuery(CISales.AcquisitionCostingPosition.DocumentAbstractLink, acRelAttrQuery);
+            acPosQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCostingPosition.Product, getProductInst());
+            final MultiPrintQuery acPosMulti = acPosQueryBldr.getPrint();
+            final SelectBuilder docInstSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
+                            CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .status();
+            acPosMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            acPosMulti.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice,
+                            CISales.AcquisitionCostingPosition.RateNetUnitPrice);
+            acPosMulti.execute();
+            while (acPosMulti.next() && !ret) {
+                if (validStatus(acPosMulti.<Status>getSelect(docStatusSel))) {
+                    ret = true;
+                    setCost(acPosMulti.<BigDecimal>getAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice));
+                    setRateCost(acPosMulti.<BigDecimal>getAttribute(
+                                    CISales.AcquisitionCostingPosition.RateNetUnitPrice));
+                    setRateCurrencyInstance(acPosMulti.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(acPosMulti.<Instance>getSelect(docInstSel));
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Eval recieving ticket for invoice.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalRecievingTicket4Invoice()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder relAttrQueryBldr = new QueryBuilder(
+                            CISales.IncomingInvoice2RecievingTicket);
+            relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
+                            getBaseDocInst());
+            final AttributeQuery relAttrQuery = relAttrQueryBldr.getAttributeQuery(
+                            CISales.IncomingInvoice2RecievingTicket.FromLink);
+            final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+            posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
+                            relAttrQuery);
+            posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+            final SelectBuilder docInstSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
+                            CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .status();
+            posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
+                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
+            posMulti.execute();
+            while (posMulti.next() && !ret) {
+                if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                    ret = true;
+                    setCost(posMulti.<BigDecimal>getAttribute(
+                                    CISales.IncomingInvoicePosition.NetUnitPrice));
+                    setRateCost(posMulti.<BigDecimal>getAttribute(
+                                    CISales.IncomingInvoicePosition.RateNetUnitPrice));
+                    setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Eval recieving ticket for others.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalRecievingTicket4Others()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From,
+                            getBaseDocInst());
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                            CISales.Document2DerivativeDocument.To);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+            queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
+                            attrQuery);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder docInstSel = SelectBuilder.get()
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink).instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get()
+                            .linkto(CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get()
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink).status();
+            multi.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
+                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
+            multi.execute();
+            while (multi.next() && !ret) {
+                if (validStatus(multi.<Status>getSelect(docStatusSel))) {
+                    setCost(multi.<BigDecimal>getAttribute(
+                                    CISales.IncomingInvoicePosition.NetUnitPrice));
+                    setRateCost(multi.<BigDecimal>getAttribute(
+                                    CISales.IncomingInvoicePosition.RateNetUnitPrice));
+                    setRateCurrencyInstance(multi.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(multi.<Instance>getSelect(docInstSel));
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Eval recieving ticket for order outbound.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalRecievingTicket4OrderOutbound()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder relAttrQueryBldr = new QueryBuilder(
+                            CISales.OrderOutbound2RecievingTicket);
+            relAttrQueryBldr.addWhereAttrEqValue(CISales.OrderOutbound2RecievingTicket.ToLink,
+                            getBaseDocInst());
+            final AttributeQuery relAttrQuery = relAttrQueryBldr.getAttributeQuery(
+                            CISales.OrderOutbound2RecievingTicket.FromLink);
+            final QueryBuilder posQueryBldr = new QueryBuilder(CISales.OrderOutboundPosition);
+            posQueryBldr.addWhereAttrInQuery(CISales.OrderOutboundPosition.DocumentAbstractLink,
+                            relAttrQuery);
+            posQueryBldr.addWhereAttrEqValue(CISales.OrderOutboundPosition.Product, getProductInst());
+            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+            final SelectBuilder docInstSel = SelectBuilder.get()
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink).instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get()
+                            .linkto(CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get()
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink).status();
+            posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            posMulti.addAttribute(CISales.OrderOutboundPosition.NetUnitPrice,
+                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
+            posMulti.execute();
+            while (posMulti.next() && !ret) {
+                if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                    ret = true;
+                    setCost(posMulti.<BigDecimal>getAttribute(
+                                    CISales.OrderOutboundPosition.NetUnitPrice));
+                    setRateCost(posMulti.<BigDecimal>getAttribute(
+                                    CISales.OrderOutboundPosition.RateNetUnitPrice));
+                    setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Eval incoming invoice.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalIncomingInvoice()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.DocumentAbstractLink, getBaseDocInst());
+            queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder docInstSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
+                            CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .status();
+            multi.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
+                            CISales.IncomingInvoicePosition.RateNetUnitPrice);
+            multi.execute();
+            while (multi.next() && !ret) {
+                if (validStatus(multi.<Status>getSelect(docStatusSel))) {
+                    setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                    setRateCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.RateNetUnitPrice));
+                    setRateCurrencyInstance(multi.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(multi.<Instance>getSelect(docInstSel));
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Eval doc shadow.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalDocShadow()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
+            relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
+                            getBaseDocInst());
+            final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+            posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
+                            relAttrQueryBldr.getAttributeQuery(
+                                            CISales.Document2DocumentAbstract.FromAbstractLink));
+            posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
+            final SelectBuilder docInstSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
+                            CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .status();
+            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+            posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
+                            CISales.PositionSumAbstract.RateNetUnitPrice);
+            posMulti.execute();
+            while (posMulti.next() && !ret) {
+                if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                    setCost(posMulti.<BigDecimal>getAttribute(
+                                    CISales.IncomingInvoicePosition.NetUnitPrice));
+                    setRateCost(posMulti.<BigDecimal>getAttribute(
+                                    CISales.PositionSumAbstract.RateNetUnitPrice));
+                    setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Eval production report.
+         *
+         * @return true, if successful
+         * @throws EFapsException on error
+         */
+        protected boolean evalProductionReport()
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.ProductionCosting2ProductionReport);
+            relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, getBaseDocInst());
+            final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+            posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, relAttrQueryBldr
+                            .getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
+            posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
+            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+            final SelectBuilder docInstSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .instance();
+            final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
+                            CISales.PositionSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder docStatusSel = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .status();
+            posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
+            posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
+                            CISales.PositionSumAbstract.RateNetUnitPrice);
+            posMulti.execute();
+            while (posMulti.next() && !ret) {
+                if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                    setCost(posMulti.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice));
+                    setRateCost(posMulti.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice));
+                    setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
+                    setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                    ret = true;
+                }
+            }
+            return ret;
         }
 
         /**
@@ -2235,6 +2439,26 @@ public abstract class Costing_Base
         {
             this.rateCurrencyInstance = _rateCurrencyInstance;
             return this;
+        }
+
+        /**
+         * Gets the comment.
+         *
+         * @return the comment
+         */
+        public String getComment()
+        {
+            return this.comment;
+        }
+
+        /**
+         * Sets the comment.
+         *
+         * @param _comment the new comment
+         */
+        public void setComment(final String _comment)
+        {
+            this.comment = _comment;
         }
     }
 }
