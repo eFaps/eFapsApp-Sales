@@ -52,6 +52,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
+import org.efaps.admin.ui.Command;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIAttribute;
 import org.efaps.db.AttributeQuery;
@@ -1316,15 +1317,24 @@ public abstract class AbstractPaymentDocument_Base
                         _parameter.getParameterValue("account"));
         print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
         if (print.execute()) {
-            final Instance newInst = Instance.get(CIERP.Currency.getType(),
+            final Instance currencyInst = Instance.get(CIERP.Currency.getType(),
                             print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
 
-            final Instance baseInst = Currency.getBaseCurrency();
+            final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter,
+                            _parameter.getParameterValue("date_eFapsDate"), currencyInst);
 
+            final Object cmd = _parameter.get(ParameterValues.CALL_CMD);
+            String key = "DEFAULT";
+            if (cmd instanceof Command) {
+                final Type type = ((Command) cmd).getTargetCreateType();
+                if (type != null) {
+                    key = type.getName();
+                }
+            }
+            final String rateStr = RateInfo.getRateUIFrmt(_parameter, rateInfo, key);
             final Map<String, String> map = new HashMap<>();
-            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
-            map.put("rate", NumberFormatter.get().getFormatter(0, 3).format(rates[3]));
-            map.put("rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0));
+            map.put("rate", rateStr);
+            map.put("rate" + RateUI.INVERTEDSUFFIX, String.valueOf(CurrencyInst.get(currencyInst).isInvert()));
             list.add(map);
         }
         final Return retVal = new Return();
