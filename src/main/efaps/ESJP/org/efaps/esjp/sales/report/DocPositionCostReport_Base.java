@@ -36,6 +36,7 @@ import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -230,14 +231,12 @@ public abstract class DocPositionCostReport_Base
                 }
             }
 
-            Instance selected = null;
+            Instance filterCurrency = null;
             if (filterMap.containsKey("currency")) {
                 final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
                 if (filter.getObject() instanceof Instance) {
                     if (filter.getObject().isValid()) {
-                        selected = filter.getObject();
-                    } else {
-                        selected = Currency.getBaseCurrency();
+                        filterCurrency = filter.getObject();
                     }
                 }
             }
@@ -246,6 +245,12 @@ public abstract class DocPositionCostReport_Base
             Instance alterInst = null;
             if (filterValue != null) {
                 alterInst = Instance.get(filterValue.getObject());
+                if (InstanceUtils.isNotValid(filterCurrency)) {
+                    filterCurrency = alterInst;
+                }
+            }
+            if (InstanceUtils.isNotValid(filterCurrency)) {
+                filterCurrency = Currency.getBaseCurrency();
             }
             for (final Map<String, Object> value : this.valueList) {
                 final DateTime docDate = (DateTime) value.get("docDate");
@@ -253,9 +258,9 @@ public abstract class DocPositionCostReport_Base
                 final BigDecimal quantity = (BigDecimal) value.get("quantity");
                 final BigDecimal cost;
                 if (InstanceUtils.isValid(alterInst)) {
-                    cost = Cost.getAlternativeCost4Currency(_parameter, alterInst, prodInst, selected);
+                    cost = Cost.getAlternativeCost4Currency(_parameter, alterInst, prodInst, filterCurrency);
                 } else {
-                    cost = Cost.getCost4Currency(_parameter, docDate, prodInst, selected);
+                    cost = Cost.getCost4Currency(_parameter, docDate, prodInst, filterCurrency);
                 }
                 value.put("cost", cost.multiply(quantity));
             }
@@ -408,6 +413,7 @@ public abstract class DocPositionCostReport_Base
             } else {
                 final ValueList values = getFilteredReport().getData(_parameter);
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
+                final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
 
                 final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
@@ -422,6 +428,18 @@ public abstract class DocPositionCostReport_Base
                         }
                     });
                 }
+                if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+                    chain.addComparator(new Comparator<Map<String, Object>>()
+                    {
+                        @Override
+                        public int compare(final Map<String, Object> _o1,
+                                           final Map<String, Object> _o2)
+                        {
+                            return String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName")));
+                        }
+                    });
+                }
+
                 chain.addComparator(new Comparator<Map<String, Object>>()
                 {
 
@@ -564,16 +582,38 @@ public abstract class DocPositionCostReport_Base
                 rowGrpBldrs.add(contactGroup);
             }
 
+            if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+                final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab.rowGroup("docName",
+                                String.class);
+                rowGrpBldrs.add(docGroup);
+            }
+
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
                             DBProperties.getProperty(DocPositionCostReport.class.getName() + ".quantity"),
                             "quantity", BigDecimal.class, Calculation.SUM);
             measureGrpBldrs.add(quantityMeasure);
 
+            final String symbol;
+            if (base) {
+                symbol = CurrencyInst.get(Currency.getBaseCurrency()).getSymbol();
+            } else if (selected == null) {
+                final CostTypeFilterValue filterValue = (CostTypeFilterValue) filterMap.get("costType");
+                if (filterValue != null) {
+                    final Instance alterInst = Instance.get(filterValue.getObject());
+                    if (InstanceUtils.isValid(alterInst)) {
+                        symbol = CurrencyInst.get(alterInst).getSymbol();
+                    } else {
+                        symbol = CurrencyInst.get(Currency.getBaseCurrency()).getSymbol();
+                    }
+                } else {
+                    symbol = CurrencyInst.get(Currency.getBaseCurrency()).getSymbol();
+                }
+            } else {
+                symbol = selected.getSymbol();
+            }
+
             final CrosstabMeasureBuilder<BigDecimal> costMeasure = DynamicReports.ctab.measure(
-                            DBProperties.getProperty(DocPositionCostReport.class.getName() + ".cost") + " "
-                                            + (base || selected == null
-                                                ? CurrencyInst.get(Currency.getBaseCurrency()).getSymbol()
-                                                : selected.getSymbol()),
+                            DBProperties.getProperty(DocPositionCostReport.class.getName() + ".cost") + " " + symbol,
                             "cost", BigDecimal.class, Calculation.SUM);
             measureGrpBldrs.add(costMeasure);
 

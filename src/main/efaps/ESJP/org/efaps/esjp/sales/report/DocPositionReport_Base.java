@@ -281,9 +281,6 @@ public abstract class DocPositionReport_Base
         return this.valueList;
     }
 
-    /* (non-Javadoc)
-     * @see org.efaps.esjp.erp.FilteredReport_Base#getProperties4TypeList(org.efaps.admin.event.Parameter, java.lang.String)
-     */
     @Override
     protected Properties getProperties4TypeList(final Parameter _parameter,
                                                 final String _fieldName)
@@ -427,9 +424,6 @@ public abstract class DocPositionReport_Base
             this.filteredReport = _filteredReport;
         }
 
-        /* (non-Javadoc)
-         * @see org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base#createDataSource(org.efaps.admin.event.Parameter)
-         */
         @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
@@ -473,7 +467,17 @@ public abstract class DocPositionReport_Base
                         }
                     });
                 }
-
+                if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+                    chain.addComparator(new Comparator<Map<String, Object>>()
+                    {
+                        @Override
+                        public int compare(final Map<String, Object> _o1,
+                                           final Map<String, Object> _o2)
+                        {
+                            return String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName")));
+                        }
+                    });
+                }
                 chain.addComparator(new Comparator<Map<String, Object>>()
                 {
 
@@ -623,6 +627,11 @@ public abstract class DocPositionReport_Base
                                     String.class).setHeaderWidth(150);
                     rowGrpBldrs.add(typeGroup);
                 }
+            }
+            if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+                final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab.rowGroup("docName",
+                                String.class);
+                rowGrpBldrs.add(docGroup);
             }
 
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
@@ -776,7 +785,8 @@ public abstract class DocPositionReport_Base
          *
          * @param _amountField the amount field
          */
-        public UnitPriceExpression(final String _amountField) {
+        public UnitPriceExpression(final String _amountField)
+        {
             this.amountField = _amountField;
         }
 
