@@ -1827,12 +1827,12 @@ public abstract class Costing_Base
          * if the creditnote was not used with a movement. (ShadowDoc)
          * In case their is a creditnote a new cost per unit must be
          * calculated.
-         * @throws EFapsException
+         * @throws EFapsException on error
          */
         protected void verify4IncomingInvoice()
             throws EFapsException
         {
-            if (getCostDocInst().getType().isCIType(CISales.IncomingInvoice)) {
+            if (InstanceUtils.isType(getCostDocInst(), CISales.IncomingInvoice)) {
                 final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingCreditNote2IncomingInvoice);
                 relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingCreditNote2IncomingInvoice.ToLink,
                                 getCostDocInst());
