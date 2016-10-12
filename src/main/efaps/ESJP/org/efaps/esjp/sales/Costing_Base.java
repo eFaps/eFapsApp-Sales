@@ -486,8 +486,10 @@ public abstract class Costing_Base
                     cost = Cost.getAlternativeCost4Currency(new Parameter(), date, _currencyInstance, transCost
                                     .getProductInstance(), _currencyInstance);
                 }
-
-                if (transCost.getResult().setScale(cost.scale(), RoundingMode.HALF_UP).compareTo(cost) != 0) {
+                // not the same value or cost is zero and result is not zero
+                if (transCost.getResult().setScale(cost.scale(), RoundingMode.HALF_UP).compareTo(cost) != 0
+                                || (BigDecimal.ZERO.compareTo(cost) == 0 && BigDecimal.ZERO.compareTo(transCost
+                                                .getResult()) != 0)) {
                     final Insert insert = new Insert(InstanceUtils.isType(transCost.getCostingInstance(),
                                     CIProducts.Costing) ? CIProducts.ProductCost : CIProducts.ProductCostAlternative);
                     insert.add(CIProducts.ProductCostAbstract.ProductLink, transCost.getProductInstance());
@@ -496,8 +498,8 @@ public abstract class Costing_Base
                     insert.add(CIProducts.ProductCostAbstract.ValidUntil, transCost.getDate().plusYears(10)
                                     .withTimeAtStartOfDay());
                     insert.add(CIProducts.ProductCostAbstract.CurrencyLink, _currencyInstance);
-                    insert.add(CIProducts.ProductCostAbstract.StatusAbstract,
-                                    Status.find(CIProducts.ProductCostStatus.Active));
+                    insert.add(CIProducts.ProductCostAbstract.StatusAbstract, Status.find(
+                                    CIProducts.ProductCostStatus.Active));
                     insert.executeWithoutAccessCheck();
                 }
             }
@@ -1891,7 +1893,7 @@ public abstract class Costing_Base
                                         CISales.IncomingCreditNotePosition.RateNetPrice);
 
                         setCost(invPrice.subtract(cnPrice).divide(invQty, 8, RoundingMode.HALF_UP));
-                        setRateCost(invRatePrice.subtract(cnRatePrice).divide(invQty, 8,RoundingMode.HALF_UP));
+                        setRateCost(invRatePrice.subtract(cnRatePrice).divide(invQty, 8, RoundingMode.HALF_UP));
                     } else {
                         setComment(DBProperties.getProperty(Costing.class.getName()
                                         + ".ApplyCreditNote.DifferentCurrency"));
