@@ -35,6 +35,9 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">OUTGOING</property>
+                 <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.IncomingCreditNote.DefaultProductDocumentType</property>
             </trigger>
         </field>
         <field name="storage">

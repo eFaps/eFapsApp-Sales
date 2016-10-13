@@ -484,6 +484,14 @@ public final class Sales
                                     + "If not set the default from Products applies.");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink INCOMINGCREDITNOTE_DEFAULTPRODDOCTYPE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingCreditNote.DefaultProductDocumentType")
+                    .description("Possibility to set a default Product Document Type for "
+                                    + "IncomingCreditNote-TransDocShadow. ");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute INCOMINGEXCHANGEJASPERREPORT
         = new PropertiesSysConfAttribute()
