@@ -262,7 +262,7 @@ public abstract class DocPositionCostReport_Base
                 } else {
                     cost = Cost.getCost4Currency(_parameter, docDate, prodInst, filterCurrency);
                 }
-                value.put("cost", cost.multiply(quantity));
+                value.put("cost", quantity == null ? BigDecimal.ZERO : cost.multiply(quantity));
             }
         }
         return this.valueList;

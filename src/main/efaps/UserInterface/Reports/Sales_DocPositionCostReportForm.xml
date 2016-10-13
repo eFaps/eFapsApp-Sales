@@ -89,6 +89,9 @@
                 <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionCostReport.productType</property>
                 <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionCostReport.docDetails</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute08">org.efaps.sales.report.DocPositionCostReport.ActivateAlternative</property>
             </trigger>
         </field>
         <field name="report">
