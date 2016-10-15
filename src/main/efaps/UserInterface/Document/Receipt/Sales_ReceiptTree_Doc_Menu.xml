@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -17,17 +18,13 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b8811f12-3ba4-460a-97d1-2ba93c3a5f35</uuid>
+    <uuid>c0d26dc9-9c44-44f0-8b43-32fcfbc8cc00</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DeliveryNoteTree_Doc_Menu_Action</name>
+        <name>Sales_ReceiptTree_Doc_Menu</name>
         <childs>
-            <child>Sales_DeliveryNoteTree_Doc_Menu_Action_AddInvoice</child>
-            <child>Sales_DeliveryNoteTree_Doc_Menu_Action_AddReceipt</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
+            <child>Sales_ReceiptTree_Doc_Menu_Action</child>
         </childs>
-        <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>
     </definition>
 </ui-menu>

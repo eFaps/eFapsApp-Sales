@@ -34,7 +34,7 @@
             <child>Sales_ReceiptTree_Payment</child>
             <child>Sales_ReceiptTree_PaymentAnalysis</child>
             <child>Sales_ReceiptTree_Position</child>
-            <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_ReceiptTree_Doc</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
