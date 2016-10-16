@@ -30,6 +30,7 @@
             <child>Sales_ReceiptMyDesk_Menu_Action_CreateFromDoc</child>
             <child>Sales_ReceiptMyDesk_Menu_Action_Copy</child>
             <child>Sales_ReceiptMyDesk_Menu_Action_Delete</child>
+            <child>Sales_ReceiptMyDesk_Menu_Action_CreateDeliveryNote</child>
             <child>Sales_ReceiptMyDesk_Menu_Action_Recalculate</child>
         </childs>
     </definition>

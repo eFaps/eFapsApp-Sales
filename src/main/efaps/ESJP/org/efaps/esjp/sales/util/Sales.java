@@ -1283,6 +1283,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute RECEIPT_FROMDELIVERYNOTEAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.CreateDeliveryNoteAutoComplete")
+                    .description("AutoComplete and Activation for Create from DeliveryNote for Receipt.")
+                    .addDefaultValue("Type", "Sales_DeliveryNote")
+                    .addDefaultValue("StatusGroup01", "Sales_DeliveryNoteStatus")
+                    .addDefaultValue("Status01", "Open");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "RecievingTicket.CreateFromOrderOutbound")
