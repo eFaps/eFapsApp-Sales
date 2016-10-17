@@ -354,10 +354,10 @@ public abstract class ABCReport_Base
             if (ReportType.PRODUCT.equals(reportType)) {
                 final TextColumnBuilder<String> productColumn = DynamicReports.col.column(
                                 getFilteredReport().getDBProperty("ProductName"), "productName",
-                                DynamicReports.type.stringType()).setWidth(150);
+                                DynamicReports.type.stringType());
                 final TextColumnBuilder<String> productDescr = DynamicReports.col.column(
                                 getFilteredReport().getDBProperty("ProductDescr"), "productDescr",
-                                DynamicReports.type.stringType());
+                                DynamicReports.type.stringType()).setWidth(150);
                 final TextColumnBuilder<String> uoMNameColumn = DynamicReports.col.column(
                                 getFilteredReport().getDBProperty("UoMName"), "uoMName",
                                 DynamicReports.type.stringType());
@@ -366,7 +366,7 @@ public abstract class ABCReport_Base
             } else {
                 final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(
                                 getFilteredReport().getDBProperty("ContactName"), "contactName",
-                                DynamicReports.type.stringType()).setWidth(150);
+                                DynamicReports.type.stringType()).setWidth(250);
                 _builder.addColumn(contactNameColumn);
                 Collections.addAll(grids, contactNameColumn);
             }
