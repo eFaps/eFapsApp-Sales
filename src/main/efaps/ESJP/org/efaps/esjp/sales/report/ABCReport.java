@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("d3abe995-8374-4366-bf68-fd18e49c3878")
 @EFapsApplication("eFapsApp-Sales")
-public class ProductABCReport
-    extends ProductABCReport_Base
+public class ABCReport
+    extends ABCReport_Base
 {
 
 }

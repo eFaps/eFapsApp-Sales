@@ -26,8 +26,7 @@
             <child>Sales_SalesRecordReportMyDesk</child>
             <child>Sales_Product4Provider_Report</child>
             <child>Sales_Product4Provider_Report2</child>
-            <child>Sales_ProductABCReport4ProviderMyDesk</child>
-            <child>Sales_ProductABCReport4ProductMyDesk</child>
+            <child>Sales_ABCReportMyDesk</child>
             <child>Sales_ProfServReceiptReportMyDesk</child>
             <child>Sales_RetentionReportMyDesk</child>
             <child>Sales_RetentionBookReportMyDesk</child>

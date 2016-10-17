@@ -17,21 +17,21 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4d12dfbf-30ff-4833-b771-719f165ad63f</uuid>
+    <uuid>35981368-8bec-48cf-8b1c-6f213bf67969</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductABCReport4ProviderMyDesk_Menu_DownloadPDF</name>
+        <name>Sales_ABCReportMyDesk_Menu_DownloadPDF</name>
         <icon>Document_PDF</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport4Provider" program="org.efaps.esjp.sales.report.ProductABCReport">
+            <execute method="exportReport4Provider" program="org.efaps.esjp.sales.report.ABCReport">
                 <property name="Mime">pdf</property>
                 <property name="PageType">A4</property>
                 <property name="PageOrientation">LANDSCAPE</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Provider.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

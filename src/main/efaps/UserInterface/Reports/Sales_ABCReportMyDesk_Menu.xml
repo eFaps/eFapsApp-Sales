@@ -17,15 +17,15 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1ccf3428-38a5-4c23-8ffc-c27de7bf0e48</uuid>
+    <uuid>c9691e83-e74c-43e6-865a-ff1dbb323708</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductABCReport4ProviderMyDesk_Menu</name>
+        <name>Sales_ABCReportMyDesk_Menu</name>
         <childs>
-            <child>Sales_ProductABCReport4ProviderMyDesk_Menu_DownloadExcel</child>
-            <child>Sales_ProductABCReport4ProviderMyDesk_Menu_DownloadPDF</child>
-            <child>Sales_ProductABCReport4ProviderMyDesk_Menu_Filter</child>
+            <child>Sales_ABCReportMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_ABCReportMyDesk_Menu_DownloadPDF</child>
+            <child>Sales_ABCReportMyDesk_Menu_Filter</child>
         </childs>
     </definition>
 </ui-menu>

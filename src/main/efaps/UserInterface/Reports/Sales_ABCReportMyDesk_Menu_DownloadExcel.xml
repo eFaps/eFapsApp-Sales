@@ -16,20 +16,19 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>83ed710f-d6f8-4f9f-8920-f575bf579970</uuid>
+    <uuid>3c5216ea-58dc-4f94-ad70-255af1a25818</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductABCReport4ProviderMyDesk_Menu_DownloadExcel</name>
+        <name>Sales_ABCReportMyDesk_Menu_DownloadExcel</name>
         <icon>Document_Excel</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport4Provider" program="org.efaps.esjp.sales.report.ProductABCReport">
+            <execute method="exportReport4Provider" program="org.efaps.esjp.sales.report.ABCReport">
                 <property name="Mime">xls</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Provider.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

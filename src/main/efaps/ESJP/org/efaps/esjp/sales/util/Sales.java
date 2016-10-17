@@ -1367,6 +1367,15 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_ABCReport = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.ABCReport")
+                    .description("Configuration for the ABCReport.")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute REPORT_CARRIER_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.CarrierReport.Activate")
@@ -1468,22 +1477,6 @@ public final class Sales
                     .addDefaultValue("Type03", CISales.Reminder.getType().getName())
                     .addDefaultValue("Type04", CISales.IncomingExchange.getType().getName())
                     .description("Configures the ABC Report for Providers.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute REPORT_PRODUCTABC4PROV = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.ProductABCReport4Provider")
-                    .addDefaultValue("Type", CISales.Invoice.getType().getName())
-                    .description("Configures the ABC Report for Providers.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute REPORT_PRODUCTABC4PROD = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.ProductABCReport4Product")
-                    .addDefaultValue("Type", CISales.Invoice.getType().getName())
-                    .description("Configures the ABC Report for Products..");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,43 +17,53 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6ee7436c-6f9d-4043-9270-5017adf0caca</uuid>
+    <uuid>746dcc40-a212-4531-9054-c3f2f8632e4a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductABCReport4ProductForm</name>
+        <name>Sales_ABCReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
-                name="Sales_ProductABCReport4ProductForm.filter.UI_FIELD_VALUE.1"
-                program="org.efaps.esjp.sales.report.ProductABCReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Product.FilterKey</property>
+                name="Sales_ABCReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.ABCReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">type</property>
+                <property name="Field04">reportType</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Type</property>
+                <property name="FilterType04">Enum</property>
                 <property name="FilterDefault01">MONTH</property>
                 <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">Sales_Invoice</property>
+                <property name="FilterDefault04">org.efaps.esjp.sales.report.ABCReport_Base$ReportType</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
-                name="Sales_ProductABCReport4ProductForm.filter.UI_FIELD_VALUE.2"
-                program="org.efaps.esjp.sales.report.ProductABCReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Product.FilterKey</property>
+                name="Sales_ABCReportForm.filter.UI_FIELD_VALUE.2"
+                program="org.efaps.esjp.sales.report.ABCReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
-                <property name="DBProperty01">org.efaps.esjp.products.reports.ProductABCReport4Product.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.products.reports.ProductABCReport4Product.dateTo</property>
+                <property name="Field03">type</property>
+                <property name="Field04">reportType</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.ABCReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.ABCReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.ABCReport.type</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.ABCReport.reportType</property>
             </trigger>
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
             <property name="UIType">SNIPPLET</property>
-            <trigger event="UI_FIELD_VALUE" method="generateReport4Product"
-                name="Sales_ProductABCReport4ProductForm.report.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.ProductABCReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Product.FilterKey</property>
+            <trigger event="UI_FIELD_VALUE" method="generateReport"
+                name="Sales_ABCReportForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ABCReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
             </trigger>
         </field>
     </definition>
