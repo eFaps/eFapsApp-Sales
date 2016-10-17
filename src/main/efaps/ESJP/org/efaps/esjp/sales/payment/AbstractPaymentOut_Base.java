@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -115,7 +116,7 @@ public abstract class AbstractPaymentOut_Base
                                                 .toString() });
             }
 
-            final Set<String> names = new HashSet<String>();
+            final Set<String> names = new HashSet<>();
             final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPayment2PaymentDocument);
             queryBldr.addWhereAttrEqValue(CISales.BulkPayment2PaymentDocument.FromLink, _parameter.getInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -352,7 +353,7 @@ public abstract class AbstractPaymentOut_Base
         if (InstanceUtils.isValid(docInst)) {
 
             final String input = (String) _parameter.get(ParameterValues.OTHERS);
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final List<Map<String, String>> list = new ArrayList<>();
             if (!input.isEmpty()) {
                 final List<Instance> lstDocs = new MultiPrint()
                 {
@@ -377,7 +378,7 @@ public abstract class AbstractPaymentOut_Base
                 }.getInstances(_parameter);
 
                 if (!lstDocs.isEmpty()) {
-                    final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                    final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
                     final MultiPrintQuery multi = new MultiPrintQuery(lstDocs);
                     multi.addAttribute(CISales.DocumentAbstract.Name,
                                     CISales.DocumentAbstract.Date,
@@ -403,7 +404,7 @@ public abstract class AbstractPaymentOut_Base
                                             .append(NumberFormatter.get().getTwoDigitsFormatter().format(amount));
                         }
 
-                        final Map<String, String> map = new HashMap<String, String>();
+                        final Map<String, String> map = new HashMap<>();
                         map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
                         map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                         map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
@@ -427,10 +428,11 @@ public abstract class AbstractPaymentOut_Base
     public Return updateFields4SettleDocument(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final int selected = getSelectedRow(_parameter);
 
+        final Instance instDoc = Instance.get(_parameter.getParameterValue("currentDocument"));
         final Instance docInst = Instance.get(_parameter.getParameterValues("settleDocument")[selected]);
         if (docInst.isValid()) {
             final SelectBuilder selCur = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
@@ -443,11 +445,16 @@ public abstract class AbstractPaymentOut_Base
             if (print.execute()) {
                 if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
                     final BigDecimal amount = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    final BigDecimal cAmount = getAmount4CurrentDocument(_parameter, instDoc,
+                                    _parameter.getCallInstance());
 
                     final CurrencyInst curr = new CurrencyInst(print.<Instance>getSelect(selCur));
                     final String valueCrossTotal = curr.getSymbol() + " " + NumberFormatter.get()
                                     .getTwoDigitsFormatter().format(amount);
                     map.put("crossTotal4Read", valueCrossTotal);
+                    map.put("settleTotal", cAmount.compareTo(amount) > 0
+                                    ? NumberFormatter.get().getTwoDigitsFormatter().format(amount)
+                                    : NumberFormatter.get().getTwoDigitsFormatter().format(cAmount));
                     list.add(map);
                 }
             }
@@ -473,48 +480,52 @@ public abstract class AbstractPaymentOut_Base
         final BigDecimal amount = getAmount4CurrentDocument(_parameter, instDoc, _parameter.getCallInstance());
 
         final String[] documents = _parameter.getParameterValues("settleDocument");
+        final String[] settleTotals = _parameter.getParameterValues("settleTotal");
         boolean first = true;
         if (documents != null && documents.length > 0) {
-            final Map<String, Object> infoDoc = new HashMap<String, Object>();
+            final Map<String, Object> infoDoc = new HashMap<>();
+            int i = 0;
             for (final String doc : documents) {
                 final Instance document = Instance.get(doc);
                 if (document.isValid()) {
-                    final PrintQuery print = new PrintQuery(document);
-                    print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                    print.execute();
-                    final BigDecimal amount4Doc = print
-                                    .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                    if (first) {
-                        replacePaymentInfo(_parameter, instDoc, document, amount4Doc, infoDoc);
-                        first = false;
-                    } else {
-                        if (!infoDoc.isEmpty()) {
-                            final Insert payInsert = new Insert(CISales.Payment);
-                            payInsert.add(CISales.Payment.CreateDocument, document);
-                            payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance());
-                            payInsert.add(CISales.Payment.Amount, amount4Doc);
-                            payInsert.add(CISales.Payment.CurrencyLink, infoDoc.get("currency"));
-                            payInsert.add(CISales.Payment.Date, infoDoc.get("date"));
-                            payInsert.execute();
+                    try {
+                        final BigDecimal amount4Doc = (BigDecimal) NumberFormatter.get().getTwoDigitsFormatter()
+                                        .parse(settleTotals[i]);
+                        if (first) {
+                            replacePaymentInfo(_parameter, instDoc, document, amount4Doc, infoDoc);
+                            first = false;
+                        } else {
+                            if (!infoDoc.isEmpty()) {
+                                final Insert payInsert = new Insert(CISales.Payment);
+                                payInsert.add(CISales.Payment.CreateDocument, document);
+                                payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance());
+                                payInsert.add(CISales.Payment.Amount, amount4Doc);
+                                payInsert.add(CISales.Payment.CurrencyLink, infoDoc.get("currency"));
+                                payInsert.add(CISales.Payment.Date, infoDoc.get("date"));
+                                payInsert.execute();
 
-                            final Insert transIns = new Insert(CISales.TransactionOutbound);
-                            transIns.add(CISales.TransactionOutbound.Amount, amount4Doc);
-                            transIns.add(CISales.TransactionOutbound.CurrencyId, infoDoc.get("currency"));
-                            transIns.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
-                            transIns.add(CISales.TransactionOutbound.Date, infoDoc.get("date"));
-                            transIns.add(CISales.TransactionOutbound.Account, infoDoc.get("account"));
-                            transIns.execute();
+                                final Insert transIns = new Insert(CISales.TransactionOutbound);
+                                transIns.add(CISales.TransactionOutbound.Amount, amount4Doc);
+                                transIns.add(CISales.TransactionOutbound.CurrencyId, infoDoc.get("currency"));
+                                transIns.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
+                                transIns.add(CISales.TransactionOutbound.Date, infoDoc.get("date"));
+                                transIns.add(CISales.TransactionOutbound.Account, infoDoc.get("account"));
+                                transIns.execute();
 
-                            final Insert insert = new Insert(CISales.PayableDocument2Document);
-                            insert.add(CISales.PayableDocument2Document.FromLink, document);
-                            insert.add(CISales.PayableDocument2Document.ToLink, instDoc);
-                            insert.add(CISales.PayableDocument2Document.PayDocLink, payInsert);
-                            insert.execute();
+                                final Insert insert = new Insert(CISales.PayableDocument2Document);
+                                insert.add(CISales.PayableDocument2Document.FromLink, document);
+                                insert.add(CISales.PayableDocument2Document.ToLink, instDoc);
+                                insert.add(CISales.PayableDocument2Document.PayDocLink, payInsert);
+                                insert.execute();
+                            }
                         }
+                    } catch (final ParseException e) {
+                        LOG.error("Catched", e);
                     }
                 }
+                i++;
             }
-            final BigDecimal settleAmount = getAmount4settleDocument(_parameter);
+            final BigDecimal settleAmount = getAmount4SettleDocument(_parameter);
             if (amount.compareTo(settleAmount) != 0) {
                 final BigDecimal difference = amount.subtract(settleAmount);
                 if (checkDifference(_parameter, difference)) {
@@ -541,7 +552,7 @@ public abstract class AbstractPaymentOut_Base
         final Instance docInstance = Instance.get(_parameter.getParameterValue("currentDocument"));
         if (docInstance.isValid()) {
             final BigDecimal amount = getAmount4CurrentDocument(_parameter, docInstance, paymentInst);
-            final BigDecimal settleAmount = getAmount4settleDocument(_parameter);
+            final BigDecimal settleAmount = getAmount4SettleDocument(_parameter);
             if (amount.compareTo(settleAmount) == 0) {
                 error.append(DBProperties
                                 .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
@@ -816,19 +827,17 @@ public abstract class AbstractPaymentOut_Base
      * @return the amounts4 render
      * @throws EFapsException the e faps exception
      */
-    protected BigDecimal getAmount4settleDocument(final Parameter _parameter)
+    protected BigDecimal getAmount4SettleDocument(final Parameter _parameter)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ZERO;
-        final String[] documents = _parameter.getParameterValues("settleDocument");
-        if (documents != null && documents.length > 0) {
-            for (final String doc : documents) {
-                final Instance docInst = Instance.get(doc);
-                if (docInst.isValid()) {
-                    final PrintQuery print = new PrintQuery(docInst);
-                    print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                    print.execute();
-                    ret = ret.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+        final BigDecimal ret = BigDecimal.ZERO;
+        final String[] settleTotals = _parameter.getParameterValues("settleTotal");
+        if (ArrayUtils.isNotEmpty(settleTotals)) {
+            for (final String total : settleTotals) {
+                try {
+                    ret.add((BigDecimal) NumberFormatter.get().getTwoDigitsFormatter().parse(total));
+                } catch (final ParseException e) {
+                    LOG.error("Catched", e);
                 }
             }
         }
@@ -845,8 +854,8 @@ public abstract class AbstractPaymentOut_Base
     public Return updateFields4PaymentAmountDesc(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final int selected = getSelectedRow(_parameter);
 
         final String amountStr = _parameter.getParameterValues("payment4Pay")[selected];
