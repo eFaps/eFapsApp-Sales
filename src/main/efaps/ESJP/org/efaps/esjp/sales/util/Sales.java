@@ -494,7 +494,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGEXCHANGEJASPERREPORT
+    public static final PropertiesSysConfAttribute INCOMINGEXCHANGE_JASPERREPORT
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.JasperReport")
@@ -502,7 +502,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> INCOMINGEXCHANGEMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> INCOMINGEXCHANGE_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.Mime")
                     .clazz(JasperMime.class)
@@ -510,14 +510,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGEXCHANGEACTIVATEGUARANTEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGEXCHANGE_ACTIVATEGUARANTEE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.ActivateGuarantee")
                     .description("Allows to activate/deactivate the realtion to a Guarantee.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGEXCHANGEUSENUMGEN = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGEXCHANGE_USENUMGEN = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.UseNumberGenerator")
                     .description("Use a NumberGenerator for the Name.");

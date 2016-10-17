@@ -39,5 +39,18 @@
                 <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
         </field>
+        <field name="date">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_IncomingExchange_AssignActionForm.date.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_IncomingExchange_AssignActionForm.date.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Commons-Configuration -->
+                <property name="SystemConfig">9ac2673a-18f9-41ba-b9be-5b0980bdf6f3</property>
+                <property name="PropertiesAttribute">org.efaps.commons.ActionDefinition</property>
+                <property name="PropertiesKey">Sales_IncomingExchange.SetDate</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
