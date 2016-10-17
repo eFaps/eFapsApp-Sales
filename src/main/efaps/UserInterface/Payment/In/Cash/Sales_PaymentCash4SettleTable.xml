@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2016 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9dee32fc-6a48-4cc5-aa30-6b732fde0e50</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentCash4SettleTable</name>
+        <field name="settleDocument">
+            <property name="Label">Sales_PaymentCash4SettleTable.settleDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4SettleDocument"
+                name="Sales_PaymentDocument4SettleTable.settlementDocument.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.payment.PaymentCash">
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.in.Cash.PayableDocuments</property>
+                <property name="ExtraParameter01">currentDocument</property>
+                <property name="ExtraParameter02">deactivateFilter</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4SettleDocument"
+                name="Sales_PaymentCash4PayPaymentTable.product.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentCash" />
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCash4SettleTable.crossTotal4Read.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="settleTotal">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_PaymentCash4SettleTable.settleTotal.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+    </definition>
+</ui-table>

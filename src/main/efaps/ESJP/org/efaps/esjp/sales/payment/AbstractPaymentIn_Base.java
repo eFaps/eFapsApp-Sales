@@ -21,9 +21,11 @@ package org.efaps.esjp.sales.payment;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
@@ -33,16 +35,20 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 
@@ -63,8 +69,8 @@ public abstract class AbstractPaymentIn_Base
         Return retVal = new Return();
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
         if (CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name.equals(field.getName())) {
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, String>> list = new ArrayList<>();
+            final Map<String, String> map = new HashMap<>();
 
             final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue(CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name));
@@ -83,7 +89,123 @@ public abstract class AbstractPaymentIn_Base
         return retVal;
     }
 
+    /**
+     * Gets the payment out documents that need to be settled
+     * (the user is still accountable for them).
+     *
+     * @param _parameter the _parameter
+     * @return the payment documents4 pay
+     * @throws EFapsException the e faps exception
+     */
+    public Return getPaymentDocuments4ToBeSettled(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new MultiPrint()
+        {
 
+            @Override
+            public List<Instance> getInstances(final Parameter _parameter)
+                throws EFapsException
+            {
+                final QueryBuilder targetAttrQueryBldr = getQueryBldrFromProperties(_parameter,
+                                Sales.PAYMENTDOCUMENT_TOBESETTLED.get());
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+                attrQueryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
+                                targetAttrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentAbstract);
+                queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID,
+                                attrQueryBldr.getAttributeQuery(CISales.Payment.TargetDocument));
+                return queryBldr.getQuery().execute();
+            }
+        }.execute(_parameter);
+        return ret;
+    }
+
+    /**
+     * Accesscheck that checks if documents a related that must be settled.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return check4ToBeSettled(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance paymentDoc = _parameter.getInstance();
+        if (paymentDoc.isValid()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, paymentDoc);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
+
+            final Properties props = Sales.PAYMENTDOCUMENT_TOBESETTLED.get();
+            final Properties tmpProps = new Properties();
+            for (final Enumeration<?> propertyNames = props.propertyNames(); propertyNames.hasMoreElements();) {
+                final String key = (String) propertyNames.nextElement();
+                if (key.startsWith("Type")) {
+                    tmpProps.put(key, props.get(key));
+                }
+            }
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(tmpProps);
+            queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (!query.getValues().isEmpty()) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Drop down4 create documents.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return currentDocument4SettleFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new org.efaps.esjp.common.uiform.Field()
+        {
+
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+                attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance());
+
+                final Properties props = Sales.PAYMENTDOCUMENT_TOBESETTLED.get();
+                final Properties tmpProps = new Properties();
+                for (final Enumeration<?> propertyNames = props.propertyNames(); propertyNames.hasMoreElements();) {
+                    final String key = (String) propertyNames.nextElement();
+                    if (key.startsWith("Type")) {
+                        tmpProps.put(key, props.get(key));
+                    }
+                }
+                final QueryBuilder queryBldr = getQueryBldrFromProperties(tmpProps);
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
+                                queryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID));
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
+                                attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument));
+
+            }
+        }.getOptionListFieldValue(_parameter);
+        return ret;
+    }
+
+    /**
+     * Gets the java script for amount add doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the java script for amount add doc
+     * @throws EFapsException on error
+     */
     public Return getJavaScript4AmountAddDoc(final Parameter _parameter)
         throws EFapsException
     {
@@ -114,16 +236,20 @@ public abstract class AbstractPaymentIn_Base
 
             ret.put(ReturnValues.SNIPLETT, js.toString());
         }
-
         return ret;
     }
 
+    /**
+     * Gets the empty table for payment doc with out doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the empty table for payment doc with out doc
+     */
     public Return getEmptyTable4PaymentDocWithOutDoc(final Parameter _parameter)
     {
-        final List<Instance> lst = new ArrayList<Instance>();
+        final List<Instance> lst = new ArrayList<>();
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, lst);
         return ret;
     }
-
 }

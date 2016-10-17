@@ -28,16 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -58,16 +55,13 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uitable.MultiPrint;
-import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -336,135 +330,6 @@ public abstract class AbstractPaymentOut_Base
     }
 
     /**
-     * Method to autoComplete documents.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return new Return with values.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4SettleDocument(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-
-        final boolean deacFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("deactivateFilter"));
-        final Instance docInst = Instance.get(_parameter.getParameterValue("currentDocument"));
-
-        if (InstanceUtils.isValid(docInst)) {
-
-            final String input = (String) _parameter.get(ParameterValues.OTHERS);
-            final List<Map<String, String>> list = new ArrayList<>();
-            if (!input.isEmpty()) {
-                final List<Instance> lstDocs = new MultiPrint()
-                {
-
-                    @Override
-                    protected void add2QueryBldr(final Parameter _parameter,
-                                                 final QueryBuilder _queryBldr)
-                        throws EFapsException
-                    {
-                        if (!deacFilter && docInst.isValid()) {
-                            final PrintQuery print = new PrintQuery(docInst);
-                            print.addAttribute(CIERP.DocumentAbstract.Contact);
-                            print.executeWithoutAccessCheck();
-                            final Long contactId = print.getAttribute(CIERP.DocumentAbstract.Contact);
-                            if (contactId != null) {
-                                _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactId);
-                            }
-                        }
-                        _queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name,
-                                        input + "*").setIgnoreCase(true);
-                    };
-                }.getInstances(_parameter);
-
-                if (!lstDocs.isEmpty()) {
-                    final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
-                    final MultiPrintQuery multi = new MultiPrintQuery(lstDocs);
-                    multi.addAttribute(CISales.DocumentAbstract.Name,
-                                    CISales.DocumentAbstract.Date,
-                                    CISales.DocumentSumAbstract.RateCrossTotal);
-                    final SelectBuilder selCur = new SelectBuilder()
-                                    .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-                    multi.addSelect(selCur);
-                    multi.execute();
-                    while (multi.next()) {
-                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-
-                        final StringBuilder choice = new StringBuilder();
-                        choice.append(name).append(" - ").append(multi.getCurrentInstance().getType().getLabel())
-                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                        Context.getThreadContext().getLocale())));
-
-                        if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                            final BigDecimal amount = multi
-                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                            final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
-                            choice.append(" - ").append(curr.getSymbol()).append(" ")
-                                            .append(NumberFormatter.get().getTwoDigitsFormatter().format(amount));
-                        }
-
-                        final Map<String, String> map = new HashMap<>();
-                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
-                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                        tmpMap.put(multi.getCurrentInstance().getOid(), map);
-                    }
-                    list.addAll(tmpMap.values());
-                }
-            }
-            ret.put(ReturnValues.VALUES, list);
-        }
-        return ret;
-    }
-
-    /**
-     * Update fields for settle document.
-     *
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return the return
-     * @throws EFapsException on error
-     */
-    public Return updateFields4SettleDocument(final Parameter _parameter)
-        throws EFapsException
-    {
-        final List<Map<String, String>> list = new ArrayList<>();
-        final Map<String, String> map = new HashMap<>();
-        final int selected = getSelectedRow(_parameter);
-
-        final Instance instDoc = Instance.get(_parameter.getParameterValue("currentDocument"));
-        final Instance docInst = Instance.get(_parameter.getParameterValues("settleDocument")[selected]);
-        if (docInst.isValid()) {
-            final SelectBuilder selCur = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                            .instance();
-
-            final PrintQuery print = new PrintQuery(docInst);
-            print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            print.addSelect(selCur);
-
-            if (print.execute()) {
-                if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                    final BigDecimal amount = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                    final BigDecimal cAmount = getAmount4CurrentDocument(_parameter, instDoc,
-                                    _parameter.getCallInstance());
-
-                    final CurrencyInst curr = new CurrencyInst(print.<Instance>getSelect(selCur));
-                    final String valueCrossTotal = curr.getSymbol() + " " + NumberFormatter.get()
-                                    .getTwoDigitsFormatter().format(amount);
-                    map.put("crossTotal4Read", valueCrossTotal);
-                    map.put("settleTotal", cAmount.compareTo(amount) > 0
-                                    ? NumberFormatter.get().getTwoDigitsFormatter().format(amount)
-                                    : NumberFormatter.get().getTwoDigitsFormatter().format(cAmount));
-                    list.add(map);
-                }
-            }
-        }
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, list);
-        return ret;
-    }
-
-    /**
      * Update payable documents.
      *
      * @param _parameter the _parameter
@@ -532,48 +397,6 @@ public abstract class AbstractPaymentOut_Base
                     createDocument4Settle(_parameter, infoDoc, difference);
                 }
             }
-        }
-        return ret;
-    }
-
-    /**
-     * Validate payments.
-     *
-     * @param _parameter the _parameter
-     * @return the return
-     * @throws EFapsException the e faps exception
-     */
-    public Return validateSettlePayment(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance paymentInst = _parameter.getCallInstance();
-        final Return ret = new Return();
-        final StringBuilder error = new StringBuilder();
-        final Instance docInstance = Instance.get(_parameter.getParameterValue("currentDocument"));
-        if (docInstance.isValid()) {
-            final BigDecimal amount = getAmount4CurrentDocument(_parameter, docInstance, paymentInst);
-            final BigDecimal settleAmount = getAmount4SettleDocument(_parameter);
-            if (amount.compareTo(settleAmount) == 0) {
-                error.append(DBProperties
-                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
-                ret.put(ReturnValues.SNIPLETT, error.toString());
-                ret.put(ReturnValues.TRUE, true);
-            } else {
-                final BigDecimal difference = amount.subtract(settleAmount);
-                if (difference.signum() == 1) {
-                    error.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
-                } else {
-                    error.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountGreater"));
-                }
-                error.append(" ").append(difference.abs());
-                ret.put(ReturnValues.TRUE, true);
-                ret.put(ReturnValues.SNIPLETT, error.toString());
-            }
-        } else {
-            error.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.SelectedDocument"));
-            ret.put(ReturnValues.SNIPLETT, error.toString());
         }
         return ret;
     }
@@ -788,60 +611,6 @@ public abstract class AbstractPaymentOut_Base
                 }
             }
         }
-    }
-
-    /**
-     * Gets the amounts2 payment.
-     *
-     * @param _parameter the _parameter
-     * @param _docInst the _doc inst
-     * @param _payment the _payment
-     * @return the amounts2 payment
-     * @throws EFapsException the e faps exception
-     */
-    protected BigDecimal getAmount4CurrentDocument(final Parameter _parameter,
-                                                    final Instance _docInst,
-                                                    final Instance _payment)
-        throws EFapsException
-    {
-        BigDecimal ret = BigDecimal.ZERO;
-
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _docInst);
-        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _payment);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.Payment.Amount);
-        multi.execute();
-
-        while (multi.next()) {
-            ret = ret.add(multi.<BigDecimal>getAttribute(CISales.Payment.Amount));
-        }
-
-        return ret;
-    }
-
-    /**
-     * Gets the amounts4 render.
-     *
-     * @param _parameter the _parameter
-     * @return the amounts4 render
-     * @throws EFapsException the e faps exception
-     */
-    protected BigDecimal getAmount4SettleDocument(final Parameter _parameter)
-        throws EFapsException
-    {
-        final BigDecimal ret = BigDecimal.ZERO;
-        final String[] settleTotals = _parameter.getParameterValues("settleTotal");
-        if (ArrayUtils.isNotEmpty(settleTotals)) {
-            for (final String total : settleTotals) {
-                try {
-                    ret.add((BigDecimal) NumberFormatter.get().getTwoDigitsFormatter().parse(total));
-                } catch (final ParseException e) {
-                    LOG.error("Catched", e);
-                }
-            }
-        }
-        return ret;
     }
 
     /**

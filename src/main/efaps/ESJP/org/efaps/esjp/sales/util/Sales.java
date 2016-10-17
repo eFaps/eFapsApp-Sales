@@ -947,6 +947,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTDOCUMENT_TOBESETTLED = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.Config4ToBeSetteled")
+                    .addDefaultValue("Type", CISales.OrderInbound.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.OrderInbound.getType().getName())
+                    .addDefaultValue("Status", "!" + CISales.OrderInboundStatus.Canceled.key)
+                    .description("QueryBuilder config for the Documents that must be settled.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PAYMENTDEBITCARDACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.in.DebitCard.Activate")
