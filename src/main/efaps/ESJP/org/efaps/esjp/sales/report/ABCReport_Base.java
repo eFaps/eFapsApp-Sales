@@ -149,7 +149,7 @@ public abstract class ABCReport_Base
                                                 final String _fieldName)
         throws EFapsException
     {
-        return Sales.REPORT_ABCReport.get();
+        return Sales.REPORT_ABCREPORT.get();
     }
 
     /**
@@ -189,7 +189,7 @@ public abstract class ABCReport_Base
                 final Map<Instance, DataBean> inst2bean = new HashMap<>();
                 final ReportType reportType = getReportType(_parameter);
 
-                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_ABCReport.get());
+                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_ABCREPORT.get());
                 add2QueryBuilder(_parameter, attrQueryBldr);
 
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
@@ -255,7 +255,7 @@ public abstract class ABCReport_Base
                     }
                     if (showAmount) {
                         final BigDecimal amount;
-                        if ("NET".equals(Sales.REPORT_ABCReport.get().getProperty(docInst.getType().getName()
+                        if ("NET".equals(Sales.REPORT_ABCREPORT.get().getProperty(docInst.getType().getName()
                                         + ".Total", "NET"))) {
                             amount = multi.getAttribute(CISales.PositionSumAbstract.NetPrice);
                         } else {
@@ -482,7 +482,7 @@ public abstract class ABCReport_Base
                                            final BigDecimal _total)
             throws EFapsException
         {
-            final String limit = Sales.REPORT_ABCReport.get().getProperty(_key + "UpperLimit", "80");
+            final String limit = Sales.REPORT_ABCREPORT.get().getProperty(_key + "UpperLimit", "80");
             return _total.multiply(new BigDecimal(limit)).divide(new BigDecimal(100));
         }
 
@@ -500,7 +500,7 @@ public abstract class ABCReport_Base
                                            final BigDecimal _total)
             throws EFapsException
         {
-            final String limit = Sales.REPORT_ABCReport.get().getProperty(_key + "LowerLimit", "5");
+            final String limit = Sales.REPORT_ABCREPORT.get().getProperty(_key + "LowerLimit", "5");
             return _total.subtract(_total.multiply(new BigDecimal(limit)).divide(new BigDecimal(100)));
         }
 

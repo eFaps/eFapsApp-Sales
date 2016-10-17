@@ -35,6 +35,7 @@ import org.efaps.esjp.admin.common.systemconfiguration.ListSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CINumGenSales;
 import org.efaps.esjp.ci.CIProducts;
@@ -1367,7 +1368,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute REPORT_ABCReport = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute REPORT_ABCREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.ABCReport")
                     .description("Configuration for the ABCReport.")
@@ -1477,6 +1478,14 @@ public final class Sales
                     .addDefaultValue("Type03", CISales.Reminder.getType().getName())
                     .addDefaultValue("Type04", CISales.IncomingExchange.getType().getName())
                     .description("Configures the ABC Report for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_STATISTICS = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.Statistics")
+                    .description("Configuration for the StatisticsReport.")
+                    .addDefaultValue("Type", CIERP.DocumentAbstract.getType().getName());
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,25 +17,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>35981368-8bec-48cf-8b1c-6f213bf67969</uuid>
+    <uuid>a7cac19d-505f-4495-8e69-1db2863948a4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ABCReportMyDesk_Menu_DownloadPDF</name>
-        <icon>Document_PDF</icon>
+        <name>Sales_StatisticsReportMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.ABCReport">
-                <property name="Mime">pdf</property>
-                <property name="PageType">A4</property>
-                <property name="PageOrientation">LANDSCAPE</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
-            </execute>
+            <menu>Sales_StatisticsReportMyDesk_Menu</menu>
+            <form>Sales_StatisticsReportForm</form>
         </target>
-        <property name="Target">hidden</property>
-        <property name="TargetShowFile">true</property>
-        <property name="Label">report.DownloadPDF</property>
+        <property name="Target">content</property>
     </definition>
 </ui-command>

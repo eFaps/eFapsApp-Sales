@@ -13,29 +13,26 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>35981368-8bec-48cf-8b1c-6f213bf67969</uuid>
+    <uuid>4c28e89a-fcf0-4c67-b3d1-9891bc982528</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ABCReportMyDesk_Menu_DownloadPDF</name>
-        <icon>Document_PDF</icon>
+        <name>Sales_StatisticsReportMyDesk_Menu_DownloadExcel</name>
+        <icon>Document_Excel</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.ABCReport">
-                <property name="Mime">pdf</property>
-                <property name="PageType">A4</property>
-                <property name="PageOrientation">LANDSCAPE</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.ABCReport.FilterKey</property>
+            <execute method="exportReport" program="org.efaps.esjp.sales.report.StatisticsReport">
+                <property name="Mime">xls</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.StatisticsReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
         <property name="TargetShowFile">true</property>
-        <property name="Label">report.DownloadPDF</property>
+        <property name="Label">report.DownloadExcel</property>
     </definition>
 </ui-command>
