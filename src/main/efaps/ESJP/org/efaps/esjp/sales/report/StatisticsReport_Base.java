@@ -371,7 +371,7 @@ public abstract class StatisticsReport_Base
                             quantityColumn).setShowTotal(false);
 
             final CrosstabMeasureBuilder<BigDecimal> countMeasure = DynamicReports.ctab.measure(getFilteredReport()
-                            .getDBProperty(".count"), countColumn, Calculation.COUNT);
+                            .getDBProperty("count"), countColumn, Calculation.COUNT);
 
             crosstab.addMeasure(countMeasure).addColumnGroup(quantityColumnGroup);
 
