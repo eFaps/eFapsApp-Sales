@@ -1648,10 +1648,9 @@ public final class Sales
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute TRANSDOCSHADOWIN_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "TransactionDocumentShadowOut.RevisionSequence")
+                    .key(BASE + "TransactionDocumentShadowIn.RevisionSequence")
                     .defaultValue(CINumGenSales.TransactionDocumentShadowInSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
-
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1660,7 +1659,6 @@ public final class Sales
                     .key(BASE + "TransactionDocumentShadowOut.RevisionSequence")
                     .defaultValue(CINumGenSales.TransactionDocumentShadowOutSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
-
 
     /** See description. */
     @EFapsSysConfAttribute
