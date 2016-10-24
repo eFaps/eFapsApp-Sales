@@ -17,12 +17,12 @@
 package org.efaps.esjp.sales.listener;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
+import org.efaps.esjp.sales.report.DocProductTransactionReport_Base.DataBean;
 import org.efaps.esjp.sales.report.DocProductTransactionReport_Base.DynDocProductTransactionReport;
 import org.efaps.util.EFapsException;
 
@@ -47,7 +47,7 @@ public interface IOnDocProductTransactionReport
      */
     void updateValues(final Parameter _parameter,
                       final DynDocProductTransactionReport _dynReport,
-                      final Collection<Map<String, ?>> _values)
+                      final Collection<DataBean> _values)
         throws EFapsException;
 
 }

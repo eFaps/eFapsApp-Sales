@@ -21,13 +21,13 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
@@ -66,7 +66,7 @@ import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * TODO comment!
@@ -230,7 +230,7 @@ public abstract class DocProductTransactionReport_Base
                 };
                 final DateTimeFormatter dateTimeFormatter = groupedByDate.getDateTimeFormatter(dateGroup);
 
-                final Collection<Map<String, ?>> values = new ArrayList<>();
+                final Collection<DataBean> values = new ArrayList<>();
 
                 final MultiPrintQuery multi = getQueryBldr(_parameter).getPrint();
                 final SelectBuilder selDoc = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Document);
@@ -249,8 +249,6 @@ public abstract class DocProductTransactionReport_Base
                 multi.addAttribute(CIProducts.TransactionAbstract.Quantity, CIProducts.TransactionAbstract.UoM);
                 multi.execute();
                 while (multi.next()) {
-                    final Map<String, Object> map = new HashMap<>();
-                    values.add(map);
                     final BigDecimal quantity = multi.getAttribute(CIProducts.TransactionAbstract.Quantity);
                     final Instance productInst = multi.getSelect(selProductInst);
                     final String productName = multi.getSelect(selProductName);
@@ -259,14 +257,16 @@ public abstract class DocProductTransactionReport_Base
                     final String docContact = multi.getSelect(selDocContact);
                     final DateTime date = multi.getSelect(selDocDate);
                     final UoM uoM = Dimension.getUoM(multi.getAttribute(CIProducts.TransactionAbstract.UoM));
-                    map.put("uoM", uoM.getName());
-                    map.put("quantity", quantity);
-                    map.put("product", productName);
-                    map.put("productDescr", productDescr);
-                    map.put("productInst", productInst);
-                    map.put("docName", docName);
-                    map.put("docContact", docContact);
-                    map.put("partial", groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter));
+                    final DataBean dataBean = getBean(_parameter)
+                        .setUoM(uoM.getName())
+                        .setQuantity(quantity)
+                        .setProductInst(productInst)
+                        .setProduct(productName)
+                        .setProductDescr(productDescr)
+                        .setDocName(docName)
+                        .setDocContact(docContact)
+                        .setPartial(groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter));
+                    values.add(dataBean);
                 }
 
                 for (final IOnDocProductTransactionReport listener : Listener.get()
@@ -274,7 +274,7 @@ public abstract class DocProductTransactionReport_Base
                     listener.updateValues(_parameter, this, values);
                 }
 
-                ret = new JRMapCollectionDataSource(values);
+                ret = new JRBeanCollectionDataSource(values);
                 getFilteredReport().cache(_parameter, ret);
             }
             return ret;
@@ -563,6 +563,230 @@ public abstract class DocProductTransactionReport_Base
                 ret = ProdType.BOTH;
             }
             return ret;
+        }
+
+        /**
+         * Gets the bean.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the bean
+         */
+        public DataBean getBean(final Parameter _parameter)
+        {
+            return new DataBean();
+        }
+    }
+
+    /**
+     * The Class DataBean.
+     */
+    public static class DataBean
+    {
+
+        /** The uo M. */
+        private String uoM;
+
+        /** The quantity. */
+        private BigDecimal quantity;
+
+        /** The product. */
+        private String product;
+
+        /** The product descr. */
+        private String productDescr;
+
+        /** The product inst. */
+        private Instance productInst;
+
+        /** The doc name. */
+        private String docName;
+
+        /** The doc contact. */
+        private String docContact;
+
+        /** The partial. */
+        private String partial;
+
+        /**
+         * Gets the uo M.
+         *
+         * @return the uo M
+         */
+        public String getUoM()
+        {
+            return this.uoM;
+        }
+
+        /**
+         * Sets the uo M.
+         *
+         * @param _uoM the uo M
+         * @return the data bean
+         */
+        public DataBean setUoM(final String _uoM)
+        {
+            this.uoM = _uoM;
+            return this;
+        }
+
+        /**
+         * Gets the quantity.
+         *
+         * @return the quantity
+         */
+        public BigDecimal getQuantity()
+        {
+            return this.quantity;
+        }
+
+        /**
+         * Sets the quantity.
+         *
+         * @param _quantity the quantity
+         * @return the data bean
+         */
+        public DataBean setQuantity(final BigDecimal _quantity)
+        {
+            this.quantity = _quantity;
+            return this;
+        }
+
+        /**
+         * Gets the product.
+         *
+         * @return the product
+         */
+        public String getProduct()
+        {
+            return this.product;
+        }
+
+        /**
+         * Sets the product.
+         *
+         * @param _product the product
+         * @return the data bean
+         */
+        public DataBean setProduct(final String _product)
+        {
+            this.product = _product;
+            return this;
+        }
+
+        /**
+         * Gets the product descr.
+         *
+         * @return the product descr
+         */
+        public String getProductDescr()
+        {
+            return this.productDescr;
+        }
+
+        /**
+         * Sets the product descr.
+         *
+         * @param _productDescr the product descr
+         * @return the data bean
+         */
+        public DataBean setProductDescr(final String _productDescr)
+        {
+            this.productDescr = _productDescr;
+            return this;
+        }
+
+        /**
+         * Gets the product inst.
+         *
+         * @return the product inst
+         */
+        public Instance getProductInst()
+        {
+            return this.productInst;
+        }
+
+        /**
+         * Sets the product inst.
+         *
+         * @param _productInst the product inst
+         * @return the data bean
+         */
+        public DataBean setProductInst(final Instance _productInst)
+        {
+            this.productInst = _productInst;
+            return this;
+        }
+
+        /**
+         * Gets the doc name.
+         *
+         * @return the doc name
+         */
+        public String getDocName()
+        {
+            return this.docName;
+        }
+
+        /**
+         * Sets the doc name.
+         *
+         * @param _docName the doc name
+         * @return the data bean
+         */
+        public DataBean setDocName(final String _docName)
+        {
+            this.docName = _docName;
+            return this;
+        }
+
+        /**
+         * Gets the doc contact.
+         *
+         * @return the doc contact
+         */
+        public String getDocContact()
+        {
+            return this.docContact;
+        }
+
+        /**
+         * Sets the doc contact.
+         *
+         * @param _docContact the doc contact
+         * @return the data bean
+         */
+        public DataBean setDocContact(final String _docContact)
+        {
+            this.docContact = _docContact;
+            return this;
+        }
+
+        /**
+         * Gets the partial.
+         *
+         * @return the partial
+         */
+        public String getPartial()
+        {
+            return this.partial;
+        }
+
+        /**
+         * Sets the partial.
+         *
+         * @param _partial the partial
+         * @return the data bean
+         */
+        public DataBean setPartial(final String _partial)
+        {
+            this.partial = _partial;
+            return this;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this);
         }
     }
 }
