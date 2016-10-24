@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,22 +15,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>add02537-c6f7-48cc-8c6c-97ed66a5c85d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Document2Document4Swap</name>
         <parent>Sales_Document2DocumentAbstract</parent>
-         <attribute>
+        <attribute>
+            <name>Company</name>
+            <type>CompanyLink</type>
+            <sqltable>Sales_Document2Document4SwapSQLTable</sqltable>
+            <sqlcolumn>COMPANYID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>FromLink</name>
             <type>Link</type>
             <typelink>Sales_DocumentSumAbstract</typelink>
