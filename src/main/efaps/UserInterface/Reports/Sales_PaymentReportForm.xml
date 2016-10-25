@@ -37,7 +37,7 @@
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Enum</property>
                 <property name="FilterType04">InstanceSet</property>
-                <property name="FilterType05">Instance</property>
+                <property name="FilterType05">Currency</property>
                 <property name="FilterDefault01">MONTHS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.PaymentReport_Base$PayDoc</property>

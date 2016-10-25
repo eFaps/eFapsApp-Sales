@@ -175,6 +175,7 @@ public abstract class PaymentReport_Base
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
+                    PaymentReport_Base.LOG.error("JRException", e);
                     throw new EFapsException("JRException", e);
                 }
             } else {
@@ -334,7 +335,7 @@ public abstract class PaymentReport_Base
 
             final Instance currInst = evaluateCurrency(_parameter);
             if (InstanceUtils.isValid(currInst)) {
-                _queryBldr.addWhereAttrEqValue(CISales.Payment.RateCurrencyLink, currInst);
+                _queryBldr.addWhereAttrEqValue(CISales.Payment.CurrencyLink, currInst);
             }
         }
 
@@ -358,7 +359,6 @@ public abstract class PaymentReport_Base
             }
             return ret;
         }
-
 
         /**
          * Gets the pay doc.
