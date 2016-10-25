@@ -23,7 +23,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentSequence</name>
-        <format>%06d</format>
+        <format>DCC-%06d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>

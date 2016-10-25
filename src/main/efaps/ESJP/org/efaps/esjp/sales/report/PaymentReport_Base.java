@@ -227,7 +227,7 @@ public abstract class PaymentReport_Base
                                     .setCreateDocRevision(multi.getSelect(selCreateDocRev))
                                     .setCreateDocContactName(multi.getSelect(selCreateDocContactName));
                     beans.add(dataBean);
-                    LOG.debug("Read {}", dataBean);
+                    PaymentReport_Base.LOG.debug("Read {}", dataBean);
                 }
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
                 chain.addComparator(new Comparator<DataBean>()
@@ -331,7 +331,34 @@ public abstract class PaymentReport_Base
                     }
                 }
             }
+
+            final Instance currInst = evaluateCurrency(_parameter);
+            if (InstanceUtils.isValid(currInst)) {
+                _queryBldr.addWhereAttrEqValue(CISales.Payment.RateCurrencyLink, currInst);
+            }
         }
+
+        /**
+         * Evaluate currency inst.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the currency inst
+         * @throws EFapsException on error
+         */
+        protected Instance evaluateCurrency(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            Instance ret = null;
+            if (filterMap.containsKey("currency")) {
+                final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+                if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
+                    ret = filter.getObject();
+                }
+            }
+            return ret;
+        }
+
 
         /**
          * Gets the pay doc.
@@ -415,6 +442,11 @@ public abstract class PaymentReport_Base
 
             _builder.columnGrid(targetDocTitleGroup, createDocTitleGroup, amountColumn, currencyColumn)
                     .addColumn(columns.toArray(new ColumnBuilder[columns.size()]));
+
+            final Instance currInst = evaluateCurrency(_parameter);
+            if (InstanceUtils.isValid(currInst)) {
+                _builder.subtotalsAtSummary(DynamicReports.sbt.sum(amountColumn));
+            }
         }
 
         /**
