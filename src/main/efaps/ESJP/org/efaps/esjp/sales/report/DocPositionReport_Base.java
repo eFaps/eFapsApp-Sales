@@ -503,71 +503,35 @@ public abstract class DocPositionReport_Base
 
                 // it must be ensured that the first product has information for
                 // all used partial so it is garantized that the columns are in order
-                final Collection finalValues = new ArrayList<>();
                 final Set<String> partials = new TreeSet<>();
                 for (final Map<String, Object> value : values) {
                     partials.add((String) value.get("partial"));
                 }
                 if (partials.size() > 1) {
-                    final Iterator<String> partialIter = partials.iterator();
-                    final String productName = (String) values.get(0).get("productName");
+                    String productName = (String) values.get(0).get("productName");
                     final Iterator<Map<String, Object>> iter = values.iterator();
-                    Map<String, Object> previous = values.get(0);
-                    while (iter.hasNext()) {
-                        final Map<String, Object> map = iter.next();
-                        // if not al partials added go on validating
-                        if (partialIter.hasNext()) {
-                            String partial = partialIter.next();
-                            final boolean current = productName.equals(map.get("productName"));
-                            // stil the same product
-                            if (current) {
-                                // there is a partial missing add on for it
-                                while (partial != null && partial.compareTo((String) map.get("partial")) < 0) {
-                                    final Map<String, Object> newMap = new HashMap<>();
-                                    for (final Entry<String, Object> entry : map.entrySet()) {
-                                        if (entry.getValue() instanceof Number) {
-                                            newMap.put(entry.getKey(), null);
-                                        } else {
-                                            newMap.put(entry.getKey(), entry.getValue());
-                                        }
-                                    }
-                                    newMap.put("partial", partial);
-                                    finalValues.add(newMap);
-                                    partial = partialIter.hasNext() ? partialIter.next() : null;
-                                }
-                            } else {
-                                final Map<String, Object> newMap = new HashMap<>();
-                                for (final Entry<String, Object> entry : previous.entrySet()) {
-                                    if (entry.getValue() instanceof Number) {
-                                        newMap.put(entry.getKey(), null);
-                                    } else {
-                                        newMap.put(entry.getKey(), entry.getValue());
-                                    }
-                                }
-                                newMap.put("partial", partial);
-                                finalValues.add(newMap);
-                                // perhaps there are still more values
-                                while (partialIter.hasNext()) {
-                                    partial = partialIter.next();
-                                    final Map<String, Object> newMap1 = new HashMap<>();
-                                    for (final Entry<String, Object> entry : previous.entrySet()) {
-                                        if (entry.getValue() instanceof Number) {
-                                            newMap1.put(entry.getKey(), null);
-                                        } else {
-                                            newMap1.put(entry.getKey(), entry.getValue());
-                                        }
-                                    }
-                                    newMap1.put("partial", partial);
-                                    finalValues.add(newMap1);
-                                }
-                            }
-                            previous = map;
-                        }
-                        finalValues.add(map);
+                    while (iter.hasNext() && productName.equals(values.get(0).get("productName"))) {
+                        final Map<String, Object> currentMap = iter.next();
+                        productName = (String) currentMap.get("productName");
+                        partials.remove(currentMap.get("partial"));
                     }
-                } else {
-                    finalValues.addAll(values);
+                    for (final String partial : partials) {
+                        final Map<String, Object> newMap = new HashMap<>();
+                        for (final Entry<String, Object> entry : values.get(0).entrySet()) {
+                            if (entry.getValue() instanceof Number) {
+                                newMap.put(entry.getKey(), null);
+                            } else {
+                                newMap.put(entry.getKey(), entry.getValue());
+                            }
+                        }
+                        newMap.put("partial", partial);
+                        values.add(newMap);
+                    }
+                    Collections.sort(values, chain);
                 }
+
+                final Collection finalValues = new ArrayList<>();
+                finalValues.addAll(values);
                 ret = new JRMapCollectionDataSource(finalValues);
                 getFilteredReport().cache(_parameter, ret);
             }
