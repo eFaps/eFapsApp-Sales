@@ -31,15 +31,18 @@
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">reportType</property>
-                <property name="Field04">dateGroup</property>
+                <property name="Field04">showStatus</property>
+                <property name="Field05">dateGroup</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Enum</property>
-                <property name="FilterType04">Enum</property>
+                <property name="FilterType04">Boolean</property>
+                <property name="FilterType05">Enum</property>
                 <property name="FilterDefault01">YEARS:-5</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.StatisticsReport_Base$ReportType</property>
-                <property name="FilterDefault04">org.efaps.esjp.sales.report.StatisticsReport_Base$DateGroup</property>
+                <property name="FilterDefault04">false</property>
+                <property name="FilterDefault05">org.efaps.esjp.sales.report.StatisticsReport_Base$DateGroup</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_StatisticsReportForm.filter.UI_FIELD_VALUE.2" program="org.efaps.esjp.sales.report.StatisticsReport">
@@ -47,11 +50,13 @@
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">reportType</property>
-                <property name="Field04">dateGroup</property>
+                <property name="Field04">showStatus</property>
+                <property name="Field05">dateGroup</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.StatisticsReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.StatisticsReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.StatisticsReport.reportType</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.StatisticsReport.dateGroup</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.StatisticsReport.showStatus</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.StatisticsReport.dateGroup</property>
             </trigger>
         </field>
         <field name="report">

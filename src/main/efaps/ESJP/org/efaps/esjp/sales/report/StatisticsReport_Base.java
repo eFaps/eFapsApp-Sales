@@ -243,6 +243,8 @@ public abstract class StatisticsReport_Base
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder selContactName = SelectBuilder.get()
                                 .linkto(CIERP.DocumentAbstract.Contact).attribute(CIContacts.ContactAbstract.Name);
+                final SelectBuilder selStatus = SelectBuilder.get().status().label();
+                multi.addSelect(selStatus);
                 switch (reportType) {
                     case CREATOR_TYPE:
                     case CREATOR:
@@ -270,6 +272,7 @@ public abstract class StatisticsReport_Base
                         bean.setPartial(groupedByDate.getPartial(multi.getAttribute(CIERP.DocumentAbstract.Date),
                                         dateGroup.getFieldType()).toString(dateTimeFormatter));
                     }
+                    bean.setStatus(multi.getSelect(selStatus));
                     switch (reportType) {
                         case CREATOR_TYPE:
                             bean.setPerson(multi.<Person>getAttribute(CIERP.DocumentAbstract.Creator).getName());
@@ -348,6 +351,10 @@ public abstract class StatisticsReport_Base
                                     DynamicReports.type.stringType())).setHeaderWidth(250));
                     countColumn = DynamicReports.col.column("type", DynamicReports.type.stringType());
                     crosstab.addRowGroup(DynamicReports.ctab.rowGroup(countColumn).setHeaderWidth(250));
+                    if (isShowStatus(_parameter)) {
+                        crosstab.addRowGroup(DynamicReports.ctab.rowGroup(DynamicReports.col.column("status",
+                                    DynamicReports.type.stringType())));
+                    }
                     break;
                 case CONTACT:
                     countColumn = DynamicReports.col.column("contactName", DynamicReports.type.stringType());
@@ -359,11 +366,19 @@ public abstract class StatisticsReport_Base
 
                     countColumn = DynamicReports.col.column("type", DynamicReports.type.stringType());
                     crosstab.addRowGroup(DynamicReports.ctab.rowGroup(countColumn).setHeaderWidth(250));
+                    if (isShowStatus(_parameter)) {
+                        crosstab.addRowGroup(DynamicReports.ctab.rowGroup(DynamicReports.col.column("status",
+                                    DynamicReports.type.stringType())));
+                    }
                     break;
                 case TYPE:
                 default:
                     countColumn = DynamicReports.col.column("type", DynamicReports.type.stringType());
                     crosstab.addRowGroup(DynamicReports.ctab.rowGroup(countColumn).setHeaderWidth(250));
+                    if (isShowStatus(_parameter)) {
+                        crosstab.addRowGroup(DynamicReports.ctab.rowGroup(DynamicReports.col.column("status",
+                                    DynamicReports.type.stringType())));
+                    }
                     break;
             }
 
@@ -417,6 +432,20 @@ public abstract class StatisticsReport_Base
             }
             return ret;
         }
+
+        /**
+         * Checks if is show status.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is show status
+         * @throws EFapsException on error
+         */
+        protected boolean isShowStatus(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+            return (Boolean) filterMap.get("showStatus");
+        }
     }
 
     /**
@@ -436,6 +465,9 @@ public abstract class StatisticsReport_Base
 
         /** The contactName. */
         private String person;
+
+        /** The status. */
+        private String status;
 
         /**
          * Gets the type.
@@ -522,6 +554,28 @@ public abstract class StatisticsReport_Base
         public DataBean setPerson(final String _person)
         {
             this.person = _person;
+            return this;
+        }
+
+        /**
+         * Gets the status.
+         *
+         * @return the status
+         */
+        public String getStatus()
+        {
+            return this.status;
+        }
+
+        /**
+         * Sets the status.
+         *
+         * @param _status the status
+         * @return the data bean
+         */
+        public DataBean setStatus(final String _status)
+        {
+            this.status = _status;
             return this;
         }
     }
