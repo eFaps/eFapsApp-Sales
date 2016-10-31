@@ -848,9 +848,10 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_PAIDRULES = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.PaidRules")
-                    .description("Properties to define a paid thresholds for types. e.g. \n"
+                    .description("Properties to define the paid rules for types. e.g. \n"
                                     + "Sales_Invoice.Threshold=0.05\n"
-                                    + "Sales_Invoice.PerPayment=false");
+                                    + "Sales_Invoice.PerPayment=false"
+                                    + "Sales_Invoice.Swap.Status4From01=Open");
 
     /** See description. */
     @EFapsSysConfAttribute

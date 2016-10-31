@@ -22,6 +22,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -45,6 +46,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -979,10 +981,11 @@ public abstract class DocPaymentInfo_Base
                 verifySet.add(swapMulti.getCurrentInstance());
                 final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
                 final Instance docToInst = swapMulti.getSelect(selDocToInst);
-                final String key1 = swapMulti.getSelect(selDocFromStatus);
-                final String key2 = swapMulti.getSelect(selDocToStatus);
-                if (instance2info.containsKey(docFromInst) && !"Canceled".equals(key1) && !"Canceled".equals(key2)
-                                && !"Replaced".equals(key1) && !"Replaced".equals(key2)) {
+                final String keyFrom = swapMulti.getSelect(selDocFromStatus);
+                final String keyTo = swapMulti.getSelect(selDocToStatus);
+                if (instance2info.containsKey(docFromInst)
+                                && isValidStatus4Swap(_parameter, docFromInst, keyFrom, true)
+                                && isValidStatus4Swap(_parameter, docToInst, keyTo, false)) {
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
                     final Instance curInst = swapMulti.getSelect(selCurInst);
                     final RateInfo docRateInfo = new Currency().evaluateRateInfo(info.getParameter(),
@@ -1001,6 +1004,36 @@ public abstract class DocPaymentInfo_Base
                 }
             }
         }
+    }
+
+    /**
+     * Checks if is valid status for swap.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @param _statusKey the status key
+     * @param _from the from
+     * @return true, if is valid status for swap
+     * @throws EFapsException on error
+     */
+    protected static boolean isValidStatus4Swap(final Parameter _parameter,
+                                                final Instance _docInst,
+                                                final String _statusKey,
+                                                final boolean _from)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_PAIDRULES.get(), _docInst.getType()
+                        .getName());
+
+        final Collection<String> stats = PropertiesUtil.analyseProperty(props, "Swap.Status4" + (_from ? "From" : "To"),
+                        0).values();
+        if (stats.isEmpty()) {
+            ret = !"Canceled".equals(_statusKey) && !"Replaced".equals(_statusKey);
+        } else {
+            ret = stats.contains(_statusKey);
+        }
+        return ret;
     }
 
     /**
@@ -1047,7 +1080,7 @@ public abstract class DocPaymentInfo_Base
         }
 
         for (int i = 0; i < 2; i++) {
-            final Table table = (Table) new Table()
+            final Table table = new Table()
                 .setStyle("min-width: 350px;")
                 .addRow()
                     .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".LabelColumn"), 3)
