@@ -850,8 +850,10 @@ public final class Sales
                     .key(BASE + "payment.PaidRules")
                     .description("Properties to define the paid rules for types. e.g. \n"
                                     + "Sales_Invoice.Threshold=0.05\n"
-                                    + "Sales_Invoice.PerPayment=false"
-                                    + "Sales_Invoice.Swap.Status4From01=Open");
+                                    + "Sales_Invoice.PerPayment=false\n"
+                                    + "Sales_Invoice.Swap.Status4From01=Open\n"
+                                    + "OnStatusChange.StatusGroup=Sales_IncomingExchangeStatus\n"
+                                    + "OnStatusChange.Status=Open\n");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -71,13 +71,13 @@
             <property name="Label">Sales_SwapTable.toLinkContact.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-        <field name="created">
-            <property name="Attribute">Created</property>
-            <property name="Label">Sales_Document2Document4Swap/Created.Label</property>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="Label">Sales_Document2Document4Swap/Modified.Label</property>
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">MONTH</property>
+            <property name="FilterDefault">WEEK</property>
         </field>
     </definition>
 </ui-table>

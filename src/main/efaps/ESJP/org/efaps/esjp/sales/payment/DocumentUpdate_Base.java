@@ -72,15 +72,7 @@ public abstract class DocumentUpdate_Base
     public Return updateDocument(final Parameter _parameter)
         throws EFapsException
     {
-        Instance docInst = _parameter.getInstance();
-        if (InstanceUtils.isType(docInst, CISales.PayableDocument2Document)) {
-            final PrintQuery print = new PrintQuery(docInst);
-            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.PayableDocument2Document.FromLink)
-                            .instance();
-            print.addSelect(selDocInst);
-            print.executeWithoutAccessCheck();
-            docInst = print.getSelect(selDocInst);
-        }
+        final Instance docInst = _parameter.getInstance();
         return updateDocument(_parameter, docInst);
     }
 
@@ -94,7 +86,17 @@ public abstract class DocumentUpdate_Base
                                  final Instance _docInstance)
         throws EFapsException
     {
-        for (final Instance instance : getInstances(_parameter, _docInstance)) {
+        Instance docInst = _docInstance;
+        if (InstanceUtils.isType(docInst, CISales.PayableDocument2Document)) {
+            final PrintQuery print = new PrintQuery(docInst);
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.PayableDocument2Document.FromLink)
+                            .instance();
+            print.addSelect(selDocInst);
+            print.executeWithoutAccessCheck();
+            docInst = print.getSelect(selDocInst);
+        }
+
+        for (final Instance instance : getInstances(_parameter, docInst)) {
             final Status targetStatus = getTargetStatus(_parameter, instance);
             if (targetStatus != null && checkStatus(_parameter, instance)
                             && validateDocumentCriterias(_parameter, instance)) {
@@ -126,6 +128,12 @@ public abstract class DocumentUpdate_Base
                             attrQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink));
             ret.addAll(queryBldr.getQuery().executeWithoutAccessCheck());
         }
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToLink, _docInstance);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
+                        attrQueryBldr.getAttributeQuery(CISales.Document2Document4Swap.FromLink));
+        ret.addAll(queryBldr.getQuery().execute());
         return ret;
     }
 
