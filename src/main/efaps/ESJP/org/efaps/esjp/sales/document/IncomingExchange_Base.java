@@ -147,6 +147,17 @@ public abstract class IncomingExchange_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
+    public Return updateFields4AddDays(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Exchange().updateFields4AddDays(_parameter);
+    }
+
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return updateFields4CrossTotal(final Parameter _parameter)
         throws EFapsException
     {

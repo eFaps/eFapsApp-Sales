@@ -178,6 +178,31 @@ public abstract class Exchange_Base
     }
 
     /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return updateFields4AddDays(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+        final int selected = getSelectedRow(_parameter);
+
+        final String[] addDays = _parameter.getParameterValues("addDays");
+        if (ArrayUtils.isNotEmpty(addDays) && addDays.length > selected) {
+            final int add = Integer.parseInt(addDays[selected]);
+            final String[] dates = _parameter.getParameterValues("date_eFapsDate");
+            final DateTime date = DateUtil.getDateFromParameter(dates[selected]);
+            map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(add)));
+            list.add(map);
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
      * Methods creates the Exchanges and relates them to the documents.
      *
      * @param _parameter Parameter as passed from eFaps API.
