@@ -566,7 +566,8 @@ public abstract class Swap_Base
         final BigDecimal total4Doc = _docInfo.getCrossTotal4Target();
         final BigDecimal payments4Doc = _docInfo.getPaid4Target();
         ret.put("partial", frmt.format(_setFromUI ? total4Doc : total4Doc.subtract(payments4Doc)));
-        ret.put("rate", _docInfo.getRateInfo4Target().getRateUIFrmt());
+        ret.put("rate", RateInfo.getRateUIFrmt(_parameter, _docInfo.getRateInfo4Target(),
+                        _docInfo.getInstance().getType().getName()));
         ret.put("rate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Target().isInvert());
         ret.put("documentInfo", _docInfo.getInfoField());
         return ret;

@@ -554,7 +554,8 @@ public abstract class AbstractPaymentDocument_Base
         ret.put("paymentAmount", frmt.format(amount4PayDoc));
         ret.put("paymentAmountDesc", frmt.format(paymentAmountDesc));
         ret.put("paymentDiscount", frmt.format(paymentDiscount));
-        ret.put("paymentRate", _docInfo.getRateInfo4Target().getRateUIFrmt());
+        ret.put("paymentRate", RateInfo.getRateUIFrmt(_parameter, _docInfo.getRateInfo4Target(),
+                        _docInfo.getInstance().getType().getName()));
         ret.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Target().isInvert());
         return ret;
     }

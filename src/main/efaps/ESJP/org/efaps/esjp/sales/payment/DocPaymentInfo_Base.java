@@ -217,7 +217,9 @@ public abstract class DocPaymentInfo_Base
         if (getTargetInfo().getCurrencyInstance().equals(getRateCurrencyInstance())) {
             ret = ret.add(getRateCrossTotal());
         } else {
-            ret = ret.add(getRateCrossTotal().divide(getRateInfo4Target().getRate(), BigDecimal.ROUND_HALF_UP));
+            final BigDecimal rate = RateInfo.getRate(getParameter(), getRateInfo4Target(),
+                            this.instance.getType().getName());
+            ret = ret.add(getRateCrossTotal().divide(rate, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
     }
@@ -236,7 +238,9 @@ public abstract class DocPaymentInfo_Base
             if (getTargetInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
-                ret = ret.add(pos.getAmount().divide(getRateInfo4Target().getRate(), BigDecimal.ROUND_HALF_UP));
+                final BigDecimal rate = RateInfo.getRate(getParameter(), getRateInfo4Target(),
+                                this.instance.getType().getName());
+                ret = ret.add(pos.getAmount().divide(rate, BigDecimal.ROUND_HALF_UP));
             }
         }
         return ret;
