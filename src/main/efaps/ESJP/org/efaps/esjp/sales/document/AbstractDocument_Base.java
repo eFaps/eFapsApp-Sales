@@ -106,6 +106,7 @@ import org.efaps.esjp.sales.listener.IOnQuery;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.Sales.TaxRetention;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
 import org.efaps.ui.wicket.models.objects.UITable.TableFilter;
@@ -374,7 +375,33 @@ public abstract class AbstractDocument_Base
                                          final Map<String, Object> _map)
         throws EFapsException
     {
-
+        if (Sales.CLASSTAXINFOACTIVATE.get()) {
+            final PrintQuery print = new PrintQuery(_contactInstance);
+            final SelectBuilder selRetention = SelectBuilder.get()
+                            .clazz(CISales.Contacts_ClassTaxinfo)
+                            .attribute(CISales.Contacts_ClassTaxinfo.Retention);
+            print.addSelect(selRetention);
+            print.execute();
+            final TaxRetention retention = print.getSelect(selRetention);
+            final StringBuilder js = new StringBuilder();
+            if (TaxRetention.AGENT.equals(retention)) {
+                final String label = DBProperties.getProperty(
+                                TaxRetention.class.getName() + "." + TaxRetention.AGENT.toString());
+                final String targetFieldName = getProperty(_parameter, "FieldName", "contactData");
+                js.append("query('[name=\\'").append(targetFieldName)
+                    .append("\\']').forEach(function (_node) {\n")
+                    .append("domConstruct.create(\"span\",")
+                    .append("{ id: \"eFapsRD4C\",  title: \"").append(StringEscapeUtils.escapeEcmaScript(label))
+                    .append("\", innerHTML: \"").append(StringEscapeUtils.escapeEcmaScript(label)).append("\",")
+                    .append(" style: \"color: red; font-size: 12pt; font-weight: bold; margin-left: 10px;\" }")
+                    .append(" , _node)")
+                    .append("});");
+            } else {
+                js.append("domConstruct.destroy(\"eFapsRD4C\");");
+            }
+            InterfaceUtils.appendScript4FieldUpdate(_map,
+                            InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT,  DojoLibs.QUERY));
+        }
     }
 
     /**
