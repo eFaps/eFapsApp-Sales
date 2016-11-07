@@ -408,6 +408,9 @@ public abstract class Swap_Base
                                 ? targetInstance : docInstance);
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
+                docInfo.getRateInfo4Target().setSaleRate(rate);
+                docInfo.getRateInfo4Target().setSaleRateUI(rateUI);
+
                 docInfo.setRateCrossTotal(partial);
                 final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, true);
                 map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
@@ -466,6 +469,8 @@ public abstract class Swap_Base
                                 ? targetInstance : docInstance);
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
+                docInfo.getRateInfo4Target().setSaleRate(rate);
+                docInfo.getRateInfo4Target().setSaleRateUI(rateUI);
 
                 final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, false);
                 map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
@@ -717,8 +722,11 @@ public abstract class Swap_Base
                         (Object[]) print.getAttribute(CISales.DocumentSumAbstract.Rate));
         final DocPaymentInfo payInfo = getNewDocPaymentInfo(_parameter, _docInst);
         payInfo.setTargetDocInst(_docInst);
+        //if set by user sales and buy are equal
         payInfo.getRateInfo4Target().setRate(rateinfo.getRate());
         payInfo.getRateInfo4Target().setRateUI(rateinfo.getRateUI());
+        payInfo.getRateInfo4Target().setSaleRate(rateinfo.getSaleRate());
+        payInfo.getRateInfo4Target().setSaleRateUI(rateinfo.getSaleRateUI());
 
         ret.append(_docInst.getType().getLabel()).append(" ")
                         .append(print.<String>getAttribute(CISales.DocumentSumAbstract.Name)).append(" ")

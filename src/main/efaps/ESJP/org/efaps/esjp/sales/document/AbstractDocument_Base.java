@@ -2256,7 +2256,11 @@ public abstract class AbstractDocument_Base
         }
         if (!InstanceUtils.isValid(ret)) {
             // first priority specifically set for a type
-            final String key = Sales.BASE + getTypeName4SysConf(_parameter) + ".DefaultCurrency";
+            String typeName = getTypeName4SysConf(_parameter);
+            if (typeName.startsWith("Sales_")) {
+                typeName = typeName.replace("Sales_", "");
+            }
+            final String key = Sales.BASE + typeName + ".DefaultCurrency";
             ret = Sales.getSysConfig().getLink(key);
         }
         if (!InstanceUtils.isValid(ret)) {

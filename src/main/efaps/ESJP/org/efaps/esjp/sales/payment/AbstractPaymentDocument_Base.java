@@ -619,6 +619,8 @@ public abstract class AbstractPaymentDocument_Base
                 docInfo.setAccountInst(accInstance);
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
+                docInfo.getRateInfo4Target().setSaleRate(rate);
+                docInfo.getRateInfo4Target().setSaleRateUI(rateUI);
 
                 final Map<String, Object> posMap = getPositionUpdateMap(_parameter, docInfo, false);
                 posMap.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
