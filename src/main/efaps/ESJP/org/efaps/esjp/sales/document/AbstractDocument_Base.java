@@ -751,24 +751,8 @@ public abstract class AbstractDocument_Base
     protected Instance evaluateCurrency4JavaScript(final Parameter _parameter)
         throws EFapsException
     {
-        Instance ret = Sales.DEFAULTCURRENCY4DOC.get();
-        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
-            final Instance inst = _parameter.getInstance();
-            if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                final PrintQuery print = CachedPrintQuery.get4Request(inst);
-                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                                .instance();
-                print.addSelect(sel);
-                print.executeWithoutAccessCheck();
-                final Instance instTmp = print.<Instance>getSelect(sel);
-                if (instTmp != null && instTmp.isValid()) {
-                    ret = instTmp;
-                }
-            }
-        }
-        return ret;
+        return evaluateCurrencyInstance(_parameter);
     }
-
 
     /**
      * Add additional on Dom Ready JavaScript for
@@ -2254,7 +2238,34 @@ public abstract class AbstractDocument_Base
     protected Instance evaluateCurrencyInstance(final Parameter _parameter)
         throws CacheReloadException, EFapsException
     {
-        return evaluateCurrency4JavaScript(_parameter);
+        Instance ret = null;
+        //first check if in a currenct document, and if use the current Currency
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final Instance inst = _parameter.getInstance();
+            if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                final PrintQuery print = CachedPrintQuery.get4Request(inst);
+                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                .instance();
+                print.addSelect(sel);
+                print.executeWithoutAccessCheck();
+                final Instance instTmp = print.<Instance>getSelect(sel);
+                if (instTmp != null && instTmp.isValid()) {
+                    ret = instTmp;
+                }
+            }
+        }
+        if (!InstanceUtils.isValid(ret)) {
+            // first priority specifically set for a type
+            final String key = Sales.BASE + getTypeName4SysConf(_parameter) + ".DefaultCurrency";
+            ret = Sales.getSysConfig().getLink(key);
+        }
+        if (!InstanceUtils.isValid(ret)) {
+            ret = Sales.DEFAULTCURRENCY4DOC.get();
+        }
+        if (!InstanceUtils.isValid(ret)) {
+            ret =  Currency.getBaseCurrency();
+        }
+        return ret;
     }
 
     /**

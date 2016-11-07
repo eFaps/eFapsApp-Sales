@@ -729,6 +729,14 @@ public final class Sales
                     .description("Activate Incoming Retention Certificates");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink INCOMINGRETENTIONCERTIFICATE_DEFAULTCURRENCY = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingRetentionCertificate.DefaultCurrency")
+                    .description("Possibility to set a default Currenty for IncomingRetentionCertificate. "
+                                    + "If not set the default from Products applies.");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGRETENTIONCERTIFICATE_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)

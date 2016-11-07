@@ -31,6 +31,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -187,5 +188,12 @@ public abstract class IncomingRetentionCertificate_Base
         } else {
             super.add2QueryBldr(_parameter, _queryBldr);
         }
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.IncomingRetentionCertificate;
     }
 }
