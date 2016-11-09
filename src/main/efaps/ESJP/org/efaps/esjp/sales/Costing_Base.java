@@ -30,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -65,6 +66,8 @@ import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.Cost;
+import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.Products.CostingState;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -340,6 +343,7 @@ public abstract class Costing_Base
                 costQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, false);
                 costQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, _currencyInstance);
                 costQueryBldr.addOrderByAttributeAsc(CIProducts.CostingAbstract.Created);
+                costQueryBldr.addWhereAttrNotEqValue(CIProducts.CostingAbstract.State, CostingState.INACTIVE);
                 final InstanceQuery costQuery = costQueryBldr.getCachedQuery4Request();
                 costQuery.executeWithoutAccessCheck();
                 while (costQuery.next()) {
@@ -460,14 +464,24 @@ public abstract class Costing_Base
                               final List<TransCosting> _transCostList)
         throws EFapsException
     {
-        if (CollectionUtils.isNotEmpty(_transCostList)) {
+        final List<TransCosting> filtered = _transCostList.stream()
+                        .filter(line -> {
+                            try {
+                                return !CostingState.INACTIVE.equals(line.getCostingState());
+                            } catch (final EFapsException e) {
+                                LOG.error("Catched EFapsException", e);
+                            }
+                            return false;
+                        }).collect(Collectors.toList());
+
+        if (CollectionUtils.isNotEmpty(filtered)) {
             final List<TransCosting> transCostList;
 
             if (Sales.COSTING_ONECOST.get()) {
                 transCostList = new ArrayList<>();
-                transCostList.add(_transCostList.get(_transCostList.size() - 1));
+                transCostList.add(filtered.get(filtered.size() - 1));
             } else {
-                transCostList = _transCostList;
+                transCostList = filtered;
             }
 
             for (final TransCosting transCost : transCostList) {
@@ -576,64 +590,66 @@ public abstract class Costing_Base
             if (prev != null) {
                 boolean update = false;
                 final BigDecimal newCostQuantity = prev.getQuantity();
-                // for outbound ensure to inherit correctly
-                if (current.isOutBound()) {
-                    if (current.getCost().compareTo(prev.getResult()) != 0) {
-                        current.setCost(prev.getResult());
-                        update = true;
-                    }
-                    if (current.getResult().compareTo(prev.getResult()) != 0) {
-                        current.setResult(prev.getResult());
-                        update = true;
-                    }
-                    if (!current.isUpToDate()) {
-                        update = true;
-                    }
-                } else {
-                    if (!current.isUpToDate() || forceCostFromDoc) {
-                        final BigDecimal cost = current.getCostFromDocument();
-                        if (current.getCost().compareTo(cost) != 0) {
-                            current.setCost(cost);
-                            update = true;
-                            // if the current cost was updated, the following must be update also
-                            forceCostFromDoc = true;
-                        }
-                    }
-                    // check if the costing has a cost assigned, if not inherit from previous
-                    if (current.getCost().compareTo(BigDecimal.ZERO) == 0) {
-                        // it mus be inherited the average, but if not exist use the cost directly
-                        if (prev.getResult().compareTo(BigDecimal.ZERO) == 0) {
-                            current.setCost(prev.getCost());
-                        } else {
+                if (!CostingState.INACTIVE.equals(current.getCostingState())) {
+                    // for outbound ensure to inherit correctly
+                    if (current.isOutBound()) {
+                        if (current.getCost().compareTo(prev.getResult()) != 0) {
                             current.setCost(prev.getResult());
+                            update = true;
                         }
-                        update = true;
-                    }
-
-                    final BigDecimal divisor = newCostQuantity.add(current.getTransactionQuantity());
-                    final BigDecimal result;
-                    // the previous quantity of the stock was negativ or zero, so result must be the cost
-                    if (newCostQuantity.compareTo(BigDecimal.ZERO) <= 0) {
-                        result = current.getCost();
-                    // the devisor is not zero
-                    } else if (divisor.compareTo(BigDecimal.ZERO) != 0) {
-                        result = prev.getResult().multiply(newCostQuantity)
-                                        .add(current.getCost().multiply(current.getTransactionQuantity()))
-                                        .setScale(12, RoundingMode.HALF_UP)
-                                        .divide(divisor, RoundingMode.HALF_UP);
+                        if (current.getResult().compareTo(prev.getResult()) != 0) {
+                            current.setResult(prev.getResult());
+                            update = true;
+                        }
+                        if (!current.isUpToDate()) {
+                            update = true;
+                        }
                     } else {
-                        result = BigDecimal.ZERO;
+                        if (!current.isUpToDate() || forceCostFromDoc) {
+                            final BigDecimal cost = current.getCostFromDocument();
+                            if (current.getCost().compareTo(cost) != 0) {
+                                current.setCost(cost);
+                                update = true;
+                                // if the current cost was updated, the following must be update also
+                                forceCostFromDoc = true;
+                            }
+                        }
+                        // check if the costing has a cost assigned, if not inherit from previous
+                        if (current.getCost().compareTo(BigDecimal.ZERO) == 0) {
+                            // it mus be inherited the average, but if not exist use the cost directly
+                            if (prev.getResult().compareTo(BigDecimal.ZERO) == 0) {
+                                current.setCost(prev.getCost());
+                            } else {
+                                current.setCost(prev.getResult());
+                            }
+                            update = true;
+                        }
+
+                        final BigDecimal divisor = newCostQuantity.add(current.getTransactionQuantity());
+                        final BigDecimal result;
+                        // the previous quantity of the stock was negativ or zero, so result must be the cost
+                        if (newCostQuantity.compareTo(BigDecimal.ZERO) <= 0) {
+                            result = current.getCost();
+                        // the devisor is not zero
+                        } else if (divisor.compareTo(BigDecimal.ZERO) != 0) {
+                            result = prev.getResult().multiply(newCostQuantity)
+                                            .add(current.getCost().multiply(current.getTransactionQuantity()))
+                                            .setScale(12, RoundingMode.HALF_UP)
+                                            .divide(divisor, RoundingMode.HALF_UP);
+                        } else {
+                            result = BigDecimal.ZERO;
+                        }
+
+                        if (result.compareTo(current.getResult()) != 0) {
+                            current.setResult(result);
+                            update = true;
+                        }
                     }
 
-                    if (result.compareTo(current.getResult()) != 0) {
-                        current.setResult(result);
+                    if (newCostQuantity.compareTo(current.getCostingQuantity()) != 0) {
+                        current.setCostingQuantity(newCostQuantity);
                         update = true;
                     }
-                }
-
-                if (newCostQuantity.compareTo(current.getCostingQuantity()) != 0) {
-                    current.setCostingQuantity(newCostQuantity);
-                    update = true;
                 }
                 if (update || !current.isUpToDate()) {
                     current.updateCosting();
@@ -1223,6 +1239,12 @@ public abstract class Costing_Base
          */
         private Integer position;
 
+        /** The costing state. */
+        private CostingState costingState;
+
+        /** The init costing. */
+        private boolean initCosting;
+
         /**
          * Inits the transaction.
          *
@@ -1268,19 +1290,24 @@ public abstract class Costing_Base
         protected void initCosting()
             throws EFapsException
         {
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
-            queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
-            queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, getTransactionInstance());
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIProducts.Costing.Cost, CIProducts.Costing.Quantity, CIProducts.Costing.Result,
-                            CIProducts.Costing.UpToDate);
-            multi.executeWithoutAccessCheck();
-            if (multi.next()) {
-                this.upToDate = multi.getAttribute(CIProducts.Costing.UpToDate);
-                this.cost = multi.getAttribute(CIProducts.Costing.Cost);
-                this.costingQuantity = multi.getAttribute(CIProducts.Costing.Quantity);
-                this.result = multi.getAttribute(CIProducts.Costing.Result);
-                this.costingInstance = multi.getCurrentInstance();
+            if (!this.initCosting) {
+                this.initCosting = true;
+                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
+                queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
+                queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, getTransactionInstance());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIProducts.CostingAbstract.Cost, CIProducts.CostingAbstract.Quantity,
+                                CIProducts.CostingAbstract.Result, CIProducts.CostingAbstract.UpToDate,
+                                CIProducts.CostingAbstract.State);
+                multi.executeWithoutAccessCheck();
+                if (multi.next()) {
+                    this.upToDate = multi.getAttribute(CIProducts.Costing.UpToDate);
+                    this.cost = multi.getAttribute(CIProducts.Costing.Cost);
+                    this.costingQuantity = multi.getAttribute(CIProducts.Costing.Quantity);
+                    this.result = multi.getAttribute(CIProducts.Costing.Result);
+                    this.costingState = multi.getAttribute(CIProducts.CostingAbstract.State);
+                    this.costingInstance = multi.getCurrentInstance();
+                }
             }
         }
 
@@ -1327,6 +1354,7 @@ public abstract class Costing_Base
             insert.add(CIProducts.CostingAbstract.Result, costTmp);
             insert.add(CIProducts.CostingAbstract.UpToDate, isUpToDate());
             insert.add(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
+            insert.add(CIProducts.CostingAbstract.State, Products.CostingState.ACTIVE);
             insert.executeWithoutTrigger();
 
             setCost(costTmp);
@@ -1535,9 +1563,7 @@ public abstract class Costing_Base
          */
         public BigDecimal getCost() throws EFapsException
         {
-            if (this.cost == null) {
-                initCosting();
-            }
+            initCosting();
             return this.cost;
         }
 
@@ -1550,22 +1576,25 @@ public abstract class Costing_Base
         public BigDecimal getCostFromDocument()
             throws EFapsException
         {
-            Costing_Base.LOG.debug("Analysing Cost From Document for: {}", this);
             BigDecimal ret = null;
-            // this is the transaction that inits a storage therefore search in
-            // cost table
-            if (getTransactionInstance().getType().isCIType(CIProducts.TransactionInbound4StaticStorage)) {
-                final PrintQuery print = new PrintQuery(getTransactionInstance());
-                print.addAttribute(CIProducts.TransactionAbstract.Date);
-                print.executeWithoutAccessCheck();
-                ret = Cost.getCost4Currency(new Parameter(),
-                                print.<DateTime>getAttribute(CIProducts.TransactionAbstract.Date),
-                                getProductInstance(), getCurrencyInstance());
-            } else {
-                final Instance docInstTmp = getDocInstance();
-                if (docInstTmp != null && docInstTmp.isValid()) {
-                    final CostDoc costDoc = new CostDoc(docInstTmp, getProductInstance());
-                    ret = costDoc.getCost(new Parameter(), getCurrencyInstance());
+            initCosting();
+            if (CostingState.ACTIVE.equals(getCostingState())) {
+                Costing_Base.LOG.debug("Analysing Cost From Document for: {}", this);
+                // this is the transaction that inits a storage therefore search in
+                // cost table
+                if (getTransactionInstance().getType().isCIType(CIProducts.TransactionInbound4StaticStorage)) {
+                    final PrintQuery print = new PrintQuery(getTransactionInstance());
+                    print.addAttribute(CIProducts.TransactionAbstract.Date);
+                    print.executeWithoutAccessCheck();
+                    ret = Cost.getCost4Currency(new Parameter(),
+                                    print.<DateTime>getAttribute(CIProducts.TransactionAbstract.Date),
+                                    getProductInstance(), getCurrencyInstance());
+                } else {
+                    final Instance docInstTmp = getDocInstance();
+                    if (docInstTmp != null && docInstTmp.isValid()) {
+                        final CostDoc costDoc = new CostDoc(docInstTmp, getProductInstance());
+                        ret = costDoc.getCost(new Parameter(), getCurrencyInstance());
+                    }
                 }
             }
             Costing_Base.LOG.debug("Result: {} for  Cost From Document for: {}", ret, this);
@@ -1577,10 +1606,14 @@ public abstract class Costing_Base
          *
          * @param _cost value for instance variable {@link #cost}
          * @return the trans costing
+         * @throws EFapsException on error
          */
         public TransCosting setCost(final BigDecimal _cost)
+            throws EFapsException
         {
-            this.cost = _cost;
+            if (CostingState.ACTIVE.equals(getCostingState())) {
+                this.cost = _cost;
+            }
             return this;
         }
 
@@ -1605,10 +1638,14 @@ public abstract class Costing_Base
          *
          * @param _result value for instance variable {@link #result}
          * @return the trans costing
+         * @throws EFapsException on erorr
          */
         public TransCosting setResult(final BigDecimal _result)
+            throws EFapsException
         {
-            this.result = _result;
+            if (CostingState.ACTIVE.equals(getCostingState())) {
+                this.result = _result;
+            }
             return this;
         }
 
@@ -1715,6 +1752,31 @@ public abstract class Costing_Base
             return this;
         }
 
+        /**
+         * Gets the costing state.
+         *
+         * @return the costing state
+         * @throws EFapsException on Error
+         */
+        public CostingState getCostingState()
+            throws EFapsException
+        {
+            initCosting();
+            return this.costingState;
+        }
+
+        /**
+         * Sets the costing state.
+         *
+         * @param _costingState the costing state
+         * @return the trans costing
+         */
+        public TransCosting setCostingState(final CostingState _costingState)
+        {
+            this.costingState = _costingState;
+            return this;
+        }
+
         @Override
         public String toString()
         {
@@ -1808,9 +1870,9 @@ public abstract class Costing_Base
                     } else if (CISales.IncomingInvoice.getType().equals(getBaseDocInst().getType())) {
                         found = evalIncomingInvoice();
                     } else if (CISales.TransactionDocumentShadowIn.getType().equals(getBaseDocInst().getType())) {
-                       found = evalDocShadow();
+                        found = evalDocShadow();
                     } else if (CISales.ProductionReport.getType().equals(getBaseDocInst().getType())) {
-                       found = evalProductionReport();
+                        found = evalProductionReport();
                     }
                 }
                 if (!found) {
