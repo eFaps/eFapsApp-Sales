@@ -28,7 +28,7 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_IncomingExchange/Name.Label</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
-                name="SSales_IncomingExchangeCreateCalculatedTable.name4Exchange.UI_ACCESSCHECK"
+                name="Sales_IncomingExchangeCreateCalculatedTable.name4Exchange.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>

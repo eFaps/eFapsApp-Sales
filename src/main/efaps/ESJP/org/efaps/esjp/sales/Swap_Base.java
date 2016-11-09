@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -205,6 +206,15 @@ public abstract class Swap_Base
                 ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, print.<Long>getAttribute(
                                 CISales.DocumentSumAbstract.Contact));
             }
+        }
+        if (BooleanUtils.toBoolean(_parameter.getParameterValue("excludeSwapedDocs"))) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+            ret.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID,
+                            queryBldr.getAttributeQuery(CISales.Document2Document4Swap.FromLink));
+
+            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2Document4Swap);
+            ret.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID,
+                            queryBldr2.getAttributeQuery(CISales.Document2Document4Swap.ToLink));
         }
         return ret;
     }
