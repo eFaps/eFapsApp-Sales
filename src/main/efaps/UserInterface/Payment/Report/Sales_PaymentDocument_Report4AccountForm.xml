@@ -43,7 +43,7 @@
                 <property name="FilterType05">Instance</property>
                 <property name="FilterType06">Boolean</property>
                 <property name="FilterType07">Currency</property>
-                <property name="FilterDefault01">MONTH:-1</property>
+                <property name="FilterDefault01">YEARS:-10</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.SalesReport4Account_Base$FilterDate</property>
                 <property name="FilterDefault04">ALL</property>
