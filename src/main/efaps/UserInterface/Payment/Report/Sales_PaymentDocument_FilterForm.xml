@@ -25,7 +25,7 @@
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
-            <property name="Label">ERP_ReportFilterForm4ContactDateFromTo.dateFrom.Label</property>
+            <property name="Label">Sales_PaymentDocument_FilterForm.dateFrom.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
                 name="Sales_PaymentDocument_FilterForm.dateFrom.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />
@@ -33,7 +33,7 @@
         <field name="dateTo">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
-            <property name="Label">ERP_ReportFilterForm4ContactDateFromTo.dateTo.Label</property>
+            <property name="Label">Sales_PaymentDocument_FilterForm.dateTo.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
                 name="Sales_PaymentDocument_FilterForm.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />
@@ -63,7 +63,7 @@
         <field name="contact">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">ERP_ReportFilterForm4ContactDateFromTo.contact.Label</property>
+            <property name="Label">Sales_PaymentDocument_FilterForm.contact.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getContactFieldValue"
                 name="Sales_PaymentDocument_FilterForm.contact.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2016 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>a251003b-10aa-488b-b149-32acac6d58d7</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ProfServReceiptReportFilterForm</name>
+        <field name="dateFrom">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">Sales_ProfServReceiptReportFilterForm.dateFrom.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
+                name="ERP_ReportFilterForm4ContactDateFromTo.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.erp.FilteredReport" />
+        </field>
+        <field name="dateTo">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">Sales_ProfServReceiptReportFilterForm.dateTo.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
+                name="ERP_ReportFilterForm4ContactDateFromTo.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.erp.FilteredReport" />
+        </field>
+        <field name="contact">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_ProfServReceiptReportFilterForm.contact.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionCostReport">
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
+                name="Sales_ProfServReceiptReportFilterForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts">
+            </trigger>
+        </field>
+    </definition>
+</ui-form>
