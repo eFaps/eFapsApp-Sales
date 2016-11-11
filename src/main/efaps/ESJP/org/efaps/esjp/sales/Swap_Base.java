@@ -422,6 +422,10 @@ public abstract class Swap_Base
                 docInfo.getRateInfo4Target().setSaleRateUI(rateUI);
 
                 docInfo.setRateCrossTotal(partial);
+                // the user has the right to overwrite the value to be applied
+                if (InstanceUtils.isValid(targetInstance)) {
+                    docInfo.setRateCurrencyInstance(docInfo.getTargetInfo().getCurrencyInstance());
+                }
                 final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, true);
                 map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
                 list.add(map);
