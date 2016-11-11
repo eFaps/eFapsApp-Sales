@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -289,7 +289,8 @@ public abstract class SalesReport4Account_Base
                                 .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
                                 .setContactInst(multi.<Instance>getSelect(selContactInst))
                                 .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                                .setDocStatus(multi.<String>getSelect(selStatus));
+                                .setDocStatus(multi.<String>getSelect(selStatus))
+                                .setDocContactName(multi.<String>getSelect(selContactName));
 
                     if (isCurrencyBase(_parameter)) {
                         dataBean.setCurrencyBase(true)
@@ -340,6 +341,36 @@ public abstract class SalesReport4Account_Base
 
                 final FilterDate filterDate = getFilterDate(_parameter);
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
+                if (isGroupByContact(_parameter)) {
+                    chain.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _o1,
+                                           final DataBean _o2)
+                        {
+                            return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                        }
+                    });
+                }
+                if (isGroupByAssigned(_parameter)) {
+                    chain.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _o1,
+                                           final DataBean _o2)
+                        {
+                            int ret = 0;
+                            try {
+                                ret = _o1.getAssigned().compareTo(_o2.getAssigned());
+                            } catch (final EFapsException e) {
+                                LOG.error("Catched", e);
+                            }
+                            return ret;
+                        }
+                    });
+                }
                 chain.addComparator(new Comparator<DataBean>()
                 {
 
@@ -367,16 +398,18 @@ public abstract class SalesReport4Account_Base
                         return ret;
                     }
                 });
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
+                if (!isGroupByContact(_parameter)) {
+                    chain.addComparator(new Comparator<DataBean>()
                     {
-                        return _o1.getDocContactName().compareTo(_o2.getDocContactName());
-                    }
-                });
+
+                        @Override
+                        public int compare(final DataBean _o1,
+                                           final DataBean _o2)
+                        {
+                            return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                        }
+                    });
+                }
                 Collections.sort(dataSource, chain);
                 final Collection<Map<String, ?>> col = new ArrayList<>();
 
@@ -432,6 +465,44 @@ public abstract class SalesReport4Account_Base
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
                             || Sales.SALESREPORT4ACCOUNTOUT_SWAPINFO.get()
                                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+        }
+
+        /**
+         * Checks if is group by contact.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is group by contact
+         * @throws EFapsException on error
+         */
+        protected boolean isGroupByContact(final Parameter _parameter) throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final boolean ret;
+            if (filterMap.containsKey("groupByContact")) {
+                ret = (Boolean) filterMap.get("groupByContact");
+            } else {
+                ret = false;
+            }
+            return ret;
+        }
+
+        /**
+         * Checks if is group by assigned.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is group by assigned
+         * @throws EFapsException on error
+         */
+        protected boolean isGroupByAssigned(final Parameter _parameter) throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final boolean ret;
+            if (filterMap.containsKey("groupByAssigned")) {
+                ret = (Boolean) filterMap.get("groupByAssigned");
+            } else {
+                ret = false;
+            }
+            return ret;
         }
 
         /**
@@ -585,6 +656,15 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "SwapInfo"), "swapInfo",
                             DynamicReports.type.stringType()).setWidth(120);
 
+            final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
+            if (isGroupByContact(_parameter)) {
+                _builder.groupBy(contactGroup);
+            }
+            final ColumnGroupBuilder assignedGroup = DynamicReports.grp.group(assignedColumn).groupByDataType();
+            if (isGroupByAssigned(_parameter)) {
+                _builder.groupBy(assignedGroup);
+            }
+
             final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
@@ -615,10 +695,10 @@ public abstract class SalesReport4Account_Base
             if (isShowCondition()) {
                 gridList.add(conditionColumn);
             }
-
-            gridList.add(contactNameColumn);
-
-            if (isShowAssigned()) {
+            if (!isGroupByContact(_parameter)) {
+                gridList.add(contactNameColumn);
+            }
+            if (isShowAssigned() && !isGroupByAssigned(_parameter)) {
                 gridList.add(assignedColumn);
             }
 
@@ -663,6 +743,17 @@ public abstract class SalesReport4Account_Base
                 _builder.addSubtotalAtGroupFooter(yearGroup, crossTotal2);
                 _builder.addSubtotalAtGroupFooter(yearGroup, payTotal2);
                 _builder.addSubtotalAtGroupFooter(yearGroup, resultTotal2);
+
+                if (isGroupByContact(_parameter)) {
+                    _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(crossColumn));
+                    _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(payColumn));
+                    _builder.addSubtotalAtGroupFooter(contactGroup,  DynamicReports.sbt.sum(result));
+                }
+                if (isGroupByAssigned(_parameter)) {
+                    _builder.addSubtotalAtGroupFooter(assignedGroup,  DynamicReports.sbt.sum(crossColumn));
+                    _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(payColumn));
+                    _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(result));
+                }
             }
 
             _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
@@ -677,9 +768,11 @@ public abstract class SalesReport4Account_Base
                 _builder.addColumn(conditionColumn);
             }
 
-            _builder.addColumn(contactNameColumn.setFixedWidth(200));
+            if (!isGroupByContact(_parameter)) {
+                _builder.addColumn(contactNameColumn.setFixedWidth(200));
+            }
 
-            if (isShowAssigned()) {
+            if (isShowAssigned() && !isGroupByAssigned(_parameter)) {
                 _builder.addColumn(assignedColumn);
             }
 
@@ -1132,8 +1225,6 @@ public abstract class SalesReport4Account_Base
         {
             if (getDocInst().isValid()) {
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
-                setDocContactName(docPayInfo.getContactName());
-                setDocName(docPayInfo.getName());
                 final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.SALESREPORT4ACCOUNTIN.get()
                                 : Sales.SALESREPORT4ACCOUNTOUT.get();
                 final Boolean perpay =  props.containsKey("PaymentPerPayment")

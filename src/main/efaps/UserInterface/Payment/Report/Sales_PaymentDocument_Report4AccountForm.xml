@@ -36,6 +36,8 @@
                 <property name="Field05">contact</property>
                 <property name="Field06">switch</property>
                 <property name="Field07">currency</property>
+                <property name="Field08">groupByContact</property>
+                <property name="Field09">groupByAssigned</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Enum</property>
@@ -43,6 +45,8 @@
                 <property name="FilterType05">Instance</property>
                 <property name="FilterType06">Boolean</property>
                 <property name="FilterType07">Currency</property>
+                <property name="FilterType08">Boolean</property>
+                <property name="FilterType09">Boolean</property>
                 <property name="FilterDefault01">YEARS:-10</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.SalesReport4Account_Base$FilterDate</property>
@@ -50,6 +54,9 @@
                 <property name="FilterDefault05"></property>
                 <property name="FilterDefault06">true</property>
                 <property name="FilterDefault07"></property>
+                <property name="FilterDefault08">false</property>
+                <property name="FilterDefault09">false</property>
+                <property name="AccessAttribute09">org.efaps.sales.report.SalesReport4Account.IN.ActivateContactAssigned2Employee</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesReport4Account.IN</property>
@@ -67,6 +74,8 @@
                 <property name="Field05">contact</property>
                 <property name="Field06">switch</property>
                 <property name="Field07">currency</property>
+                <property name="Field08">groupByContact</property>
+                <property name="Field09">groupByAssigned</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SalesReport4Account.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SalesReport4Account.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.SalesReport4Account.filterDate</property>
@@ -74,6 +83,9 @@
                 <property name="DBProperty05">org.efaps.esjp.sales.report.SalesReport4Account.contact</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.SalesReport4Account.switch</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.SalesReport4Account.currency</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.SalesReport4Account.groupByContact</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.SalesReport4Account.groupByAssigned</property>
+                <property name="AccessAttribute09">org.efaps.sales.report.SalesReport4Account.IN.ActivateContactAssigned2Employee</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
