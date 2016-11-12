@@ -44,7 +44,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
 import org.efaps.api.background.IExecutionBridge;
 import org.efaps.api.background.IJob;
-import org.efaps.ci.CIAdminUser;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -113,11 +112,8 @@ public abstract class Costing_Base
         throws JobExecutionException
     {
         try {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Company);
-            final InstanceQuery query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            while (query.next()) {
-                final Company company = Company.get(query.getCurrentValue().getId());
+            for (final Long companyId : Context.getThreadContext().getPerson().getCompanies()) {
+                final Company company = Company.get(companyId);
                 Context.getThreadContext().setCompany(company);
                 if (Sales.COSTINGACTIVATE.get()) {
                     for (final Instance currencyInst : getCurrencyInstances()) {
