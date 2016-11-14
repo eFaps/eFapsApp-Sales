@@ -544,6 +544,7 @@ public final class Sales
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
+                    .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
                                     + "Incoming Invoice from.");
 
