@@ -49,7 +49,7 @@
             <property name="Label">Sales_Invoice/DueDate.Label</property>
         </field>
         <field name="rateCrosstotal">
-            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="MsgPhrase">Sales_RateCrossTotalMsgPhrase</property>
             <property name="SortSelect">attribute[RateCrossTotal]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
@@ -65,7 +65,7 @@
             <property name="ModeView">NONE</property>
         </field>
         <field name="rateNettotal">
-            <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="MsgPhrase">Sales_RateNetTotalMsgPhrase</property>
             <property name="SortSelect">attribute[RateNetTotal]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/RateNetTotal.Label</property>
@@ -87,7 +87,7 @@
             <property name="ModeView">NONE</property>
         </field>
         <field name="crosstotal">
-            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="MsgPhrase">Sales_CrossTotalMsgPhrase</property>
             <property name="SortSelect">attribute[CrossTotal]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/CrossTotal.Label</property>
@@ -103,7 +103,7 @@
             <property name="ModeView">NONE</property>
         </field>
         <field name="nettotal">
-            <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="MsgPhrase">Sales_NetTotalMsgPhrase</property>
             <property name="SortSelect">attribute[NetTotal]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/NetTotal.Label</property>
