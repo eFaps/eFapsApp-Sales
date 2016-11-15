@@ -383,12 +383,13 @@ public abstract class AbstractDocument_Base
             print.addSelect(selRetention);
             print.execute();
             final TaxRetention retention = print.getSelect(selRetention);
-            final StringBuilder js = new StringBuilder();
+            StringBuilder js = new StringBuilder();
             if (TaxRetention.AGENT.equals(retention)) {
                 final String label = DBProperties.getProperty(
                                 TaxRetention.class.getName() + "." + TaxRetention.AGENT.toString());
                 final String targetFieldName = getProperty(_parameter, "FieldName", "contactData");
-                js.append("query('[name=\\'").append(targetFieldName)
+                js.append("domConstruct.destroy(\"eFapsRD4C\");")
+                    .append("query('[name=\\'").append(targetFieldName)
                     .append("\\']').forEach(function (_node) {\n")
                     .append("domConstruct.create(\"span\",")
                     .append("{ id: \"eFapsRD4C\",  title: \"").append(StringEscapeUtils.escapeEcmaScript(label))
@@ -396,11 +397,13 @@ public abstract class AbstractDocument_Base
                     .append(" style: \"color: red; font-size: 12pt; font-weight: bold; margin-left: 10px;\" }")
                     .append(" , _node)")
                     .append("});");
+                js = InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT,  DojoLibs.QUERY);
+                js = InterfaceUtils.wrappInScriptTag(_parameter, js, false, 100);
             } else {
                 js.append("domConstruct.destroy(\"eFapsRD4C\");");
+                js = InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT,  DojoLibs.QUERY);
             }
-            InterfaceUtils.appendScript4FieldUpdate(_map,
-                            InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT,  DojoLibs.QUERY));
+            InterfaceUtils.appendScript4FieldUpdate(_map, js);
         }
     }
 

@@ -27,7 +27,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4ContactDateFromTo</form>
+            <form>Sales_ProfServReceiptReportFilterForm</form>
             <execute method="setFilter" program="org.efaps.esjp.sales.report.ProfServReceiptReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.ProfServReceiptReport.FilterKey</property>
             </execute>

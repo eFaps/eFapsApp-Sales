@@ -211,7 +211,7 @@ public abstract class Calculator_Base
     /**
      * List of taxes for the Calculator.
      */
-    private final List<Tax> taxes = new ArrayList<Tax>();
+    private final List<Tax> taxes = new ArrayList<>();
 
     /** Stores if the calculator was used for Background or for the UserInterface. */
     private boolean background = false;
@@ -305,7 +305,7 @@ public abstract class Calculator_Base
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
-                print.execute();
+                print.executeWithoutAccessCheck();
                 this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && isIncludeMinRetail(_parameter)) {
                     this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
@@ -1540,7 +1540,7 @@ public abstract class Calculator_Base
     public Map<Tax, BigDecimal> getTaxesAmounts()
         throws EFapsException
     {
-        final Map<Tax, BigDecimal> ret = new HashMap<Tax, BigDecimal>();
+        final Map<Tax, BigDecimal> ret = new HashMap<>();
         final List<Tax> taxestemp = getTaxes();
         for (final Tax tax : taxestemp) {
             final BigDecimal net = getNetPrice();

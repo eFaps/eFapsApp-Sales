@@ -544,6 +544,7 @@ public final class Sales
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
+                    .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
                                     + "Incoming Invoice from.");
 
@@ -1158,27 +1159,6 @@ public final class Sales
                     .description("Mime of the jasperReport for ProductRequest.");
 
     /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PRODUCTREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.SalesProductReport")
-                    .description("Properties 4 Products in Invoice");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PRODUCTREPORTASSIGENED = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.SalesProductReport.ActivateContactAssigned2Employee")
-                    .description("Properties 4 Products in Invoice");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final IntegerSysConfAttribute PRODUCTREPORTPRODFAMLEVEL = new IntegerSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.SalesProductReport.ProductFamilyLevel")
-                    .description("Properties 4 Products in Invoice");
-
-    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink PRODSTOCKRPTSTORAGEGRP = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
@@ -1447,6 +1427,34 @@ public final class Sales
                     .addDefaultValue("PAYMENT.BOTH.Type", CISales.PaymentDocumentIOAbstract.getType().getName())
                     .addDefaultValue("DOCUMENT.IN.Type", CISales.IncomingCheck.getType().getName())
                     .addDefaultValue("DOCUMENT.BOTH.Type", CISales.IncomingCheck.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_SALESPROD = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesProductReport")
+                    .description("Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_SALESPROD_ASSIGENED = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesProductReport.ActivateContactAssigned2Employee")
+                    .description("Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_SALESPROD_CONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesProductReport.ActivateCondition")
+                    .description("Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final IntegerSysConfAttribute REPORT_SALESPROD_PRODFAMLEVEL = new IntegerSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesProductReport.ProductFamilyLevel")
+                    .description("Properties 4 Products in Invoice");
 
     /** See description. */
     @EFapsSysConfAttribute

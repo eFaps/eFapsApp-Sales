@@ -31,7 +31,8 @@
                 method="autoComplete4Document"
                 name="Sales_Swap4DocTable.document.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.Swap">
-                <property name="ExtraParameter">contact</property>
+                <property name="ExtraParameter01">contact</property>
+                <property name="ExtraParameter02">excludeSwapedDocs</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4Document"
