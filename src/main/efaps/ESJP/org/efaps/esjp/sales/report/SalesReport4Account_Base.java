@@ -656,13 +656,14 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "SwapInfo"), "swapInfo",
                             DynamicReports.type.stringType()).setWidth(120);
 
-            final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
-            if (isGroupByContact(_parameter)) {
-                _builder.groupBy(contactGroup);
-            }
             final ColumnGroupBuilder assignedGroup = DynamicReports.grp.group(assignedColumn).groupByDataType();
             if (isGroupByAssigned(_parameter)) {
                 _builder.groupBy(assignedGroup);
+            }
+
+            final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
+            if (isGroupByContact(_parameter)) {
+                _builder.groupBy(contactGroup);
             }
 
             final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
