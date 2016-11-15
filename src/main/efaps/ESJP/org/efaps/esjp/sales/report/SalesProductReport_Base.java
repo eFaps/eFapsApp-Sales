@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -234,7 +235,6 @@ public abstract class SalesProductReport_Base
                     throw new EFapsException("JRException", e);
                 }
             } else {
-
                 final DateConfig dateConfig = evaluateDateConfig(_parameter);
                 final GroupConfig groupConfig = evaluateGroupConfig(_parameter);
                 final PriceConfig priceConfig = evaluatePriceConfig(_parameter);
@@ -280,9 +280,6 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selCurInst = new SelectBuilder()
                                 .linkto(CISales.PositionSumAbstract.RateCurrencyId)
                                 .instance();
-                final SelectBuilder selContactInst = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                .linkto(CISales.DocumentSumAbstract.Contact).instance();
                 final SelectBuilder selProductInst = new SelectBuilder()
                                 .linkto(CISales.PositionSumAbstract.Product).instance();
                 final SelectBuilder selProductName = new SelectBuilder()
@@ -291,24 +288,28 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selProductDesc = new SelectBuilder()
                                 .linkto(CISales.PositionSumAbstract.Product)
                                 .attribute(CIProducts.ProductAbstract.Description);
-                final SelectBuilder selContactName = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                final SelectBuilder selDoc = new SelectBuilder()
+                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink);
+                final SelectBuilder selContactInst = new SelectBuilder(selDoc)
+                                .linkto(CISales.DocumentSumAbstract.Contact).instance();
+                final SelectBuilder selContactName = new SelectBuilder(selDoc)
                                 .linkto(CISales.DocumentSumAbstract.Contact)
                                 .attribute(CIContacts.Contact.Name);
-                final SelectBuilder selDocDate = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                final SelectBuilder selDocDate = new SelectBuilder(selDoc)
                                 .attribute(CISales.DocumentSumAbstract.Date);
-                final SelectBuilder selDocType = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink).type().label();
-                final SelectBuilder selDocName = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                final SelectBuilder selDocType = new SelectBuilder(selDoc).type().label();
+                final SelectBuilder selDocName = new SelectBuilder(selDoc)
                                 .attribute(CISales.DocumentSumAbstract.Name);
-                final SelectBuilder selDocOID = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                .oid();
-                final SelectBuilder selDocStatus = new SelectBuilder()
-                                .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                .status().label();
+                final SelectBuilder selDocOID = new SelectBuilder(selDoc).oid();
+                final SelectBuilder selDocStatus = new SelectBuilder(selDoc).status().label();
+                final SelectBuilder selCondtion = new SelectBuilder(selDoc)
+                                .linkfrom(CISales.ChannelCondition2DocumentAbstract.ToAbstractLink)
+                                .linkto(CISales.ChannelCondition2DocumentAbstract.FromAbstractLink)
+                                .attribute(CISales.ChannelAbstract.Name);
+
+                if (Sales.REPORT_SALESPROD_CONDITION.get()) {
+                    multi.addSelect(selCondtion);
+                }
 
                 multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName,
                                 selCurInst, selProductInst, selProductName, selProductDesc, selDocOID, selDocStatus);
@@ -329,6 +330,11 @@ public abstract class SalesProductReport_Base
                                     .setDocStatus(multi.<String>getSelect(selDocStatus))
                                     .setProductDiscount(multi.<BigDecimal>getAttribute(
                                                                     CISales.PositionSumAbstract.Discount));
+
+                    if (Sales.REPORT_SALESPROD_CONDITION.get()) {
+                        dataBean.setCondition(multi.getSelect(selCondtion));
+                    }
+
                     data.add(dataBean);
 
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
@@ -680,6 +686,20 @@ public abstract class SalesProductReport_Base
                 _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
                                 ((TypeFilterValue) filter.get("type")).getObject().toArray());
             }
+            if (Sales.REPORT_SALESPROD_CONDITION.get() && ArrayUtils.isNotEmpty(getConditionInsts(_parameter))) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CISales.ChannelCondition2DocumentAbstract.FromAbstractLink,
+                                getConditionInsts(_parameter));
+
+                if (isConditionNegate(_parameter)) {
+                    _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
+                } else {
+                    _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
+                }
+            }
+
             _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());
@@ -812,6 +832,43 @@ public abstract class SalesProductReport_Base
         }
 
         /**
+         * Gets the product inst.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the product inst
+         * @throws EFapsException on error
+         */
+        protected Object[] getConditionInsts(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Object[] ret;
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
+            if (filter == null || (filter != null && filter.getObject() == null)) {
+                ret = new Object[] {};
+            } else {
+                ret = filter.getObject().toArray();
+            }
+            return ret;
+        }
+
+        /**
+         * Checks if is contact negate.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is contact negate
+         * @throws EFapsException on error
+         */
+        protected boolean isConditionNegate(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
+            final boolean ret = filter != null && filter.isNegate();
+            return ret;
+        }
+
+        /**
          * Checks if is instance.
          *
          * @param _parameter the _parameter
@@ -876,6 +933,9 @@ public abstract class SalesProductReport_Base
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> docTypeColumn = DynamicReports.col.column(
                             this.filteredReport.getDBProperty("DocType"), "docType",
+                            DynamicReports.type.stringType());
+            final TextColumnBuilder<String> conditionColumn = DynamicReports.col.column(
+                            this.filteredReport.getDBProperty("Condition"), "condition",
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<String> statusColumn = DynamicReports.col.column(
@@ -1051,8 +1111,11 @@ public abstract class SalesProductReport_Base
                 if (getExType().equals(ExportType.HTML)) {
                     _builder.addColumn(linkColumn);
                 }
-                _builder.addColumn(docTypeColumn,
-                            docNameColumn.setFixedWidth(150),
+                _builder.addColumn(docTypeColumn);
+                if (Sales.REPORT_SALESPROD_CONDITION.get()) {
+                    _builder.addColumn(conditionColumn);
+                }
+                _builder.addColumn(docNameColumn.setFixedWidth(150),
                             statusColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
                             dateColumn);
             }
@@ -1273,6 +1336,9 @@ public abstract class SalesProductReport_Base
 
         /** The product family. */
         private String productFamily;
+
+        /** The condition. */
+        private String condition;
 
         /**
          * Gets the product desc.
@@ -1654,7 +1720,7 @@ public abstract class SalesProductReport_Base
                             {
                                 int ret = -1;
                                 try {
-                                    ret = Sales.PRODUCTREPORTPRODFAMLEVEL.get();
+                                    ret = Sales.REPORT_SALESPROD_PRODFAMLEVEL.get();
                                 } catch (final EFapsException e) {
                                     LOG.error("Catched error on Configuration evaluation.");
                                 }
@@ -1664,11 +1730,33 @@ public abstract class SalesProductReport_Base
 
                         this.productFamily = (String) classSel.evalValue(clazzList);
                     }
-                } catch (final Exception e) {
+                } catch (final EFapsException e) {
                     LOG.error("Catched error on Family evaluation.");
                 }
             }
             return this.productFamily;
+        }
+
+        /**
+         * Gets the condition.
+         *
+         * @return the condition
+         */
+        public String getCondition()
+        {
+            return this.condition;
+        }
+
+        /**
+         * Sets the condition.
+         *
+         * @param _condition the condition
+         * @return the data bean
+         */
+        public DataBean setCondition(final String _condition)
+        {
+            this.condition = _condition;
+            return this;
         }
     }
 }
