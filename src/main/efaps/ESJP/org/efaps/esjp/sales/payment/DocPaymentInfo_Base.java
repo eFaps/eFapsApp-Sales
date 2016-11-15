@@ -1000,6 +1000,21 @@ public abstract class DocPaymentInfo_Base
                     } else {
                         rateInfo = new Currency().evaluateRateInfo(info.getParameter(),
                                         swapMulti.<Object[]>getSelect(selDocToRate));
+                        if (!rateInfo.getTargetCurrencyInstance().equals(docRateInfo.getCurrencyInstance())) {
+                            rateInfo.setTargetCurrencyInstance(docRateInfo.getCurrencyInstance());
+
+                            rateInfo.setRate(rateInfo.getRate().divide(docRateInfo.getRate(), BigDecimal.ROUND_HALF_UP));
+                            rateInfo.setSaleRate(rateInfo.getSaleRate().divide(docRateInfo.getSaleRate(),
+                                            BigDecimal.ROUND_HALF_UP));
+
+                            if (rateInfo.isInvert()) {
+                                rateInfo.setRateUI(rateInfo.getRateUI().multiply(docRateInfo.getRateUI()));
+                                rateInfo.setSaleRateUI(rateInfo.getSaleRateUI().multiply(docRateInfo.getSaleRateUI()));
+                            } else {
+                                rateInfo.setRateUI(rateInfo.getRate());
+                                rateInfo.setSaleRateUI(rateInfo.getSaleRate());
+                            }
+                        }
                     }
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
                     info.payPos.add(new PayPos(info.date, amount, curInst)
@@ -1158,6 +1173,7 @@ public abstract class DocPaymentInfo_Base
                                 rateAmount = payPos.getAmount4Currency(_parameter, Currency.getBaseCurrency());
                             }
                         } else {
+                            // in case that the payment position is base currency alter the currency rate info
                             rateAmount = payPos.getRateAmount(_parameter);
                         }
 
