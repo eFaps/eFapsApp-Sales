@@ -754,21 +754,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INVOICEACTIVATECONDITION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INVOICE_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Invoice");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute INVOICEJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute INVOICE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.JasperReport")
                     .description("Name of the jasperReport for Invoice");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> INVOICEMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> INVOICE_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.Mime")
                     .clazz(JasperMime.class)
@@ -776,17 +776,56 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INVOICEASSIGNACTION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INVOICE_ASSIGNACTION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.AssignAction")
                     .description("Activate the mechanism to assign a action in Invoice");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INVOICEFROMDELIVERYNOTE = new BooleanSysConfAttribute()
+    public static final PropertiesSysConfAttribute INVOICE_FROMDELIVERYNOTEAC
+        = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Invoice.CreateFromDeliveryNote")
-                    .description("Allows to activate/deactivate the mechanisms to relate Invoice and Delivery Note.");
+                    .key(BASE + "Invoice.CreateFromDeliveryNoteAutoComplete")
+                    .addDefaultValue("Type", CISales.DeliveryNote.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.DeliveryNoteStatus.getType().getName())
+                    .addDefaultValue("Status", "Open")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of DeliveryNote to create "
+                                    + "Invoice from.\n"
+                                    + "AutoType=TOKEN\n"
+                                    + "ExtraParameter=deliveryNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INVOICE_FROMQUOTATIONAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.CreateFromQuotationAutoComplete")
+                    .addDefaultValue("Type", CISales.Quotation.uuid.toString())
+                    .description("Config for a QueryBuilder for Autocomplete and Query of quotation to create "
+                                    + " Invoice from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INVOICE_FROMORDERINBOUNDNAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.CreateFromOrderInboundAutoComplete")
+                    .addDefaultValue("Type", CISales.OrderInbound.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.OrderInboundStatus.getType().getName())
+                    .addDefaultValue("Status", "Open")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderInbound to create "
+                                    + " Invoice from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INVOICE_FROMINVOICEAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.CreateFromInvoiceAutoComplete")
+                    .addDefaultValue("Type", CISales.Invoice.uuid.toString())
+                    .description("Config for a QueryBuilder for Autocomplete and Query of Invoice to create "
+                                    + " Invoice from.");
 
     /** See description. */
     @EFapsSysConfAttribute

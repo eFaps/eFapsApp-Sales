@@ -33,11 +33,9 @@
                 method="autoComplete4Doc"
                 name="Sales_Invoice_SelectDocForm.deliveryNote.UI_Field_Autocomplete"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Type">Sales_DeliveryNote</property>
-                <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
-                <property name="Status">Open</property>
-                <property name="AutoType">TOKEN</property>
-                <property name="ExtraParameter">deliveryNote</property>
+                <propertiesOverwrite systemConfig="c9a1cbc3-fd35-4463-80d2-412422a3802f" attribute="org.efaps.sales.Invoice.CreateFromDeliveryNoteAutoComplete"/>
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.Invoice.CreateFromDeliveryNoteAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Document"
@@ -49,7 +47,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Invoice.CreateFromDeliveryNote</property>
+                <property name="AttributeExists">org.efaps.sales.Invoice.CreateFromDeliveryNoteAutoComplete</property>
             </trigger>
         </field>
         <field name="quotation">
@@ -60,12 +58,49 @@
                 method="autoComplete4Doc"
                 name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Autocomplete"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                 <property name="Type">Sales_Quotation</property>
+                <propertiesOverwrite systemConfig="c9a1cbc3-fd35-4463-80d2-412422a3802f"
+                    attribute="org.efaps.sales.Invoice.CreateFromQuotationAutoComplete"/>
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.Invoice.CreateFromQuotationAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Document"
                 name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Update"
                 event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Invoice_SelectDocForm.quotation.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Invoice.CreateFromQuotationAutoComplete</property>
+            </trigger>
+        </field>
+        <field name="orderInbound">
+            <property name="Label">Sales_OrderInbound.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="autoComplete4Doc"
+                name="Sales_Invoice_SelectDocForm.orderInbound.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <propertiesOverwrite systemConfig="c9a1cbc3-fd35-4463-80d2-412422a3802f"
+                    attribute="org.efaps.sales.Invoice.CreateFromOrderInboundAutoComplete"/>
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.Invoice.CreateFromOrderInboundAutoComplete</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Document"
+                name="Sales_Invoice_SelectDocForm.orderInbound.UI_Field_Update"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Invoice_SelectDocForm.orderInbound.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Invoice.CreateFromOrderInboundAutoComplete</property>
+            </trigger>
         </field>
         <field name="invoice">
             <property name="Label">Sales_Invoice.Label</property>
@@ -73,14 +108,25 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Doc"
-                name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Autocomplete"
+                name="Sales_Invoice_SelectDocForm.invoice.UI_Field_Autocomplete"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Type">Sales_Invoice</property>
+                <propertiesOverwrite systemConfig="c9a1cbc3-fd35-4463-80d2-412422a3802f"
+                    attribute="org.efaps.sales.Invoice.CreateFromInvoiceAutoComplete"/>
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.Invoice.CreateFromInvoiceAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
-                method="updateFields4Invoice"
-                name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Update"
+                method="updateFields4Document"
+                name="Sales_Invoice_SelectDocForm.invoice.UI_Field_Update"
                 event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Invoice_SelectDocForm.invoice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Invoice.CreateFromInvoiceAutoComplete</property>
+            </trigger>
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
