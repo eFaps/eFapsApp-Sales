@@ -54,6 +54,12 @@
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">condition</property>
+
+                 <!-- Sales_OrderInbound2Invoice -->
+                <property name="ConnectType03">14e0b68c-2a1d-4c22-81f0-d9539e8e21be</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">orderInbound</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -109,6 +115,12 @@
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">condition</property>
+
+                 <!-- Sales_OrderInbound2Invoice -->
+                <property name="ConnectType04">14e0b68c-2a1d-4c22-81f0-d9539e8e21be</property>
+                <property name="ConnectCurrentLink04">ToLink</property>
+                <property name="ConnectForeignLink04">FromLink</property>
+                <property name="ConnectForeignField04">orderInbound</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -160,6 +172,11 @@
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">condition</property>
+                 <!-- Sales_OrderInbound2Invoice -->
+                <property name="ConnectType04">14e0b68c-2a1d-4c22-81f0-d9539e8e21be</property>
+                <property name="ConnectCurrentLink04">ToLink</property>
+                <property name="ConnectForeignLink04">FromLink</property>
+                <property name="ConnectForeignField04">orderInbound</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>

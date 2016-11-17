@@ -905,9 +905,13 @@ public abstract class DeliveryNote_Base
                         CISales.Document2DocumentAbstract.FromAbstractLink);
         print.executeWithoutAccessCheck();
         final Status status = Status.get(print.<Long>getSelect(selStatus));
+
+        final Instance invoiceInst = print.<Instance>getSelect(selInvoiceInst);
+        final Instance delNoteInst = print.<Instance>getSelect(selDelNoteInst);
+
         // if the deliverynote ticket was open check if the status must change
         if (status.equals(Status.find(CISales.DeliveryNoteStatus.Open))) {
-            final Instance delNoteInst = print.<Instance>getSelect(selDelNoteInst);
+
             final DocComparator comp = new DocComparator();
             comp.setDocInstance(delNoteInst);
             // check for the case that there are n Invoices for the given DeliveryNote
@@ -932,7 +936,6 @@ public abstract class DeliveryNote_Base
                 update.executeWithoutAccessCheck();
             } else {
                 // check for the case that for the n DeliveryNotes for the Invoice
-                final Instance invoiceInst = print.<Instance>getSelect(selInvoiceInst);
                 final DocComparator invComp = new DocComparator();
                 invComp.setDocInstance(invoiceInst);
                 // check for the case that there are n Invoices for the given DeliveryNote
@@ -968,6 +971,7 @@ public abstract class DeliveryNote_Base
                 }
             }
         }
+        DocComparator.markPartial(_parameter, _parameter.getInstance());
         return new Return();
     }
 

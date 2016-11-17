@@ -88,4 +88,18 @@ public abstract class OrderInbound_Base
     {
         return CISales.OrderInbound;
     }
+
+    /**
+     * Connect two invoice trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return connect2InvoiceTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        DocComparator.markPartial(_parameter, _parameter.getInstance());
+        return new Return();
+    }
 }

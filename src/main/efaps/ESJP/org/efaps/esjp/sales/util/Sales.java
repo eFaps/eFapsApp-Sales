@@ -104,11 +104,12 @@ public final class Sales
                     .key(BASE + "Config4Partial")
                     .concatenate(true)
                     .description("Configuration for Partial. e.g:\n"
+                                    + "CREATETYPE.CREATEFROMTYPE.RelationType=RELTYPE\n"
+                                    + "RELTYPE.RelationOriginLink=Link to Origin Type\n"
+                                    + "RELTYPE.RelationPartialLink=Link to Partial Type\n"
                                     + "Sales_DeliveryNote.Sales_Invoice.RelationType=Sales_Invoice2DeliveryNote\n"
-                                    + "Sales_DeliveryNote.Sales_Invoice.RelationOriginLink=FromLink\n"
-                                    + "Sales_DeliveryNote.Sales_Invoice.RelationPartialLink=ToLink\n"
-                                    + "\n"
-                                    + "\n");
+                                    + "Sales_Invoice2DeliveryNote.RelationOriginLink=FromLink\n"
+                                    + "Sales_Invoice2DeliveryNote.RelationPartialLink=ToLink\n");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -820,7 +821,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INVOICE_FROMORDERINBOUNDNAC
+    public static final PropertiesSysConfAttribute INVOICE_FROMORDERINBOUNDAC
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.CreateFromOrderInboundAutoComplete")

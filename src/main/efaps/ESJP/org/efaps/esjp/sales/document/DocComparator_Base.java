@@ -19,13 +19,16 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -33,8 +36,12 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -64,7 +71,7 @@ public abstract class DocComparator_Base
     private boolean init = false;
 
     /** The inst2pos. */
-    private final Map<Instance, Position> inst2pos = new HashMap<Instance, Position>();
+    private final Map<Instance, Position> inst2pos = new HashMap<>();
 
     /**
      * Checks if is sum doc.
@@ -305,6 +312,54 @@ public abstract class DocComparator_Base
             ret = BigDecimal.ZERO;
         }
         return ret;
+    }
+
+    /**
+     * Mark partial.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _relInstance the rel instance
+     * @throws EFapsException on error
+     */
+    public static void markPartial(final Parameter _parameter,
+                                   final Instance _relInstance)
+        throws EFapsException
+    {
+        if (Sales.PARTIALCONFIG.exists()) {
+            final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PARTIALCONFIG.get(), _relInstance
+                            .getType().getName(), true);
+            if (!props.isEmpty()) {
+                final String relOriginLink = props.getProperty("RelationOriginLink");
+                final String relPartialLink = props.getProperty("RelationPartialLink");
+
+                final PrintQuery print = new PrintQuery(_relInstance);
+                final SelectBuilder selRelOriginInst = SelectBuilder.get().linkto(relOriginLink).instance();
+                print.addSelect(selRelOriginInst);
+                print.executeWithoutAccessCheck();
+
+                final Instance relOriginInst = print.getSelect(selRelOriginInst);
+                final DocComparator originComp = new DocComparator().setDocInstance(relOriginInst);
+                final QueryBuilder relQueryBldr = new QueryBuilder(_relInstance.getType());
+                relQueryBldr.addWhereAttrEqValue(relOriginLink, relOriginInst);
+                final MultiPrintQuery multi = relQueryBldr.getPrint();
+                final SelectBuilder selRelPartialInst = SelectBuilder.get().linkto(relPartialLink).instance();
+                multi.addSelect(selRelPartialInst);
+                multi.executeWithoutAccessCheck();
+                final Set<Instance> relInsts = new HashSet<>();
+                while (multi.next()) {
+                    relInsts.add(multi.getCurrentInstance());
+                    final Instance relPartialInst = multi.getSelect(selRelPartialInst);
+                    final DocComparator partialComp = new DocComparator().setDocInstance(relPartialInst);
+                    originComp.substractQuantity(partialComp);
+                }
+                final Object situation = originComp.quantityIsZero() ? null : ERP.DocRelationSituation.PARTIAL;
+                for (final Instance relInst : relInsts) {
+                    final Update update = new Update(relInst);
+                    update.add(CIERP.Document2DocumentAbstract.Situation, situation);
+                    update.executeWithoutTrigger();
+                }
+            }
+        }
     }
 
     /**

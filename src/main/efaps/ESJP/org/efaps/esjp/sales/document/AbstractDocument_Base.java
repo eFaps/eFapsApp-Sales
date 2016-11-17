@@ -1127,11 +1127,12 @@ public abstract class AbstractDocument_Base
         _posUpdate.add(CISales.PositionAbstract.PositionNumber, _idx + 1);
     }
 
-
     /**
+     * Adds the two java script for postions.
+     *
      * @param _parameter Paramter as passed by the eFaps API
      * @param _values values to be added to
-     * @param _noEscape no escape fields
+     * @param _instances the instances
      * @throws EFapsException on error
      */
     protected void add2JavaScript4Postions(final Parameter _parameter,
@@ -1253,8 +1254,10 @@ public abstract class AbstractDocument_Base
                                 true);
                 if (!props.isEmpty()) {
                     final String relType = props.getProperty("RelationType");
-                    final String relOriginLink = props.getProperty("RelationOriginLink");
-                    final String relPartialLink = props.getProperty("RelationPartialLink");
+                    final Properties relProps = PropertiesUtil.getProperties4Prefix(Sales.PARTIALCONFIG.get(),
+                                    relType, true);
+                    final String relOriginLink = relProps.getProperty("RelationOriginLink");
+                    final String relPartialLink = relProps.getProperty("RelationPartialLink");
 
                     final QueryBuilder relQueryBldr = new QueryBuilder(Type.get(relType));
                     relQueryBldr.addWhereAttrEqValue(relOriginLink, instance);

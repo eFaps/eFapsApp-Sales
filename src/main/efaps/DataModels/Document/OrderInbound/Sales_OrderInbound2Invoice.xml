@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
  Copyright 2003 - 2016 The eFaps Team
@@ -18,12 +18,28 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5328153f-dcee-4402-835f-57fda0793528</uuid>
+    <uuid>14e0b68c-2a1d-4c22-81f0-d9539e8e21be</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Document2DocumentAbstract</name>
-        <parent>ERP_Document2DocumentAbstract</parent>
-        <purpose abstract="true" />
+        <name>Sales_OrderInbound2Invoice</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_OrderInbound</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_Invoice</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
+        <trigger event="INSERT_POST" method="connect2InvoiceTrigger"
+            name="Sales_OrderInbound2Invoice.INSERT_POST"
+            program="org.efaps.esjp.sales.document.OrderInbound" />
     </definition>
 </datamodel-type>

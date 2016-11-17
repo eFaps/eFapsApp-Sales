@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -18,12 +17,28 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5328153f-dcee-4402-835f-57fda0793528</uuid>
+    <uuid>e8fa1b10-07a8-48ec-8445-2d34dab90c4d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Document2DocumentAbstract</name>
-        <parent>ERP_Document2DocumentAbstract</parent>
-        <purpose abstract="true" />
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_OrderInbound2ArchiveAbstract</name>
+        <parent>Archives_Document2ArchiveAbstract</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_OrderInbound</typelink>
+            <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Archives_ArchiveAbstract</typelink>
+            <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

@@ -17,8 +17,11 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -32,4 +35,18 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class DocComparator
     extends DocComparator_Base
 {
+
+    /**
+     * Mark partial.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @throws EFapsException on error
+     */
+    public static void markPartial(final Parameter _parameter,
+                                   final Instance _instance)
+        throws EFapsException
+    {
+        DocComparator_Base.markPartial(_parameter, _instance);
+    }
 }

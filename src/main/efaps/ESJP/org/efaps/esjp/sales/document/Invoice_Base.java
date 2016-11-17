@@ -143,6 +143,12 @@ public abstract class Invoice_Base
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_InvoiceForm.deliveryNotes.name, queryBldr));
         }
+        if (Sales.INVOICE_FROMORDERINBOUNDAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.INVOICE_FROMORDERINBOUNDAC.get());
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_InvoiceForm.orderInbound.name, queryBldr));
+        }
         return ret;
     }
 }
