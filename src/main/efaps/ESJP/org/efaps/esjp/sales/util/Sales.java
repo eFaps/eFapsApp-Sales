@@ -99,6 +99,19 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PARTIALCONFIG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4Partial")
+                    .concatenate(true)
+                    .description("Configuration for Partial. e.g:\n"
+                                    + "Sales_DeliveryNote.Sales_Invoice.RelationType=Sales_Invoice2DeliveryNote\n"
+                                    + "Sales_DeliveryNote.Sales_Invoice.RelationOriginLink=FromLink\n"
+                                    + "Sales_DeliveryNote.Sales_Invoice.RelationPartialLink=ToLink\n"
+                                    + "\n"
+                                    + "\n");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CASHFLOWREPORT_CONFIG = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.CashFlowReport")

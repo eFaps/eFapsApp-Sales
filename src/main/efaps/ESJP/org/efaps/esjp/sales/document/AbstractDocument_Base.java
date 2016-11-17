@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -82,6 +81,7 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -1017,9 +1017,9 @@ public abstract class AbstractDocument_Base
         final Set<String> noEscape = new HashSet<>();
         noEscape.add("uoM");
 
-        evaluatePositions4RelatedInstances(_parameter, values, _instance);
+        updateBeans4Partial(_parameter, values, _instance);
 
-        add2JavaScript4Postions(_parameter, values, noEscape);
+        add2JavaScript4Postions(_parameter, values, _instance);
 
         final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
@@ -1127,111 +1127,6 @@ public abstract class AbstractDocument_Base
         _posUpdate.add(CISales.PositionAbstract.PositionNumber, _idx + 1);
     }
 
-    /**
-     * JavaScript part for update positions according to derived documents.<br/>
-     * <ol>
-     * <li>Evaluate the relations of the selected instances with the <code>&lt;RelationType&gt;</code> property</li>
-     * <li>Evaluate the derived type with the <code>&lt;DerivedType&gt;</code> property</li>
-     * <li>Give the positions according to the document instances analyzed</li>
-     * <li>Update the quantities or delete positions from the _values Map</li>
-     * </ol>
-     *
-     * @param _parameter as passed from eFaps API.
-     * @param _values   values for positions
-     * @param _instances instances to be evaluated
-     * @throws EFapsException on error.
-     */
-    protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
-                                                      final Collection<AbstractUIPosition> _values,
-                                                      final Instance... _instances)
-        throws EFapsException
-    {
-        final Map<Integer, String> relTypes;
-        final Map<Integer, String> linkFroms;
-        final Map<Integer, String> linkTos;
-        final Map<Integer, String> types;
-        final Map<Integer, String> statusGrps;
-        final Map<Integer, String> status;
-        final Map<Integer, String> substracts;
-
-        if (containsProperty(_parameter, "RelationType")) {
-            relTypes = analyseProperty(_parameter, "RelationType");
-            linkFroms = analyseProperty(_parameter, "RelationLinkFrom");
-            linkTos = analyseProperty(_parameter, "RelationLinkTo");
-            types = analyseProperty(_parameter, "DerivedType");
-            statusGrps = analyseProperty(_parameter, "DerivedStatusGrp");
-            status = analyseProperty(_parameter, "DerivedStatus");
-            substracts = analyseProperty(_parameter, "RelationSubstracts");
-
-
-            NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
-            final List<AbstractUIPosition> lstRemove = new ArrayList<>();
-            for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
-                final Integer key = relTypeEntry.getKey();
-                final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
-                final Type relType = Type.get(relTypeEntry.getValue());
-                final Map<String, BigDecimal> prodQuantMap = new HashMap<>();
-
-                final QueryBuilder attrQueryBldr = new QueryBuilder(relType);
-                attrQueryBldr.addWhereAttrEqValue(linkFroms.get(key), (Object[]) _instances);
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(linkTos.get(key));
-
-                final Type type = Type.get(types.get(key));
-                final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
-                final String[] statusArr = status.get(key).split(";");
-                final List<Status> statusLst = new ArrayList<>();
-                for (final String stat : statusArr) {
-                    final Status st = Status.find(statusGrps.get(key), stat);
-                    statusLst.add(st);
-                }
-                attrQueryBldr2.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusLst.toArray());
-                attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
-                final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.DocumentAbstract.ID);
-
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-                queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, attrQuery2);
-
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
-                multi.addAttribute(CISales.PositionAbstract.Quantity);
-                multi.addSelect(selProdOID);
-                multi.execute();
-                while (multi.next()) {
-                    final String prodOid = multi.<String>getSelect(selProdOID);
-                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
-
-                    if (prodQuantMap.containsKey(prodOid)) {
-                        prodQuantMap.put(prodOid, prodQuantMap.get(prodOid).add(quantity));
-                    } else {
-                        prodQuantMap.put(prodOid, quantity);
-                    }
-                }
-
-                for (final AbstractUIPosition uiPosition : _values) {
-
-                    if (prodQuantMap.containsKey(uiPosition.getProdInstance().getOid())) {
-                        final BigDecimal quantityPartial = prodQuantMap.get(uiPosition.getProdInstance().getOid());
-                        if (substract) {
-                            final BigDecimal quantityCurr = uiPosition.getQuantity().subtract(quantityPartial);
-                            if (quantityCurr.compareTo(BigDecimal.ZERO) > 0) {
-                                uiPosition.setQuantity(quantityCurr);
-                            } else {
-                                lstRemove.add(uiPosition);
-                            }
-                        } else {
-                            final BigDecimal quantityCurr = uiPosition.getQuantity().add(quantityPartial);
-                            uiPosition.setQuantity(quantityCurr);
-                        }
-                    }
-                }
-            }
-            for (final AbstractUIPosition remove : lstRemove) {
-                _values.remove(remove);
-            }
-        }
-
-    }
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
@@ -1241,7 +1136,7 @@ public abstract class AbstractDocument_Base
      */
     protected void add2JavaScript4Postions(final Parameter _parameter,
                                            final Collection<AbstractUIPosition> _values,
-                                           final Set<String> _noEscape)
+                                           final Instance... _instances)
         throws EFapsException
     {
         // to be used by implementations
@@ -1277,7 +1172,6 @@ public abstract class AbstractDocument_Base
         multi.execute();
 
         final Map<Instance, AbstractUIPosition> valuesTmp = new LinkedHashMap<>();
-        NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         while (multi.next()) {
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);
             if (valuesTmp.containsKey(prodInst)) {
@@ -1306,10 +1200,9 @@ public abstract class AbstractDocument_Base
         }
         final Collection<AbstractUIPosition> values = valuesTmp.values();
 
-        final Set<String> noEscape = new HashSet<>();
-        noEscape.add("uoM");
+        updateBeans4Partial(_parameter, values, _instances.toArray(new Instance[_instances.size()]));
 
-        add2JavaScript4Postions(_parameter, values, noEscape);
+        add2JavaScript4Postions(_parameter, values, _instances.toArray(new Instance[_instances.size()]));
 
         final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
@@ -1323,6 +1216,8 @@ public abstract class AbstractDocument_Base
                                 .compareTo(String.valueOf(_o2.get("productAutoComplete")));
             }
         });
+        final Set<String> noEscape = new HashSet<>();
+        noEscape.add("uoM");
 
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
@@ -1335,6 +1230,67 @@ public abstract class AbstractDocument_Base
         }
         js.append("\n");
         return js;
+    }
+
+    /**
+     * Update beans for partial.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _values the values
+     * @param _instances the instances
+     * @throws EFapsException on error
+     */
+    protected void updateBeans4Partial(final Parameter _parameter,
+                                       final Collection<AbstractUIPosition> _values,
+                                       final Instance... _instances)
+        throws EFapsException
+    {
+        final Properties confProps = PropertiesUtil.getProperties4Prefix(Sales.PARTIALCONFIG.get(), getTypeName4SysConf(
+                        _parameter), true);
+        if (!confProps.isEmpty()) {
+            for (final Instance instance : _instances) {
+                final Properties props = PropertiesUtil.getProperties4Prefix(confProps, instance.getType().getName(),
+                                true);
+                if (!props.isEmpty()) {
+                    final String relType = props.getProperty("RelationType");
+                    final String relOriginLink = props.getProperty("RelationOriginLink");
+                    final String relPartialLink = props.getProperty("RelationPartialLink");
+
+                    final QueryBuilder relQueryBldr = new QueryBuilder(Type.get(relType));
+                    relQueryBldr.addWhereAttrEqValue(relOriginLink, instance);
+
+                    final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionAbstract);
+                    posQueryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, relQueryBldr
+                                    .getAttributeQuery(relPartialLink));
+                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                    final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionAbstract.Product)
+                                    .instance();
+                    posMulti.addSelect(selProdInst);
+                    posMulti.addAttribute(CISales.PositionAbstract.Quantity);
+                    posMulti.execute();
+                    while (posMulti.next()) {
+                        final Instance prodInst = posMulti.getSelect(selProdInst);
+                        BigDecimal quantity = posMulti.getAttribute(CISales.PositionAbstract.Quantity);
+                        final Set<AbstractUIPosition> toBeRemoved = new HashSet<>();
+                        for (final AbstractUIPosition origBean : _values) {
+                            if (origBean.getProdInstance().equals(prodInst)) {
+                                origBean.setQuantity(origBean.getQuantity().subtract(quantity));
+                                if (origBean.getQuantity().compareTo(BigDecimal.ZERO) > 0) {
+                                    break;
+                                } else if (origBean.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
+                                    toBeRemoved.add(origBean);
+                                    break;
+                                } else {
+                                    quantity = origBean.getQuantity().negate();
+                                    toBeRemoved.add(origBean);
+                                }
+                            }
+                        }
+                        _values.removeAll(toBeRemoved);
+                    }
+                }
+            }
+        }
     }
 
     /**

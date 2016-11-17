@@ -114,11 +114,11 @@ public abstract class Invoice_Base
         throws EFapsException
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
-        if (Sales.INVOICEACTIVATECONDITION.get()) {
+        if (Sales.INVOICE_ACTIVATECONDITION.get()) {
             InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance,
                             CISales.ChannelSalesCondition2Contact));
         }
-        if (Sales.INVOICEFROMDELIVERYNOTE.get()) {
+        if (Sales.INVOICE_FROMDELIVERYNOTEAC.exists()) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
             queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
@@ -133,11 +133,11 @@ public abstract class Invoice_Base
         throws EFapsException
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
-        if (Sales.INVOICEACTIVATECONDITION.get()) {
+        if (Sales.INVOICE_ACTIVATECONDITION.get()) {
             ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
                             CISales.ChannelSalesCondition2Contact));
         }
-        if (Sales.INVOICEFROMDELIVERYNOTE.get()) {
+        if (Sales.INVOICE_FROMDELIVERYNOTEAC.exists()) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
             queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
