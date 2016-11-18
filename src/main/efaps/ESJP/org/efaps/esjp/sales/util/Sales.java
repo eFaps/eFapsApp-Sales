@@ -1461,6 +1461,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_PARTIAL = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.PartialReport")
+                    .description("Properties 4 PartialReport.")
+                    .addDefaultValue("Type", CISales.Invoice2DeliveryNote.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute REPORT_PAYMENT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.PaymentReport")
