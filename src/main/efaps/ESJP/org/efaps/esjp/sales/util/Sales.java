@@ -1015,9 +1015,9 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENTDOCUMENT_TOBESETTLED = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.in.Config4ToBeSetteled")
-                    .addDefaultValue("Type", CISales.OrderInbound.uuid.toString())
-                    .addDefaultValue("StatusGroup", CISales.OrderInbound.getType().getName())
-                    .addDefaultValue("Status", "!" + CISales.OrderInboundStatus.Canceled.key)
+                    .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */

@@ -87,6 +87,19 @@ public abstract class PaymentReport_Base
     }
 
     /**
+     * The Enum Grouping.
+     */
+    public enum Grouping
+    {
+
+        /** The contact. */
+        CONTACT,
+
+        /** The type. */
+        TYPE;
+    }
+
+    /**
      * Logging instance used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(PaymentReport.class);
@@ -231,6 +244,42 @@ public abstract class PaymentReport_Base
                     PaymentReport_Base.LOG.debug("Read {}", dataBean);
                 }
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
+                final Map<String, Object> filters = getFilteredReport().getFilterMap(_parameter);
+                final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("groupBy");
+                if (groupBy != null) {
+                    final List<Enum<?>> selected = groupBy.getObject();
+                    for (final Enum<?> sel : selected) {
+                        switch ((Grouping) sel) {
+                            case CONTACT:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+
+                                    @Override
+                                    public int compare(final DataBean _arg0,
+                                                       final DataBean _arg1)
+                                    {
+                                        return _arg0.getCreateDocContactName()
+                                                        .compareTo(_arg1.getCreateDocContactName());
+                                    }
+                                });
+                                break;
+                            case TYPE:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+
+                                    @Override
+                                    public int compare(final DataBean _arg0,
+                                                       final DataBean _arg1)
+                                    {
+                                        return _arg0.getTargetDocType().compareTo(_arg1.getTargetDocType());
+                                    }
+                                });
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
                 chain.addComparator(new Comparator<DataBean>()
                 {
 
@@ -428,17 +477,39 @@ public abstract class PaymentReport_Base
             final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
                             .getDBProperty("Column.currency"), "currency", DynamicReports.type.stringType());
 
+            final List<ColumnBuilder<?, ?>> columns = new ArrayList<>();
+            columns.addAll(targetColumns);
+            columns.addAll(createColumns);
+            Collections.addAll(columns, amountColumn, currencyColumn);
+
+            final Map<String, Object> filters = getFilteredReport().getFilterMap(_parameter);
+            final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("groupBy");
+            if (groupBy != null) {
+                final List<Enum<?>> selected = groupBy.getObject();
+                for (final Enum<?> sel : selected) {
+                    switch ((Grouping) sel) {
+                        case CONTACT:
+                            _builder.groupBy(DynamicReports.grp.group(createDocContactNameColumn).groupByDataType());
+                            columns.remove(createDocContactNameColumn);
+                            createColumns.remove(createDocContactNameColumn);
+                            break;
+                        case TYPE:
+                            _builder.groupBy(DynamicReports.grp.group(targetDocTypeColumn).groupByDataType());
+                            columns.remove(targetDocTypeColumn);
+                            targetColumns.remove(targetDocTypeColumn);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
             final ColumnTitleGroupBuilder targetDocTitleGroup = DynamicReports.grid.titleGroup(getFilteredReport()
                             .getDBProperty("TitleGroup.targetDoc"),
                             targetColumns.toArray(new ColumnGridComponentBuilder[targetColumns.size()]));
             final ColumnTitleGroupBuilder createDocTitleGroup = DynamicReports.grid.titleGroup(getFilteredReport()
                             .getDBProperty("TitleGroup.createDoc"),
                             createColumns.toArray(new ColumnGridComponentBuilder[createColumns.size()]));
-
-            final List<ColumnBuilder<?, ?>> columns = new ArrayList<>();
-            columns.addAll(targetColumns);
-            columns.addAll(createColumns);
-            Collections.addAll(columns, amountColumn, currencyColumn);
 
             _builder.columnGrid(targetDocTitleGroup, createDocTitleGroup, amountColumn, currencyColumn)
                     .addColumn(columns.toArray(new ColumnBuilder[columns.size()]));
