@@ -107,10 +107,10 @@ public abstract class AccountCashDeskBookReport_Base
         final AbstractDynamicReport dyRp = getReport(_parameter);
         dyRp.setFileName(getDBProperty(".FileName"));
 
-        final Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = new HashMap<>();
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = ERP.COMPANYNAME.get();
+            final String companyName = ERP.COMPANY_NAME.get();
             if (companyName != null && !companyName.isEmpty()) {
                 params.put("CompanyName", companyName);
             }
@@ -192,7 +192,7 @@ public abstract class AccountCashDeskBookReport_Base
                 total = total.add(bean.getIn().add(bean.getOut().negate()));
                 bean.setBalance(total);
             }
-            final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
+            final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
             chain.addComparator(new Comparator<DocumentBean>() {
                     @Override
                     public int compare(final DocumentBean _o1,

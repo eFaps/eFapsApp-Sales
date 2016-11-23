@@ -300,8 +300,8 @@ public abstract class PaymentRetentionReport_Base
         throws EFapsException
     {
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-        final String companyName = ERP.COMPANYNAME.get();
-        final String companyNumber = ERP.COMPANYTAX.get();
+        final String companyName = ERP.COMPANY_NAME.get();
+        final String companyNumber = ERP.COMPANY_TAX.get();
 
         final StringBuilder dateFormat = new StringBuilder()
                         .append(new SimpleDateFormat("MMMMM", Context.getThreadContext().getLocale())
@@ -333,7 +333,7 @@ public abstract class PaymentRetentionReport_Base
                 throws EFapsException
             {
                 ERP.getSysConfig();
-                final String companyNumber = ERP.COMPANYTAX.get();
+                final String companyNumber = ERP.COMPANY_TAX.get();
                 final String dateFrom = _parameter.getParameterValue("dateFrom");
                 final String dateTo = _parameter.getParameterValue("dateTo");
                 final DateTime from = new DateTime(dateFrom);

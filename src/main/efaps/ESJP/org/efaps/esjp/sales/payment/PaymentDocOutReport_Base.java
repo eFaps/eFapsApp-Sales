@@ -232,8 +232,8 @@ public abstract class PaymentDocOutReport_Base
         report.getJrParameters().put("BaseCurrency", CurrencyInst.get(baseCurrInst).getISOCode());
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName =  ERP.COMPANYNAME.get();
-            final String companyTaxNumb = ERP.COMPANYTAX.get();
+            final String companyName =  ERP.COMPANY_NAME.get();
+            final String companyTaxNumb = ERP.COMPANY_TAX.get();
 
             if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
                 report.getJrParameters().put("CompanyName", companyName);

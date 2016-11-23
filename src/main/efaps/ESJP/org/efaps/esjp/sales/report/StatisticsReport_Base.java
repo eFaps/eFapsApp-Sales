@@ -267,7 +267,7 @@ public abstract class StatisticsReport_Base
                     final DataBean bean = new DataBean();
                     beans.add(bean);
                     if (DateGroup.NONE.equals(dateGroup)) {
-                        bean.setPartial(ERP.COMPANYNAME.get());
+                        bean.setPartial(ERP.COMPANY_NAME.get());
                     } else {
                         bean.setPartial(groupedByDate.getPartial(multi.getAttribute(CIERP.DocumentAbstract.Date),
                                         dateGroup.getFieldType()).toString(dateTimeFormatter));

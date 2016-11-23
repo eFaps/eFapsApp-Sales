@@ -508,9 +508,9 @@ public abstract class Account_Base
             multi.addAttribute("PaymentType");
             multi.addAttribute("CurrencyId");
             multi.execute();
-            final Map<String, BigDecimal> map = new TreeMap<String, BigDecimal>();
-            final Map<String, Long[]> key2Ids = new TreeMap<String, Long[]>();
-            final Set<String> oids = new HashSet<String>();
+            final Map<String, BigDecimal> map = new TreeMap<>();
+            final Map<String, Long[]> key2Ids = new TreeMap<>();
+            final Set<String> oids = new HashSet<>();
             while (multi.next()) {
                 if (multi.getSelect("linkto[Payment].attribute[TargetDocument]") == null) {
                     final String oid = multi.<String>getSelect("linkto[Payment].oid");
@@ -610,7 +610,7 @@ public abstract class Account_Base
 
         final AbstractCommand command = _parameter.get(ParameterValues.UIOBJECT) instanceof AbstractCommand
                         ? (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT) : null;
-        final List<Instance> lstInst = new ArrayList<Instance>();
+        final List<Instance> lstInst = new ArrayList<>();
 
         String[] oids = _parameter.getParameterValues("selectedRow");
         if (_parameter.getParameterValue("date") != null  && command != null
@@ -774,8 +774,8 @@ public abstract class Account_Base
                 nf.setGroupingUsed(false);
                 number = nf.format(numInt) + number.substring(number.indexOf("-")).trim();
             }
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, String>> list = new ArrayList<>();
+            final Map<String, String> map = new HashMap<>();
             map.put("name4create", number);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
@@ -928,9 +928,9 @@ public abstract class Account_Base
                 difference = difference.add(startAmount.subtract(startAmountOrig));
             }
         }
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         map.put("messageBalancing", formater.format(difference).toString());
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         list.add(map);
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -1167,7 +1167,7 @@ public abstract class Account_Base
 
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {
-                final String companyName = ERP.COMPANYNAME.get();
+                final String companyName = ERP.COMPANY_NAME.get();
                 if (companyName != null && !companyName.isEmpty()) {
                     report.getJrParameters().put("CompanyName", companyName);
                 }

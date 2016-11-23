@@ -185,7 +185,7 @@ public abstract class Employee2DocPanel_Base
                 values.put(emplInst, val.add(currentValue));
                 if (!employees.containsKey(emplInst)) {
                     if (emplInst == null) {
-                        employees.put(emplInst, ERP.COMPANYNAME.get());
+                        employees.put(emplInst, ERP.COMPANY_NAME.get());
                     } else {
                         employees.put(emplInst, multi.getMsgPhrase(selEmpl, msgPhrase));
                     }
@@ -224,7 +224,7 @@ public abstract class Employee2DocPanel_Base
             chart.setTitle(getTitle());
             chart.setOrientation(Orientation.CHART_ONLY);
 
-            final Serie<Data> serie = new Serie<Data>();
+            final Serie<Data> serie = new Serie<>();
             chart.addSerie(serie);
             boolean added = false;
             for (final Map.Entry<Instance, BigDecimal> entry : sorted) {

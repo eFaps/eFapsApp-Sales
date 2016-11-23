@@ -171,8 +171,8 @@ public abstract class SalesKardexReport_Base
         report.getJrParameters().put("Periode", getDateLabel(from, to));
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = ERP.COMPANYNAME.get();
-            final String companyTaxNumb = ERP.COMPANYTAX.get();
+            final String companyName = ERP.COMPANY_NAME.get();
+            final String companyTaxNumb = ERP.COMPANY_TAX.get();
 
             if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
                 report.getJrParameters().put("CompanyName", companyName);

@@ -505,7 +505,7 @@ public abstract class SalesRecordReport_Base
             // no taxes found
             if (_taxes == null) {
                 // but it local therfore it must be unaffected, in other case it is export
-                if (ERP.COMPANYCOUNTRY.get().equalsIgnoreCase(_country)) {
+                if (ERP.COMPANY_COUNTRY.get().equalsIgnoreCase(_country)) {
                     _map.put(Column.TAXABLEVAL.getKey(), _netTotal);
                     _map.put(Column.UNAFFVAL.getKey(), _netTotal);
                 } else {

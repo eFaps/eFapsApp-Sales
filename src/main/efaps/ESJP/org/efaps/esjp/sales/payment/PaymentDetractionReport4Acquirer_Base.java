@@ -74,7 +74,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
             protected File getEmptyFile4TextReport()
                 throws EFapsException
             {
-                final String companyTaxNum = ERP.COMPANYTAX.get();
+                final String companyTaxNum = ERP.COMPANY_TAX.get();
 
                 final String name = buildName4TextReport(PaymentDetractionReport4Acquirer_Base.FILE_STARTCHAR,
                                 companyTaxNum, getSequenceNumber(_parameter));
@@ -106,9 +106,9 @@ public abstract class PaymentDetractionReport4Acquirer_Base
             protected List<Object> getHeaderData(final Parameter _parameter)
                 throws EFapsException
             {
-                final List<Object> ret = new ArrayList<Object>();
-                final String companyName = ERP.COMPANYNAME.get();
-                final String companyTaxNum = ERP.COMPANYTAX.get();
+                final List<Object> ret = new ArrayList<>();
+                final String companyName = ERP.COMPANY_NAME.get();
+                final String companyTaxNum = ERP.COMPANY_TAX.get();
                 ret.add(PaymentDetractionReport4Acquirer_Base.MASTER_INDICATOR);
                 ret.add(companyTaxNum);
                 ret.add(companyName);
@@ -152,7 +152,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
             protected List<List<Object>> createDataSource(final Parameter _parameter)
                 throws EFapsException
             {
-                final List<List<Object>> lst = new ArrayList<List<Object>>();
+                final List<List<Object>> lst = new ArrayList<>();
                 final Instance instance = _parameter.getInstance();
                 final PrintQuery print = new PrintQuery(instance);
                 print.addAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId);
@@ -165,7 +165,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 multiDef.addAttribute(CISales.BulkPaymentDefinition2Contact.ToLink,
                                 CISales.BulkPaymentDefinition2Contact.AccountNumber);
                 multiDef.execute();
-                final Map<Long, String> map = new HashMap<Long, String>();
+                final Map<Long, String> map = new HashMap<>();
                 while (multiDef.next()) {
                     final Long contactId = multiDef.<Long>getAttribute(CISales.BulkPaymentDefinition2Contact.ToLink);
                     final String accNum = multiDef
@@ -206,7 +206,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 multi.addAttribute(CISales.Payment.Amount);
                 multi.execute();
                 while (multi.next()) {
-                    final List<Object> rowLst = new ArrayList<Object>();
+                    final List<Object> rowLst = new ArrayList<>();
                     final String provTaxNum = multi.<String>getSelect(selProvTaxNum);
                     final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
                     this.totalAmount = this.totalAmount.add(amount);
