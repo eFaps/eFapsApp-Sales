@@ -33,6 +33,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -539,7 +540,7 @@ public abstract class Swap_Base
                             print.getAttribute(CISales.DocumentSumAbstract.Name) });
         }
 
-        ret.put("contact4Doc", print.getSelect(selContactName));
+        ret.put("contact4Doc", StringEscapeUtils.escapeEcmaScript(print.getSelect(selContactName)));
         ret.put("crossTotal", print.getAttribute(CISales.DocumentSumAbstract.CrossTotal) + currInst.getSymbol());
         ret.put("netTotal", print.getAttribute(CISales.DocumentSumAbstract.NetTotal) + currInst.getSymbol());
         ret.put("rateCrossTotal",
