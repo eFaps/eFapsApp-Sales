@@ -45,6 +45,7 @@
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
         <field name="contact">
+            <property name="FilterType">PICKLIST</property>
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_IncomingExchange/Contact.Label</property>

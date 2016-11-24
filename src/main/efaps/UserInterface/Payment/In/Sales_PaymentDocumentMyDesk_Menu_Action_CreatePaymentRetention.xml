@@ -36,7 +36,9 @@
             <validate method="validatePaymentDocument4Positions"
                 program="org.efaps.esjp.sales.payment.PaymentRetention"
                 index="0">
-                <property name="Document">Sales_Invoice</property>
+                 <!-- Sales-Configuration -->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.payment.in.Retention.PayableDocuments</property>
             </validate>
             <validate method="validatePaymentDocument"
                 program="org.efaps.esjp.sales.payment.PaymentRetention"

@@ -1487,26 +1487,29 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         final HtmlTable html = new HtmlTable();
-        final Map<Integer, String> map = analyseProperty(_parameter, "Document");
+        final Map<Integer, String> map = analyseProperty(_parameter, "Type");
 
         final String[] paymentDocs = _parameter.getParameterValues("createDocument");
-        final String[] paymentAutoDocs = _parameter.getParameterValues("createDocumentAutoComplete");
+
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
             boolean exists = false;
-            final Instance document = Instance.get(paymentDocs[i]);
+            final Instance docInst = Instance.get(paymentDocs[i]);
             for (final Entry<Integer, String> entryMap : map.entrySet()) {
                 final Type type = Type.get(entryMap.getValue());
-                if (type != null && document.isValid()) {
-                    if (type.equals(document.getType())) {
+                if (type != null && docInst.isValid()) {
+                    if (type.equals(docInst.getType())) {
                         exists = true;
                         break;
                     }
                 }
             }
             if (!exists) {
+                final PrintQuery print = new PrintQuery(docInst);
+                print.addAttribute(CIERP.DocumentAbstract.Name);
+                print.executeWithoutAccessCheck();
                 html.tr()
-                    .td(document.getType().getLabel())
-                    .td(paymentAutoDocs[i])
+                    .td(docInst.getType().getLabel())
+                    .td(print.getAttribute(CIERP.DocumentAbstract.Name))
                     .trC();
             }
         }
