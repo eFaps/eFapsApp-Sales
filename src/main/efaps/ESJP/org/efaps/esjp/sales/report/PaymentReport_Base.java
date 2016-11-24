@@ -57,6 +57,8 @@ import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
@@ -436,6 +438,8 @@ public abstract class PaymentReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
+            final Instance currInst = evaluateCurrency(_parameter);
+
             final List<ColumnBuilder<?, ?>> targetColumns = new ArrayList<>();
             if (ExportType.HTML.equals(getExType())) {
                 targetColumns.add(FilteredReport.getLinkColumn(_parameter, "targetOID"));
@@ -489,12 +493,26 @@ public abstract class PaymentReport_Base
                 for (final Enum<?> sel : selected) {
                     switch ((Grouping) sel) {
                         case CONTACT:
-                            _builder.groupBy(DynamicReports.grp.group(createDocContactNameColumn).groupByDataType());
+                            final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(createDocContactNameColumn)
+                                            .groupByDataType();
+                            final AggregationSubtotalBuilder<BigDecimal> groupSum = DynamicReports.sbt.sum(
+                                            amountColumn);
+                            _builder.groupBy(contactGroup);
+                            if (InstanceUtils.isValid(currInst)) {
+                                _builder.addSubtotalAtGroupFooter(contactGroup, groupSum);
+                            }
                             columns.remove(createDocContactNameColumn);
                             createColumns.remove(createDocContactNameColumn);
                             break;
                         case TYPE:
-                            _builder.groupBy(DynamicReports.grp.group(targetDocTypeColumn).groupByDataType());
+                            final ColumnGroupBuilder typeGroup = DynamicReports.grp.group(targetDocTypeColumn)
+                                            .groupByDataType();
+                            final AggregationSubtotalBuilder<BigDecimal> groupSum2 = DynamicReports.sbt.sum(
+                                            amountColumn);
+                            _builder.groupBy(typeGroup);
+                            if (InstanceUtils.isValid(currInst)) {
+                                _builder.addSubtotalAtGroupFooter(typeGroup, groupSum2);
+                            }
                             columns.remove(targetDocTypeColumn);
                             targetColumns.remove(targetDocTypeColumn);
                             break;
@@ -514,7 +532,7 @@ public abstract class PaymentReport_Base
             _builder.columnGrid(targetDocTitleGroup, createDocTitleGroup, amountColumn, currencyColumn)
                     .addColumn(columns.toArray(new ColumnBuilder[columns.size()]));
 
-            final Instance currInst = evaluateCurrency(_parameter);
+
             if (InstanceUtils.isValid(currInst)) {
                 _builder.subtotalsAtSummary(DynamicReports.sbt.sum(amountColumn));
             }
