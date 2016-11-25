@@ -159,7 +159,7 @@ public abstract class SalesPanel_Base
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        CharSequence ret;
+        final CharSequence ret;
         if (isCached()) {
             ret = getFromCache();
         } else {
@@ -221,12 +221,12 @@ public abstract class SalesPanel_Base
             chart.addAxis(xAxis);
 
             final Map<String, Serie<Data>> series = new HashMap<>();
-            final Serie<Data> baseSerie = new Serie<Data>();
+            final Serie<Data> baseSerie = new Serie<>();
             baseSerie.setName(DBProperties.getProperty("org.efaps.esjp.sales.report.DocumentSumReport.BASE") + " "
                             + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
             series.put("BASE", baseSerie);
             for (final CurrencyInst curr : CurrencyInst.getAvailable()) {
-                final Serie<Data> serie = new Serie<Data>();
+                final Serie<Data> serie = new Serie<>();
                 serie.setName(curr.getName());
                 series.put(curr.getISOCode(), serie);
             }

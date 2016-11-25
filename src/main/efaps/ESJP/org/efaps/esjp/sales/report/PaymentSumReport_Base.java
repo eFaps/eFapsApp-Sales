@@ -21,12 +21,12 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.Properties;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.datamodel.Type;
@@ -177,7 +177,7 @@ public abstract class PaymentSumReport_Base
         private final PaymentSumReport_Base filteredReport;
 
         /** The neg type. */
-        private final Set<Type> negTypes = new HashSet<>();
+        private final Map<Type, Boolean> negTypes = new HashMap<>();
 
         /**
          * Instantiates a new dyn payment report.
@@ -224,7 +224,8 @@ public abstract class PaymentSumReport_Base
                                 .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
                                 .instance();
                 multi.addSelect(selAccount, selCurrencyInst, selRateCurrencyInst);
-                multi.addAttribute(CISales.PaymentDocumentAbstract.Amount, CISales.PaymentDocumentAbstract.Date);
+                multi.addAttribute(CISales.PaymentDocumentAbstract.Amount, CISales.PaymentDocumentAbstract.Date,
+                                CISales.PaymentDocumentAbstract.Rate);
                 multi.execute();
                 while (multi.next()) {
                     final String partial = groupedBy.getPartial(multi.getAttribute(
@@ -233,12 +234,14 @@ public abstract class PaymentSumReport_Base
                     if (isNegativ(_parameter, multi.getCurrentInstance())) {
                         amount = amount.negate();
                     }
-                    final DataBean dataBean = new DataBean()
+                    final DataBean dataBean = getBean(_parameter)
                                     .setInstance(multi.getCurrentInstance())
                                     .setAccount(multi.getSelect(selAccount))
                                     .setAmount(amount)
                                     .setCurrencyInst(multi.getSelect(selCurrencyInst))
                                     .setRateCurrencyInst(multi.getSelect(selRateCurrencyInst))
+                                    .setDate(multi.getAttribute(CISales.PaymentDocumentAbstract.Date))
+                                    .setRate(multi.getAttribute(CISales.PaymentDocumentAbstract.Rate))
                                     .setPartial(partial);
 
                     beans.add(dataBean);
@@ -257,7 +260,8 @@ public abstract class PaymentSumReport_Base
                                     .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                                     .instance();
                     docMulti.addSelect(selDocCurrencyInst, selDocRateCurrencyInst);
-                    docMulti.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.Date);
+                    docMulti.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.Date,
+                                    CISales.DocumentSumAbstract.Rate);
                     docMulti.execute();
                     while (docMulti.next()) {
                         final String partial = groupedBy.getPartial(docMulti.getAttribute(
@@ -266,11 +270,13 @@ public abstract class PaymentSumReport_Base
                         if (isNegativ(_parameter, docMulti.getCurrentInstance())) {
                             amount = amount.negate();
                         }
-                        final DataBean dataBean = new DataBean()
+                        final DataBean dataBean = getBean(_parameter)
                                         .setInstance(docMulti.getCurrentInstance())
                                         .setAmount(amount)
                                         .setCurrencyInst(docMulti.getSelect(selDocCurrencyInst))
                                         .setRateCurrencyInst(docMulti.getSelect(selDocRateCurrencyInst))
+                                        .setDate(docMulti.getAttribute(CISales.DocumentSumAbstract.Date))
+                                        .setRate(multi.getAttribute(CISales.DocumentSumAbstract.Rate))
                                         .setPartial(partial);
                         beans.add(dataBean);
                         PaymentSumReport_Base.LOG.debug("Read {}", dataBean);
@@ -297,20 +303,33 @@ public abstract class PaymentSumReport_Base
             final QueryBuilder ret;
             switch (getPayDoc(_parameter)) {
                 case IN:
-                    ret = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENTSUM.get(), _suffix + "."
+                    ret = getQueryBldrFromProperties(_parameter, getProperties(_parameter), _suffix + "."
                                     + PayDoc.IN.name());
                     break;
                 case OUT:
-                    ret = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENTSUM.get(), _suffix + "."
+                    ret = getQueryBldrFromProperties(_parameter, getProperties(_parameter), _suffix + "."
                                     + PayDoc.OUT.name());
                     break;
                 case BOTH:
                 default:
-                    ret = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENTSUM.get(), _suffix + "."
+                    ret = getQueryBldrFromProperties(_parameter, getProperties(_parameter), _suffix + "."
                                     + PayDoc.BOTH.name());
                     break;
             }
             return ret;
+        }
+
+        /**
+         * Gets the properties.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the prperties
+         * @throws EFapsException on error
+         */
+        protected Properties getProperties(final Parameter _parameter)
+            throws EFapsException
+        {
+            return Sales.REPORT_PAYMENTSUM.get();
         }
 
         /**
@@ -325,22 +344,15 @@ public abstract class PaymentSumReport_Base
                                     final Instance _inst)
             throws EFapsException
         {
-            if (this.negTypes.isEmpty()) {
-                final Collection<String> types = analyseProperty(_parameter, PropertiesUtil.getProperties4Prefix(
-                                Sales.REPORT_PAYMENTSUM.get(), "PAYMENT." + PayDoc.OUT.name()), "Type").values();
-                types.addAll(analyseProperty(_parameter, PropertiesUtil.getProperties4Prefix(Sales.REPORT_PAYMENTSUM
-                                .get(), "DOCUMENT." + PayDoc.OUT.name()), "Type").values());
-                for (final String typeStr : types) {
-                    final Type type;
-                    if (isUUID(typeStr)) {
-                        type = Type.get(UUID.fromString(typeStr));
-                    } else {
-                        type = Type.get(typeStr);
-                    }
-                    this.negTypes.addAll(getTypeList(_parameter, type));
-                }
+            if (!this.negTypes.containsKey(_inst.getType())) {
+                final Properties props = PropertiesUtil.getProperties4Prefix(getProperties(_parameter), getPayDoc(
+                                _parameter).name());
+                final Boolean negate = BooleanUtils.toBooleanObject(props.getProperty(_inst.getType().getName()
+                                + ".Negate", props.getProperty(_inst.getType().getUUID() + ".Negate", "false")));
+
+                this.negTypes.put(_inst.getType(), negate);
             }
-            return this.negTypes.contains(_inst.getType());
+            return BooleanUtils.isTrue(this.negTypes.get(_inst.getType()));
         }
 
         /**
@@ -496,6 +508,17 @@ public abstract class PaymentSumReport_Base
         {
             return this.filteredReport;
         }
+
+        /**
+         * Gets the bean.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the bean
+         */
+        protected DataBean getBean(final Parameter _parameter)
+        {
+            return new DataBean();
+        }
     }
 
     /**
@@ -521,6 +544,13 @@ public abstract class PaymentSumReport_Base
 
         /** The partial. */
         private String partial;
+
+        /** The date. */
+        private DateTime date;
+
+        /** The rate. */
+        private Object[] rate;
+
         /**
          * Gets the account.
          *
@@ -648,7 +678,6 @@ public abstract class PaymentSumReport_Base
             return this.partial;
         }
 
-
         /**
          * Setter method for instance variable {@link #partial}.
          *
@@ -661,7 +690,6 @@ public abstract class PaymentSumReport_Base
             return this;
         }
 
-
         /**
          * Getter method for the instance variable {@link #instance}.
          *
@@ -672,7 +700,6 @@ public abstract class PaymentSumReport_Base
             return this.instance;
         }
 
-
         /**
          * Setter method for instance variable {@link #instance}.
          *
@@ -682,6 +709,50 @@ public abstract class PaymentSumReport_Base
         public DataBean setInstance(final Instance _instance)
         {
             this.instance = _instance;
+            return this;
+        }
+
+        /**
+         * Gets the date.
+         *
+         * @return the date
+         */
+        public DateTime getDate()
+        {
+            return this.date;
+        }
+
+        /**
+         * Sets the date.
+         *
+         * @param _date the date
+         * @return the data bean
+         */
+        public DataBean setDate(final DateTime _date)
+        {
+            this.date = _date;
+            return this;
+        }
+
+        /**
+         * Gets the rate.
+         *
+         * @return the rate
+         */
+        public Object[] getRate()
+        {
+            return this.rate;
+        }
+
+        /**
+         * Sets the rate.
+         *
+         * @param _rate the rate
+         * @return the data bean
+         */
+        public DataBean setRate(final Object[] _rate)
+        {
+            this.rate = _rate;
             return this;
         }
 

@@ -1482,7 +1482,8 @@ public final class Sales
     public static final PropertiesSysConfAttribute REPORT_PAYMENTSUM = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.PaymentSumReport")
-                    .description("Properties for PaymentSumReport.")
+                    .description("Properties for PaymentSumReport.\n"
+                                    + "OUT.Sales_PaymentDepositOut.Negate=true")
                     .addDefaultValue("PAYMENT.IN.Type", CISales.PaymentDocumentAbstract.getType().getName())
                     .addDefaultValue("PAYMENT.OUT.Type", CISales.PaymentDocumentOutAbstract.getType().getName())
                     .addDefaultValue("PAYMENT.BOTH.Type", CISales.PaymentDocumentIOAbstract.getType().getName())
