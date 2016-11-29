@@ -115,8 +115,43 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="ebillingGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Application"
+                name="Sales_ReminderForm.ebillingGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Application">eFapsApp-ElectronicBilling</property>
+           </trigger>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
+        </field>
+         <field name="ebillingReminder">
+            <property name="SelectAlternateOID">linkfrom[EBilling_Reminder#ReminderLink].oid</property>
+            <property name="MsgPhrase">EBilling_ReminderMsgPhrase</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="HRef">Tree</property>
+            <property name="Label">Sales_ReminderForm.ebillingReminder.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Application"
+                name="Sales_ReminderForm.ebillingGroup.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK"
+                index="1">
+                <property name="Application">eFapsApp-ElectronicBilling</property>
+           </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReminderForm.ebillingGroup.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK"
+                index="2">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.Reminder.Activate</property>
+                <property name="Default">true</property>
+           </trigger>
         </field>
         <field name="name4create">
             <property name="ModeCreate">EDITABLE</property>
