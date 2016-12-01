@@ -45,9 +45,9 @@ public interface IOnDocProductTransactionReport
      * @param _values the values
      * @throws EFapsException on error
      */
-    void updateValues(final Parameter _parameter,
-                      final DynDocProductTransactionReport _dynReport,
-                      final Collection<DataBean> _values)
+    void updateValues(Parameter _parameter,
+                      DynDocProductTransactionReport _dynReport,
+                      Collection<DataBean> _values)
         throws EFapsException;
 
 }

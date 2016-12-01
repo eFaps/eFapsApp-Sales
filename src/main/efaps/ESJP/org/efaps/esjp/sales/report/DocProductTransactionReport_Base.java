@@ -20,6 +20,7 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -86,33 +88,14 @@ public abstract class DocProductTransactionReport_Base
      */
     public enum DocGroup
     {
-
-        /** The none. */
+        /** The prod. */
         PROD,
 
-        /** The doc prod. */
-        DOC_PROD,
+        /** The doc. */
+        DOC,
 
-        /** The doc contact prod. */
-        DOC_CONTACT_PROD,
-
-        /** The contact prod. */
-        CONTACT_PROD,
-
-        /** The contact doc prod. */
-        CONTACT_DOC_PROD,
-
-        /** The prod doc. */
-        PROD_DOC,
-
-        /** The prod contact. */
-        PROD_CONTACT,
-
-        /** The prod contact doc. */
-        PROD_CONTACT_DOC,
-
-        /** The prod doc contact. */
-        PROD_DOC_CONTACT
+        /** The contact. */
+        CONTACT;
     }
 
     /**
@@ -132,7 +115,6 @@ public abstract class DocProductTransactionReport_Base
         /** The both. */
         BOTH;
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -178,6 +160,37 @@ public abstract class DocProductTransactionReport_Base
         throws EFapsException
     {
         return Sales.REPORT_DOCPRODTRANS.get();
+    }
+
+    /**
+     * Gets the group by filter value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _className the class name
+     * @return the group by filter value
+     */
+    @Override
+    protected GroupByFilterValue getGroupByFilterValue(final Parameter _parameter,
+                                                       final String _className)
+    {
+        final GroupByFilterValue ret = new GroupByFilterValue() {
+
+            /** The Constant serialVersionUID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public AbstractFilterValue<List<Enum<?>>> parseObject(final String[] _values)
+            {
+                if (ArrayUtils.isNotEmpty(_values)) {
+                    super.parseObject(_values);
+                } else {
+                    setObject(Arrays.asList(DocGroup.PROD));
+                }
+                return this;
+            }
+        }.setClassName(_className);
+        ret.setObject(Arrays.asList(DocGroup.PROD));
+        return ret;
     }
 
     /**
@@ -265,6 +278,7 @@ public abstract class DocProductTransactionReport_Base
                         .setProductDescr(productDescr)
                         .setDocName(docName)
                         .setDocContact(docContact)
+                        .setDate(date)
                         .setPartial(groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter));
                     values.add(dataBean);
                 }
@@ -434,6 +448,8 @@ public abstract class DocProductTransactionReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
+            final Map<String, Object> filters = getFilteredReport().getFilterMap(_parameter);
+
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
 
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
@@ -453,40 +469,23 @@ public abstract class DocProductTransactionReport_Base
             final CrosstabRowGroupBuilder<String> uomRowGroup = DynamicReports.ctab
                         .rowGroup("uoM", String.class).setShowTotal(false);
 
-            final DocGroup docGroup = getDocGroup(_parameter);
-            switch (docGroup) {
-                case DOC_PROD:
-                    crosstab.addRowGroup(docNameRowGroup, productRowGroup, productDescrRowGroup, uomRowGroup);
-                    break;
-                case DOC_CONTACT_PROD:
-                    crosstab.addRowGroup(docNameRowGroup, docContactRowGroup, productRowGroup, productDescrRowGroup,
-                                    uomRowGroup);
-                    break;
-                case CONTACT_PROD:
-                    crosstab.addRowGroup(docContactRowGroup, productRowGroup, productDescrRowGroup, uomRowGroup);
-                    break;
-                case CONTACT_DOC_PROD:
-                    crosstab.addRowGroup(docContactRowGroup, docNameRowGroup, productRowGroup, productDescrRowGroup,
-                                    uomRowGroup);
-                    break;
-                case PROD_DOC:
-                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docNameRowGroup);
-                    break;
-                case PROD_CONTACT_DOC:
-                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docContactRowGroup,
-                                    docNameRowGroup);
-                    break;
-                case PROD_DOC_CONTACT:
-                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docNameRowGroup,
-                                    docContactRowGroup);
-                    break;
-                case PROD_CONTACT:
-                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup, docContactRowGroup);
-                    break;
-                case PROD:
-                default:
-                    crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup);
-                    break;
+            final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("docGroup");
+            if (groupBy != null) {
+                final List<Enum<?>> selected = groupBy.getObject();
+                for (final Enum<?> sel : selected) {
+                    switch ((DocGroup) sel) {
+                        case DOC:
+                            crosstab.addRowGroup(docNameRowGroup);
+                            break;
+                        case CONTACT:
+                            crosstab.addRowGroup(docContactRowGroup);
+                            break;
+                        case PROD:
+                        default:
+                            crosstab.addRowGroup(productRowGroup, productDescrRowGroup, uomRowGroup);
+                            break;
+                    }
+                }
             }
 
             final CrosstabColumnGroupBuilder<String> partialColumnGroup = DynamicReports.ctab.columnGroup("partial",
@@ -504,25 +503,6 @@ public abstract class DocProductTransactionReport_Base
         public DocProductTransactionReport_Base getFilteredReport()
         {
             return this.filteredReport;
-        }
-
-        /**
-         * Gets the doc Group.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return the doc Group
-         * @throws EFapsException on error
-         */
-        protected DocGroup getDocGroup(final Parameter _parameter)
-            throws EFapsException
-        {
-            DocGroup ret = DocGroup.PROD;
-            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-            if (filter.containsKey("docGroup") && filter.get("docGroup") != null) {
-                final EnumFilterValue filterValue = (EnumFilterValue) filter.get("docGroup");
-                ret = (DocGroup) filterValue.getObject();
-            }
-            return ret;
         }
 
         /**
@@ -570,8 +550,10 @@ public abstract class DocProductTransactionReport_Base
          *
          * @param _parameter Parameter as passed by the eFaps API
          * @return the bean
+         * @throws EFapsException on error
          */
         public DataBean getBean(final Parameter _parameter)
+            throws EFapsException
         {
             return new DataBean();
         }
@@ -606,6 +588,9 @@ public abstract class DocProductTransactionReport_Base
 
         /** The partial. */
         private String partial;
+
+        /** The date. */
+        private DateTime date;
 
         /**
          * Gets the uo M.
@@ -780,6 +765,28 @@ public abstract class DocProductTransactionReport_Base
         public DataBean setPartial(final String _partial)
         {
             this.partial = _partial;
+            return this;
+        }
+
+        /**
+         * Gets the date.
+         *
+         * @return the date
+         */
+        public DateTime getDate()
+        {
+            return this.date;
+        }
+
+        /**
+         * Sets the date.
+         *
+         * @param _date the new date
+         * @return the data bean
+         */
+        public DataBean setDate(final DateTime _date)
+        {
+            this.date = _date;
             return this;
         }
 
