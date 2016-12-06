@@ -39,7 +39,7 @@
                 index="2" method="check4Status"
                 name="Sales_IncomingExchangeTree_Menu_Action_AssignAction.UI_ACCESSCHECK.2"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status">!Canceled</property>
             </trigger>
         </target>
         <property name="Target">modal</property>
