@@ -258,7 +258,7 @@ public abstract class DocPositionCostReport_Base
                 final BigDecimal quantity = (BigDecimal) value.get("quantity");
                 final BigDecimal cost;
                 if (InstanceUtils.isValid(alterInst)) {
-                    cost = Cost.getAlternativeCost4Currency(_parameter, alterInst, prodInst, filterCurrency);
+                    cost = Cost.getAlternativeCost4Currency(_parameter, docDate, alterInst, prodInst, filterCurrency);
                 } else {
                     cost = Cost.getCost4Currency(_parameter, docDate, prodInst, filterCurrency);
                 }
