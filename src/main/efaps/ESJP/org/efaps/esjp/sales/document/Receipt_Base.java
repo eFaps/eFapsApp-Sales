@@ -46,6 +46,8 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -74,10 +76,13 @@ public abstract class Receipt_Base
         createPositions(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
-        final File file = createReport(_parameter, createdDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+
+        if (Sales.RECEIPT_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+            final File file = createReport(_parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }
@@ -97,10 +102,12 @@ public abstract class Receipt_Base
         updatePositions(_parameter, editedDoc);
         updateConnection2Object(_parameter, editedDoc);
 
-        final File file = createReport(_parameter, editedDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.RECEIPT_JASPERACTIVATION.get().contains(JasperActivation.ONEDIT)) {
+            final File file = createReport(_parameter, editedDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }

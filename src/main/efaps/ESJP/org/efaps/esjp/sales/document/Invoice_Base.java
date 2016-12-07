@@ -32,6 +32,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
@@ -67,11 +68,12 @@ public abstract class Invoice_Base
         if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
             new PerceptionCertificate().create4Doc(_parameter, createdDoc);
         }
-
-        final File file = createReport(_parameter, createdDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.INVOICE_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+            final File file = createReport(_parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
@@ -92,10 +94,12 @@ public abstract class Invoice_Base
         updatePositions(_parameter, editedDoc);
         updateConnection2Object(_parameter, editedDoc);
 
-        final File file = createReport(_parameter, editedDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.INVOICE_JASPERACTIVATION.get().contains(JasperActivation.ONEDIT)) {
+            final File file = createReport(_parameter, editedDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }

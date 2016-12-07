@@ -37,6 +37,7 @@
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
+                <property name="JasperConfigActivation">org.efaps.sales.Invoice.JasperActivation</property>
                 <!-- Sales_ChannelCondition2Invoice -->
                 <property name="ConnectType01">74552bef-1282-4be2-af52-2fa914ddaa17</property>
                 <property name="ConnectCurrentLink01">ToLink</property>

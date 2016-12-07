@@ -28,7 +28,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -58,10 +60,12 @@ public abstract class CreditNote_Base
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
 
-        final File file = createReport(_parameter, createdDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.CREDITNOTE_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+            final File file = createReport(_parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }
@@ -92,10 +96,12 @@ public abstract class CreditNote_Base
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
 
-        final File file = createReport(_parameter, editDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.CREDITNOTE_JASPERACTIVATION.get().contains(JasperActivation.ONEDIT)) {
+            final File file = createReport(_parameter, editDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }

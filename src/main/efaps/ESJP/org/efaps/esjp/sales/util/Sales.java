@@ -28,6 +28,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
+import org.efaps.esjp.admin.common.systemconfiguration.BitEnumSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.EnumSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.IntegerSysConfAttribute;
@@ -40,6 +41,7 @@ import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CINumGenSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
 import org.efaps.esjp.sales.cashflow.CashFlowCategory;
 import org.efaps.util.cache.CacheReloadException;
@@ -243,6 +245,17 @@ public final class Sales
                     .key(BASE + "CreditNote.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BitEnumSysConfAttribute<JasperActivation> CREDITNOTE_JASPERACTIVATION
+        = new BitEnumSysConfAttribute<JasperActivation>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "CreditNote.JasperActivation")
+                    .clazz(JasperActivation.class)
+                    .addDefaultValue(JasperActivation.ONCREATE)
+                    .addDefaultValue(JasperActivation.ONEDIT)
+                    .description("Activation of Jasperreport Creation");
 
     /** See description. */
     @EFapsSysConfLink
@@ -790,6 +803,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BitEnumSysConfAttribute<JasperActivation> INVOICE_JASPERACTIVATION
+        = new BitEnumSysConfAttribute<JasperActivation>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.JasperActivation")
+                    .clazz(JasperActivation.class)
+                    .addDefaultValue(JasperActivation.ONCREATE)
+                    .addDefaultValue(JasperActivation.ONEDIT)
+                    .description("Activation of Jasperreport Creation");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INVOICE_ASSIGNACTION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.AssignAction")
@@ -1323,6 +1347,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BitEnumSysConfAttribute<JasperActivation> RECEIPT_JASPERACTIVATION
+        = new BitEnumSysConfAttribute<JasperActivation>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.JasperActivation")
+                    .clazz(JasperActivation.class)
+                    .addDefaultValue(JasperActivation.ONCREATE)
+                    .addDefaultValue(JasperActivation.ONEDIT)
+                    .description("Activation of Jasperreport Creation");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute RECEIPT_TRANSDOC = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Receipt.ActivateTransDocShadow")
@@ -1385,18 +1420,29 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute REMINDERJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute REMINDER_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Reminder.JasperReport")
                     .description("Name of the jasperReport for CreditNote");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> REMINDERMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> REMINDER_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Reminder.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BitEnumSysConfAttribute<JasperActivation> REMINDER_JASPERACTIVATION
+        = new BitEnumSysConfAttribute<JasperActivation>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Reminder.JasperActivation")
+                    .clazz(JasperActivation.class)
+                    .addDefaultValue(JasperActivation.ONCREATE)
+                    .addDefaultValue(JasperActivation.ONEDIT)
+                    .description("Activation of Jasperreport Creation");
 
     /** See description. */
     @EFapsSysConfAttribute
