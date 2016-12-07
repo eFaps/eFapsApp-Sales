@@ -194,6 +194,19 @@ public abstract class DocProductTransactionCostReport_Base
         }
 
         /**
+         * Gets the properties.
+         *
+         * @return the properties
+         * @throws EFapsException on error
+         */
+        @Override
+        protected Properties getProperties()
+            throws EFapsException
+        {
+            return Sales.REPORT_DOCPRODTRANSCOST.get();
+        }
+
+        /**
          * Getter method for the instance variable {@link #filteredReport}.
          *
          * @return value of instance variable {@link #filteredReport}

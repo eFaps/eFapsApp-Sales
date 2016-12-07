@@ -332,7 +332,7 @@ public abstract class DocProductTransactionReport_Base
                 prodDocQueryBldr = new QueryBuilder(CISales.DeliveryNote);
             }
 
-            final List<Status> statusList = getStatusListFromProperties(_parameter, Sales.REPORT_DOCPRODTRANS.get());
+            final List<Status> statusList = getStatusListFromProperties(_parameter, getProperties());
             if (CollectionUtils.isNotEmpty(statusList)) {
                 prodDocQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, statusList.toArray());
             }
@@ -343,6 +343,18 @@ public abstract class DocProductTransactionReport_Base
                             .getAttributeQuery(CIERP.DocumentAbstract.ID));
             add2TransactionQueryBuilder(_parameter, transQueryBldr);
             return transQueryBldr;
+        }
+
+        /**
+         * Gets the properties.
+         *
+         * @return the properties
+         * @throws EFapsException on error
+         */
+        protected Properties getProperties()
+            throws EFapsException
+        {
+            return Sales.REPORT_DOCPRODTRANS.get();
         }
 
         /**
