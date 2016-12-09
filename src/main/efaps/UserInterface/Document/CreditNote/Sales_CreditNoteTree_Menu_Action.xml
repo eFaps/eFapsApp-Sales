@@ -30,6 +30,7 @@
             <child>Sales_CreditNoteTree_Menu_Action_SetOpen</child>
             <child>Sales_CreditNoteTree_Menu_Action_Recalculate</child>
             <child>Sales_CreditNoteTree_Menu_Action_SetPaid</child>
+            <child>Sales_CreditNoteTree_Menu_Action_Swap</child>
             <child>Sales_CreditNoteTree_Menu_Action_SetReplaced</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>

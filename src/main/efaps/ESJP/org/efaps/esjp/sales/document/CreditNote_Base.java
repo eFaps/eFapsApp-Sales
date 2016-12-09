@@ -18,18 +18,25 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -111,5 +118,54 @@ public abstract class CreditNote_Base
         throws EFapsException
     {
         return CISales.CreditNote;
+    }
+
+    /**
+     * Swap.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return swap(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance inst = _parameter.getInstance();
+
+        final PrintQuery print = new PrintQuery(inst);
+        print.addAttribute(CISales.CreditNote.RateCrossTotal, CISales.CreditNote.RateCurrencyId);
+        print.execute();
+
+        final BigDecimal amount = print.getAttribute(CISales.CreditNote.RateCrossTotal);
+        final Long currencyId = print.getAttribute(CISales.CreditNote.RateCurrencyId);
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.CreditNote2Invoice);
+        attrQueryBldr.addWhereAttrEqValue(CISales.CreditNote2Invoice.FromLink, inst);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice);
+        queryBldr.addWhereAttrEqValue(CISales.Invoice.Status, Status.find(CISales.InvoiceStatus.Open));
+        queryBldr.addWhereAttrInQuery(CISales.Invoice.ID,
+                        attrQueryBldr.getAttributeQuery(CISales.CreditNote2Invoice.ToLink));
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        if (query.next()) {
+            final Insert insert = new Insert(CISales.Document2Document4Swap);
+            insert.add(CISales.Document2Document4Swap.FromLink, inst);
+            insert.add(CISales.Document2Document4Swap.ToLink, query.getCurrentValue());
+            insert.add(CISales.Document2Document4Swap.Amount, amount);
+            insert.add(CISales.Document2Document4Swap.CurrencyLink, currencyId);
+            insert.execute();
+
+            final Insert insert2 = new Insert(CISales.Document2Document4Swap);
+            insert2.add(CISales.Document2Document4Swap.FromLink, query.getCurrentValue());
+            insert2.add(CISales.Document2Document4Swap.ToLink, inst);
+            insert2.add(CISales.Document2Document4Swap.Amount, amount);
+            insert2.add(CISales.Document2Document4Swap.CurrencyLink, currencyId);
+            insert2.execute();
+
+            new DocumentUpdate().updateDocument(_parameter, inst);
+            new DocumentUpdate().updateDocument(_parameter, query.getCurrentValue());
+        }
+        return new Return();
     }
 }
