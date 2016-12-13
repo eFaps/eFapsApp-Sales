@@ -17,20 +17,20 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>49b857ab-906d-4aca-ba7a-feda6fd8d33c</uuid>
+    <uuid>560cd602-111a-4053-a2b6-c42ecf0bfe17</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_ProductTree_SalesReport_Menu_Filter</name>
+        <name>Sales_Contacts_ContactTree_SalesReport_Menu_Filter</name>
         <icon>Filter</icon>
         <access>
             <role>Sales_Admin</role>
             <role>Products_Admin</role>
         </access>
         <target>
-            <form>Sales_SalesProductReportFilterForm</form>
-            <execute program="org.efaps.esjp.sales.report.SalesProductReport" method="setFilter">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ProductFilterKey</property>
+            <form>Sales_Contacts_SalesProductReportFilterForm</form>
+            <execute method="setFilter" program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ContactFilterKey</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesProductReport</property>
@@ -40,6 +40,7 @@
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
-        <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ProductFilterKey</property>
+        <property name="TargetTitle">report.Filter</property>
+        <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ContactFilterKey</property>
     </definition>
 </ui-command>

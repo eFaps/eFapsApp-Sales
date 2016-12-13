@@ -17,12 +17,12 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>327898e9-230c-467e-91f6-41bc6830fd65</uuid>
+    <uuid>3b3830df-e1d3-4fe6-937f-0f3171540bff</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_SalesProductReportFilterForm</name>
-        <field name="dateFrom">
+        <name>Sales_Products_SalesReportFilterForm</name>
+         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">ERP_ReportFilterForm4DateFromTo.dateFrom.Label</property>
@@ -119,37 +119,6 @@
             <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.contact_negate</property>
              <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
                 name="Sales_SalesProductReportFilterForm.contact_negate.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.SalesProductReport">
-            </trigger>
-        </field>
-        <field name="productGroup" character="Group">
-            <property name="ModeEdit">READONLY</property>
-            <property name="GroupCount">2</property>
-        </field>
-        <field name="product">
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.product</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport"
-                method="getInstanceSetFieldValue"
-                name="Sales_SalesProductReportFilterForm.product.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
-                <property name="Products_ProductAbstract_Select">attribute[Name]</property>
-            </trigger>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-                 method="autoComplete4Product"
-                 name="Sales_SalesProductReportFilterForm.product.UI_FIELD_AUTOCOMPLETE"
-                 program="org.efaps.esjp.products.Product">
-                 <property name="AutoType">TOKEN</property>
-            </trigger>
-        </field>
-        <field name="product_negate">
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-            <property name="HideLabel">true</property>
-            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.product_negate</property>
-             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
-                name="Sales_SalesProductReportFilterForm.product_negate.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.SalesProductReport">
             </trigger>
         </field>

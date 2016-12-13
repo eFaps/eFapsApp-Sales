@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,69 +17,87 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>65479a2a-a8c0-4de8-bc56-e25ec85c6bde</uuid>
+    <uuid>fb214dbe-9e8a-4451-aa97-cf18e1fea59f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_SalesReportForm</name>
+        <name>Sales_Contacts_SalesProductReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="UIType">SNIPPLET</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="setDefaultFilter"
-                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE" index="1">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
-                <property name="ReportField">salesReport</property>
+            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
+                name="Sales_Contacts_SalesProductReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ContactFilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
-                <property name="Field04">dateConfig</property>
+                <property name="Field04">groupBy</property>
                 <property name="Field05">hideDetails</property>
                 <property name="Field06">priceConfig</property>
                 <property name="Field07">currency</property>
+                <property name="Field08">product</property>
+                <property name="Field09">condition</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
-                <property name="FilterType04">Enum</property>
+                <property name="FilterType04">GroupBy</property>
                 <property name="FilterType05">Boolean</property>
                 <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Currency</property>
+                <property name="FilterType08">InstanceSet</property>
+                <property name="FilterType09">InstanceSet</property>
                 <property name="FilterDefault01">YEAR:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
-                <property name="FilterDefault04">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
+                <property name="FilterDefault04">org.efaps.esjp.sales.report.SalesProductReport_Base$GroupBy</property>
                 <property name="FilterDefault05">false</property>
                 <property name="FilterDefault06">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
                 <property name="FilterDefault07">BASECURRENCY</property>
+                <property name="FilterDefault08">-</property>
+                <property name="FilterDefault09">-</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute10">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="getFilterFieldValue"
-                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE" index="2">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
+            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
+                name="Sales_Contacts_SalesProductReportForm.filter.UI_FIELD_VALUE.2" program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ContactFilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
-                <property name="Field04">dateConfig</property>
+                <property name="Field04">groupBy</property>
                 <property name="Field05">hideDetails</property>
                 <property name="Field06">priceConfig</property>
                 <property name="Field07">currency</property>
+                <property name="Field08">product</property>
+                <property name="Field09">condition</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SalesProductReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SalesProductReport.dateTo</property>
                 <property name="DBProperty03">ERP_ReportFilterForm4DateFromToType.type.Label</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.SalesProductReport.dateConfig</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.SalesProductReport.groupBy</property>
                 <property name="DBProperty05">org.efaps.esjp.sales.report.SalesProductReport.hideDetails</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.SalesProductReport.product</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.SalesProductReport.condition</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+                <property name="Products_ProductAbstract_Select">attribute[Name]</property>
+                <property name="HumanResource_Employee_MsgPhrase">HumanResource_EmployeeMsgPhrase</property>
+                <property name="Sales_ChannelConditionAbstract_Phrase">$&lt;attribute[Name]&gt; - $&lt;type.label&gt;</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute10">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
                 <property name="CachedReportAddInstanceCriteria">true</property>
             </trigger>
         </field>
         <field name="salesReport">
             <property name="HideLabel">true</property>
             <property name="UIType">SNIPPLET</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="generateReport"
-                name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="ShowDetails">true</property>
-                <property name="OppositeFilter">true</property>
-                <property name="DateFilter">month</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
+            <trigger event="UI_FIELD_VALUE" method="generateReport"
+                name="Sales_Contacts_SalesProductReportForm.salesReport.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.ContactFilterKey</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesProductReport</property>

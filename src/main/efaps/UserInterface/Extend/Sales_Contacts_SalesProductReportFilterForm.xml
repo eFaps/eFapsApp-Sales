@@ -17,11 +17,11 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>327898e9-230c-467e-91f6-41bc6830fd65</uuid>
+    <uuid>e12bb086-34e9-44e0-9a6b-73dd0aaadd5b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_SalesProductReportFilterForm</name>
+        <name>Sales_Contacts_SalesProductReportFilterForm</name>
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
@@ -86,43 +86,11 @@
             <property name="UIType">DROPDOWN</property>
             <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
             <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
-                name="Sales_SalesProductReportFilterForm.currency.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.SalesProductReport">
+                name="Sales_SalesProductReportFilterForm.currency.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.SalesProductReport">
                 <property name="ShowEmptyValue">false</property>
             </trigger>
         </field>
-        <field name="contactGroup" character="Group">
-            <property name="ModeEdit">READONLY</property>
-            <property name="GroupCount">2</property>
-        </field>
-        <field name="contact">
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.contact</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport"
-                method="getInstanceSetFieldValue"
-                name="Sales_SalesProductReportFilterForm.contact.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
-                 <property name="Contacts_Contact_Select">attribute[Name]</property>
-            </trigger>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-                 method="autoComplete4Contact"
-                 name="Sales_SalesProductReportFilterForm.contact.UI_FIELD_AUTOCOMPLETE"
-                 program="org.efaps.esjp.contacts.Contacts">
-                  <property name="AutoType">TOKEN</property>
-            </trigger>
-        </field>
-        <field name="contact_negate">
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-            <property name="HideLabel">true</property>
-            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.contact_negate</property>
-             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
-                name="Sales_SalesProductReportFilterForm.contact_negate.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.SalesProductReport">
-            </trigger>
-        </field>
-        <field name="productGroup" character="Group">
+        <field character="Group" name="productGroup">
             <property name="ModeEdit">READONLY</property>
             <property name="GroupCount">2</property>
         </field>
@@ -130,17 +98,14 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.product</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport"
-                method="getInstanceSetFieldValue"
-                name="Sales_SalesProductReportFilterForm.product.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
+            <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
+                name="Sales_SalesProductReportFilterForm.product.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.SalesProductReport">
                 <property name="Products_ProductAbstract_Select">attribute[Name]</property>
             </trigger>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-                 method="autoComplete4Product"
-                 name="Sales_SalesProductReportFilterForm.product.UI_FIELD_AUTOCOMPLETE"
-                 program="org.efaps.esjp.products.Product">
-                 <property name="AutoType">TOKEN</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
+                name="Sales_SalesProductReportFilterForm.product.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.products.Product">
+                <property name="AutoType">TOKEN</property>
             </trigger>
         </field>
         <field name="product_negate">
@@ -148,37 +113,34 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="HideLabel">true</property>
             <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.product_negate</property>
-             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
                 name="Sales_SalesProductReportFilterForm.product_negate.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.SalesProductReport">
             </trigger>
         </field>
-        <field name="conditionGroup" character="Group">
+        <field character="Group" name="conditionGroup">
             <property name="ModeEdit">READONLY</property>
             <property name="GroupCount">2</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_SalesProductReportFilterForm.conditionGroup.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                  <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
             </trigger>
         </field>
-         <field name="condition">
+        <field name="condition">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.condition</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport"
-                method="getInstanceSetFieldValue"
+            <trigger event="UI_FIELD_VALUE" method="getInstanceSetFieldValue"
                 name="Sales_SalesProductReportFilterForm.condition.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
+                program="org.efaps.esjp.sales.report.SalesProductReport">
                 <property name="Sales_ChannelConditionAbstract_Phrase">$&lt;attribute[Name]&gt; - $&lt;type.label&gt;</property>
             </trigger>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="autoComplete"
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete"
                 name="Sales_SalesProductReportFilterForm.condition.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
+                program="org.efaps.esjp.common.uiform.Field">
                 <property name="SearchAttribute">Name</property>
                 <property name="Phrase4VALUE">$&lt;attribute[Name]&gt; - $&lt;type.label&gt;</property>
                 <property name="Type">Sales_ChannelConditionAbstract</property>
@@ -186,10 +148,8 @@
                 <property name="Status01">Active</property>
                 <property name="AutoType">TOKEN</property>
             </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_SalesProductReportFilterForm.employee.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_SalesProductReportFilterForm.employee.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
                  <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
@@ -204,40 +164,12 @@
                 name="Sales_SalesProductReportFilterForm.condition_negate.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.SalesProductReport">
             </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_SalesProductReportFilterForm.condition_negate.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                  <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
-            </trigger>
-        </field>
-        <field name="employee">
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.employee</property>
-            <trigger program="org.efaps.esjp.sales.report.SalesProductReport"
-                method="getInstanceFieldValue"
-                name="Sales_SalesProductReportFilterForm.product.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
-                <property name="HumanResource_Employee_MsgPhrase">HumanResource_EmployeeMsgPhrase</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.humanresource.Employee"
-                method="autoComplete4Employee"
-                name="Sales_SalesProductReportFilterForm.employee.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">HumanResource_Employee</property>
-                <property name="StatusGroup01">HumanResource_EmployeeStatus</property>
-                <property name="Status01">Worker</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_SalesProductReportFilterForm.employee.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                 <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateContactAssigned2Employee</property>
             </trigger>
         </field>
     </definition>

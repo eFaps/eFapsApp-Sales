@@ -29,7 +29,7 @@
         </access>
         <target>
             <menu>Sales_Products_ProductTree_SalesReport_Menu</menu>
-            <form>Sales_Products_SalesReportForm</form>
+            <form>Sales_Products_SalesProductReportForm</form>
         </target>
         <parents>
             <parent>Products_ProductStandartTree</parent>
