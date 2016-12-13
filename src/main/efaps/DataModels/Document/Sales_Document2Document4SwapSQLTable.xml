@@ -30,6 +30,7 @@
             <column name="COMPANYID"    type="INTEGER"  not-null="true"/>
             <column name="CURRENCYID"   type="INTEGER"  not-null="true" />
             <column name="AMOUNT"       type="DECIMAL"  not-null="true" length="14" scale="2"/>
+            <column name="DATE"         type="DATETIME" null="true" />
         </database>
     </definition>
 </datamodel-sqltable>

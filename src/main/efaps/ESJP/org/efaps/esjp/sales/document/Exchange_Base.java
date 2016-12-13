@@ -307,6 +307,7 @@ public abstract class Exchange_Base
                                 insert.add(CISales.Document2Document4Swap.FromLink, docInst);
                                 insert.add(CISales.Document2Document4Swap.ToLink, entry.getKey());
                             }
+                            insert.add(CISales.Document2Document4Swap.Date, new DateTime());
                             insert.add(CISales.Document2Document4Swap.CurrencyLink,
                                             createDocInfo.getRateCurrencyInstance());
                             insert.add(CISales.Document2Document4Swap.Amount, innerEntry.getValue());
@@ -316,7 +317,7 @@ public abstract class Exchange_Base
                     }
                 }
             } catch (final ParseException e) {
-                LOG.error("Catched ParseException", e);
+                Exchange_Base.LOG.error("Catched ParseException", e);
             }
         }
         for (final Instance inst : docInsts) {
@@ -443,7 +444,7 @@ public abstract class Exchange_Base
                                     .parse(cross));
                 }
             } catch (final ParseException e) {
-                LOG.error("Catched ParseException", e);
+                Exchange_Base.LOG.error("Catched ParseException", e);
             }
         }
         return ret;

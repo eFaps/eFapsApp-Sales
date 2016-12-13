@@ -71,9 +71,10 @@
             <property name="Label">Sales_SwapTable.toLinkContact.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-        <field name="modified">
-            <property name="Attribute">Modified</property>
-            <property name="Label">Sales_Document2Document4Swap/Modified.Label</property>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_Document2Document4Swap/Date.Label</property>
+            <property name="HRef">TREE</property>
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>

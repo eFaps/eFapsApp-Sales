@@ -323,6 +323,7 @@ public abstract class Swap_Base
                 final Instance docInst = Instance.get(docOid);
                 if (docInst.isValid()) {
                     try {
+                        final DateTime date = new DateTime(_parameter.getParameterValue("date"));
                         final BigDecimal partial = (BigDecimal) NumberFormatter.get().getFormatter()
                                         .parse(_parameter.getParameterValues("partial")[i]);
                         final Insert insert = new Insert(CISales.Document2Document4Swap);
@@ -336,10 +337,11 @@ public abstract class Swap_Base
                         insert.add(CISales.Document2Document4Swap.CurrencyLink,
                                         createDocInfo.getRateCurrencyInstance());
                         insert.add(CISales.Document2Document4Swap.Amount, partial);
+                        insert.add(CISales.Document2Document4Swap.Date, date);
                         insert.execute();
                         docInsts.add(docInst);
                     } catch (final ParseException e) {
-                        LOG.error("Catched ParseException", e);
+                        Swap_Base.LOG.error("Catched ParseException", e);
                     }
                 }
                 i++;
@@ -371,7 +373,7 @@ public abstract class Swap_Base
             try {
                 percentage = (BigDecimal) NumberFormatter.get().getFormatter().parse(perStr);
             } catch (final ParseException e) {
-                LOG.error("Catched ParseException", e);
+                Swap_Base.LOG.error("Catched ParseException", e);
 
             }
             final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInst).setTargetDocInst(docInst);
@@ -434,7 +436,7 @@ public abstract class Swap_Base
                 sum.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), 0);
                 list.add(sum);
             } catch (final ParseException e) {
-                LOG.error("Catched ParseException", e);
+                Swap_Base.LOG.error("Catched ParseException", e);
             }
         }
         final Return retVal = new Return();
@@ -496,7 +498,7 @@ public abstract class Swap_Base
                 list.add(sum);
 
             } catch (final ParseException e) {
-                LOG.error("Catched ParseException", e);
+                Swap_Base.LOG.error("Catched ParseException", e);
             }
         }
         final Return retVal = new Return();
@@ -618,7 +620,7 @@ public abstract class Swap_Base
             ret.put("total", NumberFormatter.get().getTwoDigitsFormatter().format(total));
 
         } catch (final ParseException e) {
-            LOG.error("Catched ParseException", e);
+            Swap_Base.LOG.error("Catched ParseException", e);
         }
         return ret;
     }
@@ -667,7 +669,7 @@ public abstract class Swap_Base
             } catch (final ParseException e) {
                 // only show that error during debug, because it is likely that
                 // the user did just used invalid strings
-                LOG.debug("Catched ParseException", e);
+                Swap_Base.LOG.debug("Catched ParseException", e);
             }
         }
         return ret;
@@ -782,7 +784,7 @@ public abstract class Swap_Base
         } else {
             final Instance callInst = _parameter.getCallInstance();
             final List<Instance> relInsts = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
-            ret = getSwapInfos(_parameter, callInst, relInsts);
+            ret = Swap_Base.getSwapInfos(_parameter, callInst, relInsts);
             Context.getThreadContext().setRequestAttribute(Swap.REQUESTKEY, ret);
         }
         return ret;
