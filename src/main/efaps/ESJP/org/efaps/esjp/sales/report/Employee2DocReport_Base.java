@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.common.SystemConfiguration;
@@ -45,6 +46,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIHumanResource;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -157,7 +159,7 @@ public abstract class Employee2DocReport_Base
             }
         }
         if (ret == null) {
-            ret = Sales.EMPLOYEE2DOCREPORT.get();
+            ret = Sales.REPORT_EMPLOYEE2DOC.get();
         }
         return ret;
     }
@@ -193,7 +195,7 @@ public abstract class Employee2DocReport_Base
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
-                    LOG.error("Catched JRException", e);
+                    AbstractDynamicReport_Base.LOG.error("Catched JRException", e);
                 }
             } else {
                 final ValueList values = getDocumentData(_parameter);
@@ -207,7 +209,7 @@ public abstract class Employee2DocReport_Base
                                     .linkto(CIHumanResource.Employee2DocumentAbstract.ToAbstractLink).instance();
                     multi.addSelect(selDocInst);
                     // HumanResource_EmployeeMsgPhrase as default
-                    final String msgPhraseStr = Sales.EMPLOYEE2DOCREPORT.get().getProperty("EmployeeMsgPhrase",
+                    final String msgPhraseStr = Sales.REPORT_EMPLOYEE2DOC.get().getProperty("EmployeeMsgPhrase",
                                     "f543ca6d-29fb-4f1a-8747-0057b9a08404");
                     final SelectBuilder selEmpl = SelectBuilder.get()
                                     .linkto(CIHumanResource.Employee2DocumentAbstract.FromAbstractLink);
@@ -260,6 +262,57 @@ public abstract class Employee2DocReport_Base
             if (filterValue != null && filterValue.getObject() != null && filterValue.getObject().isValid()) {
                 _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
             }
+
+            if (Sales.REPORT_EMPLOYEE2DOC_CONDITION.get() && ArrayUtils.isNotEmpty(getConditionInsts(_parameter))) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CISales.ChannelCondition2DocumentAbstract.FromAbstractLink,
+                                getConditionInsts(_parameter));
+
+                if (isConditionNegate(_parameter)) {
+                    _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
+                } else {
+                    _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
+                }
+            }
+        }
+
+        /**
+         * Gets the product inst.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the product inst
+         * @throws EFapsException on error
+         */
+        protected Object[] getConditionInsts(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Object[] ret;
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
+            if (filter == null || (filter != null && filter.getObject() == null)) {
+                ret = new Object[] {};
+            } else {
+                ret = filter.getObject().toArray();
+            }
+            return ret;
+        }
+
+        /**
+         * Checks if is contact negate.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is contact negate
+         * @throws EFapsException on error
+         */
+        protected boolean isConditionNegate(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
+            final boolean ret = filter != null && filter.isNegate();
+            return ret;
         }
 
         /**

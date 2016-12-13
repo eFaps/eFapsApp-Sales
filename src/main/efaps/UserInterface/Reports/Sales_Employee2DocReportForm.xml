@@ -38,6 +38,7 @@
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
                 <property name="Field08">docDetails</property>
+                <property name="Field09">condition</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -46,6 +47,7 @@
                 <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Boolean</property>
                 <property name="FilterType08">Boolean</property>
+                <property name="FilterType09">InstanceSet</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -54,6 +56,10 @@
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault07">false</property>
                 <property name="FilterDefault08">false</property>
+                <property name="FilterDefault09">-</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute09">org.efaps.sales.report.Employee2DocReport.ActivateCondition</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_Employee2DocReportForm.filter.UI_FIELD_VALUE.2"
@@ -67,6 +73,7 @@
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
                 <property name="Field08">docDetails</property>
+                <property name="Field09">condition</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.Employee2DocReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.Employee2DocReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.Employee2DocReport.type</property>
@@ -75,7 +82,12 @@
                 <property name="DBProperty06">org.efaps.esjp.sales.report.Employee2DocReport.dateGroup</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.Employee2DocReport.contactGroup</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.Employee2DocReport.docDetails</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.Employee2DocReport.condition</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
+                <property name="Sales_ChannelConditionAbstract_Phrase">$&lt;attribute[Name]&gt; - $&lt;type.label&gt;</property>
+                 <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute09">org.efaps.sales.report.Employee2DocReport.ActivateCondition</property>
             </trigger>
         </field>
         <field name="report">

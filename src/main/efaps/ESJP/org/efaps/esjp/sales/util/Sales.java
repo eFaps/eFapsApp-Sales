@@ -400,13 +400,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute EMPLOYEE2DOCREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "report.Employee2DocReport")
-                    .description("Autocomplete Properties 4 Products in Invoice");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute EXCHANGEACTIVATEGUARANTEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Exchange.ActivateGuarantee")
@@ -1644,6 +1637,20 @@ public final class Sales
                     .addDefaultValue("Type03", CISales.Reminder.getType().getName())
                     .addDefaultValue("Type04", CISales.IncomingExchange.getType().getName())
                     .description("Configures the ABC Report for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_EMPLOYEE2DOC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.Employee2DocReport")
+                    .description("Autocomplete Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_EMPLOYEE2DOC_CONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.Employee2DocReport.ActivateCondition")
+                    .description("Activate the filter for condition.");
 
     /** See description. */
     @EFapsSysConfAttribute

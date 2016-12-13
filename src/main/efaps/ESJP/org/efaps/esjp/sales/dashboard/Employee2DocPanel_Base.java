@@ -135,7 +135,7 @@ public abstract class Employee2DocPanel_Base
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        CharSequence ret;
+        final CharSequence ret;
         if (isCached()) {
             ret = getFromCache();
         } else {
@@ -152,7 +152,7 @@ public abstract class Employee2DocPanel_Base
             queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
             final MultiPrintQuery multi = queryBldr.getPrint();
             // HumanResource_EmployeeMsgPhrase as default
-            final String msgPhraseStr = Sales.EMPLOYEE2DOCREPORT.get().getProperty("EmployeeMsgPhrase",
+            final String msgPhraseStr = Sales.REPORT_EMPLOYEE2DOC.get().getProperty("EmployeeMsgPhrase",
                             "f543ca6d-29fb-4f1a-8747-0057b9a08404");
             final SelectBuilder selEmpl = SelectBuilder.get()
                             .linkfrom(CIHumanResource.Employee2DocumentAbstract.ToAbstractLink)
@@ -176,7 +176,7 @@ public abstract class Employee2DocPanel_Base
 
                 currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-                BigDecimal val;
+                final BigDecimal val;
                 if (values.containsKey(emplInst)) {
                     val = values.get(emplInst);
                 } else {

@@ -100,6 +100,66 @@
                 name="ERP_ReportFilterForm4DateFromToType.docDetails.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />
         </field>
+        <field name="conditionGroup" character="Group">
+            <property name="ModeEdit">READONLY</property>
+            <property name="GroupCount">2</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Employee2DocReportFilterForm.conditionGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                 <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.report.Employee2DocReport.ActivateCondition</property>
+            </trigger>
+        </field>
+         <field name="condition">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.Employee2DocReport.condition</property>
+            <trigger program="org.efaps.esjp.sales.report.Employee2DocReport"
+                method="getInstanceSetFieldValue"
+                name="Sales_Employee2DocReportFilterForm.condition.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Sales_ChannelConditionAbstract_Phrase">$&lt;attribute[Name]&gt; - $&lt;type.label&gt;</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="autoComplete"
+                name="Sales_Employee2DocReportFilterForm.condition.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="SearchAttribute">Name</property>
+                <property name="Phrase4VALUE">$&lt;attribute[Name]&gt; - $&lt;type.label&gt;</property>
+                <property name="Type">Sales_ChannelSalesCondition</property>
+                <property name="StatusGroup01">Sales_ChannelStatus</property>
+                <property name="Status01">Active</property>
+                <property name="AutoType">TOKEN</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Employee2DocReportFilterForm.condition.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                 <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.report.Employee2DocReport.ActivateCondition</property>
+            </trigger>
+        </field>
+        <field name="condition_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.Employee2DocReport.condition_negate</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_SalesProductReportFilterForm.condition_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.Employee2DocReport">
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Employee2DocReportFilterForm.condition_negate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                 <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.report.Employee2DocReport.ActivateCondition</property>
+            </trigger>
+        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
