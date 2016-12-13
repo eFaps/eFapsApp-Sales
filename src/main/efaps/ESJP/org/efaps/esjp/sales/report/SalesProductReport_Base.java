@@ -756,7 +756,7 @@ public abstract class SalesProductReport_Base
             } else {
                 final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
-                if (filter == null || (filter != null && filter.getObject() == null)) {
+                if (filter == null || filter != null && filter.getObject() == null) {
                     ret = new Object[] {};
                 } else {
                     ret = filter.getObject().toArray();
@@ -825,7 +825,7 @@ public abstract class SalesProductReport_Base
             } else {
                 final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
-                if (filter == null || (filter != null && filter.getObject() == null)) {
+                if (filter == null || filter != null && filter.getObject() == null) {
                     ret = new Object[] {};
                 } else {
                     ret = filter.getObject().toArray();
@@ -866,7 +866,7 @@ public abstract class SalesProductReport_Base
             final Object[] ret;
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
-            if (filter == null || (filter != null && filter.getObject() == null)) {
+            if (filter == null || filter != null && filter.getObject() == null) {
                 ret = new Object[] {};
             } else {
                 ret = filter.getObject().toArray();
@@ -1159,7 +1159,10 @@ public abstract class SalesProductReport_Base
                 columns.remove(productNameColumn);
                 columns.remove(productDescColumn);
             }
-            _builder.addColumn(columns.toArray(new ColumnBuilder<?, ?>[columns.size()]));
+            _builder.addColumn(columns.toArray(new ColumnBuilder<?, ?>[columns.size()]))
+                .addSubtotalAtSummary(DynamicReports.sbt.sum(quantityColumn),
+                                    DynamicReports.sbt.sum(priceColumn),
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
         }
 
         @Override
