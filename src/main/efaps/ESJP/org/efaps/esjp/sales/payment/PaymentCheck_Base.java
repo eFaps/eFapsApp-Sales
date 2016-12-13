@@ -245,7 +245,6 @@ public abstract class PaymentCheck_Base
      * @return the java script ui value
      * @throws EFapsException on error
      */
-    @SuppressWarnings("unchecked")
     public Return getJavaScriptUIValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -277,9 +276,9 @@ public abstract class PaymentCheck_Base
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.account.name,
                         _parameter.getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.date.name + "_eFapsDate",
-                               DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.Date))))
+                               DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.dueDate.name + "_eFapsDate",
-                            DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))));
+                            DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.Date))));
 
             // store that the amount was set from the User
             ParameterUtil.setParameterValues(_parameter, "amount", amount);
