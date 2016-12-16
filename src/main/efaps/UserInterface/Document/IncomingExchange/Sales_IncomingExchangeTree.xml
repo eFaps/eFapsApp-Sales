@@ -29,6 +29,7 @@
         <type>Sales_IncomingExchange</type>
         <childs>
             <child>Sales_IncomingExchangeTree_Payment</child>
+            <child>Sales_IncomingExchangeTree_PaymentAnalysis</child>
             <child>Sales_IncomingExchangeTree_Documents</child>
         </childs>
         <property name="Target">content</property>
