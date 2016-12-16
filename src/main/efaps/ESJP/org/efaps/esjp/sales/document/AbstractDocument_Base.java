@@ -61,6 +61,7 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.api.ui.IMapFilter;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedInstanceQuery;
@@ -993,7 +994,7 @@ public abstract class AbstractDocument_Base
             }
 
             final List<AbstractUIPosition> beans = updateBean4Indiviual(_parameter, origBean);
-            LOG.debug("Updated bean {} with {}", origBean, beans);
+            AbstractDocument_Base.LOG.debug("Updated bean {} with {}", origBean, beans);
             for (final AbstractUIPosition bean : beans) {
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionSumAbstract)) {
                     bean.setNetUnitPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice))
@@ -2045,7 +2046,7 @@ public abstract class AbstractDocument_Base
             final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
             if (sessfilter.containsKey(fieldValue.getField().getName())) {
                 final TableFilter filter = sessfilter.get(fieldValue.getField().getName());
-                final Map<String, Object> map = filter.getMap4esjp();
+                final IMapFilter map = (IMapFilter) filter.getFilter();
                 if (map != null && map.containsKey(fieldValue.getField().getName())) {
                     final String[] selected = (String[]) map.get(fieldValue.getField().getName());
                     if (selected != null && selected.length > 0) {
