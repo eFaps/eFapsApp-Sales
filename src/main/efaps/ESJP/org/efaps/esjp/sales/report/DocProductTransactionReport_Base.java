@@ -247,6 +247,7 @@ public abstract class DocProductTransactionReport_Base
 
                 final MultiPrintQuery multi = getQueryBldr(_parameter).getPrint();
                 final SelectBuilder selDoc = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Document);
+                final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();;
                 final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
                 final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
                 final SelectBuilder selDocContact = new SelectBuilder(selDoc)
@@ -258,7 +259,8 @@ public abstract class DocProductTransactionReport_Base
                                 .attribute(CIProducts.ProductAbstract.Name);
                 final SelectBuilder selProductDescr = new SelectBuilder(selProduct)
                                 .attribute(CIProducts.ProductAbstract.Description);
-                multi.addSelect(selProductInst, selProductName, selProductDescr, selDocDate, selDocName, selDocContact);
+                multi.addSelect(selProductInst, selProductName, selProductDescr, selDocInst,
+                                selDocDate, selDocName, selDocContact);
                 multi.addAttribute(CIProducts.TransactionAbstract.Quantity, CIProducts.TransactionAbstract.UoM);
                 multi.execute();
                 while (multi.next()) {
@@ -266,6 +268,7 @@ public abstract class DocProductTransactionReport_Base
                     final Instance productInst = multi.getSelect(selProductInst);
                     final String productName = multi.getSelect(selProductName);
                     final String productDescr = multi.getSelect(selProductDescr);
+                    final Instance docInst = multi.getSelect(selDocInst);
                     final String docName = multi.getSelect(selDocName);
                     final String docContact = multi.getSelect(selDocContact);
                     final DateTime date = multi.getSelect(selDocDate);
@@ -276,6 +279,7 @@ public abstract class DocProductTransactionReport_Base
                         .setProductInst(productInst)
                         .setProduct(productName)
                         .setProductDescr(productDescr)
+                        .setDocInst(docInst)
                         .setDocName(docName)
                         .setDocContact(docContact)
                         .setDate(date)
@@ -598,6 +602,9 @@ public abstract class DocProductTransactionReport_Base
         /** The doc contact. */
         private String docContact;
 
+        /** The document inst. */
+        private Instance docInst;
+
         /** The partial. */
         private String partial;
 
@@ -799,6 +806,28 @@ public abstract class DocProductTransactionReport_Base
         public DataBean setDate(final DateTime _date)
         {
             this.date = _date;
+            return this;
+        }
+
+        /**
+         * Gets the document inst.
+         *
+         * @return the document inst
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+        /**
+         * Sets the doc inst.
+         *
+         * @param _docInst the doc inst
+         * @return the data bean
+         */
+        public DataBean setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
             return this;
         }
 

@@ -15,46 +15,46 @@
  *
  */
 
-package org.efaps.esjp.sales;
+package org.efaps.esjp.sales.report.filter;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_base</code>"
+ * Functional description can be found in the related "<code>_Base</code>"
  * class.
  *
  * @author The eFaps Team
- *
  */
-@EFapsUUID("873ddf05-8342-40ac-b1ac-17afe66c6f0c")
+@EFapsUUID("58cb39f6-ffb5-4ffb-ba38-7e1f21b611e8")
 @EFapsApplication("eFapsApp-Sales")
-public class Costs
-    extends Costs_Base
+public class CostTypeFilterValue
+    extends CostTypeFilterValue_Base
 {
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Gets the acquisition cost.
+     * Gets the cost type positions.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _productInstance the product instance
-     * @param _docInst the doc inst
-     * @param _currenyInst the curreny inst
-     * @return the acquisition cost
+     * @param _selected the selected
+     * @param _currencyInsts the currency insts
+     * @return the cost type positions
      * @throws EFapsException on error
      */
-    public static BigDecimal getAcquisitionCost(final Parameter _parameter,
-                                                final Instance _productInstance,
-                                                final Instance _docInst,
-                                                final Instance _currenyInst)
+    public static List<DropDownPosition> getCostTypePositions(final Parameter _parameter,
+                                                              final CostTypeFilterValue _selected,
+                                                              final Instance... _currencyInsts)
         throws EFapsException
     {
-        return Costs_Base.getAcquisitionCost(_parameter, _productInstance, _docInst, _currenyInst);
+        return CostTypeFilterValue_Base.getCostTypePositions(_parameter, _selected, _currencyInsts);
     }
 }

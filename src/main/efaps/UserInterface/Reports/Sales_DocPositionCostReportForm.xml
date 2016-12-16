@@ -57,7 +57,7 @@
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault07">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
-                <property name="FilterDefault08">org.efaps.esjp.products.reports.CostReport_Base$CostTypeFilterValue</property>
+                <property name="FilterDefault08">org.efaps.esjp.sales.report.filter.CostTypeFilterValue</property>
                 <property name="FilterDefault09">ALL</property>
                 <property name="FilterDefault10">false</property>
                 <!-- Sales-Configuration -->

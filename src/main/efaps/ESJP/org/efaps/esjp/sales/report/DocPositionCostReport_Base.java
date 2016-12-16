@@ -39,8 +39,10 @@ import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -53,6 +55,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
@@ -60,10 +63,9 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.products.Cost;
-import org.efaps.esjp.products.reports.CostReport;
-import org.efaps.esjp.products.reports.CostReport_Base.CostTypeFilterValue;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.report.DocPositionReport_Base.ContactGroup;
+import org.efaps.esjp.sales.report.filter.CostTypeFilterValue;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -144,8 +146,13 @@ public abstract class DocPositionCostReport_Base
     public Return getCostTypeFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final CostReport costReport = new CostReport();
-        return costReport.getCostTypeFieldValue(_parameter);
+        final Return ret = new Return();
+        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String key = value.getField().getName();
+        final Map<String, Object> map = getFilterMap(_parameter);
+        ret.put(ReturnValues.VALUES, CostTypeFilterValue.getCostTypePositions(_parameter, (CostTypeFilterValue) map
+                        .get(key), Currency.getAvailable().toArray(new Instance[Currency.getAvailable().size()])));
+        return ret;
     }
 
     /**
@@ -408,7 +415,7 @@ public abstract class DocPositionCostReport_Base
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
-                    LOG.error("Catched JRException", e);
+                    AbstractDynamicReport_Base.LOG.error("Catched JRException", e);
                 }
             } else {
                 final ValueList values = getFilteredReport().getData(_parameter);

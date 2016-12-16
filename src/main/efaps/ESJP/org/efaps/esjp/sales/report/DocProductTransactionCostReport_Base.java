@@ -24,20 +24,24 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.products.Cost;
-import org.efaps.esjp.products.reports.CostReport;
-import org.efaps.esjp.products.reports.CostReport_Base.CostTypeFilterValue;
+import org.efaps.esjp.sales.Costs;
 import org.efaps.esjp.sales.report.DocPositionReport_Base.UnitPriceMessuredExpression;
+import org.efaps.esjp.sales.report.filter.CostTypeFilterValue;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -73,8 +77,13 @@ public abstract class DocProductTransactionCostReport_Base
     public Return getCostTypeFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final CostReport costReport = new CostReport();
-        return costReport.getCostTypeFieldValue(_parameter);
+        final Return ret = new Return();
+        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String key = value.getField().getName();
+        final Map<String, Object> map = getFilterMap(_parameter);
+        ret.put(ReturnValues.VALUES, CostTypeFilterValue.getCostTypePositions(_parameter, (CostTypeFilterValue) map
+                        .get(key), Currency.getAvailable().toArray(new Instance[Currency.getAvailable().size()])));
+        return ret;
     }
 
     @Override
@@ -228,22 +237,9 @@ public abstract class DocProductTransactionCostReport_Base
         public DataBean getBean(final Parameter _parameter)
             throws EFapsException
         {
-            return new DataCostBean(_parameter, getCostInstance(_parameter));
-        }
-
-        /**
-         * Gets the cost instance.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return the cost instance
-         * @throws EFapsException on error
-         */
-        protected Instance getCostInstance(final Parameter _parameter)
-            throws EFapsException
-        {
             final Map<String, Object> filters = getFilteredReport().getFilterMap(_parameter);
             final CostTypeFilterValue filterValue = (CostTypeFilterValue) filters.get("costType");
-            return Instance.get(filterValue.getObject());
+            return new DataCostBean(_parameter, filterValue);
         }
     }
 
@@ -253,24 +249,23 @@ public abstract class DocProductTransactionCostReport_Base
     public static class DataCostBean
         extends DataBean
     {
-
-        /** The cost instance. */
-        private final Instance costInstance;
-
         /** The parameter. */
         private final Parameter parameter;
+
+        /** The cost instance. */
+        private final CostTypeFilterValue filterValue;
 
         /**
          * Instantiates a new data cost bean.
          *
          * @param _parameter Parameter as passed by the eFaps API
-         * @param _costInstance the cost instance
+         * @param _filterValue the filter value
          */
         public DataCostBean(final Parameter _parameter,
-                            final Instance _costInstance)
+                            final CostTypeFilterValue _filterValue)
         {
             this.parameter = _parameter;
-            this.costInstance = _costInstance;
+            this.filterValue = _filterValue;
         }
 
         /**
@@ -282,12 +277,16 @@ public abstract class DocProductTransactionCostReport_Base
         public BigDecimal getCost()
             throws EFapsException
         {
-            final BigDecimal cost;
-            if (InstanceUtils.isValid(this.costInstance)) {
-                cost = Cost.getAlternativeCost4Currency(this.parameter, getDate(), this.costInstance, getProductInst(),
-                                this.costInstance);
+            BigDecimal cost = null;
+            final Instance tmpInst = Instance.get(this.filterValue.getObject());
+            if (this.filterValue.isAlternative() && InstanceUtils.isKindOf(tmpInst, CIERP.Currency)) {
+                cost = Cost.getAlternativeCost4Currency(this.parameter, getDate(), tmpInst,
+                                getProductInst(), tmpInst);
+            } else if (this.filterValue.isAcquisition() && InstanceUtils.isKindOf(tmpInst, CIERP.Currency)) {
+                cost = Costs.getAcquisitionCost(this.parameter, getProductInst(), getDocInst(), tmpInst);
             } else {
-                cost = Cost.getCost4Currency(this.parameter, getDate(), getProductInst(), Currency.getBaseCurrency());
+                cost = Cost.getCost4Currency(this.parameter, getDate(), getProductInst(), Currency
+                                .getBaseCurrency());
             }
             return getQuantity().multiply(cost == null ? BigDecimal.ZERO : cost);
         }

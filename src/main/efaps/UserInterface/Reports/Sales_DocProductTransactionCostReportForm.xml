@@ -61,7 +61,7 @@
                 <property name="FilterDefault07">-</property>
                 <property name="FilterDefault08">org.efaps.esjp.sales.report.DocProductTransactionReport_Base$ProdType</property>
                 <property name="FilterDefault09">false</property>
-                <property name="FilterDefault10">org.efaps.esjp.products.reports.CostReport_Base$CostTypeFilterValue</property>
+                <property name="FilterDefault10">org.efaps.esjp.sales.report.filter.CostTypeFilterValue</property>
                 <property name="FilterDefault11">false</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
