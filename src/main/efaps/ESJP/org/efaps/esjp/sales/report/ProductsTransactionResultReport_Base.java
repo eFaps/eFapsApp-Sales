@@ -206,13 +206,23 @@ public abstract class ProductsTransactionResultReport_Base
                 final TextColumnBuilder<BigDecimal> totalCostColumn = DynamicReports.col.column(getFilteredReport()
                                 .getDBProperty("Column.TotalCost"),
                                 "totalCost", DynamicReports.type.bigDecimalType());
+
+                final TextColumnBuilder<BigDecimal> movementCostColumn = DynamicReports.col.column(getFilteredReport()
+                                .getDBProperty("Column.MovementCost"),
+                                "movementCost", DynamicReports.type.bigDecimalType());
+
                 final AggregationSubtotalBuilder<BigDecimal> totalCostSum = DynamicReports.sbt.aggregate(
                                 totalCostColumn,
                                 Calculation.NOTHING);
 
+                final AggregationSubtotalBuilder<BigDecimal> movementCostSum = DynamicReports.sbt.aggregate(
+                                movementCostColumn,
+                                Calculation.SUM);
+
                 _builder.getReport().getColumns().add(4, totalCostColumn.build());
+                _builder.getReport().getColumns().add(4, movementCostColumn.build());
                 _builder.getReport().getColumns().add(4, costColumn.build());
-                _builder.addSubtotalAtSummary(totalCostSum);
+                _builder.addSubtotalAtSummary(movementCostSum, totalCostSum);
 
                 if (getStorageGroup() != null) {
                     final AggregationSubtotalBuilder<Object> totalCostSum4Grp = DynamicReports.sbt.aggregate(
@@ -340,6 +350,22 @@ public abstract class ProductsTransactionResultReport_Base
                 ret = BigDecimal.ZERO;
             } else {
                 ret = getTotal().multiply(getCost());
+            }
+            return ret;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #total}.
+         *
+         * @return value of instance variable {@link #total}
+         */
+        public BigDecimal getMovementCost()
+        {
+            final BigDecimal ret;
+            if (getQuantity() == null || getCost() == null) {
+                ret = BigDecimal.ZERO;
+            } else {
+                ret = getQuantity().multiply(getCost());
             }
             return ret;
         }
