@@ -806,6 +806,10 @@ public abstract class AbstractDocument_Base
         final BigDecimal crossTotal = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final Taxes rateTaxes = print.getAttribute(CISales.DocumentSumAbstract.RateTaxes);
 
+        if (rateTaxes == null || rateTaxes != null && rateTaxes.getEntries().isEmpty()) {
+            js.append(getSetFieldValue(0, "withoutVAT", "true")).append("\n");
+        }
+
         final Instance contactInstance = print.getSelect(selContInst);
         final String note = print.getAttribute(CIERP.DocumentAbstract.Note);
         final String remark = print.getAttribute(CIERP.DocumentAbstract.Remark);
@@ -819,6 +823,9 @@ public abstract class AbstractDocument_Base
         if ("true".equalsIgnoreCase(_parameter.getParameterValue(AbstractDocument_Base.SELDOCUPDATEPF + "CopyName"))) {
             js.append(getSetFieldValue(0, "name4create", name)).append("\n");
         }
+
+
+
 
         final Map<Integer, String> copyDates = analyseProperty(_parameter, "CopyDate4Type");
         if (copyDates.containsValue(docInst.getType().getName())) {
