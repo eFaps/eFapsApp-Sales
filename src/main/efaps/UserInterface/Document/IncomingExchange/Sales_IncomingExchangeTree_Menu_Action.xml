@@ -29,7 +29,6 @@
             <child>Sales_IncomingExchangeTree_Menu_Action_SetOpen</child>
             <child>Sales_IncomingExchangeTree_Menu_Action_SetClosed</child>
             <child>Sales_IncomingExchangeTree_Menu_Action_SetCanceled</child>
-            <child>Sales_IncomingExchangeTree_Menu_Action_SetBooked</child>
             <child>Sales_IncomingExchangeTree_Menu_Action_AssignAction</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
