@@ -38,8 +38,8 @@
             <menu>Sales_PositionGroupTree_Position_Menu</menu>
             <table>Sales_PositionGroupPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Group2PositionAbstract</property>
-                <property name="LinkFroms">FromAbstractLink</property>
+                <property name="Type">Sales_Group2PositionAbstract</property>
+                <property name="LinkFrom">FromAbstractLink</property>
             </evaluate>
         </target>
         <!-- properties -->

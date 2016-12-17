@@ -110,8 +110,8 @@
             <property name="ModePrint">NONE</property>
             <table>Sales_PaymentCreateTransactionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TransactionAbstract</property>
-                <property name="LinkFroms">Payment</property>
+                <property name="Type">Sales_TransactionAbstract</property>
+                <property name="LinkFrom">Payment</property>
             </evaluate>
         </field>
         <field name="openAmountTotal">
@@ -134,8 +134,8 @@
             <property name="ModePrint">NONE</property>
             <table>Sales_TransactionAbstractUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TransactionAbstract</property>
-                <property name="LinkFroms">Payment</property>
+                <property name="Type">Sales_TransactionAbstract</property>
+                <property name="LinkFrom">Payment</property>
             </evaluate>
         </field>
     </definition>

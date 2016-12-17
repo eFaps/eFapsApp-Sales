@@ -446,8 +446,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">CreateDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">CreateDocument</property>
             </evaluate>
         </field>
         <field name="javaScript">
@@ -926,8 +926,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">CreateDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">CreateDocument</property>
             </evaluate>
         </field>
        <field name="javascript">
@@ -1440,8 +1440,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">CreateDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">CreateDocument</property>
             </evaluate>
         </field>
        <field name="javascript">

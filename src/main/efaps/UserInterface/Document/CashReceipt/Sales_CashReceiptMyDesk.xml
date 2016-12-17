@@ -34,7 +34,7 @@
             <menu>Sales_CashReceiptMyDesk_Menu</menu>
             <table>Sales_DocumentSumTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_CashReceipt</property>
+                <property name="Type">Sales_CashReceipt</property>
             </evaluate>
         </target>
 

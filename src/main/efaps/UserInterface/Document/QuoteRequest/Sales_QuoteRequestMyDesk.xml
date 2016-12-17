@@ -37,7 +37,7 @@
             <menu>Sales_QuoteRequestMyDesk_Menu</menu>
             <table>Sales_QuoteRequestTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_QuoteRequest</property>
+                <property name="Type">Sales_QuoteRequest</property>
             </evaluate>
         </target>
         <!-- properties -->

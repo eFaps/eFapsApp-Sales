@@ -35,8 +35,8 @@
             <menu>Sales_ProductRequestTree_Position_Menu</menu>
             <table>Sales_ProductRequestPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ProductRequestPosition</property>
-                <property name="LinkFroms">ProductRequestLink</property>
+                <property name="Type">Sales_ProductRequestPosition</property>
+                <property name="LinkFrom">ProductRequestLink</property>
             </evaluate>
         </target>
         <!-- properties -->

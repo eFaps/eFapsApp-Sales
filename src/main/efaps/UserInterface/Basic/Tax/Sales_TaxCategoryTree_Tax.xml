@@ -36,8 +36,8 @@
             <menu>Sales_TaxCategoryTree_Tax_Menu</menu>
             <table>Sales_TaxTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Tax</property>
-                <property name="LinkFroms">TaxCategory</property>
+                <property name="Type">Sales_Tax</property>
+                <property name="LinkFrom">TaxCategory</property>
             </evaluate>
         </target>
         <!-- properties -->

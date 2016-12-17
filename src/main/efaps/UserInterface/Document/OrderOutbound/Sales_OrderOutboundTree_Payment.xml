@@ -34,8 +34,8 @@
             <menu>Sales_OrderOutboundTree_Payment_Menu</menu>
             <table>Sales_DocumentSumPaymentTable</table>
             <evaluate method="getPayments4Document" program="org.efaps.esjp.sales.payment.PaymentCheck">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">CreateDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">CreateDocument</property>
             </evaluate>
         </target>
         <!-- properties -->

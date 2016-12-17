@@ -42,7 +42,7 @@
       <menu>Sales_PaymentMyDesk_Menu</menu>
       <table>Sales_PaymentTable</table>
       <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Sales_Payment</property>
+        <property name="Type">Sales_Payment</property>
       </evaluate>
     </target>
 

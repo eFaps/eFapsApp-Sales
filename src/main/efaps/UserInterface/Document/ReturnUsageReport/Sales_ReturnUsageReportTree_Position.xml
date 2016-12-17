@@ -35,8 +35,8 @@
             <menu>Sales_ReturnUsageReportTree_Position_Menu</menu>
             <table>Sales_ReturnUsageReportPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReturnUsageReportPosition</property>
-                <property name="LinkFroms">ReturnUsageReportLink</property>
+                <property name="Type">Sales_ReturnUsageReportPosition</property>
+                <property name="LinkFrom">ReturnUsageReportLink</property>
             </evaluate>
         </target>
         <!-- properties -->

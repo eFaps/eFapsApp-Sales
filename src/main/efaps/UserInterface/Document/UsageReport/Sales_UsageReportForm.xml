@@ -165,8 +165,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_UsageReportPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_UsageReportPosition</property>
-                <property name="LinkFroms">UsageReportLink</property>
+                <property name="Type">Sales_UsageReportPosition</property>
+                <property name="LinkFrom">UsageReportLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -393,8 +393,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_UsageReportPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_UsageReportPosition</property>
-                <property name="LinkFroms">UsageReportLink</property>
+                <property name="Type">Sales_UsageReportPosition</property>
+                <property name="LinkFrom">UsageReportLink</property>
             </evaluate>
         </field>
         <field name="note">

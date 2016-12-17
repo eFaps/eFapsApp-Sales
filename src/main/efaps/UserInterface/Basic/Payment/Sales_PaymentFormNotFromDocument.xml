@@ -68,7 +68,9 @@
                 method="autoComplete4Document"
                 name="Sales_PaymentFormNotFromDocument.createdocument.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Types">Sales_Invoice;Sales_Receipt;Sales_Reminder</property>
+                <property name="Type01">Sales_Invoice</property>
+                <property name="Type02">Sales_Receipt</property>
+                <property name="Type03">Sales_Reminder</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">
@@ -115,8 +117,8 @@
             <property name="ModePrint">NONE</property>
             <table>Sales_PaymentCreateTransactionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TransactionAbstract</property>
-                <property name="LinkFroms">Payment</property>
+                <property name="Type">Sales_TransactionAbstract</property>
+                <property name="LinkFrom">Payment</property>
             </evaluate>
         </field>
         <field name="openAmountTotal">
@@ -139,8 +141,8 @@
             <property name="ModePrint">NONE</property>
             <table>Sales_TransactionAbstractUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TransactionAbstract</property>
-                <property name="LinkFroms">Payment</property>
+                <property name="Type">Sales_TransactionAbstract</property>
+                <property name="LinkFrom">Payment</property>
             </evaluate>
         </field>
     </definition>

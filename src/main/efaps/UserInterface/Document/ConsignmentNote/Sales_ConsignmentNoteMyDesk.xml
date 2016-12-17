@@ -36,7 +36,7 @@
             <menu>Sales_ConsignmentNoteMyDesk_Menu</menu>
             <table>Sales_ConsignmentNoteTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ConsignmentNote</property>
+                <property name="Type">Sales_ConsignmentNote</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

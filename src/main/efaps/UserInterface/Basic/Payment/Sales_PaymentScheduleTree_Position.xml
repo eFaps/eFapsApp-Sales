@@ -39,8 +39,8 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <menu>Sales_PaymentScheduleTree_Position_Menu</menu>
             <table>Sales_PaymentSchedulePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_PaymentSchedulePosition</property>
-                <property name="LinkFroms">PaymentSchedule</property>
+                <property name="Type">Sales_PaymentSchedulePosition</property>
+                <property name="LinkFrom">PaymentSchedule</property>
             </evaluate>
         </target>
         <!-- properties -->

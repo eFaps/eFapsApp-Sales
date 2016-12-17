@@ -39,7 +39,7 @@
         <target>
             <table>Sales_CashDeskBalanceTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_CashDeskBalance</property>
+                <property name="Type">Sales_CashDeskBalance</property>
             </evaluate>
         </target>
 

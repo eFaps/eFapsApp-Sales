@@ -34,8 +34,8 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <menu>Sales_CashReceiptTree_Payment_Menu</menu>
             <table>Sales_PaymentUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">CreateDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">CreateDocument</property>
             </evaluate>
         </target>
         <!-- properties -->

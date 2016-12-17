@@ -41,8 +41,8 @@
             <menu>Sales_ReturnSlipTree_Position_Menu</menu>
             <table>Sales_ReturnSlipPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReturnSlipPosition</property>
-                <property name="LinkFroms">ReturnSlip</property>
+                <property name="Type">Sales_ReturnSlipPosition</property>
+                <property name="LinkFrom">ReturnSlip</property>
             </evaluate>
         </target>
         <!-- properties -->

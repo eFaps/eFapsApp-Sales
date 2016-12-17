@@ -40,7 +40,7 @@
     <target>
       <table>Sales_BalanceTable</table>
       <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Sales_Balance</property>
+        <property name="Type">Sales_Balance</property>
       </evaluate>
     </target>
 

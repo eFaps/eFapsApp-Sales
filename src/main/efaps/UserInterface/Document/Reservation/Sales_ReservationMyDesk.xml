@@ -32,7 +32,7 @@
             <menu>Sales_ReservationMyDesk_Menu</menu>
             <table>Sales_DocumentAbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Reservation</property>
+                <property name="Type">Sales_Reservation</property>
             </evaluate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"

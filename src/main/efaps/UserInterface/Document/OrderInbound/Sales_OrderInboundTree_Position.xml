@@ -34,8 +34,8 @@
             <menu>Sales_OrderInboundTree_Position_Menu</menu>
             <table>Sales_OrderInboundPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_OrderInboundPosition</property>
-                <property name="LinkFroms">Order</property>
+                <property name="Type">Sales_OrderInboundPosition</property>
+                <property name="LinkFrom">Order</property>
             </evaluate>
         </target>
         <!-- properties -->

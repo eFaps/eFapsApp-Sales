@@ -51,7 +51,7 @@
             <trigger event="UI_FIELD_VALUE" method="getTypeDropDownFieldValue"
                 name="Sales_PaymentOutCreateTransactionTable.paymentType.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
-                <property name="Types">Sales_PaymentDocumentOutAbstract</property>
+                <property name="Type">Sales_PaymentDocumentOutAbstract</property>
             </trigger>
         </field>
         <field name="account">

@@ -35,7 +35,7 @@
             <menu>Sales_IncomingReceiptMyDesk_Menu</menu>
             <table>Sales_IncomingReceiptTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingReceipt</property>
+                <property name="Type">Sales_IncomingReceipt</property>
             </evaluate>
         </target>
 

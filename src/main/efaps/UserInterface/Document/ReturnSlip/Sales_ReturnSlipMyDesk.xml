@@ -40,7 +40,7 @@
             <menu>Sales_ReturnSlipMyDesk_Menu</menu>
             <table>Sales_ReturnSlipTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReturnSlip</property>
+                <property name="Type">Sales_ReturnSlip</property>
             </evaluate>
         </target>
 

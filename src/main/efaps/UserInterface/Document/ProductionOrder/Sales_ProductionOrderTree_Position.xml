@@ -35,8 +35,8 @@
             <menu>Sales_ProductionOrderTree_Position_Menu</menu>
             <table>Sales_ProductionOrderPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ProductionOrderPosition</property>
-                <property name="LinkFroms">ProductionOrderLink</property>
+                <property name="Type">Sales_ProductionOrderPosition</property>
+                <property name="LinkFrom">ProductionOrderLink</property>
             </evaluate>
         </target>
         <!-- properties -->

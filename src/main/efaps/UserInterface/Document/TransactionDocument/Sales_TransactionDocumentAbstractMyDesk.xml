@@ -32,7 +32,7 @@
         <target>
             <table>ERP_DocumentAbstractTable_MONTH</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TransactionDocumentAbstract</property>
+                <property name="Type">Sales_TransactionDocumentAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

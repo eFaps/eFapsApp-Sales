@@ -155,8 +155,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_ReservationPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReservationPosition</property>
-                <property name="LinkFroms">Reservation</property>
+                <property name="Type">Sales_ReservationPosition</property>
+                <property name="LinkFrom">Reservation</property>
             </evaluate>
         </field>
         <field name="note">

@@ -39,8 +39,8 @@
             <menu>Sales_TextModuleTree_TextElement_Menu</menu>
             <table>Sales_TextElementTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TextElement</property>
-                <property name="LinkFroms">TextModule</property>
+                <property name="Type">Sales_TextElement</property>
+                <property name="LinkFrom">TextModule</property>
             </evaluate>
         </target>
         <!-- properties -->

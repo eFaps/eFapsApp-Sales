@@ -38,8 +38,8 @@
             <menu>Contacts_ContactTree_MoveObject_Menu</menu>
             <table>Sales_Contacts_DocumentAbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">ERP_DocumentAbstract</property>
-                <property name="LinkFroms">Contact</property>
+                <property name="Type">ERP_DocumentAbstract</property>
+                <property name="LinkFrom">Contact</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

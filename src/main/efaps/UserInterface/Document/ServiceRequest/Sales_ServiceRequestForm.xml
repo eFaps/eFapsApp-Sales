@@ -194,8 +194,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <table>Sales_ServiceRequestPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ServiceRequestPosition</property>
-                <property name="LinkFroms">ServiceRequestLink</property>
+                <property name="Type">Sales_ServiceRequestPosition</property>
+                <property name="LinkFrom">ServiceRequestLink</property>
             </evaluate>
         </field>
         <field name="note">

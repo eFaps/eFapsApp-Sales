@@ -32,7 +32,7 @@
             <menu>Sales_ReminderMyDesk_Menu</menu>
             <table>Sales_ReminderTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Reminder</property>
+                <property name="Type">Sales_Reminder</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

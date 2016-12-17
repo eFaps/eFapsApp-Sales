@@ -35,8 +35,8 @@
             <menu>Sales_IncomingReceiptTree_Position_Menu</menu>
             <table>Sales_IncomingReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingReceiptPosition</property>
-                <property name="LinkFroms">IncomingReceipt</property>
+                <property name="Type">Sales_IncomingReceiptPosition</property>
+                <property name="LinkFrom">IncomingReceipt</property>
             </evaluate>
         </target>
         <!-- properties -->

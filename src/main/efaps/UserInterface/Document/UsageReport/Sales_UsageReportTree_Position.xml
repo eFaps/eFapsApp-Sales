@@ -41,8 +41,8 @@
             <menu>Sales_UsageReportTree_Position_Menu</menu>
             <table>Sales_UsageReportPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_UsageReportPosition</property>
-                <property name="LinkFroms">UsageReportLink</property>
+                <property name="Type">Sales_UsageReportPosition</property>
+                <property name="LinkFrom">UsageReportLink</property>
             </evaluate>
         </target>
         <!-- properties -->

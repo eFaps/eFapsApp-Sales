@@ -40,8 +40,8 @@
             <menu>Sales_CreditNoteTree_Position_Menu</menu>
             <table>Sales_CreditNotePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_CreditNotePosition</property>
-                <property name="LinkFroms">CreditNote</property>
+                <property name="Type">Sales_CreditNotePosition</property>
+                <property name="LinkFrom">CreditNote</property>
             </evaluate>
         </target>
         <!-- properties -->

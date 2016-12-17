@@ -37,8 +37,8 @@
             <menu>Sales_ProductionReportTree_Position_Menu</menu>
             <table>Sales_ProductionReportPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ProductionReportPosition</property>
-                <property name="LinkFroms">ProductionReportLink</property>
+                <property name="Type">Sales_ProductionReportPosition</property>
+                <property name="LinkFrom">ProductionReportLink</property>
             </evaluate>
         </target>
         <!-- properties -->

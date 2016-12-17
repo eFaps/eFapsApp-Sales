@@ -34,8 +34,8 @@
             <menu>Sales_IncomingReminderTree_Position_Menu</menu>
             <table>Sales_IncomingReminderPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingReminderPosition</property>
-                <property name="LinkFroms">IncomingReminder</property>
+                <property name="Type">Sales_IncomingReminderPosition</property>
+                <property name="LinkFrom">IncomingReminder</property>
             </evaluate>
         </target>
         <!-- properties -->

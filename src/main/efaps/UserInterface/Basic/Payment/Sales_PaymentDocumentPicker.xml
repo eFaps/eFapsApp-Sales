@@ -35,7 +35,9 @@
         <target>
             <table>Sales_PaymentPickerTable</table>
             <evaluate program="org.efaps.esjp.sales.Payment" method="multiPrint4PaymentPicker">
-                <property name="Types">Sales_Invoice;Sales_Receipt;Sales_Reminder</property>
+                <property name="Type01">Sales_Invoice</property>
+                <property name="Type02">Sales_Receipt</property>
+                <property name="Type03">Sales_Reminder</property>
                 <property name="Status">Open</property>
             </evaluate>
             <trigger program="org.efaps.esjp.sales.Payment"

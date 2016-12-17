@@ -42,7 +42,7 @@
       <menu>Sales_TaxCategoryMyDesk_Menu</menu>
       <table>Sales_TaxCategoryTable</table>
       <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Sales_TaxCategory</property>
+        <property name="Type">Sales_TaxCategory</property>
       </evaluate>
     </target>
 

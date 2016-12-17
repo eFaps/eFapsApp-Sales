@@ -29,7 +29,10 @@
         <target>
             <table>Products_ProductPicker4HistoryTable</table>
             <evaluate program="org.efaps.esjp.sales.PriceUtil" method="getProductsList">
-                <property name="Types">Products_ProductMaterial;Products_ProductStandart;Products_ProductService;Products_ProductGeneric</property>
+                <property name="Type01">Products_ProductMaterial</property>
+                <property name="Type02">Products_ProductStandart</property>
+                <property name="Type03">Products_ProductService</property>
+                <property name="Type04">Products_ProductGeneric</property>
             </evaluate>
             <trigger program="org.efaps.esjp.sales.PriceUtil" method="getPriceListHistory" name="Products_ProductPicker4Product.UI_PICKER"
                 event="UI_PICKER">

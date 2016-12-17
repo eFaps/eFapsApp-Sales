@@ -40,8 +40,8 @@
             <menu>Sales_ReceiptTree_Position_Menu</menu>
             <table>Sales_ReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReceiptPosition</property>
-                <property name="LinkFroms">Receipt</property>
+                <property name="Type">Sales_ReceiptPosition</property>
+                <property name="LinkFrom">Receipt</property>
             </evaluate>
         </target>
         <!-- properties -->

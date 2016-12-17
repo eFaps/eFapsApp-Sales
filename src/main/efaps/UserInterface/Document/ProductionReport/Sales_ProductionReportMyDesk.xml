@@ -37,7 +37,7 @@
             <menu>Sales_ProductionReportMyDesk_Menu</menu>
             <table>Sales_ProductionReportTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ProductionReport</property>
+                <property name="Type">Sales_ProductionReport</property>
             </evaluate>
         </target>
         <!-- properties -->

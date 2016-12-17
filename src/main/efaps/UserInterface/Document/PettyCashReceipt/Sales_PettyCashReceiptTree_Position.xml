@@ -36,8 +36,8 @@
             <menu>Sales_PettyCashReceiptTree_Position_Menu</menu>
             <table>Sales_PettyCashReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_PettyCashReceiptPosition</property>
-                <property name="LinkFroms">PettyCashReceiptLink</property>
+                <property name="Type">Sales_PettyCashReceiptPosition</property>
+                <property name="LinkFrom">PettyCashReceiptLink</property>
             </evaluate>
         </target>
         <!-- properties -->
