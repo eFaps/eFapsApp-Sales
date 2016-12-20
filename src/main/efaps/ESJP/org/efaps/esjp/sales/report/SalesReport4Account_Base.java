@@ -73,7 +73,6 @@ import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression
 import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -365,7 +364,7 @@ public abstract class SalesReport4Account_Base
                             try {
                                 ret = _o1.getAssigned().compareTo(_o2.getAssigned());
                             } catch (final EFapsException e) {
-                                LOG.error("Catched", e);
+                                AbstractDynamicReport_Base.LOG.error("Catched", e);
                             }
                             return ret;
                         }
@@ -732,18 +731,12 @@ public abstract class SalesReport4Account_Base
                     titelGroup.add(rateColumn);
                 }
 
-                final AggregationSubtotalBuilder<BigDecimal> crossTotal = DynamicReports.sbt.sum(crossColumn);
-                final AggregationSubtotalBuilder<BigDecimal> payTotal = DynamicReports.sbt.sum(payColumn);
-                final AggregationSubtotalBuilder<BigDecimal> resultTotal = DynamicReports.sbt.sum(result);
-                final AggregationSubtotalBuilder<BigDecimal> crossTotal2 = DynamicReports.sbt.sum(crossColumn);
-                final AggregationSubtotalBuilder<BigDecimal> payTotal2 = DynamicReports.sbt.sum(payColumn);
-                final AggregationSubtotalBuilder<BigDecimal> resultTotal2 = DynamicReports.sbt.sum(result);
-                _builder.addSubtotalAtGroupFooter(monthGroup, crossTotal);
-                _builder.addSubtotalAtGroupFooter(monthGroup, payTotal);
-                _builder.addSubtotalAtGroupFooter(monthGroup, resultTotal);
-                _builder.addSubtotalAtGroupFooter(yearGroup, crossTotal2);
-                _builder.addSubtotalAtGroupFooter(yearGroup, payTotal2);
-                _builder.addSubtotalAtGroupFooter(yearGroup, resultTotal2);
+                _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(crossColumn));
+                _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(payColumn));
+                _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(result));
+                _builder.addSubtotalAtGroupFooter(yearGroup,  DynamicReports.sbt.sum(crossColumn));
+                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(payColumn));
+                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(result));
 
                 if (isGroupByContact(_parameter)) {
                     _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(crossColumn));
@@ -755,7 +748,28 @@ public abstract class SalesReport4Account_Base
                     _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(payColumn));
                     _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(result));
                 }
+
+                _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(crossColumn));
+                _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(payColumn));
+                _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(result));
             }
+
+            _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
+                            _parameter, "monthGroupTotal"), docStatusColumn));
+            _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
+                            _parameter, "yearGroupTotal"), docStatusColumn));
+
+            if (isGroupByContact(_parameter)) {
+                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
+                                _parameter, "contactGroupTotal"), docStatusColumn));
+            }
+            if (isGroupByAssigned(_parameter)) {
+                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
+                                _parameter, "assignedGroupTotal"), docStatusColumn));
+            }
+
+            _builder.addSubtotalAtSummary(DynamicReports.sbt.text(this.filteredReport.getLabel(
+                            _parameter, "summaryTotal"),docStatusColumn) );
 
             _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
 
