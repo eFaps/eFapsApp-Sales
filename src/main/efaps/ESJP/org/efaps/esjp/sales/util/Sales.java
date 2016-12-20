@@ -943,10 +943,11 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute PAYMENT_AMOUNT4CREATEDOC = new StringSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_THRESHOLD4CREATEDOC = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.Threshold4CreateOrder")
-                    .description("Threshold  generated payment order or collection order.");
+                    .key(Sales.BASE + "payment.in.Threshold4CreateOrderOnSettle")
+                    .defaultValue("0")
+                    .description("Threshold to generated a payment order or collection order on settlement.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1043,8 +1044,8 @@ public final class Sales
                     .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
                     .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
                     .addDefaultValue("Tag.Type", CISales.AccountabilityTag4CollectionOrder.getType().getName())
-                    .addDefaultValue("AccessCheck.Type01", CISales.OrderOutbound.getType().getName())
-                    .addDefaultValue("AccessCheck.Type02", CISales.CollectionOrder.getType().getName())
+                    .addDefaultValue("Electable.Type01", CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue("Electable.Type02", CISales.CollectionOrder.getType().getName())
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */
@@ -1099,8 +1100,8 @@ public final class Sales
                     .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
                     .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
                     .addDefaultValue("Tag.Type", CISales.AccountabilityTag4PaymentOrder.getType().getName())
-                    .addDefaultValue("AccessCheck.Type01", CISales.OrderOutbound.getType().getName())
-                    .addDefaultValue("AccessCheck.Type02", CISales.PaymentOrder.getType().getName())
+                    .addDefaultValue("Electable.Type01", CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue("Electable.Type02", CISales.PaymentOrder.getType().getName())
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */
@@ -1175,6 +1176,14 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Internal.PayableDocuments")
                     .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PAYMENTOUT_THRESHOLD4CREATEDOC = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.out.Threshold4CreateOrderOnSettle")
+                    .defaultValue("0")
+                    .description("Threshold to generated a payment order or collection order on settlement.");
 
     /** See description. */
     @EFapsSysConfAttribute

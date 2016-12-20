@@ -15,13 +15,11 @@
  *
  */
 
-
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +49,6 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
-
 /**
  * TODO comment!
  *
@@ -62,6 +59,7 @@ import org.efaps.util.EFapsException;
 public abstract class AbstractPaymentIn_Base
     extends AbstractPaymentDocument
 {
+
     @Override
     public Return updateFields4RateCurrency(final Parameter _parameter)
         throws EFapsException
@@ -72,8 +70,8 @@ public abstract class AbstractPaymentIn_Base
             final List<Map<String, String>> list = new ArrayList<>();
             final Map<String, String> map = new HashMap<>();
 
-            final Instance newInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue(CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name));
+            final Instance newInst = Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue(
+                            CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name));
             final Instance baseInst = Currency.getBaseCurrency();
 
             final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
@@ -102,33 +100,33 @@ public abstract class AbstractPaymentIn_Base
     {
         final Return ret = new MultiPrint()
         {
+
             @Override
             public List<Instance> getInstances(final Parameter _parameter)
                 throws EFapsException
             {
-                final List<Instance>ret = new ArrayList<>();
+                final List<Instance> ret = new ArrayList<>();
                 final QueryBuilder targetAttrQueryBldr1 = getQueryBldrFromProperties(_parameter,
                                 Sales.PAYMENTDOCUMENT_TOBESETTLED.get());
                 final QueryBuilder attrQueryBldr1 = new QueryBuilder(CISales.Payment);
-                attrQueryBldr1.addWhereAttrInQuery(CISales.Payment.CreateDocument,
-                                targetAttrQueryBldr1.getAttributeQuery(CISales.DocumentAbstract.ID));
+                attrQueryBldr1.addWhereAttrInQuery(CISales.Payment.CreateDocument, targetAttrQueryBldr1
+                                .getAttributeQuery(CISales.DocumentAbstract.ID));
 
                 final QueryBuilder queryBldr1 = new QueryBuilder(CISales.PaymentDocumentAbstract);
-                queryBldr1.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID,
-                                attrQueryBldr1.getAttributeQuery(CISales.Payment.TargetDocument));
+                queryBldr1.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID, attrQueryBldr1.getAttributeQuery(
+                                CISales.Payment.TargetDocument));
                 ret.addAll(queryBldr1.getQuery().execute());
 
                 final QueryBuilder targetAttrQueryBldr = getQueryBldrFromProperties(_parameter,
                                 Sales.PAYMENTDOCUMENT_TOBESETTLED.get(), "Tag");
                 if (targetAttrQueryBldr != null) {
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
-                    attrQueryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
-                                    targetAttrQueryBldr.getAttributeQuery(
-                                                    CIERP.Tag4DocumentAbstract.DocumentAbstractLink));
+                    attrQueryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument, targetAttrQueryBldr
+                                    .getAttributeQuery(CIERP.Tag4DocumentAbstract.DocumentAbstractLink));
 
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentAbstract);
-                    queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID,
-                                    attrQueryBldr.getAttributeQuery(CISales.Payment.TargetDocument));
+                    queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID, attrQueryBldr.getAttributeQuery(
+                                    CISales.Payment.TargetDocument));
 
                     ret.addAll(queryBldr.getQuery().execute());
                 }
@@ -157,13 +155,15 @@ public abstract class AbstractPaymentIn_Base
 
             final Properties props = Sales.PAYMENTDOCUMENT_TOBESETTLED.get();
 
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props, "AccessCheck");
-            queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props, "Electable");
+            if (queryBldr != null) {
+                queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            if (!query.getValues().isEmpty()) {
-                ret.put(ReturnValues.TRUE, true);
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                if (!query.getValues().isEmpty()) {
+                    ret.put(ReturnValues.TRUE, true);
+                }
             }
         }
         return ret;
@@ -191,18 +191,11 @@ public abstract class AbstractPaymentIn_Base
                 attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance());
 
                 final Properties props = Sales.PAYMENTDOCUMENT_TOBESETTLED.get();
-                final Properties tmpProps = new Properties();
-                for (final Enumeration<?> propertyNames = props.propertyNames(); propertyNames.hasMoreElements();) {
-                    final String key = (String) propertyNames.nextElement();
-                    if (key.startsWith("Type")) {
-                        tmpProps.put(key, props.get(key));
-                    }
-                }
-                final QueryBuilder queryBldr = getQueryBldrFromProperties(tmpProps);
-                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
-                                queryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID));
-                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
-                                attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument));
+                final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props, "Electable");
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, queryBldr.getAttributeQuery(
+                                CISales.DocumentSumAbstract.ID));
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQueryBldr.getAttributeQuery(
+                                CISales.Payment.CreateDocument));
 
             }
         }.getOptionListFieldValue(_parameter);
@@ -261,5 +254,46 @@ public abstract class AbstractPaymentIn_Base
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, lst);
         return ret;
+    }
+
+    /**
+     * Settle payment.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return settlePayment(final Parameter _parameter)
+        throws EFapsException
+    {
+        new Settlement(false).settlePayment(_parameter);
+        final Return ret = new Return();
+        return ret;
+    }
+
+    /**
+     * Update fields for settle document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4SettleDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Settlement(false).updateFields4SettleDocument(_parameter);
+    }
+
+    /**
+     * Validate payments.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return validateSettlePayment(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Settlement(false).validateSettlePayment(_parameter);
     }
 }
