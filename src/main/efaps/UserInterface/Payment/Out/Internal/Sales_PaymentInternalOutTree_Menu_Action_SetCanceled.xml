@@ -33,7 +33,7 @@
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_PaymentInternalOutTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status">!Canceled</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>
