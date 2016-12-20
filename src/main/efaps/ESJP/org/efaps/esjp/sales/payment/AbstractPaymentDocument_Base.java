@@ -75,6 +75,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.tag.Tag;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -718,6 +719,7 @@ public abstract class AbstractPaymentDocument_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
+        final List<Instance> paymentInsts = new ArrayList<>();
         final String[] createDocument = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.Payment.CreateDocument.name));
         final String[] paymentAmount = _parameter.getParameterValues("paymentAmount");
@@ -758,6 +760,8 @@ public abstract class AbstractPaymentDocument_Base
             add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
             payInsert.execute();
 
+            paymentInsts.add(payInsert.getInstance());
+
             transIns.add(CISales.TransactionAbstract.CurrencyId,
                             _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
             transIns.add(CISales.TransactionAbstract.Payment, payInsert.getId());
@@ -766,8 +770,34 @@ public abstract class AbstractPaymentDocument_Base
             transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
             _createdDoc.getValues().put(CISales.TransactionAbstract.Account.name,
                             _parameter.getParameterValue("account"));
-
             transIns.execute();
+        }
+        afterPaymentCreate(_parameter, paymentInsts);
+    }
+
+    /**
+     * After payment create.
+     *
+     * @param _parameter the parameter
+     * @param _paymentInstances the payment instances
+     * @throws EFapsException the e faps exception
+     */
+    protected void afterPaymentCreate(final Parameter _parameter,
+                                      final List<Instance> _paymentInstances)
+        throws EFapsException
+    {
+        // flag collection and payment order
+        final MultiPrintQuery multi = new MultiPrintQuery(_paymentInstances);
+        final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+        multi.addSelect(selDocInst);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
+            if (InstanceUtils.isType(docInst, CISales.CollectionOrder)) {
+                Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4CollectionOrder.getType());
+            } else if (InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
+                Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4PaymentOrder.getType());
+            }
         }
     }
 

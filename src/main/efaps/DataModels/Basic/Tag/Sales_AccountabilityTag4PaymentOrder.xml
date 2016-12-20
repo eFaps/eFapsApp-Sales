@@ -16,21 +16,20 @@
 
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>46d720cf-564d-4b1e-82e4-72455a0467b9</uuid>
+    <uuid>c97adfa4-536c-4e2a-8978-8ed5ffdb824c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderTree_Menu_Action</name>
-        <childs>
-            <child>Sales_PaymentOrderTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentOrderTree_Menu_Action_SetApproved</child>
-            <child>Sales_PaymentOrderTree_Menu_Action_SetCanceled</child>
-            <child>Sales_PaymentOrderTree_Menu_Action_SetClosed</child>
-            <child>Sales_PaymentOrderTree_Menu_Action_SetAccountabilityTag</child>
-            <child>Sales_PaymentOrderTree_Menu_Action_RemoveAccountabilityTag</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_AccountabilityTag4PaymentOrder</name>
+        <parent>ERP_Tag4DocumentAbstract</parent>
+        <attribute>
+            <name>PaymentOrderLink</name>
+            <type>Link</type>
+            <typelink>Sales_PaymentOrder</typelink>
+            <sqltable>Common_TagSQLTable</sqltable>
+            <sqlcolumn>OBJECTID</sqlcolumn>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

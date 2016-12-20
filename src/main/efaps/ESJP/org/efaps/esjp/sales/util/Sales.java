@@ -1042,6 +1042,9 @@ public final class Sales
                     .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
                     .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
                     .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
+                    .addDefaultValue("Tag.Type", CISales.AccountabilityTag4CollectionOrder.getType().getName())
+                    .addDefaultValue("AccessCheck.Type01", CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue("AccessCheck.Type02", CISales.CollectionOrder.getType().getName())
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */
@@ -1095,6 +1098,9 @@ public final class Sales
                     .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
                     .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
                     .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
+                    .addDefaultValue("Tag.Type", CISales.AccountabilityTag4PaymentOrder.getType().getName())
+                    .addDefaultValue("AccessCheck.Type01", CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue("AccessCheck.Type02", CISales.PaymentOrder.getType().getName())
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */

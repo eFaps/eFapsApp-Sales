@@ -102,21 +102,37 @@ public abstract class AbstractPaymentIn_Base
     {
         final Return ret = new MultiPrint()
         {
-
             @Override
             public List<Instance> getInstances(final Parameter _parameter)
                 throws EFapsException
             {
-                final QueryBuilder targetAttrQueryBldr = getQueryBldrFromProperties(_parameter,
+                final List<Instance>ret = new ArrayList<>();
+                final QueryBuilder targetAttrQueryBldr1 = getQueryBldrFromProperties(_parameter,
                                 Sales.PAYMENTDOCUMENT_TOBESETTLED.get());
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
-                attrQueryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
-                                targetAttrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                final QueryBuilder attrQueryBldr1 = new QueryBuilder(CISales.Payment);
+                attrQueryBldr1.addWhereAttrInQuery(CISales.Payment.CreateDocument,
+                                targetAttrQueryBldr1.getAttributeQuery(CISales.DocumentAbstract.ID));
 
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentAbstract);
-                queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID,
-                                attrQueryBldr.getAttributeQuery(CISales.Payment.TargetDocument));
-                return queryBldr.getQuery().execute();
+                final QueryBuilder queryBldr1 = new QueryBuilder(CISales.PaymentDocumentAbstract);
+                queryBldr1.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID,
+                                attrQueryBldr1.getAttributeQuery(CISales.Payment.TargetDocument));
+                ret.addAll(queryBldr1.getQuery().execute());
+
+                final QueryBuilder targetAttrQueryBldr = getQueryBldrFromProperties(_parameter,
+                                Sales.PAYMENTDOCUMENT_TOBESETTLED.get(), "Tag");
+                if (targetAttrQueryBldr != null) {
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+                    attrQueryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
+                                    targetAttrQueryBldr.getAttributeQuery(
+                                                    CIERP.Tag4DocumentAbstract.DocumentAbstractLink));
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentAbstract);
+                    queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentAbstract.ID,
+                                    attrQueryBldr.getAttributeQuery(CISales.Payment.TargetDocument));
+
+                    ret.addAll(queryBldr.getQuery().execute());
+                }
+                return ret;
             }
         }.execute(_parameter);
         return ret;
@@ -140,14 +156,8 @@ public abstract class AbstractPaymentIn_Base
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
 
             final Properties props = Sales.PAYMENTDOCUMENT_TOBESETTLED.get();
-            final Properties tmpProps = new Properties();
-            for (final Enumeration<?> propertyNames = props.propertyNames(); propertyNames.hasMoreElements();) {
-                final String key = (String) propertyNames.nextElement();
-                if (key.startsWith("Type")) {
-                    tmpProps.put(key, props.get(key));
-                }
-            }
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(tmpProps);
+
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props, "AccessCheck");
             queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
             final InstanceQuery query = queryBldr.getQuery();
