@@ -275,8 +275,8 @@ public abstract class PaymentCheck_Base
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.amount.name, amount))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.account.name,
                         _parameter.getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)))
-                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.date.name + "_eFapsDate",
-                               DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))))
+        //      .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.date.name + "_eFapsDate",
+       //                    DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.dueDate.name + "_eFapsDate",
                             DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.Date))));
 

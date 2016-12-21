@@ -114,6 +114,7 @@
             <property name="HRef">TREE</property>
             <property name="Label">Sales_IncomingExchange_AssignActionForm.action.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
                 name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.IncomingExchange">
