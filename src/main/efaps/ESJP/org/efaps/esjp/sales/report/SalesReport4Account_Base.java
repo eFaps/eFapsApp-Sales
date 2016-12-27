@@ -69,12 +69,10 @@ import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
-import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
 import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
@@ -670,7 +668,7 @@ public abstract class SalesReport4Account_Base
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
-                            .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression())
+                            .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression("docOID"))
                             .setHeight(12).setWidth(25);
 
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
@@ -769,7 +767,7 @@ public abstract class SalesReport4Account_Base
             }
 
             _builder.addSubtotalAtSummary(DynamicReports.sbt.text(this.filteredReport.getLabel(
-                            _parameter, "summaryTotal"),docStatusColumn) );
+                            _parameter, "summaryTotal"), docStatusColumn));
 
             _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
 
@@ -867,35 +865,6 @@ public abstract class SalesReport4Account_Base
             throws EFapsException
         {
             return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
-        }
-    }
-
-    /**
-     * Link class.
-     */
-    public static class LinkExpression
-        extends AbstractComplexExpression<EmbeddedLink>
-    {
-
-        /**
-         * Needed for serialization.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Constructor.
-         */
-        public LinkExpression()
-        {
-            addExpression(DynamicReports.field("docOID", String.class));
-        }
-
-        @Override
-        public EmbeddedLink evaluate(final List<?> _values,
-                                     final ReportParameters _reportParameters)
-        {
-            final String oid = (String) _values.get(0);
-            return EmbeddedLink.getJasperLink(oid);
         }
     }
 
@@ -998,6 +967,8 @@ public abstract class SalesReport4Account_Base
                                      final boolean _showSwapInfo)
             throws EFapsException
         {
+            final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.SALESREPORT4ACCOUNTIN.get()
+                            : Sales.SALESREPORT4ACCOUNTOUT.get();
             if (this.payments.isEmpty()) {
                 evalPayments();
             }
@@ -1021,15 +992,28 @@ public abstract class SalesReport4Account_Base
             if (_showSwapInfo) {
                 ret.put("swapInfo", getSwapInfo());
             }
-
+            final boolean negate = BooleanUtils.toBoolean(props.getProperty(getDocInst().getType().getName()
+                            + ".Negate"));
             if (isCurrencyBase()) {
-                ret.put("crossTotal_BASE", this.cross.get(Currency.getBaseCurrency().getId()));
-                ret.put("payed_BASE", this.payments.get(Currency.getBaseCurrency().getId()));
+                final BigDecimal crossTmp = this.cross.get(Currency.getBaseCurrency().getId());
+                if (crossTmp != null) {
+                    ret.put("crossTotal_BASE", negate ? crossTmp.negate() : crossTmp);
+                }
+                final BigDecimal payTmp = this.payments.get(Currency.getBaseCurrency().getId());
+                if (payTmp != null) {
+                    ret.put("payed_BASE", negate ? payTmp.negate() : payTmp);
+                }
             } else {
                 for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                     if (this.cross.containsKey(currency.getInstance().getId())) {
-                        ret.put("crossTotal_" + currency.getISOCode(), this.cross.get(currency.getInstance().getId()));
-                        ret.put("payed_" + currency.getISOCode(), this.payments.get(currency.getInstance().getId()));
+                        final BigDecimal crossTmp =  this.cross.get(currency.getInstance().getId());
+                        if (crossTmp != null) {
+                            ret.put("crossTotal_" + currency.getISOCode(),  negate ? crossTmp.negate() : crossTmp);
+                        }
+                        final BigDecimal payTmp = this.payments.get(currency.getInstance().getId());
+                        if (payTmp != null) {
+                            ret.put("payed_" + currency.getISOCode(), negate ? payTmp.negate() : payTmp);
+                        }
                         if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
                             ret.put("rate_" + currency.getISOCode(), currency.isInvert() ? getRate()[1] : getRate()[0]);
                         }
