@@ -40,7 +40,7 @@
                 <property name="FilterType04">InstanceSet</property>
                 <property name="FilterType05">Currency</property>
                 <property name="FilterType06">GroupBy</property>
-                <property name="FilterDefault01">MONTHS:-1</property>
+                <property name="FilterDefault01">TODAY</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.PaymentReport_Base$PayDoc</property>
                 <property name="FilterDefault04">-</property>

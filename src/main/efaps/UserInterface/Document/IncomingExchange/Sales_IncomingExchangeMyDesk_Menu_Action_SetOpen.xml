@@ -27,7 +27,7 @@
         </access>
         <target>
             <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Paid</property>
+                <property name="Status">Open</property>
                 <property name="EvalOID">true</property>
                 <property name="NoUpdateStatus01">Open</property>
                 <property name="NoUpdateStatus02">Closed</property>
