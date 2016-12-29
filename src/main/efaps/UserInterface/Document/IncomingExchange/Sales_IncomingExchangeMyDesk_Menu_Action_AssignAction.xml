@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2016 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c7466644-9b3f-4cc5-8f78-828f81c9f504</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingExchangeMyDesk_Menu_Action_AssignAction</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
+        <target>
+            <form>Sales_IncomingExchange_AssignActionForm</form>
+            <execute method="assignAction" program="org.efaps.esjp.sales.document.IncomingExchange" />
+            <validate program="org.efaps.esjp.sales.document.IncomingExchange" method="validateSelected4AssignAction">
+                <property name="Status">!Canceled</property>
+            </validate>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingExchangeMyDesk_Menu_Action_AssignAction.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
+                <property name="Access">EDIT</property>
+            </trigger>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionIncomingExchange2Document</property>
+        <property name="TargetConnectAttribute">ERP_ActionDefinition2DocumentAbstract/ToLinkAbstract</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">0</property>
+    </definition>
+</ui-command>

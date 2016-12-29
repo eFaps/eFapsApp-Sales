@@ -26,6 +26,7 @@
             <child>Sales_IncomingExchangeMyDesk_Menu_Action_Create</child>
             <child>Sales_IncomingExchangeMyDesk_Menu_Action_CreateCalculated</child>
             <child>Sales_IncomingExchangeMyDesk_Menu_Action_SetOpen</child>
+            <child>Sales_IncomingExchangeMyDesk_Menu_Action_AssignAction</child>
             <child>Sales_IncomingExchangeMyDesk_Menu_Action_Recalculate</child>
             <child>Sales_IncomingExchangeMyDesk_Menu_Action_Delete</child>
         </childs>
