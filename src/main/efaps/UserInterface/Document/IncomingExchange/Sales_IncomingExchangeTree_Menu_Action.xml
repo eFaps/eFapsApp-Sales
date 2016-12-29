@@ -25,6 +25,7 @@
         <name>Sales_IncomingExchangeTree_Menu_Action</name>
         <childs>
             <child>Sales_IncomingExchangeTree_Menu_Action_Edit</child>
+            <child>Sales_IncomingExchangeTree_Menu_Action_EditNote</child>
             <child>Sales_IncomingExchangeTree_Menu_Action_Swap</child>
             <child>Sales_IncomingExchangeTree_Menu_Action_SetOpen</child>
             <child>Sales_IncomingExchangeTree_Menu_Action_SetClosed</child>

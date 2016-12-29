@@ -25,6 +25,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchange</name>
         <parent>Sales_DocumentSumAbstract</parent>
+        <purpose history="true"/>
         <attribute>
             <name>Status</name>
             <type>Status</type>
@@ -50,6 +51,14 @@
         </attribute>
         <trigger event="ACCESSCHECK" name="Sales_IncomingExchange.ACCESSCHECK"
             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+        <trigger program="org.efaps.esjp.common.history.InsertHistoryTrigger"
+            name="Sales_IncomingExchange.INSERT_POST"
+            event="INSERT_POST">
+        </trigger>
+        <trigger program="org.efaps.esjp.common.history.UpdateHistoryTrigger"
+            name="Sales_IncomingExchange.UPDATE_POST"
+            event="UPDATE_POST">
+        </trigger>
         <index msgPhrase="ERP_IndexDocumentMsgPhrase">
             <field id="onlyNumber" select="attribute[OnlyNumber]" key="index.ERP_DocumentAbstract.Name" type="STRING"/>
             <field id="reference" select="attribute[Reference]" key="index.ERP_DocumentAbstract.Name" type="STRING"/>
