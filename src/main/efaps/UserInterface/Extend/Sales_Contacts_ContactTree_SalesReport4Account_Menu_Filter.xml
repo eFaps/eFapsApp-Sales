@@ -37,6 +37,7 @@
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
+        <property name="TargetTitle">report.Filter</property>
         <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.CONTACT.FilterKey</property>
     </definition>
 </ui-command>
