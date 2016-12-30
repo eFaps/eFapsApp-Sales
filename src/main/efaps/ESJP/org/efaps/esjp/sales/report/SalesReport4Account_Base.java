@@ -984,8 +984,20 @@ public abstract class SalesReport4Account_Base
                                      final boolean _showSwapInfo)
             throws EFapsException
         {
-            final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.REPORT_SALES4ACCOUNTIN.get()
-                            : Sales.REPORT_SALES4ACCOUNTOUT.get();
+            final Properties props;
+            switch (this.reportKey) {
+                case CONTACT:
+                    props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
+                    break;
+                case OUT:
+                    props = Sales.REPORT_SALES4ACCOUNTOUT.get();
+                    break;
+                case IN:
+                default:
+                    props = Sales.REPORT_SALES4ACCOUNTIN.get();
+                    break;
+            }
+
             if (this.payments.isEmpty()) {
                 evalPayments();
             }
@@ -1241,8 +1253,19 @@ public abstract class SalesReport4Account_Base
         {
             if (getDocInst().isValid()) {
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
-                final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.REPORT_SALES4ACCOUNTIN.get()
-                                : Sales.REPORT_SALES4ACCOUNTOUT.get();
+                final Properties props;
+                switch (this.reportKey) {
+                    case CONTACT:
+                        props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
+                        break;
+                    case OUT:
+                        props = Sales.REPORT_SALES4ACCOUNTOUT.get();
+                        break;
+                    case IN:
+                    default:
+                        props = Sales.REPORT_SALES4ACCOUNTIN.get();
+                        break;
+                }
                 final Boolean perpay =  props.containsKey("PaymentPerPayment")
                                 ? BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment")) : null;
                 this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay));
