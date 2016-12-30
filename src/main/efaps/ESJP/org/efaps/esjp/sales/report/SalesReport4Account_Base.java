@@ -97,7 +97,9 @@ public abstract class SalesReport4Account_Base
         /** Incoming. */
         IN,
         /** Outgoing. */
-        OUT
+        OUT,
+        /** Contact related. */
+        CONTACT;
     }
 
     /**
@@ -269,11 +271,13 @@ public abstract class SalesReport4Account_Base
 
                 final SelectBuilder selContactInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
                                 .instance();
-                final SelectBuilder selStatus = new SelectBuilder().status().label();
                 final SelectBuilder selContactName = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
                                 .attribute(CIContacts.Contact.Name);
-
-                multi.addSelect(selContactInst, selContactName, selStatus);
+                final SelectBuilder selStatus = new SelectBuilder().status().label();
+                multi.addSelect(selStatus);
+                if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                    multi.addSelect(selContactInst, selContactName);
+                }
                 multi.execute();
                 final Set<Instance> docInsts = new HashSet<>();
                 while (multi.next()) {
@@ -284,10 +288,13 @@ public abstract class SalesReport4Account_Base
                                 .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
                                 .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
                                 .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                                .setContactInst(multi.<Instance>getSelect(selContactInst))
                                 .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                                .setDocStatus(multi.<String>getSelect(selStatus))
+                                .setDocStatus(multi.<String>getSelect(selStatus));
+
+                    if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                        dataBean.setContactInst(multi.<Instance>getSelect(selContactInst))
                                 .setDocContactName(multi.<String>getSelect(selContactName));
+                    }
 
                     if (isCurrencyBase(_parameter)) {
                         dataBean.setCurrencyBase(true)
@@ -431,7 +438,9 @@ public abstract class SalesReport4Account_Base
             return Sales.CHACTIVATESALESCOND.get()
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
                             || Sales.CHACTIVATEPURCHASECOND.get()
-                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
+                            || (Sales.CHACTIVATEPURCHASECOND.get() || Sales.CHACTIVATESALESCOND.get())
+                                        && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.CONTACT);
         }
 
         /**
@@ -443,9 +452,9 @@ public abstract class SalesReport4Account_Base
         protected boolean isShowAssigned()
             throws EFapsException
         {
-            return Sales.SALESREPORT4ACCOUNTIN_ASSIGENED.get()
+            return Sales.REPORT_SALES4ACCOUNTIN_ASSIGENED.get()
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                            || Sales.SALESREPORT4ACCOUNTOUT_ASSIGENED.get()
+                            || Sales.REPORT_SALES4ACCOUNTOUT_ASSIGENED.get()
                                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
         }
 
@@ -458,10 +467,12 @@ public abstract class SalesReport4Account_Base
         protected boolean isShowSwapInfo()
             throws EFapsException
         {
-            return Sales.SALESREPORT4ACCOUNTIN_SWAPINFO.get()
+            return Sales.REPORT_SALES4ACCOUNTIN_SWAPINFO.get()
                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                            || Sales.SALESREPORT4ACCOUNTOUT_SWAPINFO.get()
-                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+                            || Sales.REPORT_SALES4ACCOUNTOUT_SWAPINFO.get()
+                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
+                            || Sales.REPORT_SALES4ACCOUNTCONTACT_SWAPINFO.get()
+                                        && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.CONTACT);
         }
 
         /**
@@ -552,6 +563,10 @@ public abstract class SalesReport4Account_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contact);
                 }
             }
+            if (InstanceUtils.isKindOf(_parameter.getInstance(), CIContacts.ContactAbstract)) {
+                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, _parameter.getInstance());
+            }
+
             if (filter.containsKey("currency")) {
                 final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
                 if (currency.isValid()) {
@@ -654,12 +669,12 @@ public abstract class SalesReport4Account_Base
                             DynamicReports.type.stringType()).setWidth(120);
 
             final ColumnGroupBuilder assignedGroup = DynamicReports.grp.group(assignedColumn).groupByDataType();
-            if (isGroupByAssigned(_parameter)) {
+            if (isGroupByAssigned(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 _builder.groupBy(assignedGroup);
             }
 
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
-            if (isGroupByContact(_parameter)) {
+            if (isGroupByContact(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 _builder.groupBy(contactGroup);
             }
 
@@ -693,10 +708,11 @@ public abstract class SalesReport4Account_Base
             if (isShowCondition()) {
                 gridList.add(conditionColumn);
             }
-            if (!isGroupByContact(_parameter)) {
+            if (!isGroupByContact(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 gridList.add(contactNameColumn);
             }
-            if (isShowAssigned() && !isGroupByAssigned(_parameter)) {
+            if (isShowAssigned() && !isGroupByAssigned(_parameter)
+                            && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 gridList.add(assignedColumn);
             }
 
@@ -781,11 +797,12 @@ public abstract class SalesReport4Account_Base
                 _builder.addColumn(conditionColumn);
             }
 
-            if (!isGroupByContact(_parameter)) {
+            if (!isGroupByContact(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 _builder.addColumn(contactNameColumn.setFixedWidth(200));
             }
 
-            if (isShowAssigned() && !isGroupByAssigned(_parameter)) {
+            if (isShowAssigned() && !isGroupByAssigned(_parameter)
+                            && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 _builder.addColumn(assignedColumn);
             }
 
@@ -967,8 +984,8 @@ public abstract class SalesReport4Account_Base
                                      final boolean _showSwapInfo)
             throws EFapsException
         {
-            final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.SALESREPORT4ACCOUNTIN.get()
-                            : Sales.SALESREPORT4ACCOUNTOUT.get();
+            final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.REPORT_SALES4ACCOUNTIN.get()
+                            : Sales.REPORT_SALES4ACCOUNTOUT.get();
             if (this.payments.isEmpty()) {
                 evalPayments();
             }
@@ -1224,8 +1241,8 @@ public abstract class SalesReport4Account_Base
         {
             if (getDocInst().isValid()) {
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
-                final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.SALESREPORT4ACCOUNTIN.get()
-                                : Sales.SALESREPORT4ACCOUNTOUT.get();
+                final Properties props = ReportKey.IN.equals(this.reportKey) ? Sales.REPORT_SALES4ACCOUNTIN.get()
+                                : Sales.REPORT_SALES4ACCOUNTOUT.get();
                 final Boolean perpay =  props.containsKey("PaymentPerPayment")
                                 ? BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment")) : null;
                 this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay));

@@ -1677,42 +1677,57 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute REPORT_SALES4ACCOUNTCONTACT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.SalesReport4Account.CONTACT")
+                    .description("Properties 4 SalesReport4Account CONTACT.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_SALES4ACCOUNTCONTACT_SWAPINFO = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.SalesReport4Account.CONTACT.ActivateSwapInfo")
+                    .description("Activate the column for Swap related Infos.");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_SALES4ACCOUNTIN = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.IN")
                     .description("Properties 4 SalesReport4Account IN.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute SALESREPORT4ACCOUNTIN_ASSIGENED = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute REPORT_SALES4ACCOUNTIN_ASSIGENED = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.IN.ActivateContactAssigned2Employee")
                     .description("Activate the column for Employee Assigned to Contact.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute SALESREPORT4ACCOUNTIN_SWAPINFO = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute REPORT_SALES4ACCOUNTIN_SWAPINFO = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.IN.ActivateSwapInfo")
                     .description("Activate the column for Swap related Infos.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTOUT = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute REPORT_SALES4ACCOUNTOUT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.OUT")
                     .description("Properties 4 SalesReport4Account OUT.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute SALESREPORT4ACCOUNTOUT_ASSIGENED = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute REPORT_SALES4ACCOUNTOUT_ASSIGENED = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.OUT.ActivateContactAssigned2Employee")
                     .description("Activate the column for Employee Assigned to Contact.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute SALESREPORT4ACCOUNTOUT_SWAPINFO = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute REPORT_SALES4ACCOUNTOUT_SWAPINFO = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.OUT.ActivateSwapInfo")
                     .description("Activate the column for Swap related Infos.");
