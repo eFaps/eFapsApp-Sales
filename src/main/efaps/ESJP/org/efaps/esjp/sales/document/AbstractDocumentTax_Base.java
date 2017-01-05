@@ -331,8 +331,6 @@ public abstract class AbstractDocumentTax_Base
         return mapping.get(_docInst);
     }
 
-
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _docInstances instance of the document
@@ -439,6 +437,11 @@ public abstract class AbstractDocumentTax_Base
         private final Map<Instance, BigDecimal> tax2Percent = new HashMap<>();
 
         /**
+         * Amount of tax.
+         */
+        private final Map<Instance, BigDecimal> tax2RateAmount = new HashMap<>();
+
+        /**
          * Amount of the tax payed.
          */
         private BigDecimal paymentAmount = null;
@@ -468,16 +471,20 @@ public abstract class AbstractDocumentTax_Base
                 final SelectBuilder selDocTaxInst = new SelectBuilder(selDocTax).instance();
                 final SelectBuilder selDocTaxCrossTotal = new SelectBuilder(selDocTax)
                                 .attribute(CISales.DocumentSumAbstract.CrossTotal);
+                final SelectBuilder selDocTaxRateCrossTotal = new SelectBuilder(selDocTax)
+                                .attribute(CISales.DocumentSumAbstract.RateCrossTotal);
                 final SelectBuilder selDocCrossTotal = new SelectBuilder(selDoc)
                                 .attribute(CISales.DocumentSumAbstract.CrossTotal);
-                multi.addSelect(selDocTaxInst, selDocTaxCrossTotal, selDocCrossTotal);
+                multi.addSelect(selDocTaxInst, selDocTaxCrossTotal, selDocCrossTotal, selDocTaxRateCrossTotal);
                 multi.execute();
                 while (multi.next()) {
                     this.relInstances.add(multi.getCurrentInstance());
                     final Instance taxDocInst = multi.<Instance>getSelect(selDocTaxInst);
                     final BigDecimal taxAmount = multi.<BigDecimal>getSelect(selDocTaxCrossTotal);
+                    final BigDecimal taxRateAmount = multi.<BigDecimal>getSelect(selDocTaxRateCrossTotal);
                     this.taxDocInstances.add(taxDocInst);
                     this.tax2Amount.put(taxDocInst, taxAmount);
+                    this.tax2RateAmount.put(taxDocInst, taxRateAmount);
                     final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
                     final BigDecimal percent = new BigDecimal(100).setScale(8)
                                     .divide(crossTotal, BigDecimal.ROUND_HALF_UP)
@@ -744,6 +751,43 @@ public abstract class AbstractDocumentTax_Base
         {
             return getTaxAmount(getTaxDocInstance(_citype));
         }
+
+        /**
+         * Getter method for the instance variable {@link #taxAmount}.
+         *
+         * @return value of instance variable {@link #taxAmount}
+         * @throws EFapsException on error
+         */
+        public BigDecimal getTaxRateAmount()
+            throws EFapsException
+        {
+            initialize();
+            return this.tax2RateAmount.size() == 1 ? this.tax2RateAmount.values().iterator().next() : BigDecimal.ZERO;
+        }
+
+        /**
+         * @param _taxDocInst taxdoc Instance the amount is wanted for
+         * @return amount
+         * @throws EFapsException on error
+         */
+        public BigDecimal getTaxRateAmount(final Instance _taxDocInst)
+            throws EFapsException
+        {
+            initialize();
+            return this.tax2RateAmount.get(_taxDocInst);
+        }
+
+        /**
+         * @param _citype taxdoc type the amount is wanted for
+         * @return amount
+         * @throws EFapsException on error
+         */
+        public BigDecimal getTaxRateAmount(final CIType _citype)
+            throws EFapsException
+        {
+            return getTaxRateAmount(getTaxDocInstance(_citype));
+        }
+
 
         /**
          * Getter method for the instance variable {@link #percent}.

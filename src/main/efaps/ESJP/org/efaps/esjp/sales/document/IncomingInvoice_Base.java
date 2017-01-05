@@ -582,7 +582,7 @@ public abstract class IncomingInvoice_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isPerception()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxRateAmount());
         }
         return retVal;
     }
@@ -598,7 +598,7 @@ public abstract class IncomingInvoice_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isRetention()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxRateAmount());
         }
         return retVal;
     }
@@ -614,7 +614,7 @@ public abstract class IncomingInvoice_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isDetraction()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxRateAmount());
         }
         return retVal;
     }
