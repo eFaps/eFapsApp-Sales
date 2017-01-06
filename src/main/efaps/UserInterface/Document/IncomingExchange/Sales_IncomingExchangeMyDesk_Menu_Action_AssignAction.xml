@@ -29,8 +29,11 @@
         <target>
             <form>Sales_IncomingExchange_AssignActionForm</form>
             <execute method="assignAction" program="org.efaps.esjp.sales.document.IncomingExchange" />
-            <validate program="org.efaps.esjp.sales.document.IncomingExchange" method="validateSelected4AssignAction">
+            <validate program="org.efaps.esjp.sales.document.IncomingExchange" method="validateSelected4AssignAction" index="1">
                 <property name="Status">!Canceled</property>
+            </validate>
+            <validate program="org.efaps.esjp.sales.document.IncomingExchange" method="validate" index="2">
+                <property name="Validation">AREYOUSURE</property>
             </validate>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
                 name="Sales_IncomingExchangeMyDesk_Menu_Action_AssignAction.UI_ACCESSCHECK"
