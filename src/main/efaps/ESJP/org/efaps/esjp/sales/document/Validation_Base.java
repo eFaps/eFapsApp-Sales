@@ -37,6 +37,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.Command;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -46,6 +47,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.listener.ITypedClass;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractPositionWarning;
 import org.efaps.esjp.erp.AbstractWarning;
@@ -56,6 +58,7 @@ import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.Storage_Base.ClosureWarning;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.listener.IOnValidation;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -116,7 +119,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public Return validate(final Parameter _parameter,
-                           final AbstractDocument_Base _doc)
+                           final ITypedClass _doc)
         throws EFapsException
     {
         final Return ret = new Return();
@@ -171,6 +174,12 @@ public abstract class Validation_Base
         }
 
         warnings = validate(_parameter, warnings);
+
+        for (final IOnValidation listener : Listener.get().<IOnValidation>invoke(
+                        IOnValidation.class)) {
+            listener.validate(_parameter, _doc, warnings);
+        }
+
         if (warnings.isEmpty() && areyousure) {
             warnings.add(new AreYouSureWarning());
         }
@@ -194,7 +203,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validatePositions(final Parameter _parameter,
-                                            final AbstractDocument_Base _doc)
+                                            final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -217,7 +226,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateDuplicatedPositions(final Parameter _parameter,
-                                                      final AbstractDocument_Base _doc)
+                                                      final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -243,7 +252,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateOnlyOneProduct(final Parameter _parameter,
-                                                 final AbstractDocument_Base _doc)
+                                                 final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -269,11 +278,11 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateAmountGreaterZero(final Parameter _parameter,
-                                                    final AbstractDocument_Base _doc)
+                                                    final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
-        final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
+        final List<Calculator> calcs = ((AbstractDocument) _doc).analyseTable(_parameter, null);
         int i = 0;
         BigDecimal total = BigDecimal.ZERO;
         for (final Calculator calc : calcs) {
@@ -299,11 +308,11 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateTotalGreaterZero(final Parameter _parameter,
-                                                   final AbstractDocument_Base _doc)
+                                                   final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
-        final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
+        final List<Calculator> calcs =  ((AbstractDocument) _doc).analyseTable(_parameter, null);
         final BigDecimal total = Calculator.getNetTotal(_parameter, calcs);
         if (total.compareTo(BigDecimal.ZERO) < 1) {
             ret.add(new TotalGreaterZeroWarning());
@@ -332,7 +341,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateName(final Parameter _parameter,
-                                       final AbstractDocument_Base _doc)
+                                       final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -407,7 +416,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateSerial(final Parameter _parameter,
-                                         final AbstractDocument_Base _doc)
+                                         final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -489,7 +498,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityGreaterZero(final Parameter _parameter,
-                                                      final AbstractDocument_Base _doc)
+                                                      final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -519,7 +528,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityInStorage4Doc(final Parameter _parameter,
-                                                        final AbstractDocument_Base _doc)
+                                                        final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -573,7 +582,7 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityInStorage(final Parameter _parameter,
-                                                    final AbstractDocument_Base _doc)
+                                                    final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -595,7 +604,7 @@ public abstract class Validation_Base
                 if (ArrayUtils.isNotEmpty(storage)) {
                     queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, Instance.get(storage[i]));
                 } else if ("true".equalsIgnoreCase(getProperty(_parameter, "QUANTITYINSTOCK_UseDefaultWareHouse"))) {
-                    final Instance wareHInst = _doc.getDefaultStorage(_parameter);
+                    final Instance wareHInst =  ((AbstractDocument) _doc).getDefaultStorage(_parameter);
                     if (wareHInst != null && wareHInst.isValid()) {
                         queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, wareHInst);
                     }
@@ -638,7 +647,7 @@ public abstract class Validation_Base
      * @throws EFapsException the e faps exception
      */
     public List<IWarning> validateIndividual(final Parameter _parameter,
-                                             final AbstractDocument_Base _doc)
+                                             final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -688,7 +697,7 @@ public abstract class Validation_Base
      * @throws EFapsException the e faps exception
      */
     public List<IWarning> validateStockClosure(final Parameter _parameter,
-                                               final AbstractDocument_Base _doc)
+                                               final ITypedClass _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
@@ -709,7 +718,7 @@ public abstract class Validation_Base
                 }
             }
         } else {
-            final Instance defStoreInst = _doc.getDefaultStorage(_parameter);
+            final Instance defStoreInst =  ((AbstractDocument) _doc).getDefaultStorage(_parameter);
             if (InstanceUtils.isValid(defStoreInst)) {
                 if (!Storage.validateClosureDate(_parameter, defStoreInst, date)) {
                     ret.add(new ClosureWarning());
