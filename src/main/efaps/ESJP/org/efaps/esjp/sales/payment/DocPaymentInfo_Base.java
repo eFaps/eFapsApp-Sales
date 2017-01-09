@@ -47,6 +47,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -796,7 +797,7 @@ public abstract class DocPaymentInfo_Base
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
 
             final DateTime dateTmp = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
-            final BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+            BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
             final Instance payDocInst = multi.getSelect(selPaymentDocInst);
             final RateInfo rateInfo;
 
@@ -813,6 +814,9 @@ public abstract class DocPaymentInfo_Base
                 // different currencies use the one registered in the relation
                 rateInfo = RateInfo.getRateInfo(multi.<Object[]>getAttribute(
                                 CIERP.Document2PaymentDocumentAbstract.Rate));
+            }
+            if (InstanceUtils.isKindOf(payDocInst, CISales.PaymentDocumentOutAbstract)) {
+                amount= amount.negate();
             }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
                             .setLabel(payDocInst.getType().getLabel())
@@ -854,15 +858,18 @@ public abstract class DocPaymentInfo_Base
         final SelectBuilder selPaymentDocRate = new SelectBuilder().linkto(
                         CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
                         .attribute(CIERP.PaymentDocumentAbstract.Rate);
-        taxMulti.addSelect(selTaxCurInst, selDocInst, selRateCurInst, selPaymentDocRate);
+        final SelectBuilder selPaymentDocInst = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink).instance();
+        taxMulti.addSelect(selTaxCurInst, selDocInst, selRateCurInst, selPaymentDocRate, selPaymentDocInst);
         taxMulti.executeWithoutAccessCheck();
         while (taxMulti.next()) {
             final Instance docInst = taxMulti.getSelect(selDocInst);
+            final Instance payDocInst = taxMulti.getSelect(selPaymentDocInst);
             final DocPaymentInfo_Base info = instance2info.get(docInst);
             final Instance rateCurInst = taxMulti.getSelect(selRateCurInst);
             final Instance curInst = taxMulti.getSelect(selTaxCurInst);
             final DateTime dateTmp = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
-            final BigDecimal amount = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+            BigDecimal amount = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
 
             final RateInfo rateInfo;
             // payment was in the same currency
@@ -878,6 +885,9 @@ public abstract class DocPaymentInfo_Base
                 // different currencies use the one registered in the relation
                 rateInfo = RateInfo.getRateInfo(taxMulti.<Object[]>getAttribute(
                                 CIERP.Document2PaymentDocumentAbstract.Rate));
+            }
+            if (InstanceUtils.isKindOf(payDocInst, CISales.PaymentDocumentOutAbstract)) {
+                amount= amount.negate();
             }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
                             .setLabel(CISales.IncomingDetraction.getType().getLabel())
@@ -924,15 +934,17 @@ public abstract class DocPaymentInfo_Base
         final SelectBuilder selDocInst = SelectBuilder.get()
                         .linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
                         .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink).instance();
-        retMulti.addSelect(retSelCur, selDocInst, selRateCurInst, selRateObj);
+        final SelectBuilder selPaymentDocInst = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink).instance();
+        retMulti.addSelect(retSelCur, selDocInst, selRateCurInst, selRateObj, selPaymentDocInst);
         retMulti.executeWithoutAccessCheck();
         while (retMulti.next()) {
             final Instance docInst = retMulti.getSelect(selDocInst);
+            retMulti.getSelect(selPaymentDocInst);
             final DocPaymentInfo_Base info = instance2info.get(docInst);
             final Instance curInst = retMulti.getSelect(retSelCur);
             final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
             final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
-
 
             final RateInfo rateInfo = RateInfo.getRateInfo(retMulti.<Object[]>getSelect(selRateObj));
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
@@ -1003,7 +1015,8 @@ public abstract class DocPaymentInfo_Base
                         if (!rateInfo.getTargetCurrencyInstance().equals(docRateInfo.getCurrencyInstance())) {
                             rateInfo.setTargetCurrencyInstance(docRateInfo.getCurrencyInstance());
 
-                            rateInfo.setRate(rateInfo.getRate().divide(docRateInfo.getRate(), BigDecimal.ROUND_HALF_UP));
+                            rateInfo.setRate(rateInfo.getRate().divide(docRateInfo.getRate(),
+                                            BigDecimal.ROUND_HALF_UP));
                             rateInfo.setSaleRate(rateInfo.getSaleRate().divide(docRateInfo.getSaleRate(),
                                             BigDecimal.ROUND_HALF_UP));
 
@@ -1106,9 +1119,11 @@ public abstract class DocPaymentInfo_Base
                     .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".AmountColumn"))
                     .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CurrencyColumn"))
                 .addRow()
-                    .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getName(), "font-weight:bold")
+                    .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getName(),
+                                    "font-weight:bold;font-size: 120%;")
                 .addRow()
-                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"), 3)
+                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"),
+                                    "font-weight:bold", 3)
                     .addColumn(formatter.format(payInfo.getCrossTotal()), "text-align: right;")
                     .addColumn(CurrencyInst.get(payInfo.getCurrencyInstance()).getSymbol());
 
@@ -1152,9 +1167,10 @@ public abstract class DocPaymentInfo_Base
                     .addRow()
                         .addColumn("&nbsp;")
                     .addRow()
-                        .addColumn(CurrencyInst.get(currencyInst).getName(), "font-weight:bold")
+                        .addColumn(CurrencyInst.get(currencyInst).getName(), "font-weight:bold;font-size: 120%;")
                     .addRow()
-                        .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"), 3)
+                        .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"),
+                                        "font-weight:bold", 3)
                         .addColumn(formatter.format(payInfo.getRateCrossTotal()), "text-align: right;")
                         .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol());
                 for (final PayPos payPos : payInfo.getPayPos()) {
@@ -1264,6 +1280,8 @@ public abstract class DocPaymentInfo_Base
         private RateInfo rateInfo;
 
         /**
+         * Instantiates a new pay pos.
+         *
          * @param _date Date of he Payment
          * @param _amount Amount of the Payment
          * @param _curInst instance of the Currency
