@@ -408,27 +408,36 @@ public abstract class SalesProductReport_Base
                     final Map<String, DataBean> added = new LinkedHashMap<>();
                     for (final DataBean bean : data) {
                         final StringBuilder criteriaBldr = new StringBuilder();
-                        if (groupBy.contains(GroupBy.PRODFAMILY)) {
-                            criteriaBldr.append(bean.getProductFamily());
-                        } else {
-                            criteriaBldr.append(bean.getProductInst().getOid());
-                        }
-                        criteriaBldr.append("-").append(bean.getContactInst().getOid());
+                        criteriaBldr.append(bean.getProductUoM()).append("-");
                         for (final GroupBy group : groupBy) {
                             switch (group) {
+                                case CONDITION:
+                                    criteriaBldr.append(bean.getCondition()).append("-");
+                                    break;
+                                case PRODFAMILY:
+                                    criteriaBldr.append(bean.getProductFamily()).append("-");
+                                    break;
+                                case PRODUCT:
+                                    criteriaBldr.append(bean.getProductInst().getOid()).append("-");
+                                    break;
+                                case CONTACT:
+                                    criteriaBldr.append(bean.getContactInst().getOid()).append("-");
+                                    break;
+                                case DOCTYPE:
+                                    criteriaBldr.append(bean.getDocType()).append("-");
+                                    break;
                                 case DAILY:
-                                    criteriaBldr.append(bean.getDocDate().toString("-YYYY-MM-dd"));
+                                    criteriaBldr.append(bean.getDocDate().toString("-YYYY-MM-dd")).append("-");
                                     break;
                                 case MONTHLY:
-                                    criteriaBldr.append(bean.getDocDate().toString("-YYYY-MM"));
+                                    criteriaBldr.append(bean.getDocDate().toString("-YYYY-MM")).append("-");
                                     break;
                                 case YEARLY:
-                                    criteriaBldr.append(bean.getDocDate().toString("YYYY"));
+                                    criteriaBldr.append(bean.getDocDate().toString("YYYY")).append("-");
                                     break;
                                 default:
                                     break;
                             }
-
                         }
                         final String criteria = criteriaBldr.toString();
                         if (!added.containsKey(criteria)) {
