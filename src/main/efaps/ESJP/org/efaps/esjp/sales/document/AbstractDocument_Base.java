@@ -2190,7 +2190,7 @@ public abstract class AbstractDocument_Base
             if ("true".equalsIgnoreCase(getProperty(_parameter, "UI"))) {
                 ret.put(ReturnValues.VALUES, getRateFrmt(_parameter, rateInfo));
             } else {
-                final Object[] rateObject = rateInfo.getRateObject();
+                final Object[] rateObject = getRateObject(_parameter, rateInfo);
                 ret.put(ReturnValues.VALUES, new Object[] { rateObject[0], rateObject[1], currInst.getId() });
             }
         }
