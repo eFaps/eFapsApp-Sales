@@ -42,6 +42,7 @@ import org.efaps.ci.CIAttribute;
 import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -251,14 +252,14 @@ public abstract class SalesReport4Account_Base
                     throw new EFapsException("JRException", e);
                 }
             } else {
-                final List<DataBean> dataSource = new ArrayList<>();
-
+                final Map<Instance, DataBean> beans = new HashMap<>();
                 final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
 
                 boolean offset = false;
                 if (filter.containsKey("switch")) {
                     offset = (boolean) filter.get("switch");
                 }
+                final DateTime reportDate = getReportDate(_parameter);
                 final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
                 add2QueryBuilder(_parameter, queryBldr);
                 queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
@@ -289,7 +290,8 @@ public abstract class SalesReport4Account_Base
                                 .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
                                 .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
                                 .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                                .setDocStatus(multi.<String>getSelect(selStatus));
+                                .setDocStatus(multi.<String>getSelect(selStatus))
+                                .setReportDate(reportDate);
 
                     if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                         dataBean.setContactInst(multi.<Instance>getSelect(selContactInst))
@@ -305,8 +307,13 @@ public abstract class SalesReport4Account_Base
                             .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
                                         multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
                     }
-                    dataSource.add(dataBean);
+                    beans.put(dataBean.getDocInst(), dataBean);
                 }
+
+                calculate4Date(_parameter, beans);
+
+                final List<DataBean> dataSource = new ArrayList<>();
+                dataSource.addAll(beans.values());
                 if (isShowSwapInfo()) {
                     final Map<Instance, Set<SwapInfo>> swapMap = Swap.getSwapInfos4Documents(_parameter, docInsts
                                     .toArray(new Instance[docInsts.size()]));
@@ -422,6 +429,98 @@ public abstract class SalesReport4Account_Base
                 }
                 ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
+            }
+            return ret;
+        }
+
+        /**
+         * Calculate for date.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _beans the beans
+         * @throws EFapsException on error
+         */
+        protected void calculate4Date(final Parameter _parameter,
+                                      final Map<Instance, DataBean> _beans)
+            throws EFapsException
+        {
+            final DateTime reportDate = getReportDate(_parameter);
+            if (reportDate.isBefore(new DateTime().withTimeAtStartOfDay())) {
+                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, 100);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
+                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                queryBldr.addWhereAttrGreaterValue(CISales.Payment.Date, reportDate.minusMinutes(1));
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder seDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+                multi.addSelect(seDocInst);
+                multi.execute();
+                while (multi.next()) {
+                    final Instance docInst = multi.getSelect(seDocInst);
+                    final DataBean bean;
+                    if (!_beans.containsKey(docInst)) {
+                        final PrintQuery print = new PrintQuery(docInst);
+                        print.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
+                                    CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
+                                    CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
+                                    CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
+                                    CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Revision);
+
+                        final SelectBuilder selContactInst = new SelectBuilder().linkto(
+                                        CISales.DocumentSumAbstract.Contact).instance();
+                        final SelectBuilder selContactName = new SelectBuilder().linkto(
+                                        CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
+                        final SelectBuilder selStatus = new SelectBuilder().status().label();
+                        print.addSelect(selStatus);
+                        if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                            print.addSelect(selContactInst, selContactName);
+                        }
+                        print.execute();
+                        bean = new DataBean(getFilteredReport().getReportKey())
+                                    .setDocInst(print.getCurrentInstance())
+                                    .setDocCreated(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
+                                    .setDocDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                    .setDocDueDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
+                                    .setDocName(print.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                    .setDocRevision(print.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
+                                    .setDocStatus(print.<String>getSelect(selStatus))
+                                    .setReportDate(reportDate);
+                        if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                            bean.setContactInst(print.<Instance>getSelect(selContactInst))
+                                    .setDocContactName(print.<String>getSelect(selContactName));
+                        }
+                        if (isCurrencyBase(_parameter)) {
+                            bean.setCurrencyBase(true)
+                                .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
+                                                print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+                        } else {
+                            bean.setRate(print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
+                                .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
+                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                        }
+                        _beans.put(docInst, bean);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Checks if is group by assigned.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is group by assigned
+         * @throws EFapsException on error
+         */
+        protected DateTime getReportDate(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final DateTime ret;
+            if (filterMap.containsKey("reportDate")) {
+                ret = (DateTime) filterMap.get("reportDate");
+            } else {
+                ret = new DateTime().withTimeAtStartOfDay();
             }
             return ret;
         }
@@ -938,6 +1037,9 @@ public abstract class SalesReport4Account_Base
 
         /** The report key. */
         private final ReportKey reportKey;
+
+        /** The report date. */
+        private DateTime reportDate;
         /**
          * Instantiates a new data bean.
          *
@@ -1268,6 +1370,10 @@ public abstract class SalesReport4Account_Base
                 }
                 final Boolean perpay =  props.containsKey("PaymentPerPayment")
                                 ? BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment")) : null;
+
+                if (getReportDate().isBefore(new DateTime().withTimeAtStartOfDay())) {
+                    docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
+                }
                 this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay));
                 this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid(perpay));
             }
@@ -1406,10 +1512,34 @@ public abstract class SalesReport4Account_Base
          * Sets the swapInfo.
          *
          * @param _swapInfo the new swapInfo
+         * @return the data bean
          */
-        public void setSwapInfo(final String _swapInfo)
+        public DataBean setSwapInfo(final String _swapInfo)
         {
             this.swapInfo = _swapInfo;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #reportDate}.
+         *
+         * @return value of instance variable {@link #reportDate}
+         */
+        public DateTime getReportDate()
+        {
+            return this.reportDate;
+        }
+
+        /**
+         * Setter method for instance variable {@link #reportDate}.
+         *
+         * @param _reportDate value for instance variable {@link #reportDate}
+         * @return the data bean
+         */
+        public DataBean setReportDate(final DateTime _reportDate)
+        {
+            this.reportDate = _reportDate;
+            return this;
         }
     }
 }
