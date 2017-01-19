@@ -447,6 +447,7 @@ public abstract class SalesReport4Account_Base
             final DateTime reportDate = getReportDate(_parameter);
             if (reportDate.isBefore(new DateTime().withTimeAtStartOfDay())) {
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, 100);
+                add2QueryBuilder(_parameter, attrQueryBldr);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                 queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,

@@ -74,7 +74,9 @@
             <property name="Label">org.efaps.esjp.sales.report.SalesReport4Account.contact</property>
             <trigger event="UI_FIELD_VALUE" method="getContactFieldValue"
                 name="Sales_PaymentDocumentOut_FilterForm.contact.UI_FIELD_VALUE"
-                program="org.efaps.esjp.erp.FilteredReport" />
+                program="org.efaps.esjp.erp.FilteredReport" >
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_PaymentDocumentOut_FilterForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.contacts.Contacts" />
