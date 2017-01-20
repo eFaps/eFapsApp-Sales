@@ -806,7 +806,7 @@ public abstract class AbstractDocument_Base
         final BigDecimal crossTotal = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final Taxes rateTaxes = print.getAttribute(CISales.DocumentSumAbstract.RateTaxes);
 
-        if (rateTaxes == null || rateTaxes != null && rateTaxes.getEntries().isEmpty()) {
+        if (netTotal != null && rateTaxes == null || rateTaxes != null && rateTaxes.getEntries().isEmpty()) {
             js.append(getSetFieldValue(0, "withoutVAT", "true")).append("\n");
         }
 
