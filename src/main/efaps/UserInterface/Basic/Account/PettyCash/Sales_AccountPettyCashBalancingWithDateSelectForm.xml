@@ -27,7 +27,9 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="TargetShowCheckBoxes">true</property>
             <table>Sales_AccountPettyCashBalancingPaymentTable</table>
-            <evaluate method="getPayments4PettyCashBalance" program="org.efaps.esjp.sales.Account"/>
+            <evaluate method="getPayments4PettyCashBalance" program="org.efaps.esjp.sales.Account">
+                <property name="Type">Sales_Payment</property>
+            </evaluate>
         </field>
     </definition>
 </ui-form>

@@ -588,7 +588,7 @@ public abstract class Account_Base
     public BigDecimal getStartAmount(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance inst = _parameter.getInstance();
+        final Instance inst = _parameter.getCallInstance();
         final PrintQuery print = new PrintQuery(inst);
         print.addAttribute(CISales.AccountAbstract.AmountAbstract);
         print.execute();
@@ -1031,9 +1031,9 @@ public abstract class Account_Base
     public boolean hasTransaction(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance inst = _parameter.getInstance();
+        final Instance inst = _parameter.getCallInstance();
         final QueryBuilder queryBuilder = new QueryBuilder(CISales.TransactionAbstract);
-        queryBuilder.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+        queryBuilder.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst);
         final InstanceQuery query = queryBuilder.getQuery();
         return !query.execute().isEmpty();
     }

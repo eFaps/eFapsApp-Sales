@@ -669,7 +669,7 @@ public abstract class PettyCashReceipt_Base
                                 DBProperties.getProperty(PettyCashReceipt.class.getName() + ".NONEPosition.Label"));
                 _values.add(0, ddPos);
             };
-        } .dropDownFieldValue(_parameter);
+        } .getOptionListFieldValue(_parameter);
     }
 
     /**

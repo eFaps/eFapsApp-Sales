@@ -26,12 +26,9 @@
         <name>Sales_AccountPettyCashBalancingPaymentTable</name>
         <field name="date">
             <property name="Attribute">Date</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_Payment/Date.Label</property>
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK:2:3</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="createDocument">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
@@ -39,6 +36,7 @@
             <property name="Label">Sales_Payment/CreateDocument.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
          <field name="targetDocument">
             <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
@@ -46,22 +44,18 @@
             <property name="Label">Sales_Payment/TargetDocument.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="amount">
             <property name="Phrase">$&lt;linkto[CreateDocument].attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="contact">
             <property name="Select">linkto[CreateDocument].linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_AccountPettyCashReceiptForm.contact.Label</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
     </definition>
 </ui-table>
