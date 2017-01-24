@@ -23,9 +23,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashBalanceTable</name>
-         <field name="accountPettyCash">
+        <field name="accountPettyCash">
             <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].oid</property>
-            <property name="Select">>linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Select">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
             <property name="FilterType">PICKLIST</property>
@@ -45,7 +45,7 @@
             <property name="FilterDefault">MONTH</property>
         </field>
         <field name="crosstotal">
-            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="MsgPhrase">Sales_CrossTotalMsgPhrase</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_CashDeskBalance/CrossTotal.Label</property>
             <property name="Align">right</property>
@@ -61,13 +61,6 @@
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PettyCashBalanceForm.order.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>
