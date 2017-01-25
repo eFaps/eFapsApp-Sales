@@ -1064,7 +1064,7 @@ public abstract class AbstractPaymentDocument_Base
         final List<Map<String, String>> list = new ArrayList<>();
         final Map<String, String> map = new HashMap<>();
         final Return retVal = new Return();
-        final BigDecimal amount2Pay = getAmount4Pay(_parameter).abs();
+        final BigDecimal amount2Pay = getAmount4Pay(_parameter);
         map.put("amount", NumberFormatter.get().getTwoDigitsFormatter().format(amount2Pay));
         map.put("total4DiscountPay", NumberFormatter.get().getTwoDigitsFormatter().format(
                         amount2Pay.subtract(getSum4Positions(_parameter, true))));

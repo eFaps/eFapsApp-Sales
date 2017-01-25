@@ -931,6 +931,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final ListSysConfAttribute PAYMENT_DOCS4OBLIGATION = new ListSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.Documents4Obligations")
+                    .description("List of Types (Documents) that create the obligation to make Outgoing payments")
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName())
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName())
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENT_PAIDRULES = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.PaidRules")

@@ -161,6 +161,20 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
+     * Checks if is obligation doc.
+     *
+     * @return true, if is obligation doc
+     * @throws EFapsException on error
+     */
+    public boolean isObligationDoc()
+        throws EFapsException
+    {
+        final List<String> docs = Sales.PAYMENT_DOCS4OBLIGATION.get();
+        return docs.contains(getInstance().getType().getName())
+                        || docs.contains(getInstance().getType().getUUID().toString());
+    }
+
+    /**
      * @param _parameter parameter to be used
      * @return this
      */
@@ -322,7 +336,6 @@ public abstract class DocPaymentInfo_Base
         return this.rateCurrencyInstance;
     }
 
-
     /**
      * Checks if is per payment.
      *
@@ -354,9 +367,8 @@ public abstract class DocPaymentInfo_Base
         } catch (final ParseException e) {
             throw new EFapsException("catched ParseException", e);
         }
-
-        return this.crossTotal.subtract(getPaid(null)).abs().compareTo(threshold) <= 0
-                        || this.rateCrossTotal.subtract(getRatePaid(null)).abs().compareTo(threshold) <= 0;
+        return getBalance(null).abs().compareTo(threshold) <= 0
+                        || getRateBalance(null).abs().compareTo(threshold) <= 0;
     }
 
     /**
@@ -418,6 +430,40 @@ public abstract class DocPaymentInfo_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * Gets the balance.
+     *
+     * @param _perPayment the per payment
+     * @return the balance
+     * @throws EFapsException on error
+     */
+    public BigDecimal getBalance(final Boolean _perPayment)
+        throws EFapsException
+    {
+        BigDecimal total = getCrossTotal();
+        if (isObligationDoc()) {
+            total = total.negate();
+        }
+        return total.subtract(getPaid(_perPayment));
+    }
+
+    /**
+     * Gets the rate balance.
+     *
+     * @param _perPayment the per payment
+     * @return the rate balance
+     * @throws EFapsException on error
+     */
+    public BigDecimal getRateBalance(final Boolean _perPayment)
+        throws EFapsException
+    {
+        BigDecimal total = getRateCrossTotal();
+        if (isObligationDoc()) {
+            total = total.negate();
+        }
+        return total.subtract(getRatePaid(_perPayment));
     }
 
     /**
@@ -728,7 +774,7 @@ public abstract class DocPaymentInfo_Base
                                       final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
-        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+        final Map<Instance, DocPaymentInfo_Base> instance2info = DocPaymentInfo_Base.getInfoMap(_parameter, _infos);
 
         final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<>(instance2info.keySet()));
         final SelectBuilder selContactName = new SelectBuilder()
@@ -766,7 +812,7 @@ public abstract class DocPaymentInfo_Base
                                        final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
-        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+        final Map<Instance, DocPaymentInfo_Base> instance2info = DocPaymentInfo_Base.getInfoMap(_parameter, _infos);
 
         // check normal payments
         final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
@@ -833,7 +879,7 @@ public abstract class DocPaymentInfo_Base
                                          final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
-        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+        final Map<Instance, DocPaymentInfo_Base> instance2info = DocPaymentInfo_Base.getInfoMap(_parameter, _infos);
 
         // check related taxdocs for detraction, for detraction the payment for detraction will be included
         final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
@@ -904,7 +950,7 @@ public abstract class DocPaymentInfo_Base
                                         final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
-        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+        final Map<Instance, DocPaymentInfo_Base> instance2info = DocPaymentInfo_Base.getInfoMap(_parameter, _infos);
 
         // check related taxdocs for retention. For retention the emission
         // of a certificate counts as payment
@@ -966,7 +1012,7 @@ public abstract class DocPaymentInfo_Base
                                    final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
-        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+        final Map<Instance, DocPaymentInfo_Base> instance2info = DocPaymentInfo_Base.getInfoMap(_parameter, _infos);
 
         final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
         swapQueryBldr.setOr(true);
@@ -1000,8 +1046,8 @@ public abstract class DocPaymentInfo_Base
                 final String keyFrom = swapMulti.getSelect(selDocFromStatus);
                 final String keyTo = swapMulti.getSelect(selDocToStatus);
                 if (instance2info.containsKey(docFromInst)
-                                && isValidStatus4Swap(_parameter, docFromInst, keyFrom, true)
-                                && isValidStatus4Swap(_parameter, docToInst, keyTo, false)) {
+                                && DocPaymentInfo_Base.isValidStatus4Swap(_parameter, docFromInst, keyFrom, true)
+                                && DocPaymentInfo_Base.isValidStatus4Swap(_parameter, docToInst, keyTo, false)) {
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
                     final Instance curInst = swapMulti.getSelect(selCurInst);
                     final RateInfo docRateInfo = new Currency().evaluateRateInfo(info.getParameter(),
@@ -1158,7 +1204,7 @@ public abstract class DocPaymentInfo_Base
                 .addRow()
                         .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"),
                                         "font-weight:bold;text-align:right", 3)
-                        .addColumn(formatter.format(payInfo.getPaid(i < 1).subtract(payInfo.getCrossTotal())),
+                        .addColumn(formatter.format(payInfo.getBalance(i < 1)),
                                         "text-align: right;")
                         .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
 
@@ -1212,7 +1258,7 @@ public abstract class DocPaymentInfo_Base
                     .addRow()
                         .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"),
                                         "font-weight:bold;text-align:right", 3)
-                        .addColumn(formatter.format(payInfo.getRatePaid(i < 1).subtract(payInfo.getRateCrossTotal())),
+                        .addColumn(formatter.format(payInfo.getRateBalance(i < 1)),
                                         "text-align: right;")
                         .addColumn(CurrencyInst.get(currencyInst).getSymbol());
             }
@@ -1525,7 +1571,7 @@ public abstract class DocPaymentInfo_Base
             if (getInstance().isValid()) {
                 final SelectBuilder selAccCurInst = new SelectBuilder()
                                 .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-                final PrintQuery print = new PrintQuery(this.getInstance());
+                final PrintQuery print = new PrintQuery(getInstance());
                 print.addSelect(selAccCurInst);
                 print.execute();
                 setCurrencyInstance(print.<Instance>getSelect(selAccCurInst));
@@ -1552,7 +1598,7 @@ public abstract class DocPaymentInfo_Base
             if (getInstance().isValid()) {
                 final SelectBuilder selAccCurInst = new SelectBuilder()
                                 .linkto(CISales.AccountAbstract.CurrencyLink).instance();
-                final PrintQuery print = new PrintQuery(this.getInstance());
+                final PrintQuery print = new PrintQuery(getInstance());
                 print.addSelect(selAccCurInst);
                 print.execute();
                 setCurrencyInstance(print.<Instance>getSelect(selAccCurInst));
