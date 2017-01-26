@@ -374,7 +374,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * Gets the paid.
      *
-     * @param _perPayment the perpayment
+     * @param _perPayment the perpayment, if null the configured default is used
      * @return the paid amount in the base currency of the document.
      * @throws EFapsException on error
      */
@@ -403,7 +403,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * Gets the rate paid.
      *
-     * @param _perPayment the per payment
+     * @param _perPayment the per payment, if null the configured default is used
      * @return the paid amount in the rate currency of the document.
      * @throws EFapsException on error
      */
@@ -435,7 +435,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * Gets the balance.
      *
-     * @param _perPayment the per payment
+     * @param _perPayment the per payment,  if null the configured default is used
      * @return the balance
      * @throws EFapsException on error
      */
@@ -452,7 +452,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * Gets the rate balance.
      *
-     * @param _perPayment the per payment
+     * @param _perPayment the per payment, if null the configured default is used
      * @return the rate balance
      * @throws EFapsException on error
      */
@@ -567,7 +567,7 @@ public abstract class DocPaymentInfo_Base
         final List<Object> objects = new ArrayList<>();
         objects.add(getRateCrossTotal());
         objects.add(getRatePaid(false));
-        objects.add(BigDecimal.ZERO);
+        objects.add(getRateBalance(null));
         objects.add(BigDecimal.ZERO);
         final CurrencyInst currInst = CurrencyInst.get(getRateCurrencyInstance());
         objects.add(currInst.getSymbol());
@@ -862,7 +862,7 @@ public abstract class DocPaymentInfo_Base
                                 CIERP.Document2PaymentDocumentAbstract.Rate));
             }
             if (InstanceUtils.isKindOf(payDocInst, CISales.PaymentDocumentOutAbstract)) {
-                amount= amount.negate();
+                amount = amount.negate();
             }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
                             .setLabel(payDocInst.getType().getLabel())
@@ -933,7 +933,7 @@ public abstract class DocPaymentInfo_Base
                                 CIERP.Document2PaymentDocumentAbstract.Rate));
             }
             if (InstanceUtils.isKindOf(payDocInst, CISales.PaymentDocumentOutAbstract)) {
-                amount= amount.negate();
+                amount = amount.negate();
             }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
                             .setLabel(CISales.IncomingDetraction.getType().getLabel())

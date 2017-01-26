@@ -356,5 +356,29 @@
                 name="Sales_ExchangeForm.swapTotal2.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
+        <field name="swapBalanceGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="swapBalance">
+            <property name="ModeEdit">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_ExchangeForm.swapBalanceFrom.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapBalanceFieldValue"
+                name="Sales_ExchangeForm.swapBalance.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="SwapFrom">true</property>
+            </trigger>
+        </field>
+        <field name="swapBalance2">
+            <property name="ModeEdit">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_ExchangeForm.swapBalanceTo.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapBalanceFieldValue"
+                name="Sales_ExchangeForm.swapBalance2.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
     </definition>
 </ui-form>

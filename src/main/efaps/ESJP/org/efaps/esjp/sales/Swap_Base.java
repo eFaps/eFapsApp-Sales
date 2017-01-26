@@ -45,6 +45,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -834,6 +835,24 @@ public abstract class Swap_Base
         throws EFapsException
     {
         return new Return().put(ReturnValues.VALUES, getSwapTotal(_parameter, _parameter.getInstance()));
+    }
+
+    /**
+     * Gets the swap balance field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the swap balance field value
+     * @throws EFapsException on error
+     */
+    public Return getSwapBalanceFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final BigDecimal swapTotal = getSwapTotal(_parameter, _parameter.getInstance());
+        final PrintQuery print = CachedPrintQuery.get4Request(_parameter.getInstance());
+        print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        print.execute();
+        final BigDecimal total = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        return new Return().put(ReturnValues.VALUES, total.subtract(swapTotal));
     }
 
     /**
