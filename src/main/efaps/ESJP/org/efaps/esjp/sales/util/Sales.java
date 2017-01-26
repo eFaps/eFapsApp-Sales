@@ -1141,6 +1141,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BitEnumSysConfAttribute<JasperActivation> PAYMENTORDER_JASPERACTIVATION
+        = new BitEnumSysConfAttribute<JasperActivation>()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PaymentOrder.JasperActivation")
+                    .clazz(JasperActivation.class)
+                    .addDefaultValue(JasperActivation.ONCREATE)
+                    .addDefaultValue(JasperActivation.ONEDIT)
+                    .description("Activation of Jasperreport Creation");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENTOUTCASHPAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Cash.PayableDocuments")

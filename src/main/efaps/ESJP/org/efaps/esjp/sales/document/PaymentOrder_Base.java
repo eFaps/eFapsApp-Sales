@@ -24,6 +24,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -47,10 +49,12 @@ public abstract class PaymentOrder_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         connect2Object(_parameter, createdDoc);
         final Return ret = new Return();
-        final File file = createReport(_parameter, createdDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.PAYMENTORDER_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+            final File file = createReport(_parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
@@ -67,10 +71,12 @@ public abstract class PaymentOrder_Base
         final Return ret = new Return();
         final EditedDoc editedDoc = editDoc(_parameter);
         updateConnection2Object(_parameter, editedDoc);
-        final File file = createReport(_parameter, editedDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.PAYMENTORDER_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+            final File file = createReport(_parameter, editedDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }
