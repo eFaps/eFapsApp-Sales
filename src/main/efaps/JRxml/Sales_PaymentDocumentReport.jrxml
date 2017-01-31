@@ -1,217 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
+<!-- 2017-01-31T17:01:10 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="88b0373f-671b-487b-9adf-0af1384350b2">
-    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
-    <import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
-    <import value="org.efaps.number2words.Converter"/>
-    <parameter name="INSTANCE" class="java.lang.Object">
-        <parameterDescription><![CDATA[Object Instance]]></parameterDescription>
-    </parameter>
-    <parameter name="accountName" class="java.lang.String"/>
-    <parameter name="accountCurrencyName" class="java.lang.String"/>
-    <parameter name="CompanyName" class="java.lang.String"/>
-    <parameter name="CompanyTaxNum" class="java.lang.String"/>
-    <parameter name="ClientOrSupplier" class="java.lang.String"/>
-    <queryString language="eFaps">
-        <![CDATA[print obj $P!{INSTANCE}
- select
- attribute[Date] as date,
- attribute[Rate].label as rate,
- linkto[Contact].attribute[Name] as contactName,
- linkto[RateCurrencyLink].attribute[Name] as currencyName,
- attribute[Note] as note,
- attribute[Name] as name,
- attribute[Amount] as amount,
- attribute[Code] as code,
- type.label as type,
- type.uuid as TypeUUID,
- attribute[DueDate] as dueDate]]>
-    </queryString>
-    <field name="date" class="org.joda.time.DateTime"/>
-    <field name="rate" class="java.math.BigDecimal"/>
-    <field name="contactName" class="java.lang.String"/>
-    <field name="currencyName" class="java.lang.String"/>
-    <field name="note" class="java.lang.String"/>
-    <field name="name" class="java.lang.String"/>
-    <field name="amount" class="java.math.BigDecimal"/>
-    <field name="code" class="java.lang.String"/>
-    <field name="type" class="java.lang.String"/>
-    <field name="TypeUUID" class="java.util.UUID"/>
-    <field name="dueDate" class="org.joda.time.DateTime"/>
-    <pageHeader>
-        <band height="90">
-            <staticText>
-                <reportElement uuid="c9b1639c-3747-482c-a7a5-826a5d7f17a5" x="0" y="40" width="70" height="20">
-                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-                </reportElement>
-                <textElement textAlignment="Left" verticalAlignment="Middle">
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[Empresa:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="3a34f343-8843-42d3-8cbf-11d4ac65eda8" x="0" y="60" width="70" height="20">
-                    <printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
-                </reportElement>
-                <textElement textAlignment="Left" verticalAlignment="Middle">
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[R.U.C.:]]></text>
-            </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="bf287c4d-79a6-45ad-9050-ce8ed99d048e" x="70" y="40" width="210" height="20"/>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="59db75b9-42ce-4c4a-8255-2099ad884ae2" x="70" y="60" width="210" height="20"/>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageHeader>
-    <columnHeader>
-        <band height="160">
-            <textField>
-                <reportElement uuid="24639b69-1ac2-403f-8633-0f15ce393de5" x="0" y="15" width="242" height="20"/>
-                <textElement>
-                    <font size="12" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{type} + " - " + $F{name}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-                <reportElement uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3" stretchType="RelativeToTallestObject" x="92" y="40" width="100" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="###0.0000" isBlankWhenNull="true">
-                <reportElement uuid="bac2d87a-b281-4422-9149-434dda530475" stretchType="RelativeToTallestObject" x="364" y="113" width="102" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="2c9cca4b-1e7f-4647-8125-e9b9aba23a66" stretchType="RelativeToTallestObject" x="92" y="73" width="485" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="5a914ba1-67fc-49f1-923c-aa0f6d76c81f" stretchType="RelativeToTallestObject" x="92" y="93" width="168" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$P{accountName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="3020349f-aadd-4baf-9742-0d317dad4011" stretchType="RelativeToTallestObject" x="260" y="93" width="228" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$P{accountCurrencyName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="54612e49-0205-4a12-a5f7-081dd1e3cbe5" stretchType="RelativeToTallestObject" x="92" y="113" width="396" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{currencyName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="fd32ac6f-04d6-4ee0-a5ee-2dbcebb2b8e8" stretchType="RelativeToTallestObject" x="92" y="140" width="396" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="aa97391b-0bbe-4bc2-b50e-a082d7d82a37" stretchType="RelativeToTallestObject" x="364" y="40" width="102" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement uuid="d15d3065-bd5f-411f-a046-6f77a256401f" x="0" y="40" width="70" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[EMISIÓN]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="9d20107e-5b59-4af1-8e1b-fc4fe1f10b85" x="0" y="93" width="70" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[CUENTA]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="73bfd9b2-e3b5-4586-b768-511771b5e522" x="0" y="113" width="70" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[DIVISA]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="621cde14-64cf-4afb-8e96-414143bbcfae" x="0" y="140" width="70" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[CONCEPTO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="ef870b45-886c-4c39-a82d-d9f5d1e1dea3" x="260" y="113" width="66" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[T / CAMBIO]]></text>
-            </staticText>
-            <textField>
-                <reportElement uuid="6a74f7df-441a-4f50-855b-89e9750d854b" x="0" y="73" width="70" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{ClientOrSupplier} == null ? "CLIENTE" : $P{ClientOrSupplier}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement uuid="fc1195a2-a567-4110-b02d-f99c1b267b35" x="260" y="40" width="104" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[N° DE OPERACIÓN]]></text>
-            </staticText>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-                <reportElement uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3" stretchType="RelativeToTallestObject" x="92" y="55" width="100" height="15"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[(($F{TypeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{TypeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03")) ) && $F{dueDate}!= $F{date}) ? $F{dueDate}.toDate() : ""]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement uuid="24639b69-1ac2-403f-8633-0f15ce393de5" x="0" y="55" width="92" height="15"/>
-                <textElement>
-                    <font size="10" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[(($F{TypeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{TypeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03")) ) && $F{dueDate} != $F{date}) ? "PRESENTACI\u00D3N" : ""]]></textFieldExpression>
-            </textField>
-        </band>
-    </columnHeader>
-    <detail>
-        <band height="20" splitType="Stretch">
-            <subreport isUsingCache="false">
-                <reportElement uuid="0f249bf2-0682-4b37-ad3f-00c18b204767" stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20"/>
-                <subreportParameter name="INSTANCE">
-                    <subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
-                </subreportParameter>
-                <subreportParameter name="ClientOrSupplier">
-                    <subreportParameterExpression><![CDATA[$P{ClientOrSupplier}]]></subreportParameterExpression>
-                </subreportParameter>
-                <subreportExpression><![CDATA["Sales_PaymentDocumentPosition.jrxml"]]></subreportExpression>
-            </subreport>
-        </band>
-    </detail>
-    <columnFooter>
-        <band height="52">
-            <staticText>
-                <reportElement uuid="1290b50f-d8dd-4730-8ef1-2618e375ddb1" x="380" y="10" width="70" height="15"/>
-                <textElement>
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[TOTAL]]></text>
-            </staticText>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement uuid="b985791b-8158-4d1e-b26f-f32caf23bdca" x="450" y="10" width="105" height="15"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[$F{amount}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
-            </textField>
-        </band>
-    </columnFooter>
-    <pageFooter>
-        <band height="213"/>
-    </pageFooter>
+	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Rudolf Prod"/>
+	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
+	<import value="org.efaps.number2words.Converter"/>
+	<parameter name="INSTANCE" class="java.lang.Object">
+		<parameterDescription><![CDATA[5766.88990]]></parameterDescription>
+	</parameter>
+	<parameter name="accountName" class="java.lang.String"/>
+	<parameter name="accountCurrencyName" class="java.lang.String"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
+	<parameter name="ClientOrSupplier" class="java.lang.String"/>
+	<queryString language="eFaps">
+		<![CDATA[print obj $P!{INSTANCE}
+  select
+  attribute[Date] as date,
+  attribute[Rate].label as rate,
+  linkto[Contact].attribute[Name] as contactName,
+  linkto[RateCurrencyLink].attribute[Name] as currencyName,
+  attribute[Note] as note,
+  attribute[Name] as name,
+  attribute[Amount] as amount,
+  attribute[Code] as code,
+  type.label as typeLabel,
+  type.uuid as typeUUID,
+  attribute[DueDate] as dueDate]]>
+	</queryString>
+	<field name="date" class="org.joda.time.DateTime"/>
+	<field name="rate" class="java.math.BigDecimal"/>
+	<field name="contactName" class="java.lang.String"/>
+	<field name="currencyName" class="java.lang.String"/>
+	<field name="note" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="typeLabel" class="java.lang.String"/>
+	<field name="typeUUID" class="java.util.UUID"/>
+	<field name="dueDate" class="org.joda.time.DateTime"/>
+	<pageHeader>
+		<band height="90">
+			<staticText>
+				<reportElement x="0" y="40" width="70" height="20" uuid="c9b1639c-3747-482c-a7a5-826a5d7f17a5">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="70" height="20" uuid="3a34f343-8843-42d3-8cbf-11d4ac65eda8">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[R.U.C.:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="70" y="40" width="210" height="20" uuid="bf287c4d-79a6-45ad-9050-ce8ed99d048e"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="70" y="60" width="210" height="20" uuid="59db75b9-42ce-4c4a-8255-2099ad884ae2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="160">
+			<textField>
+				<reportElement x="0" y="15" width="242" height="20" uuid="24639b69-1ac2-403f-8633-0f15ce393de5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{typeLabel} + " - " + $F{code}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="40" width="100" height="15" uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3"/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.0000" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="364" y="113" width="102" height="15" uuid="bac2d87a-b281-4422-9149-434dda530475"/>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="73" width="485" height="15" uuid="2c9cca4b-1e7f-4647-8125-e9b9aba23a66"/>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="93" width="168" height="15" uuid="5a914ba1-67fc-49f1-923c-aa0f6d76c81f"/>
+				<textFieldExpression><![CDATA[$P{accountName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="260" y="93" width="228" height="15" uuid="3020349f-aadd-4baf-9742-0d317dad4011"/>
+				<textFieldExpression><![CDATA[$P{accountCurrencyName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="113" width="396" height="15" uuid="54612e49-0205-4a12-a5f7-081dd1e3cbe5"/>
+				<textFieldExpression><![CDATA[$F{currencyName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="140" width="396" height="15" uuid="fd32ac6f-04d6-4ee0-a5ee-2dbcebb2b8e8"/>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="364" y="40" width="102" height="15" uuid="aa97391b-0bbe-4bc2-b50e-a082d7d82a37"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="70" height="15" uuid="d15d3065-bd5f-411f-a046-6f77a256401f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMISIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="93" width="70" height="15" uuid="9d20107e-5b59-4af1-8e1b-fc4fe1f10b85"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="113" width="70" height="15" uuid="73bfd9b2-e3b5-4586-b768-511771b5e522"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIVISA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="140" width="70" height="15" uuid="621cde14-64cf-4afb-8e96-414143bbcfae"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="113" width="66" height="15" uuid="ef870b45-886c-4c39-a82d-d9f5d1e1dea3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[T / CAMBIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="73" width="70" height="15" uuid="6a74f7df-441a-4f50-855b-89e9750d854b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ClientOrSupplier} == null ? "CLIENTE" : $P{ClientOrSupplier}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="260" y="40" width="104" height="15" uuid="fc1195a2-a567-4110-b02d-f99c1b267b35"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° DE OPERACIÓN]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="55" width="100" height="15" uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3"/>
+				<textFieldExpression><![CDATA[(($F{typeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{typeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03")) ) && $F{dueDate}!= $F{date}) ? $F{dueDate}.toDate() : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="55" width="92" height="15" uuid="24639b69-1ac2-403f-8633-0f15ce393de5"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{typeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{typeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03")) ) && $F{dueDate} != $F{date}) ? "PRESENTACI\u00D3N" : ""]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<subreport isUsingCache="false">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20" uuid="0f249bf2-0682-4b37-ad3f-00c18b204767"/>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ClientOrSupplier">
+					<subreportParameterExpression><![CDATA[$P{ClientOrSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["Sales_PaymentDocumentPosition.jrxml"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="52">
+			<staticText>
+				<reportElement x="380" y="10" width="70" height="15" uuid="1290b50f-d8dd-4730-8ef1-2618e375ddb1"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="450" y="10" width="105" height="15" uuid="b985791b-8158-4d1e-b26f-f32caf23bdca"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{amount}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="213"/>
+	</pageFooter>
 </jasperReport>
