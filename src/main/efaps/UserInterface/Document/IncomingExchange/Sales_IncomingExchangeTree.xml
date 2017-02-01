@@ -31,6 +31,7 @@
             <child>Sales_IncomingExchangeTree_Payment</child>
             <child>Sales_IncomingExchangeTree_PaymentAnalysis</child>
             <child>Sales_IncomingExchangeTree_Documents</child>
+            <child>Sales_IncomingExchangeTree_ActionDefinition</child>
             <child>Common_History_ObjectTree_HistoryLog</child>
         </childs>
         <property name="Target">content</property>
