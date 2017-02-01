@@ -29,7 +29,10 @@
         </access>
         <target>
             <form>Sales_PaymentDepositForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute method="edit" program="org.efaps.esjp.sales.payment.PaymentDeposit" >
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_PaymentDepositTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
@@ -37,6 +40,7 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
+        <property name="TargetShowFile">true</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

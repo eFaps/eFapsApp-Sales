@@ -27,7 +27,10 @@
         </access>
         <target>
             <form>Sales_PaymentInternalOutForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute method="edit" program="org.efaps.esjp.sales.payment.PaymentInternalOut">
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_PaymentInternalOutTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
@@ -36,6 +39,7 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
+        <property name="TargetShowFile">true</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

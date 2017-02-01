@@ -41,7 +41,6 @@
         </field>
         <field name="name">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.RetentionCertificate" method="autoComplete4Doc"

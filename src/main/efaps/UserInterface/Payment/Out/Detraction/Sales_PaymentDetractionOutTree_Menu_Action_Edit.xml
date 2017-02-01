@@ -14,10 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd"
@@ -25,7 +21,6 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>89bf71e4-464d-49f1-ade9-927d19490f00</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDetractionOutTree_Menu_Action_Edit</name>
@@ -35,11 +30,15 @@
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentDetractionOutForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+            <execute method="edit" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
+        <property name="TargetShowFile">true</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

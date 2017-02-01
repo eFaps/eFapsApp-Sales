@@ -28,7 +28,10 @@
         </access>
         <target>
             <form>Sales_PaymentRetentionForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+            <execute method="edit" program="org.efaps.esjp.sales.payment.PaymentRetention" >
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_PaymentRetentionTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
@@ -36,7 +39,8 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="TargetShowFile">true</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">1000</property>
     </definition>
 </ui-command>

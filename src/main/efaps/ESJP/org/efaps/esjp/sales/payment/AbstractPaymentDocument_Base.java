@@ -76,6 +76,7 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.tag.Tag;
+import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -226,6 +227,24 @@ public abstract class AbstractPaymentDocument_Base
         createdDoc.setInstance(insert.getInstance());
 
         return createdDoc;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Edit().execute(_parameter);
+        final EditedDoc editedDoc = new EditedDoc(_parameter.getInstance());
+        final File file = createReport(_parameter, editedDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
