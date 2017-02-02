@@ -44,9 +44,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -162,10 +160,7 @@ public abstract class PaymentRetention_Base
                                                             new Contacts().getFieldValue4Contact(contactInst, false)))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.amount.name, amount))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.account.name, _parameter
-                                    .getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)))
-                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentRetentionForm.date.name + "_eFapsDate",
-                                            DateUtil.getDate4Parameter(print.<DateTime>getAttribute(
-                                                            CISales.IncomingCheck.Date))));
+                                    .getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)));
             // store that the amount was set from the User
             ParameterUtil.setParameterValues(_parameter, "amount", amount);
             Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
