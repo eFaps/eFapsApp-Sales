@@ -39,6 +39,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -154,6 +155,7 @@ public abstract class CreditNote_Base
             insert.add(CISales.Document2Document4Swap.ToLink, query.getCurrentValue());
             insert.add(CISales.Document2Document4Swap.Amount, amount);
             insert.add(CISales.Document2Document4Swap.CurrencyLink, currencyId);
+            insert.add(CISales.Document2Document4Swap.Date, new DateTime().withTimeAtStartOfDay());
             insert.execute();
 
             final Insert insert2 = new Insert(CISales.Document2Document4Swap);
@@ -161,6 +163,7 @@ public abstract class CreditNote_Base
             insert2.add(CISales.Document2Document4Swap.ToLink, inst);
             insert2.add(CISales.Document2Document4Swap.Amount, amount);
             insert2.add(CISales.Document2Document4Swap.CurrencyLink, currencyId);
+            insert2.add(CISales.Document2Document4Swap.Date, new DateTime().withTimeAtStartOfDay());
             insert2.execute();
 
             new DocumentUpdate().updateDocument(_parameter, inst);
