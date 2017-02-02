@@ -1009,6 +1009,7 @@ public abstract class Swap_Base
     {
         final Map<Instance, Set<SwapInfo>> ret = new HashMap<>();
         if (ArrayUtils.isNotEmpty(_docInstances)) {
+            final Swap swap = new Swap();
             final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2Document4Swap);
             queryBldr.setOr(true);
             queryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromLink, (Object[]) _docInstances);
@@ -1016,52 +1017,69 @@ public abstract class Swap_Base
             final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
             final SelectBuilder selFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
             final SelectBuilder selFromInst = new SelectBuilder(selFrom).instance();
+            final SelectBuilder selFromStatus = new SelectBuilder(selFrom).attribute(
+                            CISales.DocumentAbstract.StatusAbstract);
             final SelectBuilder selFromName = new SelectBuilder(selFrom).attribute(CISales.DocumentSumAbstract.Name);
             final SelectBuilder selTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
             final SelectBuilder selToInst = new SelectBuilder(selTo).instance();
             final SelectBuilder selToName = new SelectBuilder(selTo).attribute(CISales.DocumentSumAbstract.Name);
+            final SelectBuilder selToStatus = new SelectBuilder(selFrom).attribute(
+                            CISales.DocumentAbstract.StatusAbstract);
             final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CISales.Document2Document4Swap.CurrencyLink)
                             .instance();
-            multi.addSelect(selCurrInst, selFromInst, selToInst, selFromName, selToName);
+            multi.addSelect(selCurrInst, selFromInst, selFromStatus, selToInst, selFromName, selToName, selToStatus);
             multi.addAttribute(CISales.Document2Document4Swap.Amount);
             multi.execute();
             while (multi.next()) {
                 final Instance fromInst = multi.<Instance>getSelect(selFromInst);
                 final Instance toInst = multi.<Instance>getSelect(selToInst);
+                final Status fromStatus = Status.get(multi.<Long>getSelect(selFromStatus));
+                final Status toStatus = Status.get(multi.<Long>getSelect(selToStatus));
+                if (swap.isValidStatus(_parameter, fromStatus) && swap.isValidStatus(_parameter, toStatus)) {
+                    final SwapInfo fromInfo = new SwapInfo().setFrom(true)
+                            .setDocInstance(toInst)
+                            .setDocName(multi.<String>getSelect(selToName))
+                            .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
+                            .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
 
+                    final Set<SwapInfo> fromInfos;
+                    if (ret.containsKey(fromInst)) {
+                        fromInfos = ret.get(fromInst);
+                    } else {
+                        fromInfos = new HashSet<>();
+                        ret.put(fromInst, fromInfos);
+                    }
+                    fromInfos.add(fromInfo);
 
-                final SwapInfo fromInfo = new SwapInfo().setFrom(true)
-                        .setDocInstance(toInst)
-                        .setDocName(multi.<String>getSelect(selToName))
-                        .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
-                        .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
+                    final SwapInfo toInfo = new SwapInfo().setFrom(false)
+                            .setDocInstance(fromInst)
+                            .setDocName(multi.<String>getSelect(selFromName))
+                            .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
+                            .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
 
-                final Set<SwapInfo> fromInfos;
-                if (ret.containsKey(fromInst)) {
-                    fromInfos = ret.get(fromInst);
-                } else {
-                    fromInfos = new HashSet<>();
-                    ret.put(fromInst, fromInfos);
+                    final Set<SwapInfo> toInfos;
+                    if (ret.containsKey(toInst)) {
+                        toInfos = ret.get(toInst);
+                    } else {
+                        toInfos = new HashSet<>();
+                        ret.put(toInst, toInfos);
+                    }
+                    toInfos.add(toInfo);
                 }
-                fromInfos.add(fromInfo);
-
-                final SwapInfo toInfo = new SwapInfo().setFrom(false)
-                        .setDocInstance(fromInst)
-                        .setDocName(multi.<String>getSelect(selFromName))
-                        .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
-                        .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
-
-                final Set<SwapInfo> toInfos;
-                if (ret.containsKey(toInst)) {
-                    toInfos = ret.get(toInst);
-                } else {
-                    toInfos = new HashSet<>();
-                    ret.put(toInst, toInfos);
-                }
-                toInfos.add(toInfo);
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _fromStatus
+     * @return
+     */
+    protected boolean isValidStatus(final Parameter _parameter,
+                                    final Status _status)
+    {
+        return !"Canceled".equals(_status.getKey());
     }
 
     /**
