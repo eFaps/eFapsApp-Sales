@@ -93,6 +93,22 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute BIN_INCOMINGEXCHANGE_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "BinIncomingExchange.Activate")
+                    .defaultValue(false)
+                    .description("Activate BinIncomingExchange.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute BIN_INCOMINGEXCHANGE_NUMGEN = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "BinIncomingExchange.NumberGenerator")
+                    .defaultValue(CINumGenSales.BinIncomingExchangeSequence.uuid.toString())
+                    .description("NumberGenerator for BinIncomingExchange.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CALCULATORCONFIG = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Config4Calculator")
