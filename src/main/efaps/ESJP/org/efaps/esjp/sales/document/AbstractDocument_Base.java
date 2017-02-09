@@ -824,9 +824,6 @@ public abstract class AbstractDocument_Base
             js.append(getSetFieldValue(0, "name4create", name)).append("\n");
         }
 
-
-
-
         final Map<Integer, String> copyDates = analyseProperty(_parameter, "CopyDate4Type");
         if (copyDates.containsValue(docInst.getType().getName())) {
             js.append(getSetFieldValue(0, "date_eFapsDate", DateUtil.getDate4Parameter(

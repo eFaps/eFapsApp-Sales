@@ -67,8 +67,8 @@ public abstract class Channel_Base
         final String fieldName = getProperty(_parameter, "ConditionFieldName", "condition");
         final Instance condInst = Instance.get(_parameter.getParameterValue(fieldName));
         if (condInst.isValid() && condInst.getType().isKindOf(CISales.ChannelConditionAbstract)) {
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, String>> list = new ArrayList<>();
+            final Map<String, String> map = new HashMap<>();
             final PrintQuery print = new PrintQuery(condInst);
             print.addAttribute(CISales.ChannelConditionAbstract.QuantityDays);
             print.execute();
@@ -190,12 +190,18 @@ public abstract class Channel_Base
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder selChanInst = SelectBuilder.get().linkto(
                                 CISales.Channel2DocumentAbstract.FromAbstractLink).instance();
-                multi.addSelect(selChanInst);
+                final SelectBuilder selDays = SelectBuilder.get().linkto(
+                                CISales.Channel2DocumentAbstract.FromAbstractLink).attribute(
+                                                CISales.ChannelConditionAbstract.QuantityDays);
+                multi.addSelect(selChanInst, selDays);
                 multi.executeWithoutAccessCheck();
                 if (multi.next()) {
                     final Instance chanInst = multi.getSelect(selChanInst);
                     if (chanInst.isValid()) {
+                        final Integer days = multi.getSelect(selDays);
+                        final DateTime date = days == null ? new DateTime() : new DateTime().plusDays(days);
                         ret.append(getSetFieldValue(0, "condition", chanInst.getOid()));
+                        ret.append(getSetFieldValue(0, "dueDate_eFapsDate", DateUtil.getDate4Parameter(date)));
                     }
                 }
             }
