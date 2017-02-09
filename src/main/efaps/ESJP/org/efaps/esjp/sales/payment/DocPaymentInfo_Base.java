@@ -1075,7 +1075,11 @@ public abstract class DocPaymentInfo_Base
                             }
                         }
                     }
-                    final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
+                    BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
+                    // for the case of oblegations the amount is negated
+                    if (info.isObligationDoc()) {
+                        amount = amount.negate();
+                    }
                     info.payPos.add(new PayPos(info.date, amount, curInst)
                                     .setLabel(docToInst.getType().getLabel())
                                     .setRateInfo(rateInfo));
