@@ -1375,8 +1375,8 @@ public abstract class SalesReport4Account_Base
                 if (getReportDate().isBefore(new DateTime().withTimeAtStartOfDay())) {
                     docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
                 }
-                this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay));
-                this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid(perpay));
+                this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid(perpay).abs());
+                this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid(perpay).abs());
             }
         }
 
