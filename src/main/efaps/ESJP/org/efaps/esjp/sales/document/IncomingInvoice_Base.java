@@ -727,21 +727,18 @@ public abstract class IncomingInvoice_Base
         final Map<String, Object> map = new HashMap<>();
         final Instance inst = Instance.get(_parameter.getParameterValue("detractionServiceType"));
         final PrintQuery print = new PrintQuery(inst);
-        print.addAttribute(CIERP.AttributeDefinitionMappingAbstract.MappingKey,
-                        CIERP.AttributeDefinitionMappingAbstract.Description);
+        print.addAttribute(CIERP.AttributeDefinitionMappingAbstract.MappingKey);
         print.execute();
-        final String descr = print.getAttribute(CIERP.AttributeDefinitionMappingAbstract.Description);
+        final String descr = print.getAttribute(CIERP.AttributeDefinitionMappingAbstract.MappingKey);
         if (descr.matches("[0-9]+")) {
             map.put("detractionPercent", descr);
             ParameterUtil.setParameterValues(_parameter, CIFormSales.Sales_IncomingInvoiceForm.detractionPercent.name,
                             descr);
         }
-
         final List<Calculator> calcList = analyseTable(_parameter, null);
         if (calcList.size() > 0) {
             add2Map4UpdateField(_parameter, map, calcList, null, true);
         }
-
         list.add(map);
         retVal.put(ReturnValues.VALUES, list);
         return retVal;

@@ -780,7 +780,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionServiceType.Label</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Width">40</property>
+            <property name="Width">30</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="getDetractionServiceType"
                 name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
@@ -811,7 +811,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScript4TaxDocUIValue"
                 name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"
@@ -1623,7 +1623,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionServiceType.Label</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Width">40</property>
+            <property name="Width">30</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="getDetractionServiceType"
                 name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
@@ -1654,7 +1654,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScript4TaxDocUIValue"
                 name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"
@@ -2497,7 +2497,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionServiceType.Label</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Width">40</property>
+            <property name="Width">30</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="getDetractionServiceType"
                 name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
@@ -2528,7 +2528,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScript4TaxDocUIValue"
                 name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"
