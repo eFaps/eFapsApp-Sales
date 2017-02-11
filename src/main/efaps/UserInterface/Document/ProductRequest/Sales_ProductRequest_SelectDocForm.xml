@@ -31,6 +31,10 @@
                 program="org.efaps.esjp.sales.document.ProductRequest">
                 <property name="Type">Sales_ProductRequest</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.ProductRequest"
+                method="updateFields4Document"
+                name="Sales_Reminder_SelectDocForm.invoice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -43,7 +47,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm"
-                name="Sales_ProductRequest_SelectDocForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ProductRequest" />
+                name="Sales_ProductRequest_SelectDocForm.javaScript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ProductRequest" />
         </field>
     </definition>
 </ui-form>
