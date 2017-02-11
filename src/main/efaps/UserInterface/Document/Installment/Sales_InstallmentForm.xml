@@ -126,6 +126,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field name="credit">
+            <property name="SelectAlternateOID">linkfrom[Sales_Installment2Credit#FromLink].linkto[ToLink].oid</property>
+            <property name="Select">linkfrom[Sales_Installment2Credit#FromLink].linkto[ToLink].attribute[Name]</property>
+            <property name="Label">Sales_Credit.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_InstallmentForm.headingContact.Heading</property>

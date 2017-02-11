@@ -954,7 +954,8 @@ public final class Sales
                     .addDefaultValue(CISales.IncomingInvoice.getType().getName())
                     .addDefaultValue(CISales.IncomingReminder.getType().getName())
                     .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName())
-                    .addDefaultValue(CISales.IncomingReceipt.getType().getName());
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName());
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -95,6 +95,12 @@
         <field name="revision">
             <property name="Attribute">Revision</property>
         </field>
+        <field name="incomingCredit">
+            <property name="SelectAlternateOID">linkfrom[Sales_IncomingInstallment2IncomingCredit#FromLink].linkto[ToLink].oid</property>
+            <property name="Select">linkfrom[Sales_IncomingInstallment2IncomingCredit#FromLink].linkto[ToLink].attribute[Name]</property>
+            <property name="Label">Sales_IncomingCredit.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingInstallmentForm.headingContact.Heading</property>

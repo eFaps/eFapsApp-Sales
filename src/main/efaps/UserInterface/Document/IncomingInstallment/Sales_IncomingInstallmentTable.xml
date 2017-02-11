@@ -70,7 +70,10 @@
             <property name="Align">right</property>
         </field>
         <field name="status">
-            <property name="FilterType">PICKLIST</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Digitized;Open</property>
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
@@ -79,12 +82,11 @@
             <property name="Label">Sales_DocumentAbstract/Created.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+         <field name="incomingCredit">
+            <property name="SelectAlternateOID">linkfrom[Sales_IncomingInstallment2IncomingCredit#FromLink].linkto[ToLink].oid</property>
+            <property name="Select">linkfrom[Sales_IncomingInstallment2IncomingCredit#FromLink].linkto[ToLink].attribute[Name]</property>
+            <property name="Label">Sales_IncomingCredit.Label</property>
+            <property name="HRef">TREE</property>
         </field>
     </definition>
 </ui-table>

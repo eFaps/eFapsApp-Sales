@@ -32,9 +32,6 @@
         <status key="Paid">
             <description>Installment was payed. (Cancelado)</description>
         </status>
-        <status key="Booked">
-            <description>Installment was booked. (Contabilizado)</description>
-        </status>
         <status key="Canceled">
             <description> Installment was canceled! (Anulado)</description>
         </status>
