@@ -111,7 +111,7 @@ public abstract class Costs_Base
                 return _bean.isCosting();
             }
         }).collect(Collectors.toList());
-        Iterator<CostBean> iter;
+        final Iterator<CostBean> iter;
         if (costings.isEmpty()) {
             iter = _costs.iterator();
         } else {
@@ -147,7 +147,7 @@ public abstract class Costs_Base
                                          final Instance _currenyInst)
         throws EFapsException
     {
-        BigDecimal ret;
+        final BigDecimal ret;
         if (_costBean.getRateCurInst().equals(_currenyInst)) {
             ret = _costBean.getRateNetUnitPrice();
         } else if (_costBean.getCurInst().equals(_currenyInst)) {
@@ -175,8 +175,14 @@ public abstract class Costs_Base
         throws EFapsException
     {
         final List<CostBean> ret = new ArrayList<>();
+        final QueryBuilder docAttrQueryBldr = new QueryBuilder(CISales.AcquisitionCosting);
+        docAttrQueryBldr.addWhereAttrNotEqValue(CISales.AcquisitionCosting.Status,
+                        Status.find(CISales.AcquisitionCostingStatus.Canceled));
+
         final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.AcquisitionCosting2RecievingTicket);
         relAttrQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCosting2RecievingTicket.ToLink, _reTickInst);
+        relAttrQueryBldr.addWhereAttrInQuery(CISales.AcquisitionCosting2RecievingTicket.FromLink,
+                        docAttrQueryBldr.getAttributeQuery(CISales.AcquisitionCosting.ID));
 
         final QueryBuilder posQueryBldr = new QueryBuilder(CISales.AcquisitionCostingPosition);
         posQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCostingPosition.Product, _productInstance);
@@ -189,11 +195,13 @@ public abstract class Costs_Base
                         .attribute(CISales.AcquisitionCosting.Date);
         final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.AcquisitionCostingPosition.CurrencyId)
                         .instance();
-        final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(CISales.IncomingInvoicePosition.RateCurrencyId)
+        final SelectBuilder selRateCurInst = SelectBuilder.get()
+                        .linkto(CISales.AcquisitionCostingPosition.RateCurrencyId)
                         .instance();
         multi.addSelect(selDate, selCurInst, selRateCurInst);
-        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                        CISales.IncomingInvoicePosition.RateNetUnitPrice, CISales.IncomingInvoicePosition.Quantity);
+        multi.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice,
+                        CISales.AcquisitionCostingPosition.RateNetUnitPrice,
+                        CISales.AcquisitionCostingPosition.Quantity);
         multi.execute();
         while (multi.next()) {
             ret.add(new CostBean()
@@ -201,9 +209,10 @@ public abstract class Costs_Base
                             .setDate(multi.getSelect(selDate))
                             .setCurInst(multi.getSelect(selCurInst))
                             .setRateCurInst(multi.getSelect(selRateCurInst))
-                            .setQuantity(multi.getAttribute(CISales.IncomingInvoicePosition.Quantity))
-                            .setNetUnitPrice(multi.getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice))
-                            .setRateNetUnitPrice(multi.getAttribute(CISales.IncomingInvoicePosition.RateNetUnitPrice)));
+                            .setQuantity(multi.getAttribute(CISales.AcquisitionCostingPosition.Quantity))
+                            .setNetUnitPrice(multi.getAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice))
+                            .setRateNetUnitPrice(
+                                            multi.getAttribute(CISales.AcquisitionCostingPosition.RateNetUnitPrice)));
         }
         return ret;
     }
@@ -223,8 +232,14 @@ public abstract class Costs_Base
         throws EFapsException
     {
         final List<CostBean> ret = new ArrayList<>();
+        final QueryBuilder docAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice);
+        docAttrQueryBldr.addWhereAttrNotEqValue(CISales.IncomingInvoice.Status,
+                        Status.find(CISales.IncomingInvoiceStatus.Replaced));
+
         final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
         relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink, _reTickInst);
+        relAttrQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoice2RecievingTicket.FromLink,
+                        docAttrQueryBldr.getAttributeQuery(CISales.IncomingInvoice.ID));
 
         final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
         posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, _productInstance);
@@ -355,7 +370,7 @@ public abstract class Costs_Base
      * @param _docInst the doc inst
      * @param _currenyInst the curreny inst
      * @return the acquisition cost
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     protected static BigDecimal getAcquisitionCost(final Parameter _parameter,
                                                    final Instance _productInstance,
@@ -495,6 +510,7 @@ public abstract class Costs_Base
          * Setter method for instance variable {@link #rateNetUnitPrice}.
          *
          * @param _rateNetUnitPrice value for instance variable {@link #rateNetUnitPrice}
+         * @return the cost bean
          */
         public CostBean setRateNetUnitPrice(final BigDecimal _rateNetUnitPrice)
         {

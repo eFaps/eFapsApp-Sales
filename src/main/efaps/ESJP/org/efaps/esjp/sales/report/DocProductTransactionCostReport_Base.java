@@ -309,7 +309,7 @@ public abstract class DocProductTransactionCostReport_Base
         {
             final BigDecimal quantity = _reportParameters.getValue("quantity");
             final BigDecimal amount = _reportParameters.getValue("cost");
-            return amount.divide(quantity, 2, RoundingMode.HALF_UP);
+            return amount.divide(quantity, 4, RoundingMode.HALF_UP);
         }
     }
 
