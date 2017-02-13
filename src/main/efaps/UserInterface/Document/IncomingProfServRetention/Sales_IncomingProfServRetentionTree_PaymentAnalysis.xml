@@ -15,18 +15,16 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4272a23c-239b-4ad6-b03a-7bab72baefa6</uuid>
+    <uuid>2d0e0000-897d-41ae-b59b-6f33ecb535c8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsPaymentsTaxMyDesk</name>
-        <childs>
-            <child>Sales_IncomingRetentionMyDesk</child>
-            <child>Sales_IncomingProfServRetentionMyDesk</child>
-            <child>Sales_IncomingDetractionMyDesk</child>
-            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
-        </childs>
+        <name>Sales_IncomingProfServRetentionTree_PaymentAnalysis</name>
+        <target>
+            <form>Sales_DocumentPaymentAnalysisForm</form>
+        </target>
+        <property name="Target">content</property>
     </definition>
-</ui-menu>
+</ui-command>

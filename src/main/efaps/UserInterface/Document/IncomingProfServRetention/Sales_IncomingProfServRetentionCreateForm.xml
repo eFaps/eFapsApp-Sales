@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -27,19 +27,19 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
-                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.IncomingRetention">
+                name="Sales_IncomingProfServRetentionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.IncomingProfServRetention">
                 <property name="Type">Sales_IncomingInvoice</property>
                 <property name="Status">Digitized</property>
                 <property name="Status01">Open</property>
                 <property name="Status02">Paid</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4Document"
-                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
-                program="org.efaps.esjp.sales.document.IncomingRetention" />
+                name="Sales_IncomingProfServRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
+                program="org.efaps.esjp.sales.document.IncomingProfServRetention" />
             <trigger event="UI_FIELD_UPDATE" index="2" method="cleanFields"
-                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
-                program="org.efaps.esjp.sales.document.IncomingRetention" />
+                name="Sales_IncomingProfServRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
+                program="org.efaps.esjp.sales.document.IncomingProfServRetention" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -52,31 +52,31 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Width">2</property>
-            <property name="Label">Sales_IncomingRetentionCreateForm.retentionPercent.Label</property>
+            <property name="Label">Sales_IncomingProfServRetentionCreateForm.retentionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RetentionPercent" name="Sales_IncomingInvoiceForm.retentionPercent.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.IncomingRetention" />
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RetentionPercent"
+                name="Sales_IncomingInvoiceForm.retentionPercent.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingProfServRetention" />
         </field>
         <field name="retentionValue">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_IncomingRetentionCreateForm.retentionValue.Label</property>
+            <property name="Label">Sales_IncomingProfServRetentionCreateForm.retentionValue.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="totalAmount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_IncomingRetentionCreateForm.totalAmount.Label</property>
+            <property name="Label">Sales_IncomingProfServRetentionCreateForm.totalAmount.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="UIType">SNIPPLET</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_IncomingRetentionCreateForm.javaScript.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.IncomingRetention" />
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
+                name="Sales_IncomingProfServRetentionCreateForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingProfServRetention" />
         </field>
     </definition>
 </ui-form>
