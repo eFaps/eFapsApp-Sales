@@ -288,6 +288,23 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
+     * Gets the balance.
+     *
+     * @param _perPayment the per payment,  if null the configured default is used
+     * @return the balance
+     * @throws EFapsException on error
+     */
+    public BigDecimal getBalance4Target()
+        throws EFapsException
+    {
+        BigDecimal total = getCrossTotal4Target();
+        if (isObligationDoc()) {
+            total = total.negate();
+        }
+        return total.subtract(getPaid4Target());
+    }
+
+    /**
      * Getter method for the instance variable {@link #initialized}.
      *
      * @return value of instance variable {@link #initialized}
@@ -566,8 +583,8 @@ public abstract class DocPaymentInfo_Base
     {
         final List<Object> objects = new ArrayList<>();
         objects.add(getRateCrossTotal());
-        objects.add(getRatePaid(false));
-        objects.add(getRateBalance(null));
+        objects.add(getRatePaid(false).abs());
+        objects.add(getRateBalance(null).abs());
         objects.add(BigDecimal.ZERO);
         final CurrencyInst currInst = CurrencyInst.get(getRateCurrencyInstance());
         objects.add(currInst.getSymbol());
@@ -582,7 +599,7 @@ public abstract class DocPaymentInfo_Base
         } else {
             key = ".InfoField4Account";
             objects.add(getCrossTotal4Target());
-            objects.add(getPaid4Target());
+            objects.add(getPaid4Target().abs());
             objects.add(BigDecimal.ZERO);
             objects.add(BigDecimal.ZERO);
             objects.add(getTargetInfo().getCurrencyInst().getSymbol());

@@ -527,18 +527,20 @@ public abstract class AbstractPaymentDocument_Base
         final DecimalFormat frmt = _docInfo.getFormatter();
         final BigDecimal total4Doc;
         final BigDecimal payments4Doc;
+        BigDecimal amount4PayDoc = BigDecimal.ZERO;
         if (_docInfo.getRateCurrencyInstance().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
             total4Doc = _docInfo.getRateCrossTotal();
             final Properties props = Sales.PAYMENT_PAIDRULES.get();
             final boolean pp = BooleanUtils.toBoolean(
                             props.getProperty(_docInfo.getInstance().getType().getName() + ".PerPayment"));
-            payments4Doc = _docInfo.getRatePaid(pp);
+            payments4Doc = _docInfo.getRatePaid(pp).abs();
+            amount4PayDoc = _docInfo.getRateBalance(pp).abs();
         } else {
             total4Doc = _docInfo.getCrossTotal4Target();
-            payments4Doc = _docInfo.getPaid4Target();
+            payments4Doc = _docInfo.getPaid4Target().abs();
+            amount4PayDoc = _docInfo.getBalance4Target().abs();
         }
 
-        final BigDecimal amount4PayDoc;
         final BigDecimal paymentDiscount;
         final BigDecimal paymentAmountDesc;
         if (payments4Doc.compareTo(BigDecimal.ZERO) == 0) {
@@ -556,12 +558,10 @@ public abstract class AbstractPaymentDocument_Base
                 paymentDiscount = docTaxInfo.getPercent();
                 paymentAmountDesc = taxAmount;
             } else {
-                amount4PayDoc = total4Doc;
                 paymentDiscount = BigDecimal.ZERO;
                 paymentAmountDesc = BigDecimal.ZERO;
             }
         } else {
-            amount4PayDoc = total4Doc.subtract(payments4Doc);
             paymentDiscount = BigDecimal.ZERO;
             paymentAmountDesc = BigDecimal.ZERO;
         }
