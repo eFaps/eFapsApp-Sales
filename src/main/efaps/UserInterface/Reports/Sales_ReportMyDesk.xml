@@ -50,6 +50,7 @@
             <child>Sales_DocProductTransactionCostReportMyDesk</child>
             <child>Sales_DocBalanceReportMyDesk</child>
             <child>Sales_StatisticsReportMyDesk</child>
+            <child>Sales_ProductsTransactionSummaryReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
