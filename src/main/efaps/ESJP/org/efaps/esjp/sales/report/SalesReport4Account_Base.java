@@ -64,6 +64,8 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -115,6 +117,31 @@ public abstract class SalesReport4Account_Base
         /** The duedate. */
         DUEDATE;
     }
+
+    /**
+     * The Enum Grouping.
+     *
+     */
+    public enum GroupBy
+    {
+        /** Includes a group on yearl level. */
+        YEARLY,
+        /** Includes a group on monthly level. */
+        MONTHLY,
+        /** Includes a group on daily level. */
+        DAILY,
+        /** Includes a group on contact level. */
+        CONTACT,
+        /** Includes a group on assigned level. */
+        ASSIGNED,
+        /** Includes a group on type level. */
+        DOCTYPE;
+    }
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(SalesReport4Account.class);
 
     /**
      * ReportKey for this report.
@@ -205,6 +232,61 @@ public abstract class SalesReport4Account_Base
     protected void setReportKey(final ReportKey _reportKey)
     {
         this.reportKey = _reportKey;
+    }
+
+
+
+    /**
+     * Gets the group by filter value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _className the class name
+     * @return the group by filter value
+     */
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected GroupByFilterValue getGroupByFilterValue(final Parameter _parameter,
+                                                       final String _className)
+    {
+        final GroupByFilterValue ret = new GroupByFilterValue()
+        {
+
+            /** The Constant serialVersionUID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public List<Enum<?>> getInactive()
+            {
+                final List<Enum<?>> ret = super.getInactive();
+                try {
+                    if (!isShowAssigned()) {
+                        ret.remove(GroupBy.ASSIGNED);
+                    }
+                    if (ReportKey.CONTACT.equals(getReportKey())) {
+                        ret.remove(GroupBy.ASSIGNED);
+                        ret.remove(GroupBy.CONTACT);
+                    }
+                } catch (final EFapsException e) {
+                    SalesReport4Account_Base.LOG.error("Catched", e);
+                }
+                return ret;
+            }
+        }.setClassName(_className);
+        ret.setObject(new ArrayList());
+        return ret;
+    }
+
+    /**
+     * Checks if is show assigned.
+     *
+     * @return true, if is show assigned
+     * @throws EFapsException on error
+     */
+    protected boolean isShowAssigned()
+        throws EFapsException
+    {
+        return Sales.REPORT_SALES4ACCOUNTIN_ASSIGENED.get() && getReportKey().equals(ReportKey.IN)
+                        || Sales.REPORT_SALES4ACCOUNTOUT_ASSIGENED.get() && getReportKey().equals(ReportKey.OUT);
     }
 
     /**
@@ -352,36 +434,100 @@ public abstract class SalesReport4Account_Base
 
                 final FilterDate filterDate = getFilterDate(_parameter);
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-                if (isGroupByContact(_parameter)) {
-                    chain.addComparator(new Comparator<DataBean>()
-                    {
 
-                        @Override
-                        public int compare(final DataBean _o1,
-                                           final DataBean _o2)
-                        {
-                            return _o1.getDocContactName().compareTo(_o2.getDocContactName());
-                        }
-                    });
-                }
-                if (isGroupByAssigned(_parameter)) {
-                    chain.addComparator(new Comparator<DataBean>()
-                    {
+                final GroupByFilterValue groupBy = (GroupByFilterValue) filter.get("groupBy");
+                if (groupBy != null) {
+                    final List<Enum<?>> selected = groupBy.getObject();
+                    for (final Enum<?> sel : selected) {
+                        switch ((GroupBy) sel) {
+                            case ASSIGNED:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
 
-                        @Override
-                        public int compare(final DataBean _o1,
-                                           final DataBean _o2)
-                        {
-                            int ret = 0;
-                            try {
-                                ret = _o1.getAssigned().compareTo(_o2.getAssigned());
-                            } catch (final EFapsException e) {
-                                AbstractDynamicReport_Base.LOG.error("Catched", e);
-                            }
-                            return ret;
+                                    @Override
+                                    public int compare(final DataBean _o1,
+                                                       final DataBean _o2)
+                                    {
+                                        int ret = 0;
+                                        try {
+                                            ret = _o1.getAssigned().compareTo(_o2.getAssigned());
+                                        } catch (final EFapsException e) {
+                                            AbstractDynamicReport_Base.LOG.error("Catched", e);
+                                        }
+                                        return ret;
+                                    }
+                                });
+                                break;
+                            case CONTACT:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+
+                                    @Override
+                                    public int compare(final DataBean _o1,
+                                                       final DataBean _o2)
+                                    {
+                                        return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                                    }
+                                });
+                                break;
+                            case DAILY:
+                            case MONTHLY:
+                            case YEARLY:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+                                    @Override
+                                    public int compare(final DataBean _o1,
+                                                       final DataBean _o2)
+                                    {
+                                        final int ret;
+                                        switch (filterDate) {
+                                            case CREATED:
+                                                ret = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                                                break;
+                                            case DUEDATE:
+                                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                                    ret = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                                                } else {
+                                                    ret = 0;
+                                                }
+                                                break;
+                                            case DATE:
+                                            default:
+                                                ret = _o1.getDocDate().compareTo(_o2.getDocDate());
+                                                break;
+                                        }
+                                        return ret;
+                                    }
+                                });
+                                break;
+                            case DOCTYPE:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+                                    @Override
+                                    public int compare(final DataBean _o1,
+                                                       final DataBean _o2)
+                                    {
+                                        return _o1.getDocInst().getType().getLabel().compareTo(_o2.getDocInst()
+                                                        .getType().getLabel());
+                                    }
+                                });
+                                break;
+                            default:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+
+                                    @Override
+                                    public int compare(final DataBean _o1,
+                                                       final DataBean _o2)
+                                    {
+                                        return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                                    }
+                                });
+                                break;
                         }
-                    });
+                    }
                 }
+
                 chain.addComparator(new Comparator<DataBean>()
                 {
 
@@ -409,23 +555,12 @@ public abstract class SalesReport4Account_Base
                         return ret;
                     }
                 });
-                if (!isGroupByContact(_parameter)) {
-                    chain.addComparator(new Comparator<DataBean>()
-                    {
 
-                        @Override
-                        public int compare(final DataBean _o1,
-                                           final DataBean _o2)
-                        {
-                            return _o1.getDocContactName().compareTo(_o2.getDocContactName());
-                        }
-                    });
-                }
                 Collections.sort(dataSource, chain);
                 final Collection<Map<String, ?>> col = new ArrayList<>();
 
                 for (final DataBean bean : dataSource) {
-                    col.add(bean.getMap(isShowCondition(), isShowAssigned(), isShowSwapInfo()));
+                    col.add(bean.getMap(isShowCondition(), getFilteredReport().isShowAssigned(), isShowSwapInfo()));
                 }
                 ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
@@ -549,21 +684,6 @@ public abstract class SalesReport4Account_Base
          * @return true, if is show assigned
          * @throws EFapsException on error
          */
-        protected boolean isShowAssigned()
-            throws EFapsException
-        {
-            return Sales.REPORT_SALES4ACCOUNTIN_ASSIGENED.get()
-                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                            || Sales.REPORT_SALES4ACCOUNTOUT_ASSIGENED.get()
-                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
-        }
-
-        /**
-         * Checks if is show assigned.
-         *
-         * @return true, if is show assigned
-         * @throws EFapsException on error
-         */
         protected boolean isShowSwapInfo()
             throws EFapsException
         {
@@ -573,44 +693,6 @@ public abstract class SalesReport4Account_Base
                                             && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
                             || Sales.REPORT_SALES4ACCOUNTCONTACT_SWAPINFO.get()
                                         && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.CONTACT);
-        }
-
-        /**
-         * Checks if is group by contact.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return true, if is group by contact
-         * @throws EFapsException on error
-         */
-        protected boolean isGroupByContact(final Parameter _parameter) throws EFapsException
-        {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
-            final boolean ret;
-            if (filterMap.containsKey("groupByContact")) {
-                ret = (Boolean) filterMap.get("groupByContact");
-            } else {
-                ret = false;
-            }
-            return ret;
-        }
-
-        /**
-         * Checks if is group by assigned.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return true, if is group by assigned
-         * @throws EFapsException on error
-         */
-        protected boolean isGroupByAssigned(final Parameter _parameter) throws EFapsException
-        {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
-            final boolean ret;
-            if (filterMap.containsKey("groupByAssigned")) {
-                ret = (Boolean) filterMap.get("groupByAssigned");
-            } else {
-                ret = false;
-            }
-            return ret;
         }
 
         /**
@@ -704,6 +786,9 @@ public abstract class SalesReport4Account_Base
             throws EFapsException
         {
             final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final GroupByFilterValue groupBy = (GroupByFilterValue) filterMap.get("groupBy");
+            final List<Enum<?>> selected = groupBy == null ? new ArrayList<>() : groupBy.getObject();
 
             final String filter;
             switch (getFilterDate(_parameter)) {
@@ -725,6 +810,10 @@ public abstract class SalesReport4Account_Base
             final TextColumnBuilder<DateTime> yearColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "FilterDate2"), filter,
                             DateTimeYear.get());
+            final TextColumnBuilder<DateTime> dayColumn = AbstractDynamicReport_Base.column(
+                            this.filteredReport.getLabel(_parameter, "FilterDate3"), filter,
+                            DateTimeYear.get());
+
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "Date"), "docDate",
                             DateTimeDate.get());
@@ -768,18 +857,6 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "SwapInfo"), "swapInfo",
                             DynamicReports.type.stringType()).setWidth(120);
 
-            final ColumnGroupBuilder assignedGroup = DynamicReports.grp.group(assignedColumn).groupByDataType();
-            if (isGroupByAssigned(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                _builder.groupBy(assignedGroup);
-            }
-
-            final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
-            if (isGroupByContact(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                _builder.groupBy(contactGroup);
-            }
-
-            final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
-            final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
@@ -788,15 +865,23 @@ public abstract class SalesReport4Account_Base
 
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
-            _builder.addColumn(yearColumn, monthColumn);
+            final ColumnGroupBuilder assignedGroup = DynamicReports.grp.group(assignedColumn).groupByDataType();
+            final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
+            final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
+            final ColumnGroupBuilder dayGroup = DynamicReports.grp.group(dayColumn).groupByDataType();
+            final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
+            final ColumnGroupBuilder docTypeGroup = DynamicReports.grp.group(typeColumn).groupByDataType();
+
+            _builder.addColumn(yearColumn, monthColumn, dayColumn);
 
             final List<ColumnGridComponentBuilder> gridList = new ArrayList<>();
             if (getExType().equals(ExportType.HTML)) {
                 _builder.addColumn(linkColumn);
                 gridList.add(linkColumn);
             }
-
-            gridList.add(typeColumn);
+            if (!selected.contains(GroupBy.DOCTYPE)) {
+                gridList.add(typeColumn);
+            }
             gridList.add(dateColumn);
             gridList.add(dueDateColumn);
 
@@ -808,10 +893,10 @@ public abstract class SalesReport4Account_Base
             if (isShowCondition()) {
                 gridList.add(conditionColumn);
             }
-            if (!isGroupByContact(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+            if (!selected.contains(GroupBy.CONTACT) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 gridList.add(contactNameColumn);
             }
-            if (isShowAssigned() && !isGroupByAssigned(_parameter)
+            if (getFilteredReport().isShowAssigned() && !selected.contains(GroupBy.ASSIGNED)
                             && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 gridList.add(assignedColumn);
             }
@@ -845,41 +930,46 @@ public abstract class SalesReport4Account_Base
                     titelGroup.add(rateColumn);
                 }
 
-                _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(crossColumn));
-                _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(payColumn));
-                _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(result));
-                _builder.addSubtotalAtGroupFooter(yearGroup,  DynamicReports.sbt.sum(crossColumn));
-                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(payColumn));
-                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(result));
-
-                if (isGroupByContact(_parameter)) {
-                    _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(crossColumn));
-                    _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(payColumn));
-                    _builder.addSubtotalAtGroupFooter(contactGroup,  DynamicReports.sbt.sum(result));
-                }
-                if (isGroupByAssigned(_parameter)) {
-                    _builder.addSubtotalAtGroupFooter(assignedGroup,  DynamicReports.sbt.sum(crossColumn));
-                    _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(payColumn));
-                    _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(result));
+                for (final Enum<?> sel : selected) {
+                    switch ((GroupBy) sel) {
+                        case ASSIGNED:
+                            _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.sum(result));
+                            break;
+                        case CONTACT:
+                            _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(contactGroup,  DynamicReports.sbt.sum(result));
+                            break;
+                        case MONTHLY:
+                            _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(result));
+                            break;
+                        case YEARLY:
+                            _builder.addSubtotalAtGroupFooter(yearGroup,  DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(result));
+                            break;
+                        case DAILY:
+                            _builder.addSubtotalAtGroupFooter(dayGroup,  DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.sum(result));
+                            break;
+                        case DOCTYPE:
+                            _builder.addSubtotalAtGroupFooter(docTypeGroup,  DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(result));
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(crossColumn));
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(payColumn));
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(result));
-            }
-
-            _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
-                            _parameter, "monthGroupTotal"), docStatusColumn));
-            _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
-                            _parameter, "yearGroupTotal"), docStatusColumn));
-
-            if (isGroupByContact(_parameter)) {
-                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
-                                _parameter, "contactGroupTotal"), docStatusColumn));
-            }
-            if (isGroupByAssigned(_parameter)) {
-                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport.getLabel(
-                                _parameter, "assignedGroupTotal"), docStatusColumn));
             }
 
             _builder.addSubtotalAtSummary(DynamicReports.sbt.text(this.filteredReport.getLabel(
@@ -897,11 +987,11 @@ public abstract class SalesReport4Account_Base
                 _builder.addColumn(conditionColumn);
             }
 
-            if (!isGroupByContact(_parameter) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+            if (!selected.contains(GroupBy.CONTACT) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 _builder.addColumn(contactNameColumn.setFixedWidth(200));
             }
 
-            if (isShowAssigned() && !isGroupByAssigned(_parameter)
+            if (getFilteredReport().isShowAssigned() && !selected.contains(GroupBy.ASSIGNED)
                             && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 _builder.addColumn(assignedColumn);
             }
@@ -914,7 +1004,43 @@ public abstract class SalesReport4Account_Base
             if (!showDetails) {
                 _builder.setShowColumnValues(false);
             }
-            _builder.groupBy(yearGroup, monthGroup);
+
+            for (final Enum<?> sel : selected) {
+                switch ((GroupBy) sel) {
+                    case ASSIGNED:
+                        _builder.groupBy(assignedGroup);
+                        _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "assignedGroupTotal"), docStatusColumn));
+                        break;
+                    case CONTACT:
+                        _builder.groupBy(contactGroup);
+                        _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "contactGroupTotal"), docStatusColumn));
+                        break;
+                    case DAILY:
+                        _builder.groupBy(dayGroup);
+                        _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "dayGroupTotal"), docStatusColumn));
+                        break;
+                    case MONTHLY:
+                        _builder.groupBy(monthGroup);
+                        _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "monthGroupTotal"), docStatusColumn));
+                        break;
+                    case YEARLY:
+                        _builder.groupBy(yearGroup);
+                        _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "yearGroupTotal"), docStatusColumn));
+                        break;
+                    case DOCTYPE:
+                        _builder.groupBy(docTypeGroup);
+                        _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "docTypeGroupTotal"), docStatusColumn));
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         /**

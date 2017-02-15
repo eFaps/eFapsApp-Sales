@@ -27,7 +27,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_PaymentDocument_FilterForm</form>
+            <form>Sales_PaymentDocument_Report4AccountFilterForm</form>
             <execute method="setFilter" program="org.efaps.esjp.sales.report.SalesReport4Account">
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.IN.FilterKey</property>
                 <property name="ReportKey">IN</property>
