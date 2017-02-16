@@ -248,7 +248,7 @@ public abstract class Costing_Base
                         update(currencyInst, bridge);
                     }
                 } catch (final EFapsException e) {
-                    LOG.error("Catched error", e);
+                    Costing_Base.LOG.error("Catched error", e);
                 } finally {
                     try {
                         ((ExecutionBridge) _bridge).close();
@@ -308,7 +308,7 @@ public abstract class Costing_Base
                 ret = tmp;
             }
         } catch (final EFapsException e) {
-            LOG.error("EFapsException", e);
+            Costing_Base.LOG.error("EFapsException", e);
         }
         return ret;
     }
@@ -462,12 +462,13 @@ public abstract class Costing_Base
     {
         final List<TransCosting> filtered = _transCostList.stream()
                         .filter(line -> {
+                            boolean ret = false;
                             try {
-                                return !CostingState.INACTIVE.equals(line.getCostingState());
+                                ret = !CostingState.INACTIVE.equals(line.getCostingState());
                             } catch (final EFapsException e) {
-                                LOG.error("Catched EFapsException", e);
+                                Costing_Base.LOG.error("Catched EFapsException", e);
                             }
-                            return false;
+                            return ret;
                         }).collect(Collectors.toList());
 
         if (CollectionUtils.isNotEmpty(filtered)) {
@@ -953,7 +954,7 @@ public abstract class Costing_Base
         final String[] keyFields = _parameter.getParameterValues("keyField");
         final String[] valueFields = _parameter.getParameterValues("valueField");
         if (ArrayUtils.isEmpty(keyFields) || ArrayUtils.isEmpty(valueFields)) {
-            LOG.error("Missing Parameter 'CurrencyOID'");
+            Costing_Base.LOG.error("Missing Parameter 'CurrencyOID'");
             throw new EFapsException(Costing.class, "MissingParameter");
         } else {
             String currencyOID = "";
@@ -969,7 +970,7 @@ public abstract class Costing_Base
             }
             final Instance currencyInstance = Instance.get(currencyOID);
             if (!currencyInstance.isValid()) {
-                LOG.error("Missing Parameter 'CurrencyOID'");
+                Costing_Base.LOG.error("Missing Parameter 'CurrencyOID'");
                 throw new EFapsException(Costing.class, "MissingParameter");
             }
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInbound);
@@ -1013,7 +1014,7 @@ public abstract class Costing_Base
                     try {
                         ret  =  _arg0.getDate().compareTo(_arg1.getDate());
                     } catch (final EFapsException e) {
-                        LOG.error("Catched EFapsException", e);
+                        Costing_Base.LOG.error("Catched EFapsException", e);
                     }
                     return ret;
                 }
@@ -1290,7 +1291,8 @@ public abstract class Costing_Base
                 this.initCosting = true;
                 final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
                 queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
-                queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, getTransactionInstance());
+                queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink,
+                                getTransactionInstance());
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CIProducts.CostingAbstract.Cost, CIProducts.CostingAbstract.Quantity,
                                 CIProducts.CostingAbstract.Result, CIProducts.CostingAbstract.UpToDate,
@@ -1955,7 +1957,7 @@ public abstract class Costing_Base
                     } else {
                         setComment(DBProperties.getProperty(Costing.class.getName()
                                         + ".ApplyCreditNote.DifferentCurrency"));
-                        LOG.warn("Could not calculate applied CreditNote");
+                        Costing_Base.LOG.warn("Could not calculate applied CreditNote");
                     }
                 }
             }
