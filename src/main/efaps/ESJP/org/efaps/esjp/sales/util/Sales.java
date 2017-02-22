@@ -926,6 +926,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_ACTIVATECOMMENT = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderOutbound.ActivateComment")
+                    .description("Activate the mechanism to write Comments for Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute ORDEROUTBOUND_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderOutbound.JasperReport")
