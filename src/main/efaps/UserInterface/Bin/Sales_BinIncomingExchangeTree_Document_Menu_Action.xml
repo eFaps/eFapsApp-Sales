@@ -24,6 +24,7 @@
         <name>Sales_BinIncomingExchangeTree_Document_Menu_Action</name>
         <childs>
             <child>Sales_BinIncomingExchangeTree_Document_Menu_Action_AddIncomingExchange</child>
+            <child>Sales_BinIncomingExchangeTree_Document_Menu_Action_AssignAction</child>
             <child>Sales_BinIncomingExchangeTree_Document_Menu_Action_Disconnect</child>
         </childs>
     </definition>

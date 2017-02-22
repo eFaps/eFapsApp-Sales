@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2016 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>dcaa4505-f72e-49ba-b399-43208df9b57a</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_BinIncomingExchangeTree_Document_Menu_Action_AssignAction</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
+        <target>
+            <form>Sales_BinIncomingExchange_AssignAction4ExchangeForm</form>
+            <execute method="assignAction" program="org.efaps.esjp.sales.document.IncomingExchange" >
+                <property name="Select4Instance">linkto[ToLink].instance</property>
+            </execute>
+            <validate index="1" method="validateSelected4AssignAction"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Status">!Canceled</property>
+                <property name="Select4Instance">linkto[ToLink].instance</property>
+            </validate>
+            <validate index="2" method="validate"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Validation">AREYOUSURE</property>
+            </validate>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_BinIncomingExchangeTree_Document_Menu_Action_AssignAction.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
+                <property name="Access">EDIT</property>
+            </trigger>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionIncomingExchange2Document</property>
+        <property name="TargetConnectAttribute">ERP_ActionDefinition2DocumentAbstract/ToLinkAbstract</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">0</property>
+        <property name="Label">Sales_IncomingExchangeMyDesk_Menu_Action_AssignAction.Label</property>
+        <property name="TargetTitle">Sales_IncomingExchangeMyDesk_Menu_Action_AssignAction.Title</property>
+    </definition>
+</ui-command>

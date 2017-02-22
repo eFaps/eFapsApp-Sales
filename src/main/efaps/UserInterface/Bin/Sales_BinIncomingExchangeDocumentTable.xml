@@ -40,23 +40,34 @@
             <property name="Label">ERP_DocumentAbstract/Date.Label</property>
         </field>
         <field name="total">
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[RateCrossTotal]</property>
             <property name="Label">ERP_BinUserDocumentTable.total.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Align">right</property>
         </field>
         <field name="currency">
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].linkto[RateCurrencyId].attribute[Symbol]</property>
             <property name="Label">ERP_BinUserDocumentTable.currency.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="status">
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[StatusAbstract]</property>
             <property name="Label">ERP_DocumentAbstract/StatusAbstract.Label</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkto[ToLink].linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkto[ToLink].linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_IncomingExchange_AssignActionForm.action.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_BinIncomingExchangeDocumentTable.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
+                <property name="Access">!NONE</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>
