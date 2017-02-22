@@ -46,6 +46,13 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
+
+                <!-- Sales_ProductRequest -->
+                <!-- Sales_ProductRequest2OrderOutbound -->
+                <property name="DerivedRulesType">f7d843fb-9528-4ff4-bdf6-bc4781bfbcf6</property>
+                <property name="DerivedRulesRelation">3a0d39b2-8205-4b8d-91b2-350c2df6bd3c</property>
+                <property name="DerivedRulesCurrenLink">ToLink</property>
+                <property name="DerivedRulesDerivedLink">FromLink</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>

@@ -18,15 +18,25 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  * TODO comment!
@@ -92,4 +102,80 @@ public abstract class ServiceRequest_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return connect2ServiceOrderOutboundTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .attribute(CISales.ProductRequest.Status);
+        final SelectBuilder selProdReqInst = SelectBuilder.get().linkto(
+                        CISales.Document2DocumentAbstract.FromAbstractLink).instance();
+        print.addSelect(selProdReqInst, selStatus);
+        print.executeWithoutAccessCheck();
+
+        final Instance prodReqInst = print.getSelect(selProdReqInst);
+        final Status status = Status.get(print.<Long>getSelect(selStatus));
+        final DocComparator comp = getComparator(_parameter, prodReqInst);
+        final Map<Status, Status> maping = getStatusMapping4connect2OrderOutbound();
+        if (comp.quantityIsZero() && maping.containsKey(status)) {
+            final Update update = new Update(prodReqInst);
+            update.add(CISales.ServiceRequest.Status, maping.get(status));
+            update.executeWithoutAccessCheck();
+        }
+        return new Return();
+    }
+
+    /**
+     * Gets the comparator.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _prodReqInst the prod req inst
+     * @return the comparator
+     * @throws EFapsException on error
+     */
+    protected DocComparator getComparator(final Parameter _parameter,
+                                          final Instance _prodReqInst)
+        throws EFapsException
+    {
+        final DocComparator ret = new DocComparator();
+        ret.setDocInstance(_prodReqInst);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.ServiceRequest2ServiceOrderOutbound);
+        queryBldr.addType(CISales.ServiceRequest2ServiceOrderOutbound);
+        queryBldr.addWhereAttrEqValue(CISales.ServiceRequest2ServiceOrderOutbound.FromAbstractLink, _prodReqInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selDocInst = SelectBuilder.get()
+                        .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
+                        .instance();
+        multi.addSelect(selDocInst);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
+            final DocComparator docComp = new DocComparator();
+            docComp.setDocInstance(docInst);
+            ret.substractQuantity(docComp);
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the status mapping4connect2 incoming invoice.
+     *
+     * @return the status mapping4connect2 incoming invoice
+     * @throws CacheReloadException the cache reload exception
+     */
+    protected Map<Status, Status> getStatusMapping4connect2OrderOutbound()
+        throws CacheReloadException
+    {
+        final Map<Status, Status> ret = new HashMap<>();
+        ret.put(Status.find(CISales.ServiceRequestStatus.Open), Status.find(CISales.ServiceRequestStatus.Closed));
+        return ret;
+    }
+
 }

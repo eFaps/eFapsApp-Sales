@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -2545,7 +2546,6 @@ public abstract class AbstractDocument_Base
         return new Return();
     }
 
-
     /**
      * Method to connect the document with the selected document type.
      *
@@ -2569,6 +2569,24 @@ public abstract class AbstractDocument_Base
                     insert.add(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance());
                     insert.execute();
                     ret.add(derivedInst);
+                }
+                final Map<Integer, String> rules = analyseProperty(_parameter, "DerivedRulesType");
+                for (final Entry<Integer, String> entry : rules.entrySet()) {
+                    final Type type = isUUID(entry.getValue()) ? Type.get(UUID.fromString(entry.getValue()))
+                                    : Type.get(entry.getValue());
+                    if (derivedInst.getType().equals(type)) {
+                        final Map<Integer, String> relations = analyseProperty(_parameter, "DerivedRulesRelation");
+                        final Map<Integer, String> currentLinks = analyseProperty(_parameter, "DerivedRulesCurrenLink");
+                        final Map<Integer, String> derivdedLinks = analyseProperty(_parameter,
+                                        "DerivedRulesDerivedLink");
+
+                        final Type relType = isUUID(relations.get(entry.getKey())) ? Type.get(UUID.fromString(relations
+                                        .get(entry.getKey()))) : Type.get(relations.get(entry.getKey()));
+                        final Insert insert = new Insert(relType);
+                        insert.add(derivdedLinks.get(entry.getKey()), derivedInst);
+                        insert.add(currentLinks.get(entry.getKey()), _createdDoc.getInstance());
+                        insert.execute();
+                    }
                 }
             }
         }
