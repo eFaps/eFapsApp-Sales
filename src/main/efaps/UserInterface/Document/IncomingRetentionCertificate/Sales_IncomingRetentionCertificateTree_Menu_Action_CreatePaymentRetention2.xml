@@ -27,7 +27,10 @@
         </access>
         <target>
             <form>Sales_PaymentRetentionForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentRetention">
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue" index="0">
+                <property name="Status">Paid</property>
+            </execute>
+            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentRetention" index="1">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentRetentionStatus</property>

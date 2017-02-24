@@ -1185,11 +1185,23 @@ public abstract class AbstractDocumentSum_Base
     {
         final List<Instance> instances;
         final Instance instance = _parameter.getInstance();
-        if (InstanceUtils.isValid(instance)) {
+        if (InstanceUtils.isKindOf(instance, CISales.DocumentSumAbstract)) {
             instances = new ArrayList<>();
             instances.add(instance);
         } else {
-            instances = getInstances(_parameter, "", true);
+            final List<Instance> selInsts = getInstances(_parameter, "", true);
+            if (containsProperty(_parameter, "Select4Instance")) {
+                instances = new ArrayList<>();
+                final String select = getProperty(_parameter, "Select4Instance");
+                final MultiPrintQuery multi = new MultiPrintQuery(selInsts);
+                multi.addSelect(select);
+                multi.execute();
+                while (multi.next()) {
+                    instances.add(multi.getSelect(select));
+                }
+            } else {
+                instances = selInsts;
+            }
         }
         for (final Instance docInst : instances) {
             if (InstanceUtils.isKindOf(docInst, CISales.DocumentSumAbstract)) {
@@ -1206,7 +1218,7 @@ public abstract class AbstractDocumentSum_Base
 
                     final String dateStr = _parameter.getParameterValue(
                                     CIFormSales.Sales_DocumentSum_RecalculateForm.date.name + "_eFapsDate");
-                    DateTime date;
+                    final DateTime date;
                     if (dateStr == null) {
                         date = print.getAttribute(CISales.DocumentSumAbstract.Date);
                     } else {
