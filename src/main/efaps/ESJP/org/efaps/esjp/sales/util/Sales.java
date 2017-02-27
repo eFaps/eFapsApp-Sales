@@ -1313,6 +1313,13 @@ public final class Sales
                     .description("Mime of the jasperReport for ProductRequest.");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PRODUCTREQUEST_ACTIVATECOMMENT = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ProductRequest.ActivateComment")
+                    .description("Activate the mechanism to write Comments for Order Outbound");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink PRODSTOCKRPTSTORAGEGRP = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)

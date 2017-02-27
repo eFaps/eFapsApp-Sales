@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -210,6 +210,38 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="commentsHeading" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">ERP_CommentDocument.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.commentsHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.ActivateComment</property>
+           </trigger>
+        </field>
+        <field name="comments">
+            <property name="HideLabel">true</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.erp.Comment"
+                method="getCommentFieldValue"
+                name="Sales_ProductRequestForm.comments.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.comments.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.ActivateComment</property>
+           </trigger>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
@@ -466,6 +498,38 @@
             <property name="ModeEdit">NONE</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="commentsHeading" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">ERP_CommentDocument.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.commentsHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.ActivateComment</property>
+           </trigger>
+        </field>
+        <field name="comments">
+            <property name="HideLabel">true</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.erp.Comment"
+                method="getCommentFieldValue"
+                name="Sales_ProductRequestForm.comments.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductRequestForm.comments.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ProductRequest.ActivateComment</property>
+           </trigger>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
