@@ -33,6 +33,7 @@
             <child>Sales_IncomingCreditNoteMyDesk</child>
             <child>Sales_IncomingReminderMyDesk</child>
             <child>Sales_IncomingExchangeMyDesk</child>
+            <child>Sales_IncomingExchange4DueDateMyDesk</child>
             <child>Sales_BinIncomingExchangeMyDesk</child>
             <child>Sales_IncomingPerceptionCertificateMyDesk</child>
             <child>Sales_IncomingRetentionCertificateMyDesk</child>
