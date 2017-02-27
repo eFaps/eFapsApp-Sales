@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2017 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,23 +15,16 @@
  limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7f8feba6-a6a6-435b-84fe-8319d0039430</uuid>
+    <uuid>47a82136-30f2-46f6-82b8-5f07b9f2f67a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrder</name>
-        <parent>Sales_DocumentSumAbstract</parent>
-        <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Sales_PaymentOrderStatus</typelink>
-            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Sales_PaymentOrder.Status.RANGE_VALUE" event="RANGE_VALUE">
-            </trigger>
-        </attribute>
+        <name>Sales_PaymentOrderTree_PaymentAnalysis</name>
+        <target>
+            <form>Sales_DocumentPaymentAnalysisForm</form>
+        </target>
+        <property name="Target">content</property>
     </definition>
-</datamodel-type>
+</ui-command>

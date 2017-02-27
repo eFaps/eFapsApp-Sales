@@ -47,6 +47,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Contact.Label</property>
             <property name="HRef">TREE</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="date">
             <property name="Attribute">Date</property>
