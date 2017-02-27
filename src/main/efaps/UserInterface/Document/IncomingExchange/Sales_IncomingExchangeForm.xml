@@ -80,7 +80,6 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Required">true</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_IncomingExchangeorm.name4create.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">

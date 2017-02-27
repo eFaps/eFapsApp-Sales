@@ -75,7 +75,6 @@ public abstract class IncomingExchange_Base
         throws EFapsException
     {
         super.add2DocCreate(_parameter, _insert, _createdDoc);
-
         if (Sales.INCOMINGEXCHANGE_REVSEQ.exists()) {
             final String seqKey = Sales.INCOMINGEXCHANGE_REVSEQ.get();
             final NumberGenerator numgen = isUUID(seqKey)
@@ -139,6 +138,13 @@ public abstract class IncomingExchange_Base
         if (onlynumber != null) {
             _update.add(CISales.IncomingExchange.OnlyNumber, onlynumber);
             _createdDoc.getValues().put(CISales.IncomingExchange.OnlyNumber.name, onlynumber);
+        }
+
+        final String reference = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.IncomingExchange.Reference.name));
+        if (reference != null) {
+            _update.add(CISales.IncomingExchange.Reference, reference);
+            _createdDoc.getValues().put(CISales.IncomingExchange.Reference.name, reference);
         }
     }
 
