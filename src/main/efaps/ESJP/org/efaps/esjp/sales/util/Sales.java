@@ -1269,12 +1269,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute PETTYCASHRECEIPTREVSEQ = new StringSysConfAttribute()
+    public static final StringSysConfAttribute PETTYCASHRECEIPT_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashReceipt.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
-   /** See description. */
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASHRECEIPT_ASSEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashReceipt.AssignEmployee")
+                    .description("Activate the mechanism to assign an employee to PettyCashReceipt.");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PRODUCTREQUEST_ASSDEP = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)

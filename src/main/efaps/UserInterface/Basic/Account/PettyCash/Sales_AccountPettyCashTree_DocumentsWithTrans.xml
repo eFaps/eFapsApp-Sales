@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,7 +31,8 @@
             <role>Sales_PettyCash_User</role>
         </access>
         <target>
-            <table>Sales_Account2DocumentWithTransTable</table>
+            <menu>Sales_AccountPettyCashTree_Transaction_Menu</menu>
+            <table>Sales_AccountPettyCash2DocumentWithTransTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Account2DocumentWithTrans</property>
                 <property name="LinkFrom">FromLinkAbstract</property>

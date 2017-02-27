@@ -3,7 +3,6 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalancePayments" language="groovy" pageWidth="802" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="509d1439-c981-4de4-821f-cd5a5fe8d170">
     <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
     <property name="com.jaspersoft.studio.unit." value="pixel"/>
-    <import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
     <parameter name="INSTANCE" class="org.efaps.db.Instance"/>
     <parameter name="AmountPettyCash" class="java.math.BigDecimal"/>
     <parameter name="Amount" class="java.math.BigDecimal"/>
@@ -157,9 +156,7 @@ Documento]]></text>
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font size="9"/>
                 </textElement>
-                <textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ")
-.append(new DecimalUI().format($F{crossTotal},"#,##0.00"))
-    .toString()]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true">
                 <reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="28" height="16" uuid="239cfb67-2938-41a6-997f-0764097b857d">

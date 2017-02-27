@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2017 The eFaps Team
 
@@ -18,11 +17,11 @@
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f377b9fe-c8ad-4283-b9e2-0779d3b1a4ed</uuid>
+    <uuid>78f9ec2d-9150-4706-8434-45407f460661</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Account2DocumentWithTransTable</name>
+        <name>Sales_AccountPettyCash2DocumentWithTransTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Sales_Account2DocumentAbstract/Type.Label</property>
@@ -40,7 +39,7 @@
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field name="revision">
+        <field name="revision">
             <property name="Select">linkto[ToLinkAbstract].attribute[Revision]</property>
             <property name="Label">Sales_DocumentAbstract/Revision.Label</property>
         </field>
@@ -58,6 +57,32 @@
             <property name="Select">linkto[ToLinkAbstract].attribute[StatusAbstract]</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="employee">
+            <property name="SelectAlternateOID">linkto[ToLinkAbstract].linkfrom[Sales_Employee2PettyCashReceipt#ToLink].linkto[FromLink].oid</property>
+            <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PettyCashReceiptForm.employee.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_PettyCashReceiptForm.employee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PettyCashReceipt.AssignEmployee</property>
+           </trigger>
+        </field>
+        <field name="tag">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PettyCashReceiptForm.tag.Label</property>
+            <trigger program="org.efaps.esjp.common.tag.Tag"
+                method="tagFieldValue"
+                name="Sales_PettyCashReceiptForm.tag.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_AccountabilityTag4PettyCashReceipt</property>
+                <property name="Select4Instance">linkto[ToLinkAbstract].instance</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>

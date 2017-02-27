@@ -120,7 +120,7 @@
             <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashReceipt#ToLink].linkto[FromLink].oid</property>
             <property name="Select">linkfrom[Sales_AccountPettyCash2PettyCashReceipt#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">TREE</property>
-            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
+            <property name="Label">Sales_AccountPettyCash.Label</property>
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="documentType">
@@ -152,9 +152,60 @@
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="statusGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="Label">Sales_PettyCashReceipt/Status.Label</property>
+        </field>
+        <field name="tag">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PettyCashReceiptForm.tag.Label</property>
+            <trigger program="org.efaps.esjp.common.tag.Tag"
+                method="tagFieldValue"
+                name="Sales_PettyCashReceiptForm.tag.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_AccountabilityTag4PettyCashReceipt</property>
+            </trigger>
+        </field>
+        <field name="headingEmployee" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_PettyCashReceiptForm.headingEmployee.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_PettyCashReceiptForm.headingEmployee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PettyCashReceipt.AssignEmployee</property>
+           </trigger>
+        </field>
+        <field name="employee">
+            <property name="SelectAlternateOID">linkfrom[Sales_Employee2PettyCashReceipt#ToLink].linkto[FromLink].oid</property>
+            <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PettyCashReceiptForm.employee.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Width">80</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.humanresource.Employee"
+                method="autoComplete4Employee"
+                name="Sales_PettyCashReceiptForm.employee.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_PettyCashReceiptForm.employee.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PettyCashReceipt.AssignEmployee</property>
+           </trigger>
         </field>
         <field name="headingSupplier" character="Heading">
             <property name="Level">2</property>
