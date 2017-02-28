@@ -1250,21 +1250,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PETTYCASHBALREQUIREBOOKED4PAY = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PETTYCASHBAL_REQUIREBOOKED4PAY = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.RequireBooked4Payment")
                     .description("Permit the partial Balance of a AccountPettyCash.");
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink PETTYCASHBALACTDEF4COLORD = new SysConfLink()
+    public static final SysConfLink PETTYCASHBAL_ACTDEF4COLORD = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.ActionDefinition4CollectionOrder")
                     .description("Default ActionDefinition for the creation of a Collection Order.");
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink PETTYCASHBALACTDEF4PAYORD = new SysConfLink()
+    public static final SysConfLink PETTYCASHBAL_ACTDEF4PAYORD = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.ActionDefinition4PaymentOrder")
                     .description("Default ActionDefinition for the creation of a Payment Order..");
@@ -1560,6 +1560,13 @@ public final class Sales
                     .description("Configuration for the ABCReport.")
                     .addDefaultValue("Type01", CISales.Invoice.getType().getName())
                     .addDefaultValue("Type02", CISales.Receipt.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_ABCREPORT_ACTASSIGNED = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.ABCReport.ActivateContactAssigned2Employee")
+                    .description("Activate the Assigned Employee.");
 
     /** See description. */
     @EFapsSysConfAttribute

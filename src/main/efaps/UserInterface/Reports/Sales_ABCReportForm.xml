@@ -34,14 +34,23 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
                 <property name="Field04">reportType</property>
+                <property name="Field05">currency</property>
+                <property name="Field06">employee</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
                 <property name="FilterType04">Enum</property>
+                <property name="FilterType05">Currency</property>
+                <property name="FilterType06">Instance</property>
                 <property name="FilterDefault01">MONTH</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">org.efaps.esjp.sales.report.ABCReport_Base$ReportType</property>
+                <property name="FilterDefault05">BASECURRENCY</property>
+                <property name="FilterDefault06">-</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute06">org.efaps.sales.report.ABCReport.ActivateContactAssigned2Employee</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_ABCReportForm.filter.UI_FIELD_VALUE.2"
@@ -51,10 +60,18 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
                 <property name="Field04">reportType</property>
+                <property name="Field05">currency</property>
+                <property name="Field06">employee</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.ABCReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.ABCReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.ABCReport.type</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.ABCReport.reportType</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.ABCReport.currency</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.ABCReport.employee</property>
+                <property name="HumanResource_Employee_MsgPhrase">HumanResource_EmployeeMsgPhrase</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute05">org.efaps.sales.report.ABCReport.ActivateContactAssigned2Employee</property>
             </trigger>
         </field>
         <field name="report">

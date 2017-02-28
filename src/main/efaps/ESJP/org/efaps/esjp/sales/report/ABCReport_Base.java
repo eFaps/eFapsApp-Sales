@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -47,7 +49,10 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -188,6 +193,7 @@ public abstract class ABCReport_Base
                 final List<DataBean> beans = new ArrayList<>();
                 final Map<Instance, DataBean> inst2bean = new HashMap<>();
                 final ReportType reportType = getReportType(_parameter);
+                final Instance currencyInst = getCurrencyInst(_parameter);
 
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_ABCREPORT.get());
                 add2QueryBuilder(_parameter, attrQueryBldr);
@@ -205,10 +211,14 @@ public abstract class ABCReport_Base
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.PositionAbstract.Quantity, CISales.PositionAbstract.UoM);
                 if (showAmount) {
-                    multi.addAttribute(CISales.PositionSumAbstract.NetPrice, CISales.PositionSumAbstract.CrossPrice);
+                    multi.addAttribute(CISales.PositionSumAbstract.NetPrice, CISales.PositionSumAbstract.CrossPrice,
+                                CISales.PositionSumAbstract.RateNetPrice, CISales.PositionSumAbstract.RateCrossPrice,
+                                CISales.PositionSumAbstract.RateCurrencyId);
                 }
                 final SelectBuilder selDocInst = new SelectBuilder().linkto(
                                 CISales.PositionAbstract.DocumentAbstractLink).instance();
+                final SelectBuilder selDocDate = new SelectBuilder().linkto(
+                                CISales.PositionAbstract.DocumentAbstractLink).attribute(CIERP.DocumentAbstract.Date);
                 final SelectBuilder selProductInst = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
                                 .instance();
                 final SelectBuilder selProductName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
@@ -228,7 +238,7 @@ public abstract class ABCReport_Base
                 } else {
                     multi.addSelect(selContactInst, selContactName);
                 }
-                multi.addSelect(selDocInst);
+                multi.addSelect(selDocInst, selDocDate);
                 multi.execute();
                 while (multi.next()) {
                     Instance keyInstance = null;
@@ -254,12 +264,26 @@ public abstract class ABCReport_Base
                         }
                     }
                     if (showAmount) {
-                        final BigDecimal amount;
+                        BigDecimal amount;
+                        final Long rateCurrencyId = multi.getAttribute(CISales.PositionSumAbstract.RateCurrencyId);
                         if ("NET".equals(Sales.REPORT_ABCREPORT.get().getProperty(docInst.getType().getName()
                                         + ".Total", "NET"))) {
-                            amount = multi.getAttribute(CISales.PositionSumAbstract.NetPrice);
+                            amount = currencyInst.equals(Currency.getBaseCurrency())
+                                            ? multi.getAttribute(CISales.PositionSumAbstract.NetPrice)
+                                            : multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
                         } else {
-                            amount = multi.getAttribute(CISales.PositionSumAbstract.CrossPrice);
+                            amount = currencyInst.equals(Currency.getBaseCurrency())
+                                            ? multi.getAttribute(CISales.PositionSumAbstract.CrossPrice)
+                                            : multi.getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
+                        }
+                        // the amount retrieved is not the wanted
+                        if (!currencyInst.equals(Currency.getBaseCurrency())
+                                        && rateCurrencyId != currencyInst.getExchangeId()) {
+                            final DateTime data = multi.getSelect(selDocDate);
+                            final RateInfo[] rates = new Currency().evaluateRateInfos(_parameter, data,
+                                            CurrencyInst.get(rateCurrencyId).getInstance(), currencyInst);
+                            final BigDecimal rate = RateInfo.getRate(_parameter, rates[2], docInst.getType().getName());
+                            amount = amount.divide(rate, 8, RoundingMode.HALF_UP);
                         }
                         bean.addAmount(amount);
                     }
@@ -341,6 +365,21 @@ public abstract class ABCReport_Base
             if (filter.containsKey("type")) {
                 _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Type,
                                 ((TypeFilterValue) filter.get("type")).getObject().toArray());
+            }
+
+            final InstanceFilterValue employeefilter = (InstanceFilterValue) filter.get("employee");
+            if (employeefilter != null && employeefilter.getObject() != null && employeefilter.getObject()
+                            .isValid()) {
+                // HumanResource_Employee2Contact
+                final QueryBuilder attrQueryBldr = new QueryBuilder(UUID.fromString(
+                                "2f3768b5-ffad-4ed4-a960-2f774e316e21"));
+                attrQueryBldr.addWhereAttrEqValue("FromLink", employeefilter.getObject());
+
+                final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
+                queryBldr.addWhereAttrInQuery(CIContacts.Contact.ID, attrQueryBldr.getAttributeQuery("ToLink"));
+
+                _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.Contact,
+                                queryBldr.getAttributeQuery(CIContacts.Contact.ID));
             }
         }
 
@@ -447,6 +486,25 @@ public abstract class ABCReport_Base
                 _builder.addColumn(amountColumn, amountPercentColumn, amountABCColumn);
             }
             _builder.columnGrid(grids.toArray(new ColumnGridComponentBuilder[grids.size()]));
+        }
+
+        /**
+         * Gets the doc Group.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the doc Group
+         * @throws EFapsException on error
+         */
+        protected Instance getCurrencyInst(final Parameter _parameter)
+            throws EFapsException
+        {
+            Instance ret = Currency.getBaseCurrency();
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("currency") && filter.get("currency") != null) {
+                final CurrencyFilterValue filterValue = (CurrencyFilterValue) filter.get("currency");
+                ret = filterValue.getObject();
+            }
+            return ret;
         }
 
         /**

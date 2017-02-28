@@ -151,7 +151,7 @@ public abstract class PettyCashBalance_Base
         try {
             startAmount = (BigDecimal) formater.parse(startAmountStr);
         } catch (final ParseException e) {
-            LOG.error("Catched parsing error", e);
+            PettyCashBalance_Base.LOG.error("Catched parsing error", e);
         }
         final BigDecimal difference;
         // the transactions sum to Zero
@@ -195,7 +195,7 @@ public abstract class PettyCashBalance_Base
 
             ret = insert.getInstance();
 
-            final List<Instance> lstInst = new ArrayList<Instance>();
+            final List<Instance> lstInst = new ArrayList<>();
 
             if (Context.getThreadContext().containsSessionAttribute(
                             CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name)) {
@@ -325,7 +325,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountPettyCash2CollectionOrder.getType();
             bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
-            actDefInst = Sales.PETTYCASHBALACTDEF4COLORD.get();
+            actDefInst = Sales.PETTYCASHBAL_ACTDEF4COLORD.get();
             actDef2doc = CISales.ActionDefinitionCollectionOrder2Document;
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
@@ -333,7 +333,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
-            actDefInst = Sales.PETTYCASHBALACTDEF4PAYORD.get();
+            actDefInst = Sales.PETTYCASHBAL_ACTDEF4PAYORD.get();
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
@@ -376,8 +376,8 @@ public abstract class PettyCashBalance_Base
                 actDef2DocInsert.add(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, insert.getInstance());
                 actDef2DocInsert.execute();
             } else {
-                LOG.error("Missing or wrong Configuration Links for ActionDefinition: '{}', '{}'",
-                                Sales.PETTYCASHBALACTDEF4COLORD.getKey(),Sales.PETTYCASHBALACTDEF4PAYORD.getKey());
+                PettyCashBalance_Base.LOG.error("Missing or wrong Configuration Links for ActionDefinition: '{}', '{}'",
+                                Sales.PETTYCASHBAL_ACTDEF4COLORD.getKey(), Sales.PETTYCASHBAL_ACTDEF4PAYORD.getKey());
             }
         }
         return new Return();
@@ -399,7 +399,7 @@ public abstract class PettyCashBalance_Base
             final InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
-                if (Sales.PETTYCASHBALREQUIREBOOKED4PAY.get()) {
+                if (Sales.PETTYCASHBAL_REQUIREBOOKED4PAY.get()) {
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashReceipt);
                     attrQueryBldr.addWhereAttrNotEqValue(CISales.PettyCashReceipt.Status,
                                     Status.find(CISales.PettyCashReceiptStatus.Booked));
@@ -453,7 +453,7 @@ public abstract class PettyCashBalance_Base
                 recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                 if (contactObj != null) {
                     // legal documents
-                    final String seqKey = Sales.PETTYCASHRECEIPTREVSEQ.get();
+                    final String seqKey = Sales.PETTYCASHRECEIPT_REVSEQ.get();
                     final NumberGenerator numgen = isUUID(seqKey)
                                     ? NumberGenerator.get(UUID.fromString(seqKey))
                                     : NumberGenerator.get(seqKey);
