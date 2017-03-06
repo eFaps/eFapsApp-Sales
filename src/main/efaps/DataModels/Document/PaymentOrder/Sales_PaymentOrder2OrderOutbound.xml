@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,27 +17,24 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a3a3d74e-ec50-4ce3-8a85-100056674538</uuid>
+    <uuid>944919ad-f9ca-4a0b-ac46-3e36f6345419</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-Archives" />
-        </application-dependencies>
-        <name>Sales_PaymentOrder2ArchiveAbstract</name>
-        <parent>Archives_Object2ArchiveAbstract</parent>
+        <name>Sales_PaymentOrder2OrderOutbound</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
             <typelink>Sales_PaymentOrder</typelink>
-            <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Archives_ArchiveAbstract</typelink>
-            <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
+            <typelink>Sales_OrderOutbound</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>

@@ -24,6 +24,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderTree_Doc</name>
         <target>
+            <menu>Sales_PaymentOrderTree_Doc_Menu</menu>
             <table>Sales_Document2DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type01">ERP_Document2DocumentAbstract</property>

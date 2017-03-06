@@ -14,19 +14,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2c8f5620-4969-4dc8-8747-0e4e2b91680a</uuid>
+    <uuid>34b618e6-9177-4f45-940b-97ec854dd42e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderMyDesk_Menu_Action</name>
+        <name>Sales_PaymentOrderTree_Doc_Menu</name>
         <childs>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_Create</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_SetAccountabilityTag</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_RemoveAccountabilityTag</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_Delete</child>
+            <child>Sales_PaymentOrderTree_Doc_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

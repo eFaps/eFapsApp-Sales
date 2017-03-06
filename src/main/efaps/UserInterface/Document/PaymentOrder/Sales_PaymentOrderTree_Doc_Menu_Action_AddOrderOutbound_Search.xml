@@ -15,18 +15,18 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2c8f5620-4969-4dc8-8747-0e4e2b91680a</uuid>
+    <uuid>04426be3-2f7f-4723-acb7-e0736d11771b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderMyDesk_Menu_Action</name>
+        <name>Sales_PaymentOrderTree_Doc_Menu_Action_AddOrderOutbound_Search</name>
+        <default>
+            <command>Sales_OrderOutboundSearch</command>
+        </default>
         <childs>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_Create</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_SetAccountabilityTag</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_RemoveAccountabilityTag</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_Delete</child>
+            <child>Sales_OrderOutboundSearch</child>
         </childs>
     </definition>
-</ui-menu>
+</ui-search>

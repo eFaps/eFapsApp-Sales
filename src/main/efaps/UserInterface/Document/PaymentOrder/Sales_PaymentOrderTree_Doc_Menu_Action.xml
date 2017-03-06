@@ -17,16 +17,15 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2c8f5620-4969-4dc8-8747-0e4e2b91680a</uuid>
+    <uuid>d059b0da-2716-41c6-bf95-eed98c415b16</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderMyDesk_Menu_Action</name>
+        <name>Sales_PaymentOrderTree_Doc_Menu_Action</name>
         <childs>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_Create</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_SetAccountabilityTag</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_RemoveAccountabilityTag</child>
-            <child>Sales_PaymentOrderMyDesk_Menu_Action_Delete</child>
+            <child>Sales_PaymentOrderTree_Doc_Menu_Action_AddOrderOutbound</child>
+            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
         </childs>
+        <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>
     </definition>
 </ui-menu>
