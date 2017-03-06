@@ -117,12 +117,22 @@ public abstract class Settlement_Base
                             first = false;
                         } else {
                             if (!infoDoc.isEmpty()) {
+                                final PrintQuery print = new PrintQuery(document);
+                                print.addAttribute(CISales.DocumentSumAbstract.Rate,
+                                                CISales.DocumentSumAbstract.RateCurrencyId,
+                                                CISales.DocumentSumAbstract.CurrencyId);
+                                print.execute();
                                 final Insert payInsert = new Insert(CISales.Payment);
                                 payInsert.add(CISales.Payment.CreateDocument, document);
                                 payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance());
                                 payInsert.add(CISales.Payment.Amount, amount4Doc);
-                                payInsert.add(CISales.Payment.CurrencyLink, infoDoc.get("currency"));
                                 payInsert.add(CISales.Payment.Date, infoDoc.get("date"));
+                                payInsert.add(CISales.Payment.RateCurrencyLink,
+                                                print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+                                payInsert.add(CISales.Payment.CurrencyLink,
+                                                print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+                                payInsert.add(CISales.Payment.Rate,
+                                                print.<Object>getAttribute(CISales.DocumentSumAbstract.Rate));
                                 payInsert.execute();
 
                                 final Insert transIns = new Insert(this.out ? CISales.TransactionOutbound
