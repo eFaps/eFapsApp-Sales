@@ -384,7 +384,7 @@ public abstract class Transaction_Base
         final Return ret = new Return();
 
         if (_parameter.get(ParameterValues.ACCESSMODE) == TargetMode.VIEW) {
-            final Instance instance = _parameter.getInstance();
+            final Instance instance = _parameter.getCallInstance();
             // get the transaction
             final PrintQuery print = new PrintQuery(instance);
             final SelectBuilder sel = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment)
@@ -499,7 +499,7 @@ public abstract class Transaction_Base
         final String costName =  getProperty(_parameter, "CostName");
         final String currencyId =  getProperty(_parameter, "CurrencyId");
 
-        final Table table = (Table) new Table()
+        final Table table = new Table()
                 .addRow()
                 .addHeaderColumn(DBProperties.getProperty("org.efaps.esjp.sales.Transaction.Amount"))
                 .addHeaderColumn(DBProperties.getProperty("org.efaps.esjp.sales.Transaction.Currency"))
