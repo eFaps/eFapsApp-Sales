@@ -51,6 +51,7 @@
             <child>Sales_DocBalanceReportMyDesk</child>
             <child>Sales_StatisticsReportMyDesk</child>
             <child>Sales_ProductsTransactionSummaryReportMyDesk</child>
+            <child>Sales_RateValidationReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

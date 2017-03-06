@@ -1747,6 +1747,37 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_RATEVALID = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.RateValidationReport")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.CreditNote.getType().getName())
+                    .addDefaultValue("Type03", CISales.Reminder.getType().getName())
+                    .addDefaultValue("Type04", CISales.Receipt.getType().getName())
+                    .addDefaultValue("Type05", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("Type06", CISales.IncomingCreditNote.getType().getName())
+                    .addDefaultValue("Type07", CISales.IncomingReminder.getType().getName())
+                    .addDefaultValue("Type08", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", "!" + CISales.InvoiceStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup02", CISales.CreditNoteStatus.getType().getName())
+                    .addDefaultValue("Status02", "!" + CISales.CreditNoteStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup03", CISales.ReminderStatus.getType().getName())
+                    .addDefaultValue("Status03", "!" + CISales.ReminderStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup04", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status04", "!" + CISales.ReceiptStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup05", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("Status05", "!" + CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup06", CISales.IncomingCreditNoteStatus.getType().getName())
+                    .addDefaultValue("Status06", "!" + CISales.IncomingCreditNoteStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup07", CISales.IncomingReminderStatus.getType().getName())
+                    .addDefaultValue("Status07", "!" + CISales.IncomingReminderStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup08", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("Status08", "!" + CISales.IncomingReceiptStatus.Replaced.key)
+                    .description("Configures the RateValidationReport for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute REPORT_STATISTICS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.Statistics")
