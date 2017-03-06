@@ -1028,7 +1028,7 @@ public abstract class Swap_Base
             final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CISales.Document2Document4Swap.CurrencyLink)
                             .instance();
             multi.addSelect(selCurrInst, selFromInst, selFromStatus, selToInst, selFromName, selToName, selToStatus);
-            multi.addAttribute(CISales.Document2Document4Swap.Amount);
+            multi.addAttribute(CISales.Document2Document4Swap.Amount, CISales.Document2Document4Swap.Date);
             multi.execute();
             while (multi.next()) {
                 final Instance fromInst = multi.<Instance>getSelect(selFromInst);
@@ -1038,6 +1038,7 @@ public abstract class Swap_Base
                 if (swap.isValidStatus(_parameter, fromStatus) && swap.isValidStatus(_parameter, toStatus)) {
                     final SwapInfo fromInfo = new SwapInfo().setFrom(true)
                             .setDocInstance(toInst)
+                            .setSwapDate(multi.getAttribute(CISales.Document2Document4Swap.Date))
                             .setDocName(multi.<String>getSelect(selToName))
                             .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
                             .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
@@ -1053,6 +1054,7 @@ public abstract class Swap_Base
 
                     final SwapInfo toInfo = new SwapInfo().setFrom(false)
                             .setDocInstance(fromInst)
+                            .setSwapDate(multi.getAttribute(CISales.Document2Document4Swap.Date))
                             .setDocName(multi.<String>getSelect(selFromName))
                             .setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount))
                             .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
@@ -1120,6 +1122,11 @@ public abstract class Swap_Base
          * Name of the document.
          */
         private String docName;
+
+        /**
+         * Name of the document.
+         */
+        private DateTime swapDate;
 
         /**
          * From or to.
@@ -1249,6 +1256,28 @@ public abstract class Swap_Base
         public SwapInfo setCurrencyInstance(final Instance _currencyInstance)
         {
             this.currencyInstance = _currencyInstance;
+            return this;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #swapDate}.
+         *
+         * @return value of instance variable {@link #swapDate}
+         */
+        public DateTime getSwapDate()
+        {
+            return this.swapDate;
+        }
+
+        /**
+         * Setter method for instance variable {@link #swapDate}.
+         *
+         * @param _swapDate value for instance variable {@link #swapDate}
+         */
+        public SwapInfo setSwapDate(final DateTime _swapDate)
+        {
+            this.swapDate = _swapDate;
             return this;
         }
     }

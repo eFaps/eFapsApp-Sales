@@ -397,6 +397,7 @@ public abstract class SalesReport4Account_Base
                 final List<DataBean> dataSource = new ArrayList<>();
                 dataSource.addAll(beans.values());
                 if (isShowSwapInfo()) {
+
                     final Map<Instance, Set<SwapInfo>> swapMap = Swap.getSwapInfos4Documents(_parameter, docInsts
                                     .toArray(new Instance[docInsts.size()]));
                     for (final DataBean bean : dataSource) {
@@ -405,20 +406,22 @@ public abstract class SalesReport4Account_Base
                             final StringBuilder fromStr = new StringBuilder();
                             final StringBuilder toStr = new StringBuilder();
                             for (final SwapInfo swapInfo : swapInfos) {
-                                if (swapInfo.isFrom()) {
-                                    if (fromStr.length() > 0) {
-                                        fromStr.append(", ");
+                                if (swapInfo.getSwapDate().isBefore(reportDate)) {
+                                    if (swapInfo.isFrom()) {
+                                        if (fromStr.length() > 0) {
+                                            fromStr.append(", ");
+                                        } else {
+                                            fromStr.append(swapInfo.getDirection()).append(" ");
+                                        }
+                                        fromStr.append(swapInfo.getDocument());
                                     } else {
-                                        fromStr.append(swapInfo.getDirection()).append(" ");
+                                        if (toStr.length() > 0) {
+                                            toStr.append(", ");
+                                        } else {
+                                            toStr.append(swapInfo.getDirection()).append(" ");
+                                        }
+                                        toStr.append(swapInfo.getDocument());
                                     }
-                                    fromStr.append(swapInfo.getDocument());
-                                } else {
-                                    if (toStr.length() > 0) {
-                                        toStr.append(", ");
-                                    } else {
-                                        toStr.append(swapInfo.getDirection()).append(" ");
-                                    }
-                                    toStr.append(swapInfo.getDocument());
                                 }
                             }
                             final StringBuilder str = new StringBuilder();

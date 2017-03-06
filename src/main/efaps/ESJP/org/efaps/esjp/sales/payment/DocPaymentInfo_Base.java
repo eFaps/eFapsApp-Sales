@@ -290,7 +290,6 @@ public abstract class DocPaymentInfo_Base
     /**
      * Gets the balance.
      *
-     * @param _perPayment the per payment,  if null the configured default is used
      * @return the balance
      * @throws EFapsException on error
      */
@@ -1039,7 +1038,7 @@ public abstract class DocPaymentInfo_Base
                         instance2info.keySet().toArray());
         final Set<Instance> verifySet = new HashSet<>();
         final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
-        swapMulti.addAttribute(CISales.Document2Document4Swap.Amount);
+        swapMulti.addAttribute(CISales.Document2Document4Swap.Amount, CISales.Document2Document4Swap.Date);
         final SelectBuilder selCurInst = new SelectBuilder()
                         .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
         final SelectBuilder selDocFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromAbstractLink);
@@ -1097,7 +1096,9 @@ public abstract class DocPaymentInfo_Base
                     if (info.isObligationDoc()) {
                         amount = amount.negate();
                     }
-                    info.payPos.add(new PayPos(info.date, amount, curInst)
+                    final DateTime swapDate = swapMulti.getAttribute(CISales.Document2Document4Swap.Date);
+                    final DateTime posDate = swapDate == null ? info.date : swapDate;
+                    info.payPos.add(new PayPos(posDate, amount, curInst)
                                     .setLabel(docToInst.getType().getLabel())
                                     .setRateInfo(rateInfo));
                 }
