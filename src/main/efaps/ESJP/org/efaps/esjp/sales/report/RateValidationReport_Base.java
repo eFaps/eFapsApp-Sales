@@ -252,6 +252,11 @@ public abstract class RateValidationReport_Base
             }
             _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusMinutes(1));
             _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
+
+            if (filter.containsKey("type")) {
+                _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Type, ((TypeFilterValue) filter.get("type"))
+                                .getObject().toArray());
+            }
         }
 
         @Override
