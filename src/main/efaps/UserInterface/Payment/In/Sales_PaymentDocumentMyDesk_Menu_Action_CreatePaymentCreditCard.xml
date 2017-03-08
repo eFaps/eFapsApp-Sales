@@ -35,7 +35,8 @@
                 <property name="StatusGroup">Sales_PaymentCreditCardAbstractStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="validatePaymentDocument" />
+            <validate program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="validatePaymentDocument" index="0"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="validatePaymentDocument4Positions" index="1"/>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCard.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">

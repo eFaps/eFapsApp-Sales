@@ -26,7 +26,6 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentDepositForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDeposit" >
@@ -35,9 +34,9 @@
                 <property name="StatusGroup">Sales_PaymentDepositStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.payment.PaymentDeposit" method="validatePaymentDocument"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentDeposit" method="validatePaymentDocument" index="0"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentDeposit" method="validatePaymentDocument4Positions" index="1"/>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentDeposit</property>
         <property name="TargetMode">create</property>

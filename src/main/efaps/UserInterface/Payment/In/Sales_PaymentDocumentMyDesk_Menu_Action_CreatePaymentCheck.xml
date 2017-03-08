@@ -34,7 +34,8 @@
                 <property name="StatusGroup">Sales_PaymentCheckStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.payment.PaymentCheck" method="validatePaymentDocument"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentCheck" method="validatePaymentDocument" index="0"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentCheck" method="validatePaymentDocument4Positions" index="1"/>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentCheck</property>

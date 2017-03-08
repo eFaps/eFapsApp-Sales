@@ -39,6 +39,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.drools.core.util.StringUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -82,13 +83,16 @@ import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.db.InstanceUtils;
+import org.efaps.esjp.erp.AbstractPositionWarning;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.WarningUtil;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -1515,13 +1519,15 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         final Return ret = new Return();
-
-        if (!evaluateDocument4PositionDoc(_parameter).toString().isEmpty()) {
-            ret.put(ReturnValues.SNIPLETT, evaluateDocument4PositionDoc(_parameter).toString());
-        } else {
+        final List<IWarning> warnings = evaluateDocument4PositionDoc(_parameter);
+        if (warnings.isEmpty()) {
             ret.put(ReturnValues.TRUE, true);
+        } else {
+            ret.put(ReturnValues.SNIPLETT, WarningUtil.getHtml4Warning(warnings).toString());
+            if (!WarningUtil.hasError(warnings)) {
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
-
         return ret;
     }
 
@@ -1532,47 +1538,27 @@ public abstract class AbstractPaymentDocument_Base
      * @return new HtmlTable.
      * @throws EFapsException on error.
      */
-    protected HtmlTable evaluateDocument4PositionDoc(final Parameter _parameter)
+    protected List<IWarning> evaluateDocument4PositionDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final HtmlTable html = new HtmlTable();
-        final Map<Integer, String> map = analyseProperty(_parameter, "Type");
-
+        final List<IWarning> ret = new ArrayList<>();
         final String[] paymentDocs = _parameter.getParameterValues("createDocument");
-
-        for (int i = 0; i < getPaymentCount(_parameter); i++) {
-            boolean exists = false;
+        final String[] paymentRates = _parameter.getParameterValues("paymentRate");
+        final String[] paymentAmounts = _parameter.getParameterValues("paymentAmount");
+        final String[] paymentDiscounts = _parameter.getParameterValues("paymentDiscount");
+        final int c = getPaymentCount(_parameter);
+        if (c == 0) {
+            ret.add(new PaymentPositionWarning());
+        }
+        for (int i = 0; i < c; i++) {
             final Instance docInst = Instance.get(paymentDocs[i]);
-            for (final Entry<Integer, String> entryMap : map.entrySet()) {
-                final Type type = Type.get(entryMap.getValue());
-                if (type != null && docInst.isValid()) {
-                    if (type.equals(docInst.getType())) {
-                        exists = true;
-                        break;
-                    }
-                }
+            if (InstanceUtils.isNotValid(docInst) || StringUtils.isEmpty(paymentRates[i])
+                            || StringUtils.isEmpty(paymentAmounts[i]) || StringUtils.isEmpty(paymentDiscounts[i])) {
+                ret.add(new PaymentPositionWarning().setPosition(i + 1));
             }
-            if (!exists) {
-                final PrintQuery print = new PrintQuery(docInst);
-                print.addAttribute(CIERP.DocumentAbstract.Name);
-                print.executeWithoutAccessCheck();
-                html.tr()
-                    .td(docInst.getType().getLabel())
-                    .td(print.getAttribute(CIERP.DocumentAbstract.Name))
-                    .trC();
-            }
-        }
 
-        final HtmlTable html2 = new HtmlTable();
-        if (!html.toString().isEmpty()) {
-            html2.table()
-                .th(DBProperties.getProperty("Sales_DocumentAbstract/Type.Label"))
-                .th(DBProperties.getProperty("Sales_DocumentAbstract/Name.Label"))
-                .append(html.toString())
-                .tableC();
         }
-
-        return html2;
+        return ret;
     }
 
     /**
@@ -2322,4 +2308,20 @@ public abstract class AbstractPaymentDocument_Base
         html.tableC();
         return new StringBuilder(html.toString());
     }
+
+    /**
+     * Warning for not enough Stock.
+     */
+    public static class PaymentPositionWarning
+        extends AbstractPositionWarning
+    {
+        /**
+         * Constructor.
+         */
+        public PaymentPositionWarning()
+        {
+            setError(true);
+        }
+    }
+
 }

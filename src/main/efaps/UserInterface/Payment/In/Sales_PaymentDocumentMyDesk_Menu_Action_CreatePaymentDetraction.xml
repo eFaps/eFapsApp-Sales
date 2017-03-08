@@ -33,7 +33,8 @@
                 <property name="StatusGroup">Sales_PaymentDetractionStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetraction"/>
+            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetraction" index="0"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentDetraction" method="validatePaymentDocument4Positions" index="1"/>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">

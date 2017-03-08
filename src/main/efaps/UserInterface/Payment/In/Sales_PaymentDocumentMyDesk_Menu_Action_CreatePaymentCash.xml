@@ -36,7 +36,8 @@
                 <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.payment.PaymentCash"
-                method="validatePaymentDocument" />
+                method="validatePaymentDocument" index="0"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentCash" method="validatePaymentDocument4Positions" index="1"/>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentCash</property>
