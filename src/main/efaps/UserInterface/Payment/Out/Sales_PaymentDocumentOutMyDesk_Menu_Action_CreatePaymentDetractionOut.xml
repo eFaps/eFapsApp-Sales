@@ -37,11 +37,12 @@
                 index="0" />
             <validate program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
                 method="validatePaymentDocument4Positions" index="1" />
-            <property name="Target">modal</property>
-            <property name="TargetCreateType">Sales_PaymentDetractionOut</property>
-            <property name="TargetMode">create</property>
-            <property name="WindowHeight">600</property>
-            <property name="WindowWidth">800</property>
-            <property name="TargetShowFile">true</property>
+         </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_PaymentDetractionOut</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">800</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
