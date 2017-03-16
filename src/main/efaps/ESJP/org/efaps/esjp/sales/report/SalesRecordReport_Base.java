@@ -188,10 +188,10 @@ public abstract class SalesRecordReport_Base
     /** The Constant DOCTYPE_MAP. */
     protected static final Map<UUID, String> DOCTYPE_MAP = new HashMap<>();
     static {
-        DOCTYPE_MAP.put(CISales.Invoice.getType().getUUID(), "01");
-        DOCTYPE_MAP.put(CISales.Receipt.getType().getUUID(), "02");
-        DOCTYPE_MAP.put(CISales.CreditNote.getType().getUUID(), "07");
-        DOCTYPE_MAP.put(CISales.Reminder.getType().getUUID(), "08");
+        SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Invoice.getType().getUUID(), "01");
+        SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Receipt.getType().getUUID(), "02");
+        SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.CreditNote.getType().getUUID(), "07");
+        SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Reminder.getType().getUUID(), "08");
     }
 
     /**
@@ -699,7 +699,7 @@ public abstract class SalesRecordReport_Base
                                      final String _name)
         {
             final String ret;
-            final Pattern pattern = Pattern.compile("^\\d+");
+            final Pattern pattern = Pattern.compile("^[A-Za-z0-9]{1,4}");
             final Matcher matcher = pattern.matcher(_name);
             if (matcher.find()) {
                 ret = matcher.group();
@@ -720,7 +720,7 @@ public abstract class SalesRecordReport_Base
                                    final String _name)
         {
             final String ret;
-            final Pattern pattern = Pattern.compile("(?<=\\D)\\d+");
+            final Pattern pattern = Pattern.compile("(?<=[^A-Za-z0-9])\\d+");
             final Matcher matcher = pattern.matcher(_name);
             if (matcher.find()) {
                 ret = matcher.group();
@@ -738,7 +738,7 @@ public abstract class SalesRecordReport_Base
          */
         protected Map<UUID, String> getDocTypeMap(final Parameter _parameter)
         {
-            return DOCTYPE_MAP;
+            return SalesRecordReport_Base.DOCTYPE_MAP;
         }
 
         /**
