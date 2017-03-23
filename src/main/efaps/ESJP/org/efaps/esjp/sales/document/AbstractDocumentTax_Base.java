@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -168,7 +169,7 @@ public abstract class AbstractDocumentTax_Base
      * @return type for create
      * @throws EFapsException on error
      */
-    protected abstract Type getType4create4Doc(final Parameter _parameter)
+    protected abstract Type getType4create4Doc(Parameter _parameter)
         throws EFapsException;
 
     /**
@@ -177,9 +178,9 @@ public abstract class AbstractDocumentTax_Base
      * @param _taxDoc the tax document
      * @throws EFapsException on error
      */
-    protected abstract void connectDoc(final Parameter _parameter,
-                                       final CreatedDoc _origDoc,
-                                       final CreatedDoc _taxDoc)
+    protected abstract void connectDoc(Parameter _parameter,
+                                       CreatedDoc _origDoc,
+                                       CreatedDoc _taxDoc)
         throws EFapsException;
 
     /**
@@ -447,6 +448,16 @@ public abstract class AbstractDocumentTax_Base
         private BigDecimal paymentAmount = null;
 
         /**
+         * Amount of the tax payed.
+         */
+        private String paymentName = null;
+
+        /**
+         * Amount of the tax payed.
+         */
+        private DateTime paymentDate = null;
+
+        /**
          * @param _docInst instance of teh docuemnt the info belong to
          */
         public DocTaxInfo(final Instance _docInst)
@@ -670,6 +681,28 @@ public abstract class AbstractDocumentTax_Base
         }
 
         /**
+         * Getter method for the instance variable {@link #detraction}.
+         *
+         * @return value of instance variable {@link #detraction}
+         * @throws EFapsException on error
+         */
+        public boolean isDetractionPaid()
+            throws EFapsException
+        {
+            initialize();
+            boolean ret = false;
+            if (isDetraction()) {
+                final Instance taxDocInst = getTaxDocInstance(CISales.IncomingDetraction);
+                final PrintQuery print = new PrintQuery(taxDocInst);
+                print.addAttribute(CISales.IncomingDetraction.Status);
+                print.execute();
+                ret = Status.find(CISales.IncomingDetractionStatus.Paid).equals(Status.get(print.<Long>getAttribute(
+                                CISales.IncomingDetraction.Status)));
+            }
+            return ret;
+        }
+
+        /**
          * Getter method for the instance variable {@link #retention}.
          *
          * @return value of instance variable {@link #retention}
@@ -855,6 +888,52 @@ public abstract class AbstractDocumentTax_Base
         }
 
         /**
+         * Analyze payment.
+         * @throws EFapsException
+         */
+        protected void analyzePayment()
+            throws EFapsException
+        {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
+            attrQueryBldr.addType(CISales.PaymentRetentionOut);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, this.taxDocInstances.toArray());
+            queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument,
+                            attrQueryBldr.getAttributeQuery(CISales.PaymentDocumentAbstract.ID));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selAmount = SelectBuilder.get()
+                            .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
+                            .attribute(CISales.TransactionAbstract.Amount);
+            final SelectBuilder selDate = SelectBuilder.get()
+                            .linkto(CISales.Payment.TargetDocument)
+                            .attribute(CISales.PaymentDocumentOutAbstract.Date);
+            final SelectBuilder selName = SelectBuilder.get()
+                            .linkto(CISales.Payment.TargetDocument)
+                            .attribute(CISales.PaymentDocumentOutAbstract.Name);
+            multi.addSelect(selAmount, selDate, selName);
+            multi.execute();
+            BigDecimal paymentAmountTmp = BigDecimal.ZERO;
+            String paymentNameTmp = "";
+            while (multi.next()) {
+                paymentAmountTmp = paymentAmountTmp.add(multi.<BigDecimal>getSelect(selAmount));
+                if (this.paymentDate == null) {
+                    this.paymentDate = multi.getSelect(selDate);
+                }
+                if (StringUtils.isNotEmpty(paymentNameTmp)) {
+                    paymentNameTmp = paymentNameTmp + ", ";
+                }
+                paymentNameTmp = paymentNameTmp + multi.getSelect(selName);
+            }
+            if (this.paymentAmount == null) {
+                this.paymentAmount = paymentAmountTmp;
+            }
+            if (this.paymentName == null) {
+                this.paymentName = paymentNameTmp;
+            }
+        }
+
+        /**
          * Getter method for the instance variable {@link #paymentAmount}.
          *
          * @return value of instance variable {@link #paymentAmount}
@@ -864,23 +943,7 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             if (this.paymentAmount == null) {
-                this.paymentAmount = BigDecimal.ZERO;
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
-                attrQueryBldr.addType(CISales.PaymentRetentionOut);
-
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, getDocInstance());
-                queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument,
-                                attrQueryBldr.getAttributeQuery(CISales.PaymentDocumentAbstract.ID));
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selAmount = SelectBuilder.get()
-                                .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
-                                .attribute(CISales.TransactionAbstract.Amount);
-                multi.addSelect(selAmount);
-                multi.execute();
-                while (multi.next()) {
-                    this.paymentAmount = this.paymentAmount.add(multi.<BigDecimal>getSelect(selAmount));
-                }
+                analyzePayment();
             }
             return this.paymentAmount;
         }
@@ -893,6 +956,56 @@ public abstract class AbstractDocumentTax_Base
         public void setPaymentAmount(final BigDecimal _paymentAmount)
         {
             this.paymentAmount = _paymentAmount;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #paymentName}.
+         *
+         * @return value of instance variable {@link #paymentName}
+         * @throws EFapsException on error
+         */
+        public String getPaymentName()
+            throws EFapsException
+        {
+            if (this.paymentName == null) {
+                analyzePayment();
+            }
+            return this.paymentName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #paymentName}.
+         *
+         * @param _paymentName value for instance variable {@link #paymentName}
+         */
+        public void setPaymentName(final String _paymentName)
+        {
+            this.paymentName = _paymentName;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #paymentDate}.
+         *
+         * @return value of instance variable {@link #paymentDate}
+         * @throws EFapsException on error
+         */
+        public DateTime getPaymentDate()
+            throws EFapsException
+        {
+            if (this.paymentDate == null) {
+                analyzePayment();
+            }
+            return this.paymentDate;
+        }
+
+        /**
+         * Setter method for instance variable {@link #paymentDate}.
+         *
+         * @param _paymentDate value for instance variable {@link #paymentDate}
+         */
+        public void setPaymentDate(final DateTime _paymentDate)
+        {
+            this.paymentDate = _paymentDate;
         }
 
         /**
