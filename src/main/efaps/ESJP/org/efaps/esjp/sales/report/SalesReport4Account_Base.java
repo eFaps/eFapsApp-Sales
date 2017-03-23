@@ -135,7 +135,9 @@ public abstract class SalesReport4Account_Base
         /** Includes a group on assigned level. */
         ASSIGNED,
         /** Includes a group on type level. */
-        DOCTYPE;
+        DOCTYPE,
+        /** Includes a group on condition level. */
+        CONDITION;
     }
 
     /**
@@ -262,6 +264,9 @@ public abstract class SalesReport4Account_Base
                     if (!isShowAssigned()) {
                         ret.remove(GroupBy.ASSIGNED);
                     }
+                    if (!isShowCondition()) {
+                        ret.remove(GroupBy.CONDITION);
+                    }
                     if (ReportKey.CONTACT.equals(getReportKey())) {
                         ret.remove(GroupBy.ASSIGNED);
                         ret.remove(GroupBy.CONTACT);
@@ -287,6 +292,20 @@ public abstract class SalesReport4Account_Base
     {
         return Sales.REPORT_SALES4ACCOUNTIN_ASSIGENED.get() && getReportKey().equals(ReportKey.IN)
                         || Sales.REPORT_SALES4ACCOUNTOUT_ASSIGENED.get() && getReportKey().equals(ReportKey.OUT);
+    }
+
+    /**
+     * Checks if is show condition.
+     *
+     * @return true, if is show condition
+     * @throws EFapsException on error
+     */
+    protected boolean isShowCondition()
+        throws EFapsException
+    {
+        return Sales.CHACTIVATESALESCOND.get() && getReportKey().equals(ReportKey.IN) || Sales.CHACTIVATEPURCHASECOND
+                        .get() && getReportKey().equals(ReportKey.OUT) || (Sales.CHACTIVATEPURCHASECOND.get()
+                                        || Sales.CHACTIVATESALESCOND.get()) && getReportKey().equals(ReportKey.CONTACT);
     }
 
     /**
@@ -322,6 +341,7 @@ public abstract class SalesReport4Account_Base
         }
 
         @Override
+        @SuppressWarnings("checkstyle:MethodLength")
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
@@ -515,6 +535,18 @@ public abstract class SalesReport4Account_Base
                                     }
                                 });
                                 break;
+                            case CONDITION:
+                                chain.addComparator(new Comparator<DataBean>()
+                                {
+                                    @Override
+                                    public int compare(final DataBean _o1,
+                                                       final DataBean _o2)
+                                    {
+
+                                        return _o1.getCondition().compareTo(_o2.getCondition());
+                                    }
+                                });
+                                break;
                             default:
                                 chain.addComparator(new Comparator<DataBean>()
                                 {
@@ -563,7 +595,8 @@ public abstract class SalesReport4Account_Base
                 final Collection<Map<String, ?>> col = new ArrayList<>();
 
                 for (final DataBean bean : dataSource) {
-                    col.add(bean.getMap(isShowCondition(), getFilteredReport().isShowAssigned(), isShowSwapInfo()));
+                    col.add(bean.getMap(getFilteredReport().isShowCondition(),
+                                    getFilteredReport().isShowAssigned(), isShowSwapInfo()));
                 }
                 ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
@@ -662,23 +695,6 @@ public abstract class SalesReport4Account_Base
                 ret = new DateTime().withTimeAtStartOfDay();
             }
             return ret;
-        }
-
-        /**
-         * Checks if is show condition.
-         *
-         * @return true, if is show condition
-         * @throws EFapsException on error
-         */
-        protected boolean isShowCondition()
-            throws EFapsException
-        {
-            return Sales.CHACTIVATESALESCOND.get()
-                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                            || Sales.CHACTIVATEPURCHASECOND.get()
-                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
-                            || (Sales.CHACTIVATEPURCHASECOND.get() || Sales.CHACTIVATESALESCOND.get())
-                                        && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.CONTACT);
         }
 
         /**
@@ -784,6 +800,7 @@ public abstract class SalesReport4Account_Base
         }
 
         @Override
+        @SuppressWarnings("checkstyle:MethodLength")
         protected void addColumnDefintion(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
             throws EFapsException
@@ -874,6 +891,7 @@ public abstract class SalesReport4Account_Base
             final ColumnGroupBuilder dayGroup = DynamicReports.grp.group(dayColumn).groupByDataType();
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
             final ColumnGroupBuilder docTypeGroup = DynamicReports.grp.group(typeColumn).groupByDataType();
+            final ColumnGroupBuilder conditionGroup = DynamicReports.grp.group(conditionColumn).groupByDataType();
 
             _builder.addColumn(yearColumn, monthColumn, dayColumn);
 
@@ -893,7 +911,7 @@ public abstract class SalesReport4Account_Base
                 gridList.add(revisionColumn);
             }
 
-            if (isShowCondition()) {
+            if (!selected.contains(GroupBy.CONDITION) && getFilteredReport().isShowCondition()) {
                 gridList.add(conditionColumn);
             }
             if (!selected.contains(GroupBy.CONTACT) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
@@ -965,11 +983,15 @@ public abstract class SalesReport4Account_Base
                             _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(payColumn));
                             _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(result));
                             break;
+                        case CONDITION:
+                            _builder.addSubtotalAtGroupFooter(conditionGroup,  DynamicReports.sbt.sum(crossColumn));
+                            _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.sum(payColumn));
+                            _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.sum(result));
+                            break;
                         default:
                             break;
                     }
                 }
-
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(crossColumn));
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(payColumn));
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(result));
@@ -986,7 +1008,7 @@ public abstract class SalesReport4Account_Base
                             nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(140),
                             revisionColumn);
 
-            if (isShowCondition()) {
+            if (getFilteredReport().isShowCondition()) {
                 _builder.addColumn(conditionColumn);
             }
 
@@ -1039,6 +1061,11 @@ public abstract class SalesReport4Account_Base
                         _builder.groupBy(docTypeGroup);
                         _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.text(this.filteredReport
                                         .getLabel(_parameter, "docTypeGroupTotal"), docStatusColumn));
+                        break;
+                    case CONDITION:
+                        _builder.groupBy(conditionGroup);
+                        _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.text(this.filteredReport
+                                        .getLabel(_parameter, "conditionGroupTotal"), docStatusColumn));
                         break;
                     default:
                         break;
@@ -1535,27 +1562,29 @@ public abstract class SalesReport4Account_Base
          * Gets the condition.
          *
          * @return the condition
-         * @throws EFapsException on error
          */
         public String getCondition()
-            throws EFapsException
         {
             if (this.condition == null) {
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
-                queryBldr.addWhereAttrEqValue(CISales.Channel2DocumentAbstract.ToAbstractLink, getDocInst());
-                final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
-                final SelectBuilder selName = SelectBuilder.get()
-                                .linkto(CISales.Channel2DocumentAbstract.FromAbstractLink)
-                                .attribute(CISales.ChannelAbstract.Name);
-                multi.addSelect(selName);
-                multi.execute();
-                while (multi.next()) {
-                    if (this.condition != null && !this.condition.isEmpty()) {
-                        this.condition = this.condition + ", ";
-                    } else {
-                        this.condition = "";
+                try {
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
+                    queryBldr.addWhereAttrEqValue(CISales.Channel2DocumentAbstract.ToAbstractLink, getDocInst());
+                    final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+                    final SelectBuilder selName = SelectBuilder.get()
+                                    .linkto(CISales.Channel2DocumentAbstract.FromAbstractLink)
+                                    .attribute(CISales.ChannelAbstract.Name);
+                    multi.addSelect(selName);
+                    multi.execute();
+                    while (multi.next()) {
+                        if (this.condition != null && !this.condition.isEmpty()) {
+                            this.condition = this.condition + ", ";
+                        } else {
+                            this.condition = "";
+                        }
+                        this.condition = this.condition + multi.getSelect(selName);
                     }
-                    this.condition = this.condition + multi.getSelect(selName);
+                } catch (final EFapsException e) {
+                    SalesReport4Account_Base.LOG.error("Catched", e);
                 }
                 if (this.condition == null) {
                     this.condition = "";
