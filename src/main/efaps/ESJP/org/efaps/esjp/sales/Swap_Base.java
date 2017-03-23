@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -489,6 +489,10 @@ public abstract class Swap_Base
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
                 docInfo.getRateInfo4Target().setSaleRate(rate);
                 docInfo.getRateInfo4Target().setSaleRateUI(rateUI);
+                if (rate.compareTo(BigDecimal.ONE) != 0 && docInfo.getTargetInfo().getCurrencyInstance().equals(docInfo
+                                .getRateCurrencyInstance())) {
+                    docInfo.getTargetInfo().setCurrencyInstance(docInfo.getCurrencyInstance());
+                }
 
                 final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, false);
                 map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
@@ -1074,9 +1078,11 @@ public abstract class Swap_Base
     }
 
     /**
-     * @param _parameter
-     * @param _fromStatus
-     * @return
+     * Checks if is valid status.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _status the status
+     * @return true, if is valid status
      */
     protected boolean isValidStatus(final Parameter _parameter,
                                     final Status _status)
@@ -1259,7 +1265,6 @@ public abstract class Swap_Base
             return this;
         }
 
-
         /**
          * Getter method for the instance variable {@link #swapDate}.
          *
@@ -1274,11 +1279,22 @@ public abstract class Swap_Base
          * Setter method for instance variable {@link #swapDate}.
          *
          * @param _swapDate value for instance variable {@link #swapDate}
+         * @return the swap info
          */
         public SwapInfo setSwapDate(final DateTime _swapDate)
         {
             this.swapDate = _swapDate;
             return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docName}.
+         *
+         * @return value of instance variable {@link #docName}
+         */
+        public String getDocName()
+        {
+            return this.docName;
         }
     }
 
