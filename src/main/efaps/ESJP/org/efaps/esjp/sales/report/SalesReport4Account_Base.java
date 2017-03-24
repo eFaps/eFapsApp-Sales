@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
@@ -805,10 +806,10 @@ public abstract class SalesReport4Account_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final GroupByFilterValue groupBy = (GroupByFilterValue) filterMap.get("groupBy");
             final List<Enum<?>> selected = groupBy == null ? new ArrayList<>() : groupBy.getObject();
+            final boolean hideDetails = BooleanUtils.toBoolean((Boolean) filterMap.get("hideDetails"));
 
             final String filter;
             switch (getFilterDate(_parameter)) {
@@ -833,50 +834,39 @@ public abstract class SalesReport4Account_Base
             final TextColumnBuilder<DateTime> dayColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "FilterDate3"), filter,
                             DateTimeYear.get());
-
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "Date"), "docDate",
                             DateTimeDate.get());
-
             final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Type"), "docType",
                             DynamicReports.type.stringType());
-
             final TextColumnBuilder<DateTime> createdColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "Created"), "docCreated",
                             DateTimeDate.get());
-
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Name"), "docName",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> revisionColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Revision"), "docRevision",
                             DynamicReports.type.stringType());
-
             final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "ContactName"), "docContactName",
                             DynamicReports.type.stringType());
-
             final TextColumnBuilder<DateTime> dueDateColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "DueDate"), "docDueDate",
                             DateTimeDate.get());
-
             final TextColumnBuilder<String> docStatusColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Status"), "docStatus",
                             DynamicReports.type.stringType());
-
             final TextColumnBuilder<String> conditionColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Condition"), "condition",
                             DynamicReports.type.stringType());
-
             final TextColumnBuilder<String> assignedColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Assigned"), "assigned",
                             DynamicReports.type.stringType());
-
             final TextColumnBuilder<String> swapInfoColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "SwapInfo"), "swapInfo",
                             DynamicReports.type.stringType()).setWidth(120);
-
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
@@ -893,11 +883,12 @@ public abstract class SalesReport4Account_Base
             final ColumnGroupBuilder docTypeGroup = DynamicReports.grp.group(typeColumn).groupByDataType();
             final ColumnGroupBuilder conditionGroup = DynamicReports.grp.group(conditionColumn).groupByDataType();
 
-            _builder.addColumn(yearColumn, monthColumn, dayColumn);
-
+            final List<ColumnBuilder<?, ?>> columnList = new ArrayList<>();
             final List<ColumnGridComponentBuilder> gridList = new ArrayList<>();
+            Collections.addAll(columnList, yearColumn, monthColumn, dayColumn);
+
             if (getExType().equals(ExportType.HTML)) {
-                _builder.addColumn(linkColumn);
+                columnList.add(linkColumn);
                 gridList.add(linkColumn);
             }
             if (!selected.contains(GroupBy.DOCTYPE)) {
@@ -922,12 +913,12 @@ public abstract class SalesReport4Account_Base
                 gridList.add(assignedColumn);
             }
 
-            if (isShowSwapInfo()) {
+            if (isShowSwapInfo() && !hideDetails) {
                 gridList.add(swapInfoColumn);
             }
-
-            gridList.add(createdColumn);
-            gridList.add(docStatusColumn);
+            if (!hideDetails) {
+                Collections.addAll(gridList, createdColumn, docStatusColumn);
+            }
 
             for (final CurrencyInst currency : getCurrencyInst4Report(_parameter)) {
                 final TextColumnBuilder<BigDecimal> crossColumn = DynamicReports.col.column(
@@ -942,12 +933,14 @@ public abstract class SalesReport4Account_Base
                 final ColumnTitleGroupBuilder titelGroup = DynamicReports.grid.titleGroup(currency.getName(),
                                 crossColumn, payColumn, result);
                 gridList.add(titelGroup);
-                _builder.addColumn(crossColumn, payColumn, result);
-                if (!currency.getInstance().equals(Currency.getBaseCurrency()) && !isCurrencyBase(_parameter)) {
+                Collections.addAll(columnList, crossColumn, payColumn, result);
+
+                if (!hideDetails && !currency.getInstance().equals(Currency.getBaseCurrency())
+                                && !isCurrencyBase(_parameter)) {
                     final TextColumnBuilder<BigDecimal> rateColumn = DynamicReports.col.column(
                                     this.filteredReport.getLabel(_parameter, "rate"),
                                     "rate_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
-                    _builder.addColumn(rateColumn);
+                    columnList.add(rateColumn);
                     titelGroup.add(rateColumn);
                 }
 
@@ -997,80 +990,83 @@ public abstract class SalesReport4Account_Base
                 _builder.addSubtotalAtSummary(DynamicReports.sbt.sum(result));
             }
 
-            _builder.addSubtotalAtSummary(DynamicReports.sbt.text(this.filteredReport.getLabel(
-                            _parameter, "summaryTotal"), docStatusColumn));
-
-            _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
-
-            _builder.addColumn(typeColumn.setFixedWidth(120),
+            Collections.addAll(columnList, typeColumn.setFixedWidth(120),
                             dateColumn,
                             dueDateColumn,
-                            nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(140),
+                            nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
                             revisionColumn);
 
             if (getFilteredReport().isShowCondition()) {
-                _builder.addColumn(conditionColumn);
+                columnList.add(conditionColumn);
             }
 
             if (!selected.contains(GroupBy.CONTACT) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                _builder.addColumn(contactNameColumn.setFixedWidth(200));
+                columnList.add(contactNameColumn.setFixedWidth(200));
             }
 
             if (getFilteredReport().isShowAssigned() && !selected.contains(GroupBy.ASSIGNED)
                             && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                _builder.addColumn(assignedColumn);
+                columnList.add(assignedColumn);
             }
 
-            if (isShowSwapInfo()) {
-                _builder.addColumn(swapInfoColumn);
+            if (isShowSwapInfo() && !hideDetails) {
+                columnList.add(swapInfoColumn);
+            }
+            final TextColumnBuilder<String> grpTtlClm;
+            if (hideDetails) {
+                grpTtlClm = nameColumn;
+            } else {
+                grpTtlClm = docStatusColumn;
+                Collections.addAll(columnList, createdColumn, docStatusColumn);
             }
 
-            _builder.addColumn(createdColumn, docStatusColumn);
-            if (!showDetails) {
-                _builder.setShowColumnValues(false);
-            }
+            _builder.addSubtotalAtSummary(DynamicReports.sbt.text(this.filteredReport.getLabel(
+                            _parameter, "summaryTotal"), grpTtlClm));
 
             for (final Enum<?> sel : selected) {
                 switch ((GroupBy) sel) {
                     case ASSIGNED:
                         _builder.groupBy(assignedGroup);
                         _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "assignedGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "assignedGroupTotal"), grpTtlClm));
                         break;
                     case CONTACT:
                         _builder.groupBy(contactGroup);
                         _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "contactGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "contactGroupTotal"), grpTtlClm));
                         break;
                     case DAILY:
                         _builder.groupBy(dayGroup);
                         _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "dayGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "dayGroupTotal"), grpTtlClm));
                         break;
                     case MONTHLY:
                         _builder.groupBy(monthGroup);
                         _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "monthGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "monthGroupTotal"), grpTtlClm));
                         break;
                     case YEARLY:
                         _builder.groupBy(yearGroup);
                         _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "yearGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "yearGroupTotal"), grpTtlClm));
                         break;
                     case DOCTYPE:
                         _builder.groupBy(docTypeGroup);
                         _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "docTypeGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "docTypeGroupTotal"), grpTtlClm));
                         break;
                     case CONDITION:
                         _builder.groupBy(conditionGroup);
                         _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.text(this.filteredReport
-                                        .getLabel(_parameter, "conditionGroupTotal"), docStatusColumn));
+                                        .getLabel(_parameter, "conditionGroupTotal"), grpTtlClm));
                         break;
                     default:
                         break;
                 }
             }
+
+            _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
+            _builder.addColumn(columnList.toArray(new ColumnBuilder[gridList.size()]));
         }
 
         /**

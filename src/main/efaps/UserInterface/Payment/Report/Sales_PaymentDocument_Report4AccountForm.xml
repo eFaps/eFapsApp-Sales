@@ -38,6 +38,7 @@
                 <property name="Field07">switch</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">groupBy</property>
+                <property name="Field10">hideDetails</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">DateTime</property>
@@ -47,6 +48,7 @@
                 <property name="FilterType07">Boolean</property>
                 <property name="FilterType08">Currency</property>
                 <property name="FilterType09">GroupBy</property>
+                <property name="FilterType10">Boolean</property>
                 <property name="FilterDefault01">YEARS:-10</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">TODAY</property>
@@ -55,8 +57,8 @@
                 <property name="FilterDefault06"></property>
                 <property name="FilterDefault07">true</property>
                 <property name="FilterDefault08"></property>
-                <property name="FilterDefault09">false</property>
                 <property name="FilterDefault09">org.efaps.esjp.sales.report.SalesReport4Account_Base$GroupBy</property>
+                <property name="FilterDefault10">false</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesReport4Account.IN</property>
@@ -76,6 +78,7 @@
                 <property name="Field07">switch</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">groupBy</property>
+                <property name="Field10">hideDetails</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SalesReport4Account.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SalesReport4Account.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.SalesReport4Account.reportDate</property>
@@ -85,6 +88,7 @@
                 <property name="DBProperty07">org.efaps.esjp.sales.report.SalesReport4Account.switch</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.SalesReport4Account.currency</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.SalesReport4Account.groupBy</property>
+                <property name="DBProperty10">org.efaps.esjp.sales.report.SalesReport4Account.hideDetails</property>
                 <property name="AccessAttribute10">org.efaps.sales.report.SalesReport4Account.IN.ActivateContactAssigned2Employee</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
@@ -94,7 +98,6 @@
             <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="generateReport"
                 name="Sales_PaymentDocument_Report4AccountForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="ShowDetails">true</property>
                 <property name="ReportKey">IN</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.IN.FilterKey</property>
                 <!-- Sales-Configuration -->
