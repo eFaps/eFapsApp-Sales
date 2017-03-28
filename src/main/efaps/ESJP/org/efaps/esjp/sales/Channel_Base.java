@@ -38,6 +38,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -69,6 +70,27 @@ public abstract class Channel_Base
         if (condInst.isValid() && condInst.getType().isKindOf(CISales.ChannelConditionAbstract)) {
             final List<Map<String, String>> list = new ArrayList<>();
             final Map<String, String> map = new HashMap<>();
+            add2FieldUpdateMap4Condition(_parameter, map);
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    /**
+     * Adds too the field update map for condition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _map the map
+     * @throws EFapsException on error
+     */
+    public void add2FieldUpdateMap4Condition(final Parameter _parameter,
+                                             final Map<String, String> _map)
+        throws EFapsException
+    {
+        final String fieldName = getProperty(_parameter, "ConditionFieldName", "condition");
+        final Instance condInst = Instance.get(_parameter.getParameterValue(fieldName));
+        if (InstanceUtils.isKindOf(condInst, CISales.ChannelConditionAbstract)) {
             final PrintQuery print = new PrintQuery(condInst);
             print.addAttribute(CISales.ChannelConditionAbstract.QuantityDays);
             print.execute();
@@ -82,12 +104,13 @@ public abstract class Channel_Base
             } else {
                 date = new DateTime();
             }
-            map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(addDays)));
-            list.add(map);
-            retVal.put(ReturnValues.VALUES, list);
+            _map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(addDays)));
+        } else if (_parameter.getParameterValue("date_eFapsDate") != null) {
+            final DateTime date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+            _map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date));
         }
-        return retVal;
     }
+
 
     /**
      * Gets the condition js.

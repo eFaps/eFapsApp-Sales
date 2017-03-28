@@ -75,6 +75,7 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERP.DocTypeActivation;
 import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
@@ -842,12 +843,13 @@ public abstract class AbstractDocumentSum_Base
 
         js.append(getSetFieldValue(0, "rateCurrencyData",
                         RateInfo.getRateUIFrmt(_parameter, rateInfo, getTypeName4SysConf(_parameter))))
-                        .append(getSetFieldValue(0, "rate",
+                    .append(getSetFieldValue(0, "rate",
                                         RateInfo.getRateUIFrmt(_parameter, rateInfo, getTypeName4SysConf(_parameter))))
-                        .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                    .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
                                         Boolean.toString(rateInfo.isInvert())));
 
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        new Channel().add2FieldUpdateMap4Condition(_parameter, map);
         list.add(map);
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
