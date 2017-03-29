@@ -73,5 +73,15 @@
             <property name="Label">Sales_PaymentDocumentAbstract/RateCurrencyLink.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="account">
+            <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDocumentAbstractTable.account.Label</property>
+            <property name="FilterType">PICKLIST</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                name="Sales_PaymentDocumentAbstractTable.account.UI_FIELD_FORMAT"
+                method="distinct"
+                event="UI_FIELD_FORMAT">
+            </trigger>
+        </field>
     </definition>
 </ui-table>
