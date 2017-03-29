@@ -33,14 +33,9 @@
                 <property name="AttributeExists">org.efaps.sales.IncomingExchange.RevisionSequence</property>
             </trigger>
         </field>
-        <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="HRef">TREE</property>
-            <property name="Label">Sales_IncomingExchange/Type.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
         <field name="name">
             <property name="Attribute">Name</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
         <field name="contact">
@@ -136,6 +131,20 @@
                 <!-- Sales-Config -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.BinIncomingExchange.Activate</property>
+            </trigger>
+        </field>
+        <field name="guarantee">
+            <property name="SelectAlternateOID">linkfrom[Sales_Contact2IncomingExchange#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_Contact2IncomingExchange#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Sales_ExchangeForm.guarantee.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_IncomingExchangeExchangeTable.guarantee.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingExchange.ActivateGuarantee</property>
             </trigger>
         </field>
     </definition>
