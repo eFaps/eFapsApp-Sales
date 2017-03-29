@@ -74,7 +74,7 @@
             <property name="FilterType">PICKLIST</property>
         </field>
         <field name="account">
-            <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
+            <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstractTable.account.Label</property>
             <property name="FilterType">PICKLIST</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
