@@ -41,9 +41,11 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -172,7 +174,8 @@ public abstract class IncomingCreditNote_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        if (_parameter.getInstance() == null) {
+        if (_parameter.getInstance() == null
+                        || !InstanceUtils.isKindOf(_parameter.getInstance(), CIERP.DocumentAbstract)) {
             final String seqKey = Sales.INCOMINGCREDITNOTE_REVSEQ.get();
             final NumberGenerator numgen = isUUID(seqKey)
                             ? NumberGenerator.get(UUID.fromString(seqKey))
@@ -184,7 +187,6 @@ public abstract class IncomingCreditNote_Base
             }
         }
     }
-
 
     /**
      * Auto complete4 petty cash receipt.

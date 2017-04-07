@@ -588,6 +588,8 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
                     .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue("Status", CISales.OrderOutboundStatus.Open.key)
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
                                     + "Incoming Invoice from.");
 
@@ -606,7 +608,10 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
-                                    + "to create Incoming Invoice from.");
+                                    + "to create Incoming Invoice from.")
+                    .addDefaultValue("Type", CISales.ServiceOrderOutbound.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.ServiceOrderOutbound.getType().getName())
+                    .addDefaultValue("Status", CISales.ServiceOrderOutboundStatus.Open.key);
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -623,7 +628,10 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromRecievingTicketAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of RecievingTicket to create "
-                                    + "Incoming Invoice from.");
+                                    + "Incoming Invoice from.")
+                    .addDefaultValue("Type", CISales.RecievingTicket.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.RecievingTicketStatus.getType().getName())
+                    .addDefaultValue("Status", CISales.RecievingTicketStatus.Open.key);
 
     /** See description. */
     @EFapsSysConfAttribute
