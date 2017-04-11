@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@
         <field name="createDocument">
             <property name="Label">Sales_PaymentCashPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument"
@@ -60,7 +61,7 @@
         </field>
         <field name="createDocumentDesc">
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocumentDesc.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -68,7 +69,7 @@
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
@@ -77,7 +78,7 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Sales_PaymentCashPaymentTable.payment4Pay.Label</property>
@@ -86,6 +87,7 @@
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
@@ -95,7 +97,7 @@
         <field name="paymentDiscount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
@@ -104,7 +106,7 @@
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCashPaymentTable.paymentAmountDesc.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -115,17 +117,23 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentCashPaymentTable.accountLink.Label</property>
         </field>
+        <field name="accountLink4Draft">
+            <property name="ModeEdit">NONE</property>
+            <property name="Select">linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentTable.accountLink4Draft.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                name="Sales_PaymentDepositPaymentTable.accountLink4Draft.UI_ACCESSCHECK"
+                method="check4Status"
+                event="UI_ACCESSCHECK">
+                <property name="StatusGroup01">Sales_PaymentDepositStatus</property>
+                <property name="Status01">Draft</property>
+                <property name="StatusGroup02">Sales_PaymentStatus</property>
+                <property name="Status02">Pending</property>
+            </trigger>
+        </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Sales_Payment/CurrencyLink.Label</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
-            <property name="ModeEdit">NONE</property>
         </field>
     </definition>
 </ui-table>

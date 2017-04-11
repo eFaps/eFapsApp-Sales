@@ -34,6 +34,8 @@
             <validate program="org.efaps.esjp.common.uitable.Validate" method="validateStatus4Selected">
                 <property name="StatusGroup01">Sales_PaymentDepositStatus</property>
                 <property name="Status01">Draft</property>
+                <property name="StatusGroup02">Sales_PaymentCheckStatus</property>
+                <property name="Status02">Draft</property>
             </validate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 name="Sales_PaymentDocumentMyDesk_Menu_Action_SetOpen.UI_ACCESSCHECK"
