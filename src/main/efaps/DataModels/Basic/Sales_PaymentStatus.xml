@@ -15,20 +15,19 @@
  limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d8ce44f7-d393-4df4-a049-48ba52640b79</uuid>
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>94d57625-8a26-4166-af39-9766a1abea2b</uuid>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentIOAbstract</name>
-        <parent>ERP_PaymentDocumentAbstract</parent>
-        <purpose abstract="true" />
-        <attribute>
-            <name>ConciliationPositionLink</name>
-            <type>Link</type>
-            <typelink>Sales_ConciliationPosition</typelink>
-            <sqltable>ERP_PaymentDocumentSQLTable</sqltable>
-            <sqlcolumn>CONPOSID</sqlcolumn>
-        </attribute>
+        <name>Sales_PaymentStatus</name>
+        <parent>Sales_EventScheduleStatus</parent>
+        <status key="Pending">
+            <description>The Payment is pending. The transaction was not created yet.</description>
+        </status>
+        <status key="Executed">
+            <description>The Payment was executed. The transaction was created</description>
+        </status>
     </definition>
-</datamodel-type>
+</datamodel-statusgroup>

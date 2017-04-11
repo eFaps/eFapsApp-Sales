@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,23 +16,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>367bf4d8-d082-4eb6-9afc-88917b876ddb</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Payment</name>
         <parent>ERP_Document2PaymentDocumentAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_PaymentStatus</typelink>
+            <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+        </attribute>
         <attribute>
             <name>CreateDocument</name>
             <type>Link</type>
@@ -46,6 +46,13 @@
             <typelink>ERP_PaymentDocumentAbstract</typelink>
             <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AccountLink</name>
+            <type>Link</type>
+            <typelink>Sales_AccountAbstract</typelink>
+            <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TMPID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

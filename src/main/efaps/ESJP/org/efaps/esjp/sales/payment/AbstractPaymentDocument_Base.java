@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -54,12 +56,14 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.Command;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIAttribute;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -95,6 +99,7 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.WarningUtil;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.Transaction;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.Conciliation;
@@ -233,6 +238,37 @@ public abstract class AbstractPaymentDocument_Base
         return createdDoc;
     }
 
+    @Override
+    protected void addStatus2DocCreate(final Parameter _parameter,
+                                       final Insert _insert,
+                                       final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        Status status = null;
+        //  first check if set via special SystemConfiguration
+        final Type type = getType4DocCreate(_parameter);
+        if (type != null) {
+            status = getStatus4Create();
+        }
+        if (status == null) {
+            super.addStatus2DocCreate(_parameter, _insert, _createdDoc);
+        }  else {
+            _insert.add(type.getStatusAttribute(), status);
+        }
+    }
+
+    /**
+     * Gets the status for create.
+     *
+     * @return the status for create
+     * @throws EFapsException on error
+     */
+    protected Status getStatus4Create()
+        throws EFapsException
+    {
+        return null;
+    }
+
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return new Return
@@ -247,6 +283,100 @@ public abstract class AbstractPaymentDocument_Base
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Edits the doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the edited doc
+     * @throws EFapsException on error
+     */
+    protected EditedDoc editDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc ret = new EditedDoc(_parameter.getInstance());
+        final Update update = new Update(_parameter.getInstance());
+
+        final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Note.name));
+        update.add(CISales.PaymentDocumentAbstract.Note, note);
+        ret.getValues().put(CISales.PaymentDocumentAbstract.Note.name, note);
+
+        final String amount = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Amount.name));
+        update.add(CISales.PaymentDocumentAbstract.Amount, amount);
+        ret.getValues().put(CISales.PaymentDocumentAbstract.Amount.name, amount);
+
+        final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Date.name));
+        update.add(CISales.PaymentDocumentAbstract.Date, date);
+        ret.getValues().put(CISales.PaymentDocumentAbstract.Date.name, date);
+
+        final String dueDate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.DueDate.name));
+        if (dueDate != null) {
+            update.add(CISales.PaymentDocumentAbstract.DueDate, dueDate);
+            ret.getValues().put(CISales.PaymentDocumentAbstract.DueDate.name, dueDate);
+        }
+
+        final String revision = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Revision.name));
+        if (revision != null) {
+            update.add(CISales.PaymentDocumentAbstract.Revision, revision);
+            ret.getValues().put(CISales.PaymentDocumentAbstract.Revision.name, revision);
+        }
+
+        final String currencyLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.CurrencyLink.name));
+        update.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink);
+        ret.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name, currencyLink);
+        update.add(CISales.PaymentDocumentAbstract.CurrencyLink, Currency.getBaseCurrency());
+        ret.getValues().put(CISales.PaymentDocumentAbstract.CurrencyLink.name, Currency.getBaseCurrency());
+
+        final String currencyLink4Account = getRateCurrencyLink4Account(_parameter);
+        if (currencyLink4Account != null) {
+            update.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink4Account);
+            ret.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name,
+                            Long.parseLong(currencyLink4Account));
+            final Instance baseCurrInst = Currency.getBaseCurrency();
+            update.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
+            ret.getValues().put(CISales.PaymentDocumentAbstract.CurrencyLink.name,
+                            baseCurrInst.getId());
+        }
+
+        final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Contact.name));
+        if (InstanceUtils.isValid(Instance.get(contact))) {
+            update.add(CISales.PaymentDocumentAbstract.Contact, Instance.get(contact));
+            ret.getValues().put(CISales.PaymentDocumentAbstract.Contact.name, Instance.get(contact));
+        }
+
+        final Object rateObj = _parameter.getParameterValue("rate");
+        if (rateObj != null) {
+            update.add(CISales.PaymentDocumentAbstract.Rate, getRateObject(_parameter));
+            ret.getValues().put(CISales.PaymentDocumentAbstract.Rate.name, getRateObject(_parameter));
+        }
+        update.execute();
+        return ret;
+    }
+
+    /**
+     * Creates the document desc field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return createDocumentDescFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (InstanceUtils.isValid(_parameter.getInstance())) {
+            final DocPaymentInfo info = new DocPaymentInfo(_parameter.getInstance());
+            ret.put(ReturnValues.VALUES, info.getInfoField());
         }
         return ret;
     }
@@ -386,8 +516,8 @@ public abstract class AbstractPaymentDocument_Base
      * @param _createdDoc doc
      * @throws EFapsException on error
      */
-    protected void executeAutomation(final Parameter _parameter,
-                                     final CreatedDoc _createdDoc)
+    public void executeAutomation(final Parameter _parameter,
+                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final Instance paymentDocInst = _createdDoc.getInstance();
@@ -750,17 +880,7 @@ public abstract class AbstractPaymentDocument_Base
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
 
             final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
-            final Insert transIns;
-            if (getType4DocCreate(_parameter) != null
-                        && getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
-                    || _parameter.getInstance() != null
-                        && _parameter.getInstance().isValid()
-                        && _parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
-                transIns = new Insert(CISales.TransactionInbound);
-            } else {
-                transIns = new Insert(CISales.TransactionOutbound);
-            }
-
+            addStatus4PaymentCreate(_parameter, _createdDoc, payInsert);
             if (createDocument.length > i && createDocument[i] != null) {
                 final Instance inst = Instance.get(createDocument[i]);
                 if (inst.isValid()) {
@@ -772,7 +892,6 @@ public abstract class AbstractPaymentDocument_Base
             }
             if (paymentAmount.length > i && paymentAmount[i] != null) {
                 payInsert.add(CISales.Payment.Amount, paymentAmount[i]);
-                transIns.add(CISales.TransactionAbstract.Amount, paymentAmount[i]);
             }
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
             payInsert.add(CISales.Payment.CurrencyLink,
@@ -785,17 +904,38 @@ public abstract class AbstractPaymentDocument_Base
 
             paymentInsts.add(payInsert.getInstance());
 
-            transIns.add(CISales.TransactionAbstract.CurrencyId,
-                            _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
-            transIns.add(CISales.TransactionAbstract.Payment, payInsert.getId());
-            transIns.add(CISales.TransactionAbstract.Date,
-                            _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
-            transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
             _createdDoc.getValues().put(CISales.TransactionAbstract.Account.name,
                             _parameter.getParameterValue("account"));
-            transIns.execute();
+
+            new Transaction().createTransaction4Payment(_parameter, _createdDoc, payInsert.getInstance(),
+                            NumberFormatter.parse(paymentAmount[i]));
         }
         afterPaymentCreate(_parameter, paymentInsts);
+    }
+
+    /**
+     * Adds the status for payment create.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @param _payInsert the pay insert
+     * @throws EFapsException on error
+     */
+    protected void addStatus4PaymentCreate(final Parameter _parameter,
+                                           final CreatedDoc _createdDoc,
+                                           final Insert _payInsert)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_createdDoc.getInstance());
+        print.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
+        print.executeWithoutAccessCheck();
+        final Status status = Status.get(print.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
+
+        if ("Draft".equals(status.getKey())) {
+            _payInsert.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+        } else {
+            _payInsert.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Executed));
+        }
     }
 
     /**
@@ -872,43 +1012,6 @@ public abstract class AbstractPaymentDocument_Base
         _createdDoc.getValues().put(CISales.TransactionAbstract.Account.name,
                         _parameter.getParameterValue("account"));
         transIns.execute();
-
-    }
-
-    /**
-     * Creates the document tax.
-     *
-     * @param _parameter Parameter as passed by the eFaps API
-     * @param _createdDoc the created doc
-     * @throws EFapsException on error
-     */
-    protected void createDocumentTax(final Parameter _parameter,
-                                     final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        _parameter.getParameterValues("amount4DocCreate");
-        _parameter.getParameterValues("option4DocCreate");
-
-        _createdDoc.getValues().get(
-                        getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
-        _createdDoc.getValues().get(
-                        getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name));
-
-        for (int i = 0; i < getPaymentCount(_parameter); i++) {
-//            if (option4Create != null && amount4Create != null) {
-//                if (((Long) curId).equals(rateCurId) && isIncomingInvoiceValid(_parameter, _createdDoc, i)
-//                            && parseBigDecimal(amount4Create[i]).compareTo(BigDecimal.ZERO) > 0) {
-//                    final String valueDoc = option4Create[i];
-//                    if ("IncomingRetention".equalsIgnoreCase(valueDoc)) {
-//                        _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
-//                        new IncomingRetention().create4Doc(_parameter, _createdDoc, i);
-//                    } else if ("IncomingDetraction".equalsIgnoreCase(valueDoc)) {
-//                        _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
-//                        new IncomingDetraction().create4Doc(_parameter, _createdDoc, i);
-//                    }
-//                }
-//            }
-        }
     }
 
     /**
@@ -953,6 +1056,60 @@ public abstract class AbstractPaymentDocument_Base
           throws EFapsException
     {
         // used by implementation
+    }
+
+    /**
+     * Update payments. Must only possible
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _editedDoc the edited doc
+     * @throws EFapsException on error
+     */
+    protected void updatePayment(final Parameter _parameter,
+                                 final EditedDoc _editedDoc)
+        throws EFapsException
+    {
+        final String[] createDocument = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.Payment.CreateDocument.name));
+        final String[] paymentAmount = _parameter.getParameterValues("paymentAmount");
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _editedDoc.getInstance());
+        queryBldr.addWhereAttrEqValue(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+        final Iterator<Instance> paymentIter = queryBldr.getQuery().execute().iterator();
+
+        for (int i = 0; i < getPaymentCount(_parameter); i++) {
+            final Update update;
+            if (paymentIter.hasNext()) {
+                update = new Update(paymentIter.next());
+            } else {
+                update = new Insert(getPaymentType(_parameter, _editedDoc));
+                update.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+            }
+
+            if (createDocument.length > i && createDocument[i] != null) {
+                final Instance inst = Instance.get(createDocument[i]);
+                if (inst.isValid()) {
+                    update.add(CISales.Payment.CreateDocument, inst.getId());
+                    update.add(CISales.Payment.RateCurrencyLink,
+                                    getNewDocPaymentInfo(_parameter, inst).getRateCurrencyInstance());
+                }
+            }
+            if (paymentAmount.length > i && paymentAmount[i] != null) {
+                update.add(CISales.Payment.Amount, paymentAmount[i]);
+            }
+            update.add(CISales.Payment.TargetDocument, _editedDoc.getInstance().getId());
+            update.add(CISales.Payment.CurrencyLink,
+                            _editedDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
+            update.add(CISales.Payment.Date,
+                            _editedDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
+            update.add(CISales.Payment.Rate, getRateObject(_parameter, "paymentRate", i));
+            update.add(CISales.Payment.AccountLink, _parameter.getParameterValue("account"));
+            update.execute();
+        }
+        while (paymentIter.hasNext()) {
+            new Delete(paymentIter.next()).execute();
+        }
     }
 
     /**
@@ -1069,10 +1226,37 @@ public abstract class AbstractPaymentDocument_Base
                     _queryBldr.addWhereAttrEqValue(CISales.AccountCashDesk.Activation, pactivt.toArray());
                 }
             };
+
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                super.updatePositionList(_parameter, _values);
+                if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE)) && InstanceUtils.isKindOf(
+                                _parameter.getInstance(), CISales.PaymentDocumentIOAbstract)) {
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                    queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance());
+                    queryBldr.addWhereAttrEqValue(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+                    final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+                    multi.addAttribute(CISales.Payment.AccountLink);
+                    multi.executeWithoutAccessCheck();
+                    while (multi.next()) {
+                        final Long accountid = multi.getAttribute(CISales.Payment.AccountLink);
+                        if (accountid != null) {
+                            final Optional<DropDownPosition> opt = _values.stream().filter(e -> accountid == e
+                                            .getValue()).findFirst();
+                            if (opt.isPresent()) {
+                                opt.get().setSelected(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         };
         return field.getOptionListFieldValue(_parameter);
     }
-
 
     /**
      * Update fields4 absolute amount.

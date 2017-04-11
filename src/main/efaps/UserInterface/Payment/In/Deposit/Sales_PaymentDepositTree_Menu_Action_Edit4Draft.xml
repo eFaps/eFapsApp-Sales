@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2017 The eFaps Team
 
@@ -18,24 +17,25 @@
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>27ba7d74-0813-45b1-b8d6-4c82ae71bc38</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>51fa8b6c-e8f3-4e31-b556-a037280a2b32</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDepositTree_Menu_Action_Edit</name>
+        <name>Sales_PaymentDepositTree_Menu_Action_Edit4Draft</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_PaymentDepositForm</form>
-            <execute method="edit" program="org.efaps.esjp.sales.payment.PaymentDeposit" >
+            <form>Sales_PaymentDeposit4EditDraftForm</form>
+            <execute method="edit4Draft" program="org.efaps.esjp.sales.payment.PaymentDeposit">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_PaymentDepositTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Status">Open</property>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_PaymentDepositTree_Menu_Action_Edit4Draft.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Draft</property>
             </trigger>
         </target>
         <property name="Target">modal</property>

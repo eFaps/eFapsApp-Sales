@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,19 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6ba5c3d8-d4d1-4f6f-a4a3-17afb38e8ab9</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDeposit</name>
@@ -38,7 +30,8 @@
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Sales_PaymentDeposit.Status.RANGE_VALUE" event="RANGE_VALUE" />
+                name="Sales_PaymentDeposit.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
         </attribute>
     </definition>
 </datamodel-type>

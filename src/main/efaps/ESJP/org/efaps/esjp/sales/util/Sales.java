@@ -1005,14 +1005,49 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PAYMENT_CREDITCARDACTIVATE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENT_CREDITCARD_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.CreditCard.Activate")
                     .description("Deactivate the automatic generation of a code for every Payment Documents.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PAYMENT_DETRACTIONACTIVATE = new BooleanSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_CREDITCARD_CREATESTATUS = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.CreditCard.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENT_CREDITCARD_PAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.CreditCard.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_DEBITCARD_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.DebitCard.Activate")
+                    .description("Deactivate the automatic generation of a code for every Payment Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PAYMENT_DEBITCARD_CREATESTATUS = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.DebitCard.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENT_DEBITCARD_PAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.DebitCard.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_DETRACTION_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Detraction.Activate")
                     .defaultValue(true)
@@ -1020,7 +1055,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PAYMENT_RETENTIONACTIVATE = new BooleanSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_DETRACTION_CREATESTATUS = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Detraction.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENT_DETRACTION_PAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Detraction.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_RETENTION_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Retention.Activate")
                     .defaultValue(true)
@@ -1028,9 +1077,44 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PAYMENT_RETENTION_CREATESTATUS = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Retention.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENT_RETENTION_PAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Retention.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_CASH_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Cash.Activate")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENT_CASH_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Cash.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PAYMENT_CASH_CREATESTATUS = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Cash.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_CHECK_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.in.Check.Activate")
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1042,16 +1126,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENT_CREDITCARD_PAYABLE = new PropertiesSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_CHECK_CREATESTATUS = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.in.CreditCard.PayableDocuments")
-                    .description("Properties to define the Query for Documents that can be payed.");
+                    .key(Sales.BASE + "payment.in.Check.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENT_DEBITCARD_PAYABLE = new PropertiesSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENT_DEPOSIT_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.in.DebitCard.PayableDocuments")
+                    .key(Sales.BASE + "payment.in.Deposit.Activate")
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1063,10 +1147,10 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENT_DETRACTION_PAYABLE = new PropertiesSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_DEPOSIT_CREATESTATUS = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.in.Detraction.PayableDocuments")
-                    .description("Properties to define the Query for Documents that can be payed.");
+                    .key(Sales.BASE + "payment.in.Deposit.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1077,16 +1161,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENT_INTERNAL_PAYABLE = new PropertiesSysConfAttribute()
+    public static final StringSysConfAttribute PAYMENT_INTERNAL_CREATESTATUS = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.in.Internal.PayableDocuments")
-                    .description("Properties to define the Query for Documents that can be payed.");
+                    .key(Sales.BASE + "payment.in.Internal.Status4Create")
+                    .description("Possiblity to set the create Status for PaymentDeposit.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENT_RETENTION_PAYABLE = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute PAYMENT_INTERNAL_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.in.Retention.PayableDocuments")
+                    .key(Sales.BASE + "payment.in.Internal.PayableDocuments")
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */

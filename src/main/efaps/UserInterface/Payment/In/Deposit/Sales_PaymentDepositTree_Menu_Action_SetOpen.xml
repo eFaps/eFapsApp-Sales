@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2017 The eFaps Team
 
@@ -15,33 +14,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>27ba7d74-0813-45b1-b8d6-4c82ae71bc38</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>42fc9345-ae11-412e-baaf-10a8be0791d7</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDepositTree_Menu_Action_Edit</name>
+        <name>Sales_PaymentDepositTree_Menu_Action_SetOpen</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_PaymentDepositForm</form>
-            <execute method="edit" program="org.efaps.esjp.sales.payment.PaymentDeposit" >
-                <property name="JasperReport">Sales_PaymentDocumentReport</property>
-                <property name="Mime">pdf</property>
-            </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_PaymentDepositTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            <execute index="0" method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
                 <property name="Status">Open</property>
+            </execute>
+            <execute index="1" method="createTransaction4PaymentDocument" program="org.efaps.esjp.sales.Transaction" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_PaymentDepositTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Draft</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="TargetShowFile">true</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">950</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

@@ -57,10 +57,12 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.payment.TransferDocument;
 import org.efaps.esjp.ui.html.Table;
@@ -100,6 +102,103 @@ public abstract class Transaction_Base
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /** Creates the transaction for payment.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the instance
+     * @throws EFapsException on error
+     */
+    public Return createTransaction4PaymentDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        List<Instance> instances = new ArrayList<>();
+        if (InstanceUtils.isKindOf(_parameter.getInstance(), CISales.PaymentDocumentIOAbstract)) {
+            instances.add(_parameter.getInstance());
+        } else {
+            instances = getSelectedInstances(_parameter);
+        }
+        for (final Instance inst : instances) {
+            final EditedDoc editedDoc = new EditedDoc(inst);
+            final PrintQuery print = new PrintQuery(inst);
+            print.addAttribute(CISales.PaymentDocumentIOAbstract.RateCurrencyLink,
+                            CISales.PaymentDocumentAbstract.Date);
+            print.executeWithoutAccessCheck();
+            editedDoc.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name,
+                            print.getAttribute(CISales.PaymentDocumentIOAbstract.RateCurrencyLink));
+            editedDoc.getValues().put(CISales.PaymentDocumentAbstract.Date.name,
+                            print.getAttribute(CISales.PaymentDocumentIOAbstract.Date));
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, inst);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.Payment.Amount, CISales.Payment.AccountLink);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                editedDoc.getValues().put(CISales.TransactionAbstract.Account.name,
+                                multi.getAttribute(CISales.Payment.AccountLink));
+                final Update update = new Update(multi.getCurrentInstance());
+                update.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Executed));
+                update.add(CISales.Payment.AccountLink, (Object) null);
+                update.execute();
+                createTransaction4Payment(_parameter, editedDoc, multi.getCurrentInstance(),
+                                multi.getAttribute(CISales.Payment.Amount));
+            }
+            new AbstractPaymentDocument() { }.executeAutomation(_parameter, editedDoc);
+        }
+        return new Return();
+    }
+
+    /**
+     * Creates the transaction for payment.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @param _paymentInstance the payment instance
+     * @param _amount the amount
+     * @return the instance
+     * @throws EFapsException on error
+     */
+    public Instance createTransaction4Payment(final Parameter _parameter,
+                                              final CreatedDoc _createdDoc,
+                                              final Instance _paymentInstance,
+                                              final BigDecimal _amount)
+        throws EFapsException
+    {
+        Instance ret = null;
+        if (InstanceUtils.isKindOf(_createdDoc.getInstance(), CISales.PaymentDocumentIOAbstract)) {
+            final PrintQuery print = new PrintQuery(_paymentInstance);
+            print.addAttribute(CISales.Payment.Status);
+            print.executeWithoutAccessCheck();
+            final Status status = Status.get(print.<Long>getAttribute(CISales.Payment.Status));
+
+            if (Status.find(CISales.PaymentStatus.Executed).equals(status)) {
+                final Insert transIns;
+                if (InstanceUtils.isKindOf(_createdDoc.getInstance(), CISales.PaymentDocumentAbstract)) {
+                    transIns = new Insert(CISales.TransactionInbound);
+                } else {
+                    transIns = new Insert(CISales.TransactionOutbound);
+                }
+                transIns.add(CISales.TransactionAbstract.CurrencyId, _createdDoc.getValues().get(
+                                CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
+                transIns.add(CISales.TransactionAbstract.Payment, _paymentInstance);
+                transIns.add(CISales.TransactionAbstract.Amount, _amount);
+                transIns.add(CISales.TransactionAbstract.Date, _createdDoc.getValues().get(
+                                CISales.PaymentDocumentAbstract.Date.name));
+                transIns.add(CISales.TransactionAbstract.Account,
+                                _createdDoc.getValues().get(CISales.TransactionAbstract.Account.name));
+                transIns.execute();
+                ret = transIns.getInstance();
+            } else {
+                final Update update = new Update(_paymentInstance);
+                update.add(CISales.Payment.AccountLink,
+                                _createdDoc.getValues().get(CISales.TransactionAbstract.Account.name));
+                update.executeWithoutTrigger();
+            }
         }
         return ret;
     }
@@ -650,7 +749,7 @@ public abstract class Transaction_Base
             try {
                 cost = (BigDecimal) formater.parse(_cost);
             } catch (final ParseException e) {
-                LOG.error("Catched", e);
+                Transaction_Base.LOG.error("Catched", e);
             }
 
             if (cost.compareTo(BigDecimal.ZERO) != 0) {
@@ -670,7 +769,7 @@ public abstract class Transaction_Base
             try {
                 amount = (BigDecimal) formater.parse(_amount);
             } catch (final ParseException e) {
-                LOG.error("Catched", e);
+                Transaction_Base.LOG.error("Catched", e);
             }
             final Insert transInsertAmount = new Insert(_transactionType);
             transInsertAmount.add(CISales.TransactionAbstract.Amount, amount);

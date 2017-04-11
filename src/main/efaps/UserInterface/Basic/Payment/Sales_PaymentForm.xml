@@ -66,6 +66,9 @@
         <field name="amount">
             <property name="Attribute">Amount</property>
         </field>
+          <field name="status">
+            <property name="Attribute">Status</property>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>

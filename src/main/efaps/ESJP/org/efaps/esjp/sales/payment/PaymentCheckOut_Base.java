@@ -81,7 +81,6 @@ public abstract class PaymentCheckOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        createDocumentTax(_parameter, createdDoc);
         connect2CheckBook(_parameter, createdDoc);
         executeAutomation(_parameter, createdDoc);
         final Return ret = new Return();
@@ -148,7 +147,7 @@ public abstract class PaymentCheckOut_Base
         final Instance checkBookInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_PaymentCheckOutForm.checkBook.name));
         if (checkBookInst.isValid()) {
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final List<Map<String, String>> list = new ArrayList<>();
             final PrintQuery print = new PrintQuery(checkBookInst);
             final SelectBuilder selAcc = SelectBuilder.get().linkto(CISales.CheckBook.AccountLink);
             final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
@@ -185,7 +184,7 @@ public abstract class PaymentCheckOut_Base
                     .append("','").append(number).append("'");
             }
             nameArr.append(")");
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put(CIFormSales.Sales_PaymentCheckOutForm.name.name, nameArr.toString());
 
             final Instance baseInst = Currency.getBaseCurrency();
@@ -223,7 +222,7 @@ public abstract class PaymentCheckOut_Base
 
         boolean band = false;
 
-        final List<Instance> instances = new ArrayList<Instance>();
+        final List<Instance> instances = new ArrayList<>();
         final MultiPrint multiPrint = new MultiPrint() {
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
@@ -294,9 +293,9 @@ public abstract class PaymentCheckOut_Base
             values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
                             PaymentCheckOut_Base.PAYMENT);
         } else {
-            values = new HashMap<Instance, String>();
+            values = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(PaymentCheckOut_Base.PAYMENT, values);
-            final Map<Instance, Instance> paymentList = new HashMap<Instance, Instance>();
+            final Map<Instance, Instance> paymentList = new HashMap<>();
 
             final List<Instance> paymentceListPos = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
             final MultiPrintQuery priceListMulti = new MultiPrintQuery(paymentceListPos);
@@ -322,7 +321,7 @@ public abstract class PaymentCheckOut_Base
 
             multi.addSelect(selOrderOutboundName, selPaymentOid, selCreated);
             multi.execute();
-            final Map<Instance, String> derivadedDocumentPayment = new HashMap<Instance, String>();
+            final Map<Instance, String> derivadedDocumentPayment = new HashMap<>();
             while (multi.next()) {
                 if (multi.<String>getSelect(selPaymentOid) != null) {
                     final Instance prodInst = Instance.get(multi.<String>getSelect(selPaymentOid));
@@ -362,9 +361,9 @@ public abstract class PaymentCheckOut_Base
             values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
                             PaymentCheckOut_Base.ACCOUNT);
         } else {
-            values = new HashMap<Instance, String>();
+            values = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(PaymentCheckOut_Base.ACCOUNT, values);
-            final Map<Instance, Instance> paymentList = new HashMap<Instance, Instance>();
+            final Map<Instance, Instance> paymentList = new HashMap<>();
 
             final List<Instance> paymentceListPos = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
             final MultiPrintQuery priceListMulti = new MultiPrintQuery(paymentceListPos);
@@ -389,7 +388,7 @@ public abstract class PaymentCheckOut_Base
 
             multi.addSelect(selAccountName, selPaymentOid);
             multi.execute();
-            final Map<Instance, String> derivadedAccountPayment = new HashMap<Instance, String>();
+            final Map<Instance, String> derivadedAccountPayment = new HashMap<>();
             while (multi.next()) {
                 final Instance paymentInst = Instance.get(multi.<String>getSelect(selPaymentOid));
                 if (multi.<String>getSelect(selPaymentOid) != null) {
