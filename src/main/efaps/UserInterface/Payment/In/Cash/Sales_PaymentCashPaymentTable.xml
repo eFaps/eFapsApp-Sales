@@ -25,22 +25,27 @@
         <name>Sales_PaymentCashPaymentTable</name>
         <field name="date">
             <property name="Attribute">Date</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_Payment/Date.Label</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createDocumentType">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].type.label</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocumentType.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createDocument4Read">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].attribute[Name]</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocument.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createDocument">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].attribute[Name]</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -60,11 +65,16 @@
                 program="org.efaps.esjp.sales.payment.PaymentCash"/>
         </field>
         <field name="createDocumentDesc">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocumentDesc.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
+                method="createDocumentDescFieldValue"
+                name="Sales_PaymentCashPaymentTable.createDocumentDesc.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
@@ -114,24 +124,26 @@
         <field name="accountLink">
             <property name="SelectAlternateOID">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].oid</property>
             <property name="Select">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_PaymentCashPaymentTable.accountLink.Label</property>
         </field>
         <field name="accountLink4Draft">
             <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[AccountLink].attribute[Name]</property>
             <property name="Label">Sales_PaymentTable.accountLink4Draft.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 name="Sales_PaymentDepositPaymentTable.accountLink4Draft.UI_ACCESSCHECK"
                 method="check4Status"
                 event="UI_ACCESSCHECK">
-                <property name="StatusGroup01">Sales_PaymentDepositStatus</property>
+                <property name="StatusGroup01">Sales_PaymentCashStatus</property>
                 <property name="Status01">Draft</property>
                 <property name="StatusGroup02">Sales_PaymentStatus</property>
                 <property name="Status02">Pending</property>
             </trigger>
         </field>
         <field name="currencyLink">
+            <property name="ModeEdit">NONE</property>
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Sales_Payment/CurrencyLink.Label</property>
         </field>

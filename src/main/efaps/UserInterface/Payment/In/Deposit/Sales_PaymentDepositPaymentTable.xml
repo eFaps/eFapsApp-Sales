@@ -136,6 +136,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[AccountLink].attribute[Name]</property>
             <property name="Label">Sales_PaymentTable.accountLink4Draft.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 name="Sales_PaymentDepositPaymentTable.accountLink4Draft.UI_ACCESSCHECK"
                 method="check4Status"
