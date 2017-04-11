@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>28873713-e35d-4d81-b20a-1438cd9ad0ee</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8234 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentOut_Report</name>

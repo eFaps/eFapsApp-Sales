@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>aa2b0f54-cac4-4227-ac00-207f2c65b5d4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8122 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCheckTree_Menu_Action_AddDoc</name>

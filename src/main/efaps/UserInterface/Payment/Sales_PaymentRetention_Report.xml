@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d8a6879c-033f-4f6a-b3ca-ce34d73ec9bd</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8234 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentRetention_Report</name>

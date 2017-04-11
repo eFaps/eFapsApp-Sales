@@ -23,7 +23,7 @@
 
     <uuid>84529a6d-a0fc-4fbd-888e-0ab6ceecf1df</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DatedCheckDerivadedOutMyDesk</name>

@@ -22,7 +22,7 @@
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dac4f1ba-987c-4fbd-9974-6fc9f9de47fe</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9163 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_BulkPayment2PaymentDocumentTree_Menu_Action</name>

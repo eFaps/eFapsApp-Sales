@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4e7e8d62-3cae-4f5e-87ad-783c6e15f3c4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9115 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_BulkPaymentDetractionTree_Menu_Action_DetractionReport</name>
