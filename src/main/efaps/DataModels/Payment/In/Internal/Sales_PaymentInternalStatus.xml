@@ -23,6 +23,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentInternalStatus</name>
         <parent>Sales_PaymentDocumentStatus</parent>
+        <status key="Draft">
+            <description>Deposit is a draft.</description>
+        </status>
         <status key="Open">
             <description>Check is unused.</description>
         </status>
@@ -31,9 +34,6 @@
         </status>
         <status key="Canceled">
             <description>Check was canceled.</description>
-        </status>
-        <status key="Booked">
-            <description>Check was booked.</description>
         </status>
     </definition>
 </datamodel-statusgroup>
