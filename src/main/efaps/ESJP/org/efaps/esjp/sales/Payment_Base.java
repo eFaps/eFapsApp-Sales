@@ -178,7 +178,7 @@ public abstract class Payment_Base
                 insert.execute();
                 final Instance paymentInst = insert.getInstance();
 
-                CIType transType;
+                final CIType transType;
                 if (out) {
                     transType = CISales.TransactionOutbound;
                 } else {
@@ -365,7 +365,7 @@ public abstract class Payment_Base
             } else {
                 multi.executeWithoutAccessCheck();
             }
-            final Set<String> oids = new HashSet<String>();
+            final Set<String> oids = new HashSet<>();
             while (multi.next()) {
                 if (multi.isList4Select(amountSel.toString())) {
                     final List<BigDecimal> list = multi.<List<BigDecimal>>getSelect(amountSel);
@@ -375,7 +375,7 @@ public abstract class Payment_Base
                     final Iterator<Long> currIter = currList.iterator();
                     final Iterator<String> oidIter = oidList.iterator();
                     for (final BigDecimal pos : list) {
-                        BigDecimal temp;
+                        final BigDecimal temp;
                         final Long currId = currIter.next();
                         final String oid = oidIter.next();
                         if (!oids.contains(oid)) {
@@ -441,22 +441,22 @@ public abstract class Payment_Base
                                                    final boolean _updateRate)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         final String[] amounts = _parameter.getParameterValues("amount");
         final String[] currencies = _parameter.getParameterValues("currency");
 
         final DecimalFormat formatter = NumberFormatter.get().getTwoDigitsFormatter();
 
-        final Map<String, BigDecimal> curr2Rate = new HashMap<String, BigDecimal>();
-        final Map<String, String> curr2Symb = new HashMap<String, String>();
+        final Map<String, BigDecimal> curr2Rate = new HashMap<>();
+        final Map<String, String> curr2Symb = new HashMap<>();
 
         final OpenAmount openAmount = (OpenAmount) Context.getThreadContext().getSessionAttribute(
                         Payment_Base.OPENAMOUNT_SESSIONKEY);
         BigDecimal openTotalAmount = openAmount.getCrossTotal();
         final PriceUtil priceUtil = new PriceUtil();
         for (int i = 0; i < amounts.length; i++) {
-            BigDecimal amount;
+            final BigDecimal amount;
             try {
                 amount = amounts[i].length() < 1
                                 ? BigDecimal.ZERO.setScale(2) : (BigDecimal) formatter.parse(amounts[i]);
@@ -519,7 +519,7 @@ public abstract class Payment_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, String> map = new HashMap<>();
         retVal.put(ReturnValues.VALUES, map);
 
         final Instance viewOid = Instance.get(_parameter.getParameterValue("selectedRow"));
@@ -595,7 +595,7 @@ public abstract class Payment_Base
                 final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
                 final String statusStr = (String) properties.get("Status");
                 final String typesStr = (String) properties.get("Types");
-                final List<Long> idStatus = new ArrayList<Long>();
+                final List<Long> idStatus = new ArrayList<>();
                 final String[] status = statusStr.split(";");
                 final String[] types = typesStr.split(";");
                 for (final String st : status) {

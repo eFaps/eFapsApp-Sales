@@ -25,7 +25,6 @@
         <!-- childs -->
         <childs>
             <child>Sales_PaymentRetentionOutTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentDocumentTree_Renew</child>
             <child>Sales_PaymentRetentionOutTree_Menu_Action_SetCanceled</child>
             <child>Sales_PaymentRetentionOutTree_Menu_Action_Settle</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>

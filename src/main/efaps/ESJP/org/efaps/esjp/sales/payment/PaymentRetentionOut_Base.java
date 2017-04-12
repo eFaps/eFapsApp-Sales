@@ -48,6 +48,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.payment.DocPaymentInfo_Base.AccountInfo;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -80,7 +81,36 @@ public abstract class PaymentRetentionOut_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
 
+    @Override
+    protected Status getStatus4Create()
+        throws EFapsException
+    {
+        Status ret = super.getStatus4Create();
+        if (Sales.PAYMENTOUT_RETENTION_CREATESTATUS.exists()) {
+            ret = Status.find(CISales.PaymentRetentionOutStatus, Sales.PAYMENTOUT_RETENTION_CREATESTATUS.get());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit4Draft(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePayment(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         return ret;
     }
 

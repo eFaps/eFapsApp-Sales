@@ -19,11 +19,14 @@ package org.efaps.esjp.sales.payment;
 
 import java.io.File;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -49,6 +52,36 @@ public abstract class PaymentDepositOut_Base
         executeAutomation(_parameter, createdDoc);
         final Return ret = new Return();
         final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected Status getStatus4Create()
+        throws EFapsException
+    {
+        Status ret = super.getStatus4Create();
+        if (Sales.PAYMENTOUT_DEPOSIT_CREATESTATUS.exists()) {
+            ret = Status.find(CISales.PaymentDepositOutStatus, Sales.PAYMENTOUT_DEPOSIT_CREATESTATUS.get());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit4Draft(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePayment(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

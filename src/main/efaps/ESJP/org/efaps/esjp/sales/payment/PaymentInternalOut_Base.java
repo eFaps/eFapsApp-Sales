@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 
@@ -59,6 +60,36 @@ public abstract class PaymentInternalOut_Base
         executeAutomation(_parameter, createdDoc);
         final Return ret = new Return();
         final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected Status getStatus4Create()
+        throws EFapsException
+    {
+        Status ret = super.getStatus4Create();
+        if (Sales.PAYMENTOUT_INTERNAL_CREATESTATUS.exists()) {
+            ret = Status.find(CISales.PaymentInternalOutStatus, Sales.PAYMENTOUT_INTERNAL_CREATESTATUS.get());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit4Draft(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePayment(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

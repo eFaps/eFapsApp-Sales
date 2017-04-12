@@ -24,7 +24,6 @@
         <name>Sales_PaymentCreditCardTree_Menu_Action</name>
         <childs>
             <child>Sales_PaymentCreditCardTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentDocumentTree_Renew</child>
             <child>Sales_PaymentCreditCardTree_Menu_Action_SetCanceled</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
