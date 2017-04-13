@@ -17,40 +17,29 @@
 
 package org.efaps.esjp.sales.payment;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
-import org.efaps.admin.common.SystemConfiguration;
+import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.event.EventDefinition;
-import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.Command;
-import org.efaps.db.AttributeQuery;
-import org.efaps.db.Checkin;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
-import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -62,6 +51,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("46709cec-7b85-4630-9e2c-517db66ce2d0")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class DocumentUpdate_Base
+    extends AbstractCommon
 {
 
     /**
@@ -97,9 +87,12 @@ public abstract class DocumentUpdate_Base
         }
 
         for (final Instance instance : getInstances(_parameter, docInst)) {
-            final Status targetStatus = getTargetStatus(_parameter, instance);
-            if (targetStatus != null && checkStatus(_parameter, instance)
-                            && validateDocumentCriterias(_parameter, instance)) {
+            if (isApplyPaidRule(_parameter, _docInstance) && validateCriteria4Paid(_parameter, _docInstance)) {
+                final Status targetStatus = getPaidTargetStatus(_parameter, instance);
+                setStatus(_parameter, instance, targetStatus);
+            } else if (isApplyUnpaidRule(_parameter, _docInstance) && validateCriteria4Unpaid(_parameter,
+                            _docInstance)) {
+                final Status targetStatus = getUnpaidTargetStatus(_parameter, instance);
                 setStatus(_parameter, instance, targetStatus);
             }
         }
@@ -138,57 +131,150 @@ public abstract class DocumentUpdate_Base
     }
 
     /**
-     * Get the Status the Document will be set to if the criteria are met.
+     * Checks if is paid rule by searching for a property.
+     *
+     * TYPE.Paid.Origin.Status01=Draft
+     * TYPE.Paid.Origin.Status02=Open
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _docInst The Instance of the Document that will be updated
-     * @return Status if found, else null
+     * @param _docInstance the doc instance
+     * @return true, if is paid rule
      * @throws EFapsException on error
      */
-    protected Status getTargetStatus(final Parameter _parameter,
-                                     final Instance _docInst)
+    protected boolean isApplyPaidRule(final Parameter _parameter,
+                                      final Instance _docInstance)
         throws EFapsException
     {
-        final Type statusType = _docInst.getType().getStatusAttribute().getLink();
-        Status ret = Status.find(statusType.getUUID(), "Paid");
-        if (ret == null) {
-            ret = Status.find(statusType.getUUID(), "Closed");
+        return isApplyRule(_parameter, _docInstance, ".Paid.Origin");
+    }
+
+    /**
+     * Checks if is paid rule by searching for a property.
+     *
+     * TYPE.Unpaid.Origin.Status01=Paid
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstance the doc instance
+     * @return true, if is paid rule
+     * @throws EFapsException on error
+     */
+    protected boolean isApplyUnpaidRule(final Parameter _parameter,
+                                      final Instance _docInstance)
+        throws EFapsException
+    {
+        return isApplyRule(_parameter, _docInstance, ".Unpaid.Origin");
+    }
+
+    /**
+     * Apply rule.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstance the doc instance
+     * @param _key the key
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    protected boolean isApplyRule(final Parameter _parameter,
+                                  final Instance _docInstance,
+                                  final String _key)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final Properties properties = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(),
+                        _docInstance.getType().getName() + _key);
+        final List<Status> statuses = getStatusListFromProperties(ParameterUtil.clone(_parameter,
+                        Parameter.ParameterValues.INSTANCE, _docInstance), properties);
+        if (CollectionUtils.isNotEmpty(statuses)) {
+            final PrintQuery print = CachedPrintQuery.get4Request(_docInstance);
+            print.addAttribute(_docInstance.getType().getStatusAttribute());
+            print.executeWithoutAccessCheck();
+            final Status status = Status.get(print.<Long>getAttribute(_docInstance.getType().getStatusAttribute()));
+            ret = statuses.contains(status);
         }
         return ret;
     }
 
     /**
-     * Check if the current Status of the document allows an automatic update of
-     * the Status.
-     *
-     * To be used by implementation.
+     * Validate criterias for paid.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _docInst The Instance of the Document that will be updated
-     * @return true
+     * @param _docInstance the doc instance
+     * @return true, if successful
      * @throws EFapsException on error
      */
-    protected boolean checkStatus(final Parameter _parameter,
-                                  final Instance _docInst)
+    protected boolean validateCriteria4Paid(final Parameter _parameter,
+                                            final Instance _docInstance)
         throws EFapsException
     {
-        return true;
+        final DocPaymentInfo doc = new DocPaymentInfo(_docInstance);
+        return doc.isPaid();
     }
 
     /**
-     * Check if the document must be updated.
+     * Validate criterias for unpaid.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _docInst The Instance of the Document that will be updated
-     * @return true
+     * @param _docInstance the doc instance
+     * @return true, if successful
      * @throws EFapsException on error
      */
-    protected boolean validateDocumentCriterias(final Parameter _parameter,
-                                                final Instance _docInst)
+    protected boolean validateCriteria4Unpaid(final Parameter _parameter,
+                                              final Instance _docInstance)
         throws EFapsException
     {
-        final DocPaymentInfo doc = new DocPaymentInfo(_docInst);
-        return doc.isPaid();
+        final DocPaymentInfo doc = new DocPaymentInfo(_docInstance);
+        return !doc.isPaid();
+    }
+
+    /**
+     * Gets the paid status.
+     * Sales_Invoice.Paid.TargetStatus=Open
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the paid status
+     * @throws EFapsException on error
+     */
+    protected Status getPaidTargetStatus(final Parameter _parameter,
+                                         final Instance _docInst)
+        throws EFapsException
+    {
+        return getTargetStatus(_parameter, _docInst, "Paid");
+    }
+
+    /**
+     * Gets the paid status.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the paid status
+     * @throws EFapsException on error
+     */
+    protected Status getUnpaidTargetStatus(final Parameter _parameter,
+                                           final Instance _docInst)
+        throws EFapsException
+    {
+        return getTargetStatus(_parameter, _docInst, "Unpaid");
+    }
+
+    /**
+     * Get the Status the Document will be set to if the criteria are met.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstance the doc instance
+     * @param _key the key
+     * @return Status if found, else null
+     * @throws EFapsException on error
+     */
+    protected Status getTargetStatus(final Parameter _parameter,
+                                     final Instance _docInstance,
+                                     final String _key)
+        throws EFapsException
+    {
+        final Properties properties = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(),
+                        _docInstance.getType().getName() + "." +_key);
+        return Status.find(_docInstance.getType().getStatusAttribute().getLink().getName(),
+                        properties.getProperty("TargetStatus"));
     }
 
     /**

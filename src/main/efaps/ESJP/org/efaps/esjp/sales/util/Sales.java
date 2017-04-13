@@ -1,3 +1,5 @@
+//CHECKSTYLE:OFF
+//CHECKSTYLE:ON
 /*
  * Copyright 2003 - 2016 The eFaps Team
  *
@@ -985,6 +987,94 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    @SuppressWarnings("checkstyle:linelength")
+    public static final PropertiesSysConfAttribute PAYMENT_RULES = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.Rules")
+                    .concatenate(true)
+                    .description("Config for Paid/Unpaid evaluation.\n"
+                                    + "TYPE.Paid.TargetStatus=STATUS\n"
+                                    + "TYPE.Paid.Origin.Status01=STATUS\n"
+                                    + "TYPE.Unpaid.TargetStatus=STATUS\n"
+                                    + "TYPE.Unpaid.Origin.Status01=STATUS")
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.TargetStatus", CISales.CollectionOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status01", CISales.CollectionOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status02", CISales.CollectionOrderStatus.Open.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Unpaid.TargetStatus", CISales.CollectionOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Unpaid.Origin.Status01", CISales.CollectionOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.TargetStatus", CISales.CreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.Origin.Status01", CISales.CreditNoteStatus.Draft.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.Origin.Status02", CISales.CreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Unpaid.TargetStatus", CISales.CreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Unpaid.Origin.Status01", CISales.CreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.TargetStatus", CISales.ExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.Origin.Status01", CISales.ExchangeStatus.Draft.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.Origin.Status02", CISales.ExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Unpaid.TargetStatus", CISales.ExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Unpaid.Origin.Status01", CISales.ExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.TargetStatus", CISales.IncomingCreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingCreditNoteStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingCreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingCreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingCreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.TargetStatus", CISales.IncomingExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingExchangeStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.TargetStatus", CISales.IncomingInstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingInstallmentStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingInstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingInstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingInstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.TargetStatus", CISales.IncomingInvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingInvoiceStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingInvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.TargetStatus", CISales.IncomingProfServReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingProfServReceiptStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingProfServReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingProfServReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingProfServReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.TargetStatus", CISales.IncomingReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingReceiptStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.TargetStatus", CISales.IncomingReminderStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingReminderStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingReminderStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingReminderStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingReminderStatus.Paid.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.TargetStatus", CISales.InstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.Origin.Status01", CISales.InstallmentStatus.Draft.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.Origin.Status02", CISales.InstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Unpaid.TargetStatus", CISales.InstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Unpaid.Origin.Status01", CISales.InstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.TargetStatus", CISales.InvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.Origin.Status01", CISales.InvoiceStatus.Draft.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.Origin.Status02", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Unpaid.TargetStatus", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Unpaid.Origin.Status01", CISales.InvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.TargetStatus", CISales.PaymentOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.Origin.Status01", CISales.PaymentOrderStatus.Open.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.Origin.Status02", CISales.PaymentOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Unpaid.TargetStatus", CISales.PaymentOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Unpaid.Origin.Status01", CISales.PaymentOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.TargetStatus", CISales.ReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.Origin.Status01", CISales.ReceiptStatus.Draft.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.Origin.Status02", CISales.ReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Unpaid.TargetStatus", CISales.ReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Unpaid.Origin.Status01", CISales.ReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.TargetStatus", CISales.ReminderStatus.Paid.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status01", CISales.ReminderStatus.Draft.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status02", CISales.ReminderStatus.Open.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.TargetStatus", CISales.ReminderStatus.Open.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.Origin.Status01", CISales.ReminderStatus.Paid.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENT_PAIDRULES = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.PaidRules")
@@ -992,6 +1082,7 @@ public final class Sales
                                     + "Sales_Invoice.Threshold=0.05\n"
                                     + "Sales_Invoice.PerPayment=false\n"
                                     + "Sales_Invoice.Swap.Status4From01=Open\n"
+                                    + "To activate the listener to evaluate on status change:"
                                     + "OnStatusChange.StatusGroup=Sales_IncomingExchangeStatus\n"
                                     + "OnStatusChange.Status=Open\n");
 

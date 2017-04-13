@@ -78,6 +78,12 @@
                 name="Sales_PaymentDepositPaymentTable.paymentRate.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
+        <field name="createDocumentStatus">
+            <property name="Select">linkto[CreateDocument].status.label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_PaymentDepositPaymentTable.createDocumentStatus.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">READONLY</property>

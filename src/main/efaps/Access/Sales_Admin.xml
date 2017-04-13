@@ -428,7 +428,6 @@
             <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
-            <key>Booked</key>
             <key>Canceled</key>
         </status>
 

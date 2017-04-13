@@ -1069,6 +1069,7 @@ public abstract class AbstractPaymentDocument_Base
                                  final EditedDoc _editedDoc)
         throws EFapsException
     {
+        final Set<Instance> updateInsts = new HashSet<>();
         final String[] createDocument = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.Payment.CreateDocument.name));
         final String[] paymentAmount = _parameter.getParameterValues("paymentAmount");
@@ -1089,8 +1090,9 @@ public abstract class AbstractPaymentDocument_Base
 
             if (createDocument.length > i && createDocument[i] != null) {
                 final Instance inst = Instance.get(createDocument[i]);
+                updateInsts.add(inst);
                 if (inst.isValid()) {
-                    update.add(CISales.Payment.CreateDocument, inst.getId());
+                    update.add(CISales.Payment.CreateDocument, inst);
                     update.add(CISales.Payment.RateCurrencyLink,
                                     getNewDocPaymentInfo(_parameter, inst).getRateCurrencyInstance());
                 }
@@ -1098,7 +1100,7 @@ public abstract class AbstractPaymentDocument_Base
             if (paymentAmount.length > i && paymentAmount[i] != null) {
                 update.add(CISales.Payment.Amount, paymentAmount[i]);
             }
-            update.add(CISales.Payment.TargetDocument, _editedDoc.getInstance().getId());
+            update.add(CISales.Payment.TargetDocument, _editedDoc.getInstance());
             update.add(CISales.Payment.CurrencyLink,
                             _editedDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
             update.add(CISales.Payment.Date,
@@ -1108,7 +1110,19 @@ public abstract class AbstractPaymentDocument_Base
             update.execute();
         }
         while (paymentIter.hasNext()) {
-            new Delete(paymentIter.next()).execute();
+            final Instance paymentInst = paymentIter.next();
+            final PrintQuery print = new PrintQuery(paymentInst);
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+            print.addSelect(selDocInst);
+            print.executeWithoutAccessCheck();
+
+            updateInsts.add(print.getSelect(selDocInst));
+
+            new Delete(paymentInst).execute();
+        }
+
+        for (final Instance inst : updateInsts) {
+            new DocumentUpdate().updateDocument(_parameter, inst);
         }
     }
 

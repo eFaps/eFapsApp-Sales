@@ -83,5 +83,29 @@
                 event="UI_FIELD_FORMAT">
             </trigger>
         </field>
+        <field name="account4Draft">
+            <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDocumentAbstractTable.account4Draft.Label</property>
+            <property name="FilterType">PICKLIST</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                name="Sales_PaymentDocumentAbstractTable.account4Draft.UI_FIELD_FORMAT"
+                method="distinct"
+                event="UI_FIELD_FORMAT">
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                name="Sales_PaymentDocumentAbstractTable.account4Draft.UI_ACCESSCHECK"
+                method="configCheck"
+                event="UI_ACCESSCHECK">
+                <!--  Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists01">org.efaps.sales.payment.in.Cash.Status4Create</property>
+                <property name="AttributeExists02">org.efaps.sales.payment.in.Check.Status4Create</property>
+                <property name="AttributeExists03">org.efaps.sales.payment.in.CreditCard.Status4Create</property>
+                <property name="AttributeExists04">org.efaps.sales.payment.in.DebitCard.Status4Create</property>
+                <property name="AttributeExists05">org.efaps.sales.payment.in.Detraction.Status4Create</property>
+                <property name="AttributeExists06">org.efaps.sales.payment.in.Internal.Status4Create</property>
+                <property name="AttributeExists07">org.efaps.sales.payment.in.Retention.Status4Create</property>
+            </trigger>
+        </field>
     </definition>
 </ui-table>
