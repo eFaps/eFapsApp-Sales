@@ -25,146 +25,147 @@
         <name>Sales_PaymentCheckOutPaymentTable</name>
         <field name="date">
             <property name="Attribute">Date</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_Payment/Date.Label</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createDocumentType">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].type.label</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.createDocumentType.Label</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentType.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createDocument4Read">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].attribute[Name]</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.createDocument.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocument.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createDocument">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].attribute[Name]</property>
             <property name="Label">Sales_PaymentCheckPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="autoComplete4CreateDocument"
-                name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="autoComplete4CreateDocument"
+                name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.out.Check.PayableDocuments</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
-                <property name="ShowRevision">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
                 method="updateFields4CreateDocument"
-                name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="createDocumentDesc">
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.createDocumentDesc.Label</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentDesc.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="createDocumentDescFieldValue"
+                name="Sales_PaymentCheckPaymentTable.paymentRate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="createDocumentStatus">
+            <property name="Select">linkto[CreateDocument].status.label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentStatus.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4PaymentRate"
-                name="Sales_PaymentCheckOutPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="updateFields4PaymentRate"
+                name="Sales_PaymentCheckPaymentTable.paymentRate.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.payment4Pay.Label</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.payment4Pay.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4PaymentAmount"
-                name="Sales_PaymentCheckOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="updateFields4PaymentAmount"
+                name="Sales_PaymentCheckPaymentTable.paymentAmount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="paymentDiscount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
                 method="updateFields4PaymentDiscount"
-                name="Sales_PaymentCheckOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_PaymentCheckPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.paymentAmountDesc.Label</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.paymentAmountDesc.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut"
-                method="updateFields4PaymentAmountDesc"
-                name="Sales_PaymentCheckOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="accountLink">
-            <property name="SelectAlternateOID">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].oid</property>
-            <property name="Select">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].attribute[Name]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.accountLink.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].oid</property>
+            <property name="Select">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.accountLink.Label</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                name="Sales_PaymentCheckPaymentTable.accountLink.UI_ACCESSCHECK"
+                method="check4Status"
+                event="UI_ACCESSCHECK">
+                <property name="StatusGroup01">Sales_PaymentCheckOutStatus</property>
+                <property name="Status01">!Draft</property>
+                <property name="StatusGroup02">Sales_PaymentStatus</property>
+                <property name="Status02">!Pending</property>
+            </trigger>
+        </field>
+        <field name="accountLink4Draft">
+            <property name="ModeEdit">NONE</property>
+            <property name="Select">linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentTable.accountLink4Draft.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                name="Sales_PaymentCheckPaymentTable.accountLink4Draft.UI_ACCESSCHECK"
+                method="check4Status"
+                event="UI_ACCESSCHECK">
+                <property name="StatusGroup01">Sales_PaymentCheckOutStatus</property>
+                <property name="Status01">Draft</property>
+                <property name="StatusGroup02">Sales_PaymentStatus</property>
+                <property name="Status02">Pending</property>
+            </trigger>
         </field>
         <field name="currencyLink">
+            <property name="ModeEdit">NONE</property>
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Sales_Payment/CurrencyLink.Label</property>
-        </field>
-        <!--
-        <field name="option4DocCreate">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.option4DocCreate.Label</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentCheckOutPaymentTable.option4DocCreate.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateOptions4DetAndRet</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="multiCheckboxFieldValue"
-                name="Sales_PaymentCheckOutPaymentTable.option4DocCreate.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Value">IncomingRetention</property>
-                <property name="Value01">IncomingDetraction</property>
-                <property name="Value02">None</property>
-                <property name="Comment">Sales_PaymentCheckOutPaymentTable.option4DocCreate.IncomingRetention.Label</property>
-                <property name="Comment01">Sales_PaymentCheckOutPaymentTable.option4DocCreate.IncomingDetraction.Label</property>
-                <property name="Comment02">Sales_PaymentCheckOutPaymentTable.option4DocCreate.None.Label</property>
-                <property name="Checked">false</property>
-                <property name="Checked01">false</property>
-                <property name="Checked02">true</property>
-                <property name="JavaScript">true</property>
-            </trigger>
-        </field>
-         -->
-        <field name="amount4DocCreate">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_PaymentCheckOutPaymentTable.amount4DocCreate.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentCheckOutPaymentTable.amount4DocCreate.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateOptions4DetAndRet</property>
-            </trigger>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
-            <property name="ModeEdit">NONE</property>
         </field>
     </definition>
 </ui-table>

@@ -24,6 +24,8 @@
         <name>Sales_PaymentCashOutTree_Menu_Action</name>
         <childs>
             <child>Sales_PaymentCashOutTree_Menu_Action_Edit</child>
+            <child>Sales_PaymentCashOutTree_Menu_Action_Edit4Draft</child>
+            <child>Sales_PaymentCashOutTree_Menu_Action_SetOpen</child>
             <child>Sales_PaymentCashOutTree_Menu_Action_SetCanceled</child>
             <child>Sales_PaymentCashOutTree_Menu_Action_Settle</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
