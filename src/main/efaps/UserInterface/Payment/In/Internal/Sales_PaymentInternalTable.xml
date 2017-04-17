@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4b8df280-ecda-4293-ac0b-290d5a9b0908</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentInternalTable</name>
@@ -60,12 +54,23 @@
             <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstract.Currency.Label</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="account4Draft">
+            <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDocumentAbstractTable.account4Draft.Label</property>
+            <property name="FilterType">PICKLIST</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                name="Sales_PaymentDocumentAbstractTable.account4Draft.UI_FIELD_FORMAT"
+                method="distinct"
+                event="UI_FIELD_FORMAT">
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                name="Sales_PaymentDocumentAbstractTable.account4Draft.UI_ACCESSCHECK"
+                method="configCheck"
+                event="UI_ACCESSCHECK">
+                <!--  Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.payment.in.Internal.Status4Create</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>

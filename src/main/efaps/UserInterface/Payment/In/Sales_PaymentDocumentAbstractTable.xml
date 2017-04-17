@@ -102,9 +102,10 @@
                 <property name="AttributeExists02">org.efaps.sales.payment.in.Check.Status4Create</property>
                 <property name="AttributeExists03">org.efaps.sales.payment.in.CreditCard.Status4Create</property>
                 <property name="AttributeExists04">org.efaps.sales.payment.in.DebitCard.Status4Create</property>
-                <property name="AttributeExists05">org.efaps.sales.payment.in.Detraction.Status4Create</property>
-                <property name="AttributeExists06">org.efaps.sales.payment.in.Internal.Status4Create</property>
-                <property name="AttributeExists07">org.efaps.sales.payment.in.Retention.Status4Create</property>
+                <property name="AttributeExists05">org.efaps.sales.payment.in.Deposit.Status4Create</property>
+                <property name="AttributeExists06">org.efaps.sales.payment.in.Detraction.Status4Create</property>
+                <property name="AttributeExists07">org.efaps.sales.payment.in.Internal.Status4Create</property>
+                <property name="AttributeExists08">org.efaps.sales.payment.in.Retention.Status4Create</property>
             </trigger>
         </field>
     </definition>

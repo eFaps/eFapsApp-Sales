@@ -137,6 +137,15 @@
             <property name="Select">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.accountLink.Label</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                name="Sales_PaymentDepositPaymentTable.accountLink.UI_ACCESSCHECK"
+                method="check4Status"
+                event="UI_ACCESSCHECK">
+                <property name="StatusGroup01">Sales_PaymentDepositStatus</property>
+                <property name="Status01">!Draft</property>
+                <property name="StatusGroup02">Sales_PaymentStatus</property>
+                <property name="Status02">!Pending</property>
+            </trigger>
         </field>
         <field name="accountLink4Draft">
             <property name="ModeEdit">NONE</property>

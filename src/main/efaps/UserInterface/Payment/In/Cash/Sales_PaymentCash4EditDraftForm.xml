@@ -121,7 +121,6 @@
         </field>
         <field name="docPicker" character="Picker">
             <property name="HideLabel">true</property>
-            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentCashForm.docPicker.Label</property>
@@ -134,7 +133,7 @@
             <property name="Label">Sales_PaymentDepositForm.headingPayment.Heading</property>
         </field>
         <field character="Target" name="paymentTable">
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <table>Sales_PaymentCashPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>

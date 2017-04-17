@@ -46,6 +46,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -75,6 +76,36 @@ public abstract class PaymentCheck_Base
         executeAutomation(_parameter, createdDoc);
         final Return ret = new Return();
         final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected Status getStatus4Create()
+        throws EFapsException
+    {
+        Status ret = super.getStatus4Create();
+        if (Sales.PAYMENT_CHECK_CREATESTATUS.exists()) {
+            ret = Status.find(CISales.PaymentCheckStatus, Sales.PAYMENT_CHECK_CREATESTATUS.get());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit4Draft(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePayment(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
