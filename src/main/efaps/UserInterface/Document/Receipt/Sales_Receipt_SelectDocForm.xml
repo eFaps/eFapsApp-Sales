@@ -35,7 +35,7 @@
                 event="UI_FIELD_AUTOCOMPLETE" >
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="QueryBldrConfigAttribute">org.efaps.sales.Receipt.CreateFromDeliveryNote</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.Receipt.CreateFromDeliveryNoteAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Receipt"
                 method="updateFields4Document"
@@ -47,7 +47,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="AttributeExists">org.efaps.sales.Receipt.CreateFromDeliveryNote</property>
+                <property name="AttributeExists">org.efaps.sales.Receipt.CreateFromDeliveryNoteAutoComplete</property>
             </trigger>
         </field>
         <field name="quotation">

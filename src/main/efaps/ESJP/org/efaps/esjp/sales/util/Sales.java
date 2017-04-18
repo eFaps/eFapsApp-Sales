@@ -1701,7 +1701,7 @@ public final class Sales
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute RECEIPT_FROMDELIVERYNOTEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "Receipt.CreateDeliveryNoteAutoComplete")
+                    .key(Sales.BASE + "Receipt.CreateFromDeliveryNoteAutoComplete")
                     .description("AutoComplete and Activation for Create from DeliveryNote for Receipt.")
                     .addDefaultValue("Type", "Sales_DeliveryNote")
                     .addDefaultValue("StatusGroup01", "Sales_DeliveryNoteStatus")

@@ -470,6 +470,21 @@
                 name="Sales_ReceiptForm.rateCrossTotal4Read.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK"/>
         </field>
+        <field name="deliveryNotes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_ReceiptForm.deliveryNote.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReceiptForm.deliveryNotes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Receipt.CreateFromDeliveryNoteAutoComplete</property>
+           </trigger>
+        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>

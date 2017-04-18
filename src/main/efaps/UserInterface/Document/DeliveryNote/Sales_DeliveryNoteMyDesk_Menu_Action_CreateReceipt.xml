@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2017 The eFaps Team
 
@@ -17,23 +15,23 @@
  limitations under the License.
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1831187c-3a4f-4808-ac82-cda9c3493442</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9a2d2ca1-2963-4198-a230-9d90d8405dee</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps"/>
-        </profiles>
-        <name>Sales_ReceiptMyDesk_Menu_Action_CreateFromDoc2</name>
+        <name>Sales_DeliveryNoteMyDesk_Menu_Action_CreateReceipt</name>
         <access>
             <role>Sales_Teller</role>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_ReceiptForm</form>
+            <form>Sales_InvoiceForm</form>
+            <evaluate method="validateStatus" program="org.efaps.esjp.common.uiform.Evaluate">
+                <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
+                <property name="Status">Open</property>
+            </evaluate>
             <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
                 <property name="PositionType">Sales_ReceiptPosition</property>
                 <!-- Sales-Configuration -->
@@ -63,59 +61,19 @@
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
             </validate>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_Receipt</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
-        <property name="TargetShowFile">true</property>
-    </definition>
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="projects"/>
-        </profiles>
-        <name>Sales_ReceiptMyDesk_Menu_Action_CreateFromDoc2</name>
-        <access>
-            <role>Sales_Teller</role>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <form>Sales_ReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
-                <property name="PositionType">Sales_ReceiptPosition</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_DeliveryNoteMyDesk_Menu_Action_CreateReceipt.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
-                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigReport">org.efaps.sales.Receipt.JasperReport</property>
-                <property name="JasperConfigMime">org.efaps.sales.Receipt.Mime</property>
-
-                <!-- Projects_ProjectService2Receipt -->
-                <property name="ConnectType">6665b0d5-3209-453c-be4a-cc8cb6dce387</property>
-                <property name="ConnectCurrentLink">ToLink</property>
-                <property name="ConnectForeignLink">FromLink</property>
-                <property name="ConnectForeignField">project</property>
-
-                <!-- Sales_Employee2Receipt -->
-                <property name="ConnectType01">9d8b432c-ddf7-45b4-8ed9-cb749b9ee8a1</property>
-                <property name="ConnectCurrentLink01">ToLink</property>
-                <property name="ConnectForeignLink01">FromLink</property>
-                <property name="ConnectForeignField01">employee</property>
-
-                <!-- Sales_ChannelSalesCondition2Receipt -->
-                <property name="ConnectType02">102fef61-0ac3-4387-b4fb-702f6b2eaad4</property>
-                <property name="ConnectCurrentLink02">ToLink</property>
-                <property name="ConnectForeignLink02">FromLink</property>
-                <property name="ConnectForeignField02">condition</property>
-            </execute>
-            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
-                <property name="Validation01">AMOUNTGREATERZERO</property>
-            </validate>
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.Receipt.CreateFromDeliveryNoteAutoComplete</property>
+            </trigger>
         </target>
+        <property name="HRef">TREE</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">0</property>
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_Receipt</property>
+        <property name="TargetCreateType">Sales_Invoice</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>

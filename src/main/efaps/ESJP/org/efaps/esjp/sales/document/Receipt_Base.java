@@ -38,15 +38,23 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -137,4 +145,42 @@ public abstract class Receipt_Base
         return new Return();
     }
 
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.RECEIPT_ACTIVATECONDITION.get()) {
+            InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance,
+                            CISales.ChannelSalesCondition2Contact));
+        }
+        if (Sales.RECEIPT_FROMDELIVERYNOTEAC.exists()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
+            queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_ReceiptForm.deliveryNotes.name, queryBldr));
+        }
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        if (Sales.RECEIPT_ACTIVATECONDITION.get()) {
+            ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
+                            CISales.ChannelSalesCondition2Contact));
+        }
+        if (Sales.RECEIPT_FROMDELIVERYNOTEAC.exists()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
+            queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_ReceiptForm.deliveryNotes.name, queryBldr));
+        }
+        return ret;
+    }
 }
