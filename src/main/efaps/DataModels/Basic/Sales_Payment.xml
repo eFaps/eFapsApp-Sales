@@ -32,6 +32,9 @@
             <typelink>Sales_PaymentStatus</typelink>
             <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE" name="Sales_Payment.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
         </attribute>
         <attribute>
             <name>CreateDocument</name>
