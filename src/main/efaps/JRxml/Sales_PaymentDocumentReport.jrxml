@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.1.final using JasperReports Library version 6.2.1  -->
-<!-- 2017-01-31T17:01:10 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="88b0373f-671b-487b-9adf-0af1384350b2">
-	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Rudolf Prod"/>
-	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-04-19T01:46:31 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" isIgnorePagination="true" uuid="88b0373f-671b-487b-9adf-0af1384350b2">
+	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="RudolfReimsac"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="9999 Rudolf"/>
 	<import value="org.efaps.number2words.Converter"/>
 	<parameter name="INSTANCE" class="java.lang.Object">
-		<parameterDescription><![CDATA[5766.88990]]></parameterDescription>
+		<parameterDescription><![CDATA[5774.101710]]></parameterDescription>
 	</parameter>
-	<parameter name="accountName" class="java.lang.String"/>
-	<parameter name="accountCurrencyName" class="java.lang.String"/>
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<parameter name="ClientOrSupplier" class="java.lang.String"/>
@@ -27,7 +24,11 @@
   attribute[Code] as code,
   type.label as typeLabel,
   type.uuid as typeUUID,
-  attribute[DueDate] as dueDate]]>
+  attribute[DueDate] as dueDate,
+  linkfrom[Sales_Payment#TargetDocument].linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].attribute[Name] as account,
+  linkfrom[Sales_Payment#TargetDocument].linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].linkto[CurrencyLink].attribute[Name] as accountCurrency,
+  linkfrom[Sales_Payment#TargetDocument].linkto[AccountLink].attribute[Name] as accountForDraft,
+  linkfrom[Sales_Payment#TargetDocument].linkto[AccountLink].linkto[CurrencyLink].attribute[Name] as accountCurrencyForDraft]]>
 	</queryString>
 	<field name="date" class="org.joda.time.DateTime"/>
 	<field name="rate" class="java.math.BigDecimal"/>
@@ -40,6 +41,46 @@
 	<field name="typeLabel" class="java.lang.String"/>
 	<field name="typeUUID" class="java.util.UUID"/>
 	<field name="dueDate" class="org.joda.time.DateTime"/>
+	<field name="account" class="java.lang.Object"/>
+	<field name="accountCurrency" class="java.lang.Object"/>
+	<field name="accountForDraft" class="java.lang.Object"/>
+	<field name="accountCurrencyForDraft" class="java.lang.Object"/>
+	<variable name="accountName" class="java.lang.String">
+		<initialValueExpression><![CDATA[$F{account} == null 
+? null
+: (
+	$F{account}	instanceof java.util.List
+	? ((java.util.List) $F{account}).get(0)
+	: $F{account}
+)]]></initialValueExpression>
+	</variable>
+	<variable name="accountDraftName" class="java.lang.String">
+		<initialValueExpression><![CDATA[$F{accountForDraft} == null 
+? null
+: (
+	$F{accountForDraft}	instanceof java.util.List
+	? ((java.util.List) $F{accountForDraft}).get(0)
+	: $F{accountForDraft}
+)]]></initialValueExpression>
+	</variable>
+	<variable name="accountCurrencyName" class="java.lang.String">
+		<initialValueExpression><![CDATA[$F{accountCurrency} == null 
+? null
+: (
+	$F{accountCurrency}	instanceof java.util.List
+	? ((java.util.List) $F{accountCurrency}).get(0)
+	: $F{accountCurrency}
+)]]></initialValueExpression>
+	</variable>
+	<variable name="accountCurrencyDraftName" class="java.lang.String">
+		<initialValueExpression><![CDATA[$F{accountCurrencyForDraft} == null 
+? null
+: (
+	$F{accountCurrencyForDraft}	instanceof java.util.List
+	? ((java.util.List) $F{accountCurrencyForDraft}).get(0)
+	: $F{accountCurrencyForDraft}
+)]]></initialValueExpression>
+	</variable>
 	<pageHeader>
 		<band height="90">
 			<staticText>
@@ -75,7 +116,7 @@
 	<columnHeader>
 		<band height="160">
 			<textField>
-				<reportElement x="0" y="15" width="242" height="20" uuid="24639b69-1ac2-403f-8633-0f15ce393de5"/>
+				<reportElement x="0" y="15" width="555" height="20" uuid="24639b69-1ac2-403f-8633-0f15ce393de5"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -95,11 +136,15 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="93" width="168" height="15" uuid="5a914ba1-67fc-49f1-923c-aa0f6d76c81f"/>
-				<textFieldExpression><![CDATA[$P{accountName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{accountName} != null && !$V{accountName}.isEmpty()
+? $V{accountName}
+: $V{accountDraftName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="260" y="93" width="228" height="15" uuid="3020349f-aadd-4baf-9742-0d317dad4011"/>
-				<textFieldExpression><![CDATA[$P{accountCurrencyName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{accountCurrencyName} != null && !$V{accountCurrencyName}.isEmpty()
+? $V{accountCurrencyName}
+: $V{accountCurrencyDraftName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="113" width="396" height="15" uuid="54612e49-0205-4a12-a5f7-081dd1e3cbe5"/>
@@ -190,7 +235,7 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="52">
+		<band height="177">
 			<staticText>
 				<reportElement x="380" y="10" width="70" height="15" uuid="1290b50f-d8dd-4730-8ef1-2618e375ddb1"/>
 				<textElement>
@@ -203,9 +248,62 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{amount}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="360" y="50" width="60" height="12" uuid="b33ebbbf-0da2-421f-8e24-ff7f36ee9912">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="360" y="75" width="60" height="12" uuid="4a78a7d4-b989-41d8-b5f0-fec99615bdb1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="360" y="100" width="60" height="12" uuid="3d886eca-b9de-4a4f-8bf5-da3154f006bb">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Doc. Ident.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="391" y="59" width="162" height="1" uuid="1181c2bf-30ec-4f16-a598-b577b3427262">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="391" y="87" width="162" height="1" uuid="9a7034cc-0195-4052-afa5-a7e966d63c4e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="391" y="111" width="162" height="1" uuid="4a80e84a-26ca-4993-a4e2-a379a242271d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="360" y="164" width="162" height="1" uuid="e35bf341-5bab-47ee-8631-7e9346973b7c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="406" y="165" width="60" height="12" uuid="58f3352f-d77f-4bc9-b32e-446d987fbba5">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Firma]]></text>
+			</staticText>
 		</band>
 	</columnFooter>
-	<pageFooter>
-		<band height="213"/>
-	</pageFooter>
 </jasperReport>
