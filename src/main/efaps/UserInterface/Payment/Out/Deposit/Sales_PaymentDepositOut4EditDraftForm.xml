@@ -89,7 +89,7 @@
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
                 <property name="MsgPhrase">Sales_AccountMsgPhrase4Payment</property>
-                <property name="Activation">CASH</property>
+                <property name="Activation">DEPOSIT</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4RateCurrency"
                 name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.1"
