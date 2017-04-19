@@ -361,7 +361,7 @@ public abstract class DocPaymentInfo_Base
     protected boolean isPerPayment()
         throws EFapsException
     {
-        final Properties props = Sales.PAYMENT_PAIDRULES.get();
+        final Properties props = Sales.PAYMENT_RULES.get();
         return BooleanUtils.toBoolean(props.getProperty(this.instance.getType().getName() + ".PerPayment"));
     }
 
@@ -373,7 +373,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        final Properties props = Sales.PAYMENT_PAIDRULES.get();
+        final Properties props = Sales.PAYMENT_RULES.get();
         BigDecimal threshold = BigDecimal.ZERO;
         try {
             final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
@@ -1123,7 +1123,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         boolean ret = false;
-        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_PAIDRULES.get(), _docInst.getType()
+        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(), _docInst.getType()
                         .getName());
 
         final Collection<String> stats = PropertiesUtil.analyseProperty(props, "Swap.Status4" + (_from ? "From" : "To"),

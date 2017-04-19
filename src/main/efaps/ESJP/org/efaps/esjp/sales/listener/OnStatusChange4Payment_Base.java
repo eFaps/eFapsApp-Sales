@@ -57,7 +57,7 @@ public abstract class OnStatusChange4Payment_Base
         throws EFapsException
     {
         final Set<Status> ret = super.getStatus();
-        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_PAIDRULES.get(), "OnStatusChange",
+        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(), "OnStatusChange",
                         true);
         ret.addAll(getStatusListFromProperties(new Parameter(), props));
         return ret;

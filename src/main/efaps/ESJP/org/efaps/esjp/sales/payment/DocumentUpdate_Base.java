@@ -87,11 +87,11 @@ public abstract class DocumentUpdate_Base
         }
 
         for (final Instance instance : getInstances(_parameter, docInst)) {
-            if (isApplyPaidRule(_parameter, _docInstance) && validateCriteria4Paid(_parameter, _docInstance)) {
+            if (isApplyPaidRule(_parameter, instance) && validateCriteria4Paid(_parameter, instance)) {
                 final Status targetStatus = getPaidTargetStatus(_parameter, instance);
                 setStatus(_parameter, instance, targetStatus);
-            } else if (isApplyUnpaidRule(_parameter, _docInstance) && validateCriteria4Unpaid(_parameter,
-                            _docInstance)) {
+            } else if (isApplyUnpaidRule(_parameter, instance) && validateCriteria4Unpaid(_parameter,
+                            instance)) {
                 final Status targetStatus = getUnpaidTargetStatus(_parameter, instance);
                 setStatus(_parameter, instance, targetStatus);
             }
@@ -272,7 +272,7 @@ public abstract class DocumentUpdate_Base
         throws EFapsException
     {
         final Properties properties = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(),
-                        _docInstance.getType().getName() + "." +_key);
+                        _docInstance.getType().getName() + "." + _key);
         return Status.find(_docInstance.getType().getStatusAttribute().getLink().getName(),
                         properties.getProperty("TargetStatus"));
     }

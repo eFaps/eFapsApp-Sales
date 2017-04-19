@@ -664,7 +664,7 @@ public abstract class AbstractPaymentDocument_Base
         BigDecimal amount4PayDoc = BigDecimal.ZERO;
         if (_docInfo.getRateCurrencyInstance().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
             total4Doc = _docInfo.getRateCrossTotal();
-            final Properties props = Sales.PAYMENT_PAIDRULES.get();
+            final Properties props = Sales.PAYMENT_RULES.get();
             final boolean pp = BooleanUtils.toBoolean(
                             props.getProperty(_docInfo.getInstance().getType().getName() + ".PerPayment"));
             payments4Doc = _docInfo.getRatePaid(pp).abs();

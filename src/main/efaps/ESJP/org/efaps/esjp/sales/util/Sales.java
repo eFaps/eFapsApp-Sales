@@ -994,9 +994,19 @@ public final class Sales
                     .concatenate(true)
                     .description("Config for Paid/Unpaid evaluation.\n"
                                     + "TYPE.Paid.TargetStatus=STATUS\n"
-                                    + "TYPE.Paid.Origin.Status01=STATUS\n"
+                                    + "TYPE.Paid.Origin.StatusNN=STATUS\n"
                                     + "TYPE.Unpaid.TargetStatus=STATUS\n"
-                                    + "TYPE.Unpaid.Origin.Status01=STATUS")
+                                    + "TYPE.Unpaid.Origin.StatusNN=STATUS.\n"
+                                    + "Evaluation of paid with currency is per payment or with totals"
+                                    + "TYPE.PerPayment=true/false\n"
+                                    + "Permited Status for Swap Paid evaluation."
+                                    + "TYPE.Swap.Status4ToNN=STATUS\n"
+                                    + "TYPE.Swap.Status4FromNN=STATUS\n"
+                                    + "To activate the listener to evaluate on status change:"
+                                    + "OnStatusChange.StatusGroup=Sales_IncomingExchangeStatus\n"
+                                    + "OnStatusChange.Status=Open\n"
+                                    + "Threshold for paid evaluation."
+                                    + "TYPE.Threshold==0.05")
                     .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.TargetStatus", CISales.CollectionOrderStatus.Closed.key)
                     .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status01", CISales.CollectionOrderStatus.Approved.key)
                     .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status02", CISales.CollectionOrderStatus.Open.key)
@@ -1072,19 +1082,6 @@ public final class Sales
                     .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status02", CISales.ReminderStatus.Open.key)
                     .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.TargetStatus", CISales.ReminderStatus.Open.key)
                     .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.Origin.Status01", CISales.ReminderStatus.Paid.key);
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENT_PAIDRULES = new PropertiesSysConfAttribute()
-                    .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "payment.PaidRules")
-                    .description("Properties to define the paid rules for types. e.g. \n"
-                                    + "Sales_Invoice.Threshold=0.05\n"
-                                    + "Sales_Invoice.PerPayment=false\n"
-                                    + "Sales_Invoice.Swap.Status4From01=Open\n"
-                                    + "To activate the listener to evaluate on status change:"
-                                    + "OnStatusChange.StatusGroup=Sales_IncomingExchangeStatus\n"
-                                    + "OnStatusChange.Status=Open\n");
 
     /** See description. */
     @EFapsSysConfAttribute
