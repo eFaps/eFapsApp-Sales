@@ -1,3 +1,5 @@
+//CHECKSTYLE:OFF Suppress Filelength Warning
+//CHECKSTYLE:ON
 /*
  * Copyright 2003 - 2017 The eFaps Team
  *

@@ -2078,8 +2078,6 @@ public final class Sales
                     .key(Sales.BASE + "report.SalesReport4Account.OUT.ActivateSwapInfo")
                     .description("Activate the column for Swap related Infos.");
 
-
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()

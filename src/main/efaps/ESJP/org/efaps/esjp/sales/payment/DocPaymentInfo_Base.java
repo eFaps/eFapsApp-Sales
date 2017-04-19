@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1092,7 +1092,7 @@ public abstract class DocPaymentInfo_Base
                         }
                     }
                     BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
-                    // for the case of oblegations the amount is negated
+                    // for the case of obligations the amount is negated
                     if (info.isObligationDoc()) {
                         amount = amount.negate();
                     }
@@ -1123,8 +1123,8 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         boolean ret = false;
-        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(), _docInst.getType()
-                        .getName());
+        final Properties props = PropertiesUtil.getProperties4Prefix(Sales.PAYMENT_RULES.get(),
+                        _docInst.getType().getName());
 
         final Collection<String> stats = PropertiesUtil.analyseProperty(props, "Swap.Status4" + (_from ? "From" : "To"),
                         0).values();
