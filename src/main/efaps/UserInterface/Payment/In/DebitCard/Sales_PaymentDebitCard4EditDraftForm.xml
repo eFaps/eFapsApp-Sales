@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
   limitations under the License.
 
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>67d996b6-fcfc-4886-a7f4-07bd8c3b95a4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
@@ -35,7 +37,9 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_PaymentDeposit4EditDraftForm.date.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency"
+                name="Sales_PaymentDeposit4EditDraftForm.date.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
         </field>
         <field character="Group" name="contactGroup">
             <property name="GroupCount">2</property>
@@ -50,8 +54,12 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Width">50</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDeposit4EditDraftForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_PaymentDeposit4EditDraftForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
+                name="Sales_PaymentDeposit4EditDraftForm.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts" />
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
+                name="Sales_PaymentDeposit4EditDraftForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">EDITABLE</property>
@@ -74,26 +82,33 @@
             <property name="Label">Sales_PaymentDepositForm.account.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">DROPDOWN</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDown4AccountFieldValue" name="Sales_PaymentDepositForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentDeposit">
+            <trigger event="UI_FIELD_VALUE" method="dropDown4AccountFieldValue"
+                name="Sales_PaymentDepositForm.account.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentDeposit">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
                 <property name="MsgPhrase">Sales_AccountMsgPhrase4Payment</property>
                 <property name="Activation">DEPOSIT</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4RateCurrency" name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.1" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
-            <trigger event="UI_FIELD_UPDATE" index="2" method="updateFields4Position" name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.2" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
+            <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4RateCurrency"
+                name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.1"
+                 program="org.efaps.esjp.sales.payment.PaymentDeposit" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_VALUE" method="getRateFieldValue" name="Sales_PaymentDepositForm.rate.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
+            <trigger event="UI_FIELD_VALUE" method="getRateFieldValue"
+                name="Sales_PaymentDepositForm.rate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4AbsoluteAmount" name="Sales_PaymentDepositForm.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4AbsoluteAmount"
+                name="Sales_PaymentDepositForm.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
         </field>
         <field name="note">
             <property name="Width">80</property>
@@ -107,7 +122,7 @@
             <property name="Label">Sales_PaymentDepositForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <picker name="Sales_PaymentDepositPicker4Documents"/>
+            <picker name="Sales_PaymentDepositPicker4Documents" />
         </field>
         <field character="Heading" name="headingPayment">
             <property name="Level">2</property>

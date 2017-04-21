@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@
             <property name="Required">true</property>
             <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency"
-                name="Sales_PaymentDeposit4EditDraftForm.date.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
+                name="Sales_PaymentRetention4EditDraftForm.date.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentRetention" />
         </field>
         <field character="Group" name="contactGroup">
             <property name="GroupCount">2</property>
@@ -50,20 +50,20 @@
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentDepositForm.contact.Label</property>
+            <property name="Label">Sales_PaymentRetentionForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Width">50</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_PaymentDeposit4EditDraftForm.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_PaymentRetention4EditDraftForm.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.contacts.Contacts" />
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
-                name="Sales_PaymentDeposit4EditDraftForm.contact.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
+                name="Sales_PaymentRetention4EditDraftForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentRetention" />
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Sales_PaymentDepositForm.checkbox4Invoice.Label</property>
+            <property name="Label">Sales_PaymentRetentionForm.checkbox4Invoice.Label</property>
             <property name="HideLabel">true</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
@@ -71,7 +71,7 @@
             <property name="UIType">CHECKBOX</property>
         </field>
         <field name="contactData">
-            <property name="Label">Sales_PaymentDepositForm.contactData.Label</property>
+            <property name="Label">Sales_PaymentRetentionForm.contactData.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
@@ -79,12 +79,12 @@
             <property name="GroupCount">2</property>
         </field>
         <field name="account">
-            <property name="Label">Sales_PaymentDepositForm.account.Label</property>
+            <property name="Label">Sales_PaymentRetentionForm.account.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4AccountFieldValue"
-                name="Sales_PaymentDepositForm.account.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit">
+                name="Sales_PaymentRetentionForm.account.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentRetention">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
@@ -92,26 +92,23 @@
                 <property name="Activation">TAX</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4RateCurrency"
-                name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.1"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
-            <trigger event="UI_FIELD_UPDATE" index="2" method="updateFields4Position"
-                name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.2"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
+                name="Sales_PaymentRetentionForm.account.UI_FIELD_UPDATE.1"
+                program="org.efaps.esjp.sales.payment.PaymentRetention" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_VALUE" method="getRateFieldValue"
-                name="Sales_PaymentDepositForm.rate.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
+                name="Sales_PaymentRetentionForm.rate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentRetention" />
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4AbsoluteAmount"
-                name="Sales_PaymentDepositForm.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentDeposit" />
+                name="Sales_PaymentRetentionForm.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentRetention" />
         </field>
         <field name="note">
             <property name="Width">80</property>
@@ -122,18 +119,18 @@
         <field character="Picker" name="docPicker">
             <property name="HideLabel">true</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Label">Sales_PaymentDepositForm.docPicker.Label</property>
+            <property name="Label">Sales_PaymentRetentionForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <picker name="Sales_PaymentDepositPicker4Documents" />
+            <picker name="Sales_PaymentRetentionPicker4Documents" />
         </field>
         <field character="Heading" name="headingPayment">
             <property name="Level">2</property>
-            <property name="Label">Sales_PaymentDepositForm.headingPayment.Heading</property>
+            <property name="Label">Sales_PaymentRetentionForm.headingPayment.Heading</property>
         </field>
         <field character="Target" name="paymentTable">
             <property name="ModeEdit">EDITABLE</property>
-            <table>Sales_PaymentDepositPaymentTable</table>
+            <table>Sales_PaymentRetentionPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>
                 <property name="LinkFrom">TargetDocument</property>
@@ -141,7 +138,7 @@
         </field>
         <field name="total4DiscountPay">
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_PaymentDepositForm.total4DiscountPay.Label</property>
+            <property name="Label">Sales_PaymentRetentionForm.total4DiscountPay.Label</property>
             <property name="ModeEdit">READONLY</property>
         </field>
     </definition>

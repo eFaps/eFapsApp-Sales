@@ -94,9 +94,6 @@
             <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4RateCurrency"
                 name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.1"
                 program="org.efaps.esjp.sales.payment.PaymentCash" />
-            <trigger event="UI_FIELD_UPDATE" index="2" method="updateFields4Position"
-                name="Sales_PaymentDepositForm.account.UI_FIELD_UPDATE.2"
-                program="org.efaps.esjp.sales.payment.PaymentCash" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>

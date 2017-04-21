@@ -38,7 +38,8 @@
             <property name="Required">true</property>
             <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency"
-                name="Sales_PaymentCheck4EditDraftForm.date.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck" />
+                name="Sales_PaymentCheck4EditDraftForm.date.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentCheck" />
         </field>
         <field character="Group" name="contactGroup">
             <property name="GroupCount">2</property>
@@ -54,9 +55,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Width">50</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_PaymentCheck4EditDraftForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts" />
+                name="Sales_PaymentCheck4EditDraftForm.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts" />
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
-                name="Sales_PaymentCheck4EditDraftForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck" />
+                name="Sales_PaymentCheck4EditDraftForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentCheck" />
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">EDITABLE</property>
@@ -80,7 +83,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4AccountFieldValue"
-                name="Sales_PaymentCheckForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentCheck">
+                name="Sales_PaymentCheckForm.account.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentCheck">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
@@ -90,22 +94,21 @@
             <trigger event="UI_FIELD_UPDATE" index="1" method="updateFields4RateCurrency"
                 name="Sales_PaymentCheckForm.account.UI_FIELD_UPDATE.1"
                 program="org.efaps.esjp.sales.payment.PaymentCheck" />
-            <trigger event="UI_FIELD_UPDATE" index="2" method="updateFields4Position"
-                name="Sales_PaymentCheckForm.account.UI_FIELD_UPDATE.2"
-                program="org.efaps.esjp.sales.payment.PaymentCheck" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_VALUE" method="getRateFieldValue"
-                name="Sales_PaymentCheckForm.rate.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentCheck" />
+                name="Sales_PaymentCheckForm.rate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentCheck" />
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4AbsoluteAmount"
-                name="Sales_PaymentCheckForm.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck" />
+                name="Sales_PaymentCheckForm.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentCheck" />
         </field>
         <field name="note">
             <property name="Width">80</property>
