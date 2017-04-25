@@ -1706,28 +1706,27 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUND = new BooleanSysConfAttribute()
-                    .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "RecievingTicket.CreateFromOrderOutbound")
-                    .description("Activate the Company Independent Reports.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute RECIEVINGTICKET_FROMORDEROUTBOUNDAC
+                    = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete")
-                    .description(" QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.");
+                    .description(" QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.")
+                    .addDefaultValue("Type", CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.OrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.OrderOutboundStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.OrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.OrderOutboundStatus.Invoiced.key);
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECIEVINGTICKETPOSREMARK = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute RECIEVINGTICKET_POSREMARK = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "RecievingTicket.ActivateRemark4Position")
                     .description("Activate the Company Independent Reports.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute RECIEVINGTICKETREVSEQ = new StringSysConfAttribute()
+    public static final StringSysConfAttribute RECIEVINGTICKET_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "RecievingTicket.RevisionSequence")
                     .defaultValue(CINumGenSales.RecievingTicketRevisionSequence.uuid.toString())
@@ -1735,7 +1734,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink RECIEVINGTICKETDEFAULTWAREHOUSE = new SysConfLink()
+    public static final SysConfLink RECIEVINGTICKET_DEFAULTWAREHOUSE = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "RecievingTicket.DefaultWareHouse")
                     .description("Possibility to set a default Warehouse for RecievingTicket. If not set "
