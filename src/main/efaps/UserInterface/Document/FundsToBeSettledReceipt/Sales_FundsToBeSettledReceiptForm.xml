@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a0792508-f67d-4048-86e9-8910fd22b80f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -172,11 +167,13 @@
             <property name="ModeEdit">NONE</property>
             <property name="Width">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" 
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
-                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_UPDATE" 
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -324,8 +321,7 @@
             <property name="Label">Sales_FundsToBeSettledReceipt/CrossTotal.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-
-                 <field name="rate4ReadHeading" character="Heading">
+        <field name="rate4ReadHeading" character="Heading">
             <property name="Level">1</property>
             <property name="Label">Sales_IncomingInvoiceForm.rate4ReadHeading.Heading</property>
             <property name="ModeCreate">NONE</property>
@@ -422,13 +418,11 @@
                 name="Sales_FundsToBeSettledReceiptForm.rateCrossTotal4Read.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK"/>
         </field>
-
         <field name="paymentHeading" character="Heading">
             <property name="Level">3</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.paymentHeading.Label</property>
             <property name="ModeEdit">NONE</property>
         </field>
-
         <field name="payment">
             <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Payment#CreateDocument].type.label&gt; - $&lt;linkfrom[Sales_Payment#CreateDocument].attribute[Date]&gt;</property>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,25 +14,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 8589 $
- Last Changed:    $Date: 2013-01-22 14:07:32 -0500 (Tue, 22 Jan 2013) $
- Last Changed By: $Author: jan@moxter.net $
-
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2e2050c1-0461-4dba-ad18-b45c0c677612</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8589 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <profiles>
             <profile name="eFaps"/>
         </profiles>
         <name>Sales_AccountFundsToBeSettledTable</name>
         <field name="name">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_AccountAbstract/Name.Label</property>
         </field>
@@ -76,6 +73,61 @@
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <name>Sales_AccountFundsToBeSettledTable</name>
+        <field name="name">
+            <property name="HRef">TREE</property>
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_AccountAbstract/Name.Label</property>
+        </field>
+        <field name="reasonLink">
+            <property name="Select">linkto[ReasonLink].attribute[Value]</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/ReasonLink.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="employeeLink">
+            <property name="Label">Sales_AccountFundsToBeSettled/Employee.Label</property>
+            <property name="SelectAlternateOID">linkto[EmployeeLink].oid</property>
+            <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">AmountAbstract</property>
+            <property name="Label">Sales_AccountAbstract/Amount.Label</property>
+        </field>
+        <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Label">Sales_AccountAbstract/CurrencyLink.Label</property>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="Label">Sales_AccountAbstract/Description.Label</property>
+        </field>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/Date.Label</property>
+        </field>
+        <field name="duedate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/DueDate.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Open</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/Status.Label</property>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
          <application-dependencies>
             <application name="eFapsApp-HumanResource" exclude="true"/>
         </application-dependencies>
@@ -84,7 +136,7 @@
         </profiles>
         <name>Sales_AccountFundsToBeSettledTable</name>
         <field name="name">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_AccountAbstract/Name.Label</property>
         </field>
@@ -128,14 +180,14 @@
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_AccountFundsToBeSettledForm.project.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
-         <application-dependencies>
+        <application-dependencies>
             <application name="eFapsApp-HumanResource"/>
         </application-dependencies>
         <profiles>
@@ -143,7 +195,7 @@
         </profiles>
         <name>Sales_AccountFundsToBeSettledTable</name>
         <field name="name">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_AccountAbstract/Name.Label</property>
         </field>

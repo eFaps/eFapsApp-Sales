@@ -62,6 +62,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.common.uiform.Edit;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -105,11 +107,43 @@ public abstract class Account_Base
             {
                 super.add2basicInsert(_parameter, _insert);
                 _insert.add(CISales.AccountAbstract.Name, getDocName4Create(_parameter));
+                final Instance employeeInst = Instance.get(_parameter.getParameterValue("employeeLink"));
+                if (InstanceUtils.isValid(employeeInst)) {
+                    _insert.add(CISales.AccountFundsToBeSettled.EmployeeLink, employeeInst);
+                }
             }
         };
         final Instance instance = create.basicInsert(_parameter);
         final CreatedDoc createdDoc = new  CreatedDoc(instance);
         connect2Object(_parameter, createdDoc);
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parametes as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Edit edit = new Edit()
+        {
+            @Override
+            protected void add2MainUpdate(final Parameter _parameter,
+                                          final Update _update)
+                throws EFapsException
+            {
+                super.add2MainUpdate(_parameter, _update);
+                final Instance employeeInst = Instance.get(_parameter.getParameterValue("employeeLink"));
+                if (InstanceUtils.isValid(employeeInst)) {
+                    _update.add(CISales.AccountFundsToBeSettled.EmployeeLink, employeeInst);
+                }
+            }
+        };
+        edit.execute(_parameter);
+        final EditedDoc createdDoc = new  EditedDoc(_parameter.getInstance());
+        updateConnection2Object(_parameter, createdDoc);
         return new Return();
     }
 

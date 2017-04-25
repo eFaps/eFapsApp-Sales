@@ -32,7 +32,6 @@
         <target>
             <form>Sales_AccountFundsToBeSettledForm</form>
             <execute program="org.efaps.esjp.sales.Account" method="create">
-
                 <property name="StatusGroup">Sales_AccountFundsToBeSettledStatus</property>
                 <property name="Status">Open</property>
             </execute>
