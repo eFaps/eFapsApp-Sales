@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2017 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>851caab2-375f-4c3a-a1cf-33f9fe75e11d</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentDocumentOutMyDesk_Menu_Action_SetOpen</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <execute index="0" method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Open</property>
+                <property name="EvalOID">true</property>
+            </execute>
+            <execute index="1" method="createTransaction4PaymentDocument"
+                program="org.efaps.esjp.sales.Transaction" />
+            <validate method="validateStatus4Selected" program="org.efaps.esjp.common.uitable.Validate">
+                <property name="StatusGroup01">Sales_PaymentCashOutStatus</property>
+                <property name="Status01">Draft</property>
+                <property name="StatusGroup02">Sales_PaymentDepositOutStatus</property>
+                <property name="Status02">Draft</property>
+                <property name="StatusGroup03">Sales_PaymentInternalOutStatus</property>
+                <property name="Status03">Draft</property>
+            </validate>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PaymentDocumentMyDesk_Menu_Action_SetOpen.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!--  Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists01">org.efaps.sales.payment.out.Cash.Status4Create</property>
+                <property name="AttributeExists02">org.efaps.sales.payment.out.Check.Status4Create</property>
+                <property name="AttributeExists03">org.efaps.sales.payment.out.Deposit.Status4Create</property>
+                <property name="AttributeExists04">org.efaps.sales.payment.out.Detraction.Status4Create</property>
+                <property name="AttributeExists05">org.efaps.sales.payment.out.Internal.Status4Create</property>
+                <property name="AttributeExists06">org.efaps.sales.payment.out.Retention.Status4Create</property>
+            </trigger>
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
+    </definition>
+</ui-command>
