@@ -1927,7 +1927,7 @@ public abstract class AbstractPaymentDocument_Base
             final Long statusID = multi.getSelect(selCreateDocStatus);
             if (InstanceUtils.isValid(createDocInst) && statusID != null) {
                 final Status status = Status.get(statusID);
-                if ("Paid".equals(status.getKey()) || "Paid".equals(status.getKey())) {
+                if ("Paid".equals(status.getKey()) || "Closed".equals(status.getKey())) {
                     final Update update = new Update(createDocInst);
                     update.add(CIERP.DocumentAbstract.StatusAbstract,
                                     Status.find(createDocInst.getType().getStatusAttribute().getLink().getUUID(),
