@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,14 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.ui.html.dojo.charting.Axis;
 import org.efaps.esjp.ui.html.dojo.charting.BarsChart;
 import org.efaps.esjp.ui.html.dojo.charting.Data;
 import org.efaps.esjp.ui.html.dojo.charting.Orientation;
 import org.efaps.esjp.ui.html.dojo.charting.Serie;
+import org.efaps.esjp.ui.html.dojo.charting.Util;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -131,7 +134,7 @@ public abstract class Sales4ContactPanel_Base
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        CharSequence ret;
+        final CharSequence ret;
         if (isCached()) {
             ret = getFromCache();
         } else {
@@ -167,7 +170,7 @@ public abstract class Sales4ContactPanel_Base
 
                 currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-                BigDecimal val;
+                final BigDecimal val;
                 if (values.containsKey(contactInst)) {
                     val = values.get(contactInst);
                 } else {
@@ -175,7 +178,7 @@ public abstract class Sales4ContactPanel_Base
                 }
                 values.put(contactInst, val.add(currentValue));
                 if (!contacts.containsKey(contactInst)) {
-                    contacts.put(contactInst,  multi.<String>getSelect(selContactName));
+                    contacts.put(contactInst, multi.<String>getSelect(selContactName));
                 }
             }
             final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues
@@ -212,7 +215,18 @@ public abstract class Sales4ContactPanel_Base
             chart.setTitle(getTitle());
             chart.setOrientation(Orientation.CHART_ONLY);
 
-            final Serie<Data> serie = new Serie<Data>();
+            // add y-Axis manual to change the label for the axis
+            final List<Map<String, Object>> labels = new ArrayList<>();
+            for (int i = 1; i < y + 1; i++) {
+                final Map<String, Object> map = new HashMap<>();
+                map.put("value", i);
+                map.put("text", StringEscapeUtils.escapeEcmaScript((y + 1 - i) + "."));
+                labels.add(map);
+            }
+            chart.addAxis(new Axis().setName("y").setVertical(true).setMin(0)
+                            .setLabels(Util.mapCollectionToObjectArray(labels)));
+
+            final Serie<Data> serie = new Serie<>();
             chart.addSerie(serie);
             boolean added = false;
             for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
@@ -222,7 +236,8 @@ public abstract class Sales4ContactPanel_Base
                 dataTmp.setYValue(entry.getValue());
                 dataTmp.addConfig("label", "\""
                                 + StringEscapeUtils.escapeEcmaScript(contacts.get(entry.getKey())) + "\"");
-                dataTmp.setTooltip(contacts.get(entry.getKey()) + " - " + entry.getValue());
+                dataTmp.setTooltip(contacts.get(entry.getKey()) + " - "
+                                + NumberFormatter.get().getTwoDigitsFormatter().format(entry.getValue()));
                 y--;
                 if (y < 1) {
                     final Data dataTmp2 = new Data().setSimple(false);
