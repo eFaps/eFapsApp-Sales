@@ -618,6 +618,7 @@ public abstract class SalesReport4Account_Base
         {
             final DateTime reportDate = getReportDate(_parameter);
             if (reportDate.isBefore(new DateTime().withTimeAtStartOfDay())) {
+                // check for payments
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, 100);
                 add2QueryBuilder(_parameter, attrQueryBldr);
 
@@ -631,50 +632,81 @@ public abstract class SalesReport4Account_Base
                 multi.execute();
                 while (multi.next()) {
                     final Instance docInst = multi.getSelect(seDocInst);
-                    final DataBean bean;
-                    if (!_beans.containsKey(docInst)) {
-                        final PrintQuery print = new PrintQuery(docInst);
-                        print.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
-                                    CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
-                                    CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
-                                    CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
-                                    CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Revision);
-
-                        final SelectBuilder selContactInst = new SelectBuilder().linkto(
-                                        CISales.DocumentSumAbstract.Contact).instance();
-                        final SelectBuilder selContactName = new SelectBuilder().linkto(
-                                        CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
-                        final SelectBuilder selStatus = new SelectBuilder().status().label();
-                        print.addSelect(selStatus);
-                        if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                            print.addSelect(selContactInst, selContactName);
-                        }
-                        print.execute();
-                        bean = new DataBean(getFilteredReport().getReportKey())
-                                    .setDocInst(print.getCurrentInstance())
-                                    .setDocCreated(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
-                                    .setDocDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                                    .setDocDueDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
-                                    .setDocName(print.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                                    .setDocRevision(print.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                                    .setDocStatus(print.<String>getSelect(selStatus))
-                                    .setReportDate(reportDate);
-                        if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                            bean.setContactInst(print.<Instance>getSelect(selContactInst))
-                                    .setDocContactName(print.<String>getSelect(selContactName));
-                        }
-                        if (isCurrencyBase(_parameter)) {
-                            bean.setCurrencyBase(true)
-                                .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
-                                                print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
-                        } else {
-                            bean.setRate(print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
-                                .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
-                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
-                        }
-                        _beans.put(docInst, bean);
-                    }
+                    addDataBean(_parameter, _beans, docInst);
                 }
+
+                // check for swaps
+                final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+                swapQueryBldr.addWhereAttrInQuery(CISales.Document2Document4Swap.FromLink,
+                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                swapQueryBldr.addWhereAttrGreaterValue(CISales.Document2Document4Swap.Date, reportDate.minusMinutes(1));
+                final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
+                final SelectBuilder selDocInst = SelectBuilder.get()
+                                .linkto(CISales.Document2Document4Swap.FromLink).instance();
+                swapMulti.addSelect(selDocInst);
+                swapMulti.execute();
+                while (swapMulti.next()) {
+                    final Instance docInst = swapMulti.getSelect(selDocInst);
+                    addDataBean(_parameter, _beans, docInst);
+                }
+            }
+        }
+
+        /**
+         * Adds the data bean.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _beans the beans
+         * @param _docInst the doc inst
+         * @throws EFapsException on error
+         */
+        protected void addDataBean(final Parameter _parameter,
+                                   final Map<Instance, DataBean> _beans,
+                                   final Instance _docInst)
+            throws EFapsException
+        {
+            final DataBean bean;
+            if (!_beans.containsKey(_docInst)) {
+                final PrintQuery print = new PrintQuery(_docInst);
+                print.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
+                                CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
+                                CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
+                                CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
+                                CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Revision);
+
+                final SelectBuilder selContactInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
+                                .instance();
+                final SelectBuilder selContactName = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
+                                .attribute(CIContacts.Contact.Name);
+                final SelectBuilder selStatus = new SelectBuilder().status().label();
+                print.addSelect(selStatus);
+                if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                    print.addSelect(selContactInst, selContactName);
+                }
+                print.execute();
+                bean = new DataBean(getFilteredReport().getReportKey())
+                                .setDocInst(print.getCurrentInstance())
+                                .setDocCreated(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
+                                .setDocDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                .setDocDueDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
+                                .setDocName(print.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                .setDocRevision(print.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
+                                .setDocStatus(print.<String>getSelect(selStatus))
+                                .setReportDate(getReportDate(_parameter));
+                if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                    bean.setContactInst(print.<Instance>getSelect(selContactInst))
+                        .setDocContactName(print.<String>getSelect(selContactName));
+                }
+                if (isCurrencyBase(_parameter)) {
+                    bean.setCurrencyBase(true)
+                        .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
+                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+                } else {
+                    bean.setRate(print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
+                        .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
+                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                }
+                _beans.put(_docInst, bean);
             }
         }
 
