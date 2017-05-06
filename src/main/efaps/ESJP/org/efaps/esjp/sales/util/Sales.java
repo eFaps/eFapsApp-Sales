@@ -1951,6 +1951,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_PRODTRANSSUM_ALTERNATIVE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.ProductsTransactionSummaryReport.ActivateAlternative")
+                    .description("Activate the ProductType field for the DocProductTransactionReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute REPORT_DOCPRODTRANSCOST_FAB = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocProductTransactionCostReport.AnalyzeFabrication")

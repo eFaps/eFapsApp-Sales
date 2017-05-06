@@ -33,14 +33,20 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">storageGroup</property>
                 <property name="Field04">storage</property>
+                <property name="Field05">costType</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Instance</property>
                 <property name="FilterType04">Instance</property>
-                <property name="FilterDefault01">MONTHS:-1</property>
+                <property name="FilterType05">FilterValue</property>
+                <property name="FilterDefault01">WEEKS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">-</property>
                 <property name="FilterDefault04">-</property>
+                <property name="FilterDefault05">org.efaps.esjp.products.reports.filter.CostTypeFilterValue</property>
+                 <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute05">org.efaps.sales.report.ProductsTransactionSummaryReport.ActivateAlternative</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_ProductsTransactionSummaryReportForm.filter.UI_FIELD_VALUE.2"
@@ -50,12 +56,17 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">storageGroup</property>
                 <property name="Field04">storage</property>
+                <property name="Field05">costType</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.storageGroup</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.storage</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.costType</property>
                 <property name="Products_WarehouseGroup_Select">attribute[Name]</property>
                 <property name="Products_Warehouse_Select">attribute[Name]</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AccessAttribute05">org.efaps.sales.report.ProductsTransactionSummaryReport.ActivateAlternative</property>
             </trigger>
         </field>
         <field name="report">

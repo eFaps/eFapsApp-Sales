@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -44,11 +45,13 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.products.Inventory;
 import org.efaps.esjp.products.Inventory_Base.InventoryBean;
 import org.efaps.esjp.products.StorageGroup;
+import org.efaps.esjp.products.reports.filter.CostTypeFilterValue;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -73,23 +76,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public abstract class ProductsTransactionSummaryReport_Base
     extends FilteredReport
 {
-
-    /**
-     * The Enum Valuation.
-     *
-     * @author The eFaps Team
-     */
-    public enum Valuation
-    {
-        /** The cost. */
-        COST,
-
-        /** The costing. */
-        COSTING,
-
-        /** The none. */
-        NONE;
-    }
 
     /**
      * Logging instance used in this class.
@@ -135,6 +121,25 @@ public abstract class ProductsTransactionSummaryReport_Base
         }
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
+
+    /**
+     * Gets the cost type field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the cost type field value
+     * @throws EFapsException on error
+     */
+    public Return getCostTypeFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String key = value.getField().getName();
+        final Map<String, Object> map = getFilterMap(_parameter);
+        ret.put(ReturnValues.VALUES, CostTypeFilterValue.getCostTypePositions(_parameter, (CostTypeFilterValue) map
+                        .get(key)));
         return ret;
     }
 
@@ -197,6 +202,13 @@ public abstract class ProductsTransactionSummaryReport_Base
                 }
             } else {
                 final Map<Instance, DataBean> beans = new HashMap<>();
+                final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+                final CostTypeFilterValue filterValue = (CostTypeFilterValue) filterMap.get("costType");
+                Instance alterInst = null;
+                if (filterValue != null) {
+                    alterInst = Instance.get(filterValue.getObject());
+                }
+
                 // Admin_DataModel_StatusAbstract
                 final QueryBuilder statusQueryBldr = new QueryBuilder(UUID.fromString(
                                 "f3eaf2f3-b24c-43c0-9ea1-0f6354438c81"));
@@ -211,12 +223,19 @@ public abstract class ProductsTransactionSummaryReport_Base
                                 .getAttributeQuery(CIERP.DocumentAbstract.ID));
                 add2QueryBldr4Transaction(_parameter, attrQueryBldr);
 
-                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Costing);
+                final QueryBuilder queryBldr;
+                if (InstanceUtils.isValid(alterInst)) {
+                    queryBldr = new QueryBuilder(CIProducts.CostingAlternative);
+                    queryBldr.addWhereAttrEqValue(CIProducts.CostingAlternative.CurrencyLink, alterInst);
+                } else {
+                    queryBldr = new QueryBuilder(CIProducts.Costing);
+                }
                 queryBldr.addWhereAttrInQuery(CIProducts.Costing.TransactionAbstractLink, attrQueryBldr
                                 .getAttributeQuery(CIProducts.TransactionInOutAbstract.ID));
 
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selTrans = SelectBuilder.get().linkto(CIProducts.Costing.TransactionAbstractLink);
+                final SelectBuilder selTrans = SelectBuilder.get()
+                                .linkto(CIProducts.CostingAbstract.TransactionAbstractLink);
                 final SelectBuilder selTransInst = new SelectBuilder(selTrans).instance();
                 final SelectBuilder selQuantity = new SelectBuilder(selTrans).attribute(
                                 CIProducts.TransactionAbstract.Quantity);
@@ -227,7 +246,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                 final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(
                                 CIProducts.ProductAbstract.Description);
                 multi.addSelect(selProdInst, selProdName, selProdDescr, selTransInst, selQuantity);
-                multi.addAttribute(CIProducts.Costing.Cost);
+                multi.addAttribute(CIProducts.CostingAbstract.Cost);
                 multi.execute();
 
                 while (multi.next()) {
@@ -242,7 +261,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                     }
                     final Instance transInst = multi.getSelect(selTransInst);
                     final BigDecimal quantity = multi.getSelect(selQuantity);
-                    final BigDecimal cost = multi.getAttribute(CIProducts.Costing.Cost);
+                    final BigDecimal cost = multi.getAttribute(CIProducts.CostingAbstract.Cost);
                     if (transInst.getType().isCIType(CIProducts.TransactionInbound)) {
                         bean.addIncoming(quantity, cost);
                     } else if (transInst.getType().isCIType(CIProducts.TransactionOutbound)) {
@@ -269,7 +288,12 @@ public abstract class ProductsTransactionSummaryReport_Base
                 };
                 final DateTime dateTo = (DateTime) filter.get("dateTo");
                 inventory.setDate(dateTo.plusDays(1).withTimeAtStartOfDay());
-                inventory.setCurrencyInst(Currency.getBaseCurrency());
+                if (InstanceUtils.isValid(alterInst)) {
+                    inventory.setCurrencyInst(alterInst);
+                    inventory.setAlternativeCurrencyInst(alterInst);
+                } else {
+                    inventory.setCurrencyInst(Currency.getBaseCurrency());
+                }
                 inventory.setShowStorage(false);
                 inventory.setStorageInsts(getStorageInsts(_parameter));
                 for (final InventoryBean invBean : inventory.getInventory(_parameter)) {
@@ -288,8 +312,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                     }
                 }
 
-                @SuppressWarnings("unchecked")
-                final List<DataBean> dataSource = new ArrayList(beans.values());
+                final List<DataBean> dataSource = new ArrayList<>(beans.values());
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
 
                 chain.addComparator(new Comparator<DataBean>()

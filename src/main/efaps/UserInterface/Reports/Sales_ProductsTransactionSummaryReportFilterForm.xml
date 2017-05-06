@@ -74,5 +74,21 @@
                 <property name="Type">Products_DynamicStorage</property>
             </trigger>
         </field>
+        <field name="costType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="Label">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.costType</property>
+            <trigger event="UI_FIELD_VALUE" method="getCostTypeFieldValue"
+                name="Sales_ProductsTransactionSummaryReportFilterForm.costType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionSummaryReport">
+            </trigger>
+             <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_ProductsTransactionSummaryReportFilterForm.costType.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.report.ProductsTransactionSummaryReport.ActivateAlternative</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
