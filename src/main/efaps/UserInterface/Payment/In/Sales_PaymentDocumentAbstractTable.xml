@@ -73,6 +73,11 @@
             <property name="Label">Sales_PaymentDocumentAbstract/RateCurrencyLink.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+         <field name="creator">
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Creator.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
         <field name="account">
             <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstractTable.account.Label</property>
