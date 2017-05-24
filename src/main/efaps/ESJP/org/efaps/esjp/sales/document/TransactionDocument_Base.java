@@ -404,20 +404,23 @@ public abstract class TransactionDocument_Base
                         queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQueryBldr.getAttributeQuery(
                                         CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract));
                         final List<Instance> prodInsts = queryBldr.getQuery().execute();
-
-                        final Map<Instance, InventoryBean> inventoryBeans = Inventory.getInventory4Products(_parameter,
-                                        _storageInst, date, prodInsts.toArray(new Instance[prodInsts.size()]));
-                        for (final InventoryBean inventoryBean : inventoryBeans.values()) {
-                            if (stockHtml.length() > 0) {
-                                stockHtml.append("<br/>");
+                        if (prodInsts.isEmpty()) {
+                            stockHtml.append(getDBProperty("NOINDIVIDUAL"));
+                        } else {
+                            final Map<Instance, InventoryBean> inventoryBeans = Inventory.getInventory4Products(
+                                            _parameter, _storageInst, date,
+                                            prodInsts.toArray(new Instance[prodInsts.size()]));
+                            for (final InventoryBean inventoryBean : inventoryBeans.values()) {
+                                if (stockHtml.length() > 0) {
+                                    stockHtml.append("<br/>");
+                                }
+                                stockHtml.append("<label><input type=\"checkbox\" name=\"individual\" value=\"")
+                                    .append(inventoryBean.getProdOID())
+                                    .append("\">")
+                                    .append(inventoryBean.getProdName()).append("</label>");
                             }
-                            stockHtml.append("<label><input type=\"checkbox\" name=\"individual\" value=\"")
-                                .append(inventoryBean.getProdOID())
-                                .append("\">")
-                                .append(inventoryBean.getProdName()).append("</label>");
                         }
                         break;
-
                     default:
                         final InventoryBean inventoryBean = Inventory.getInventory4Product(_parameter, _storageInst,
                                         date, pos.getProdInstance());
