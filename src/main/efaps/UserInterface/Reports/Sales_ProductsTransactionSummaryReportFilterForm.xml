@@ -74,6 +74,39 @@
                 <property name="Type">Products_DynamicStorage</property>
             </trigger>
         </field>
+        <field name="productDocumentTypeGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="productDocumentType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.productDocumentType</property>
+            <trigger program="org.efaps.esjp.erp.FilteredReport"
+                method="getInstanceSetFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                 <property name="Sales_ProductDocumentType_Select">attribute[Description]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete"
+                 name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.common.uiform.Field">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="SearchAttribute">Description</property>
+                <property name="Select4VALUE">attribute[Description]</property>
+                <property name="AutoType">TOKEN</property>
+            </trigger>
+        </field>
+         <field name="productDocumentType_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.ProductsTransactionSummaryReport.productDocumentType_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="productDocumentType_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionSummaryReport">
+            </trigger>
+        </field>
         <field name="costType">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">RADIO</property>

@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -217,6 +218,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                 final QueryBuilder docQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
                 docQueryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.StatusAbstract, statusQueryBldr
                                 .getAttributeQuery("ID"));
+                add2QueryBldr4Doc(_parameter, docQueryBldr);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
                 attrQueryBldr.addWhereAttrInQuery(CIProducts.TransactionInOutAbstract.Document, docQueryBldr
@@ -331,6 +333,36 @@ public abstract class ProductsTransactionSummaryReport_Base
                 getFilteredReport().cache(_parameter, ret);
             }
             return ret;
+        }
+
+        /**
+         * Adds the two query bldr for transaction.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _docQueryBldr the query bldr
+         * @throws EFapsException on error
+         */
+        protected void add2QueryBldr4Doc(final Parameter _parameter,
+                                         final QueryBuilder _docQueryBldr)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("productDocumentType")) {
+                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filter.get("productDocumentType");
+                final Set<Instance> instances = filterValue.getObject();
+                if (instances != null && !instances.isEmpty()) {
+                    final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                    queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract,
+                                    instances.toArray());
+                    if (filterValue.isNegate()) {
+                        _docQueryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, queryBldr.getAttributeQuery(
+                                    CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract));
+                    } else {
+                        _docQueryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, queryBldr.getAttributeQuery(
+                                        CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract));
+                    }
+                }
+            }
         }
 
         /**
