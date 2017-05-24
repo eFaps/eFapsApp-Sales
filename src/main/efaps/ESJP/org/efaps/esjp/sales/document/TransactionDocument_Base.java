@@ -50,6 +50,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.products.Inventory;
 import org.efaps.esjp.products.Inventory_Base.InventoryBean;
@@ -383,53 +384,55 @@ public abstract class TransactionDocument_Base
                 .addHeaderColumn(getDBProperty("ProdDescr"))
                 .addHeaderColumn(getDBProperty("Stock"));
         for (final Position pos : positions) {
-            final StringBuilder stockHtml = new StringBuilder();
-            ProductIndividual individual = ProductIndividual.NONE;
-            if (Products.ACTIVATEINDIVIDUAL.get()) {
-                final PrintQuery print = new PrintQuery(pos.getProdInstance());
-                print.addAttribute(CIProducts.ProductAbstract.Individual);
-                print.execute();
-                individual = print.getAttribute(CIProducts.ProductAbstract.Individual);
-            }
-            switch (individual) {
-                case INDIVIDUAL:
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(
-                                    CIProducts.StoreableProductAbstract2IndividualAbstract);
-                    attrQueryBldr.addWhereAttrEqValue(
-                                    CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract,
-                                    pos.getProdInstance());
-                    final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
-                    queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQueryBldr.getAttributeQuery(
-                                    CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract));
-                    final List<Instance> prodInsts = queryBldr.getQuery().execute();
+            if (InstanceUtils.isKindOf(pos.getProdInstance(), CIProducts.StoreableProductAbstract)) {
+                final StringBuilder stockHtml = new StringBuilder();
+                ProductIndividual individual = ProductIndividual.NONE;
+                if (Products.ACTIVATEINDIVIDUAL.get()) {
+                    final PrintQuery print = new PrintQuery(pos.getProdInstance());
+                    print.addAttribute(CIProducts.ProductAbstract.Individual);
+                    print.execute();
+                    individual = print.getAttribute(CIProducts.ProductAbstract.Individual);
+                }
+                switch (individual) {
+                    case INDIVIDUAL:
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(
+                                        CIProducts.StoreableProductAbstract2IndividualAbstract);
+                        attrQueryBldr.addWhereAttrEqValue(
+                                        CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract,
+                                        pos.getProdInstance());
+                        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
+                        queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQueryBldr.getAttributeQuery(
+                                        CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract));
+                        final List<Instance> prodInsts = queryBldr.getQuery().execute();
 
-                    final Map<Instance, InventoryBean> inventoryBeans = Inventory.getInventory4Products(_parameter,
-                                    _storageInst, date, prodInsts.toArray(new Instance[prodInsts.size()]));
-                    for (final InventoryBean inventoryBean : inventoryBeans.values()) {
-                        if (stockHtml.length() > 0) {
-                            stockHtml.append("<br/>");
+                        final Map<Instance, InventoryBean> inventoryBeans = Inventory.getInventory4Products(_parameter,
+                                        _storageInst, date, prodInsts.toArray(new Instance[prodInsts.size()]));
+                        for (final InventoryBean inventoryBean : inventoryBeans.values()) {
+                            if (stockHtml.length() > 0) {
+                                stockHtml.append("<br/>");
+                            }
+                            stockHtml.append("<label><input type=\"checkbox\" name=\"individual\" value=\"")
+                                .append(inventoryBean.getProdOID())
+                                .append("\">")
+                                .append(inventoryBean.getProdName()).append("</label>");
                         }
-                        stockHtml.append("<label><input type=\"checkbox\" name=\"individual\" value=\"")
-                            .append(inventoryBean.getProdOID())
-                            .append("\">")
-                            .append(inventoryBean.getProdName()).append("</label>");
-                    }
-                    break;
+                        break;
 
-                default:
-                    final InventoryBean inventoryBean = Inventory.getInventory4Product(_parameter, _storageInst,
-                                    date, pos.getProdInstance());
-                    if (inventoryBean != null) {
-                        stockHtml.append(NumberFormatter.get().getFormatter().format(inventoryBean.getQuantity()));
-                    }
-                    break;
+                    default:
+                        final InventoryBean inventoryBean = Inventory.getInventory4Product(_parameter, _storageInst,
+                                        date, pos.getProdInstance());
+                        if (inventoryBean != null) {
+                            stockHtml.append(NumberFormatter.get().getFormatter().format(inventoryBean.getQuantity()));
+                        }
+                        break;
+                }
+                table.addRow()
+                    .addColumn(pos.getQuantity().toString())
+                    .addColumn(pos.getUoM().getName())
+                    .addColumn(pos.getProdName())
+                    .addColumn(pos.getDescr())
+                    .addColumn(stockHtml);
             }
-            table.addRow()
-                .addColumn(pos.getQuantity().toString())
-                .addColumn(pos.getUoM().getName())
-                .addColumn(pos.getProdName())
-                .addColumn(pos.getDescr())
-                .addColumn(stockHtml);
         }
         return table.toHtml();
     }
