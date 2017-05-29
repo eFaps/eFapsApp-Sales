@@ -1,119 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-05-29T10:32:16 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="00995562-c85a-4f67-b9d5-d202baf41a60">
-    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
-    <import value="org.efaps.number2words.Converter"/>
-    <parameter name="INSTANCE" class="org.efaps.db.Instance"/>
-    <parameter name="CompanyName" class="java.lang.String"/>
-    <queryString language="eFaps">
-        <![CDATA[print $P!{INSTANCE}
+	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
+	<import value="org.efaps.number2words.Converter"/>
+	<parameter name="INSTANCE" class="org.efaps.db.Instance"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<queryString language="eFaps">
+		<![CDATA[print $P!{INSTANCE}
  select
  linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name] as accName,
  linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[AmountAbstract] as amountPettyCash,
  attribute[CrossTotal] as amount,
  attribute[Name] as name,
  attribute[Date] as date]]>
-    </queryString>
-    <field name="accName" class="java.lang.String"/>
-    <field name="amountPettyCash" class="java.math.BigDecimal"/>
-    <field name="amount" class="java.math.BigDecimal"/>
-    <field name="name" class="java.lang.String"/>
-    <field name="date" class="org.joda.time.DateTime"/>
-    <pageHeader>
-        <band height="81" splitType="Stretch">
-            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-                <reportElement x="730" y="57" width="72" height="14" uuid="7d043355-4b0a-430c-b4b1-9acaf7869ea5"/>
-                <textElement textAlignment="Right">
-                    <font size="10"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="690" y="57" width="40" height="14" uuid="61e4d7db-b898-4559-af08-e018371af498"/>
-                <textElement>
-                    <font size="10" isBold="false"/>
-                </textElement>
-                <text><![CDATA[Fecha:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="0" y="30" width="802" height="27" uuid="d283214b-9348-4e6f-ba65-b161ca1791b2">
-                    <property name="local_mesure_unitx" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.x" value="px"/>
-                </reportElement>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="16" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["LIQUIDACIÓN " + $F{name}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement x="91" y="14" width="711" height="14" uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb"/>
-                <textElement textAlignment="Left" verticalAlignment="Top">
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="0" width="91" height="14" uuid="a167b8a1-e5f2-41d0-a8f3-c1e4a7070ac0">
-                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-                </reportElement>
-                <textElement>
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[EMPRESA:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="14" width="91" height="14" uuid="bc36a791-4902-4ca3-a214-80dce535afcc"/>
-                <textElement>
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[CAJA:]]></text>
-            </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement x="91" y="0" width="711" height="14" uuid="95de231f-f359-4b91-b319-8334960ede77"/>
-                <textElement textAlignment="Left" verticalAlignment="Top">
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageHeader>
-    <detail>
-        <band height="60">
-            <subreport>
-                <reportElement positionType="Float" x="0" y="0" width="802" height="60" uuid="0233034d-b54b-49d5-adaa-67e303dbd4d4"/>
-                <subreportParameter name="AmountPettyCash">
-                    <subreportParameterExpression><![CDATA[$F{amountPettyCash}]]></subreportParameterExpression>
-                </subreportParameter>
-                <subreportParameter name="Amount">
-                    <subreportParameterExpression><![CDATA[$F{amount}]]></subreportParameterExpression>
-                </subreportParameter>
-                <subreportParameter name="INSTANCE">
-                    <subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
-                </subreportParameter>
-                <subreportExpression><![CDATA["Sales_PettyCashBalancePayments.jrxml"]]></subreportExpression>
-            </subreport>
-        </band>
-        <band height="89">
-            <staticText>
-                <reportElement x="91" y="69" width="126" height="20" uuid="c8e0a050-048a-466a-97c8-0cba849f750d"/>
-                <box>
-                    <topPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[FIRMA ENCARGADO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="554" y="69" width="137" height="20" uuid="5cb363cd-e820-4529-83a7-a4c8d6e807f5"/>
-                <box>
-                    <topPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font isBold="true"/>
-                </textElement>
-                <text><![CDATA[FIRMA RESPONSABLE]]></text>
-            </staticText>
-        </band>
-    </detail>
+	</queryString>
+	<field name="accName" class="java.lang.String"/>
+	<field name="amountPettyCash" class="java.math.BigDecimal"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="date" class="org.joda.time.DateTime"/>
+	<pageHeader>
+		<band height="69" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="730" y="55" width="72" height="14" uuid="7d043355-4b0a-430c-b4b1-9acaf7869ea5"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="690" y="55" width="40" height="14" uuid="61e4d7db-b898-4559-af08-e018371af498"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="28" width="802" height="27" uuid="d283214b-9348-4e6f-ba65-b161ca1791b2">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LIQUIDACIÓN " + $F{name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="91" y="14" width="711" height="14" uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="91" height="14" uuid="a167b8a1-e5f2-41d0-a8f3-c1e4a7070ac0">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPRESA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="14" width="91" height="14" uuid="bc36a791-4902-4ca3-a214-80dce535afcc"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAJA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="91" y="0" width="711" height="14" uuid="95de231f-f359-4b91-b319-8334960ede77"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="60">
+			<subreport>
+				<reportElement positionType="Float" x="0" y="0" width="802" height="60" uuid="0233034d-b54b-49d5-adaa-67e303dbd4d4"/>
+				<subreportParameter name="AmountPettyCash">
+					<subreportParameterExpression><![CDATA[$F{amountPettyCash}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="Amount">
+					<subreportParameterExpression><![CDATA[$F{amount}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["Sales_PettyCashBalancePayments.jrxml"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="89">
+			<staticText>
+				<reportElement x="91" y="69" width="126" height="20" uuid="c8e0a050-048a-466a-97c8-0cba849f750d"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA ENCARGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="554" y="69" width="137" height="20" uuid="5cb363cd-e820-4529-83a7-a4c8d6e807f5"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA RESPONSABLE]]></text>
+			</staticText>
+		</band>
+	</detail>
 </jasperReport>
