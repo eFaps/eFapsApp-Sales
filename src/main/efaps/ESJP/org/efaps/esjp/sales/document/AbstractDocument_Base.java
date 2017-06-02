@@ -108,6 +108,7 @@ import org.efaps.esjp.sales.listener.IOnQuery;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.Sales.TaxPerception;
 import org.efaps.esjp.sales.util.Sales.TaxRetention;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
@@ -382,20 +383,39 @@ public abstract class AbstractDocument_Base
             final SelectBuilder selRetention = SelectBuilder.get()
                             .clazz(CISales.Contacts_ClassTaxinfo)
                             .attribute(CISales.Contacts_ClassTaxinfo.Retention);
-            print.addSelect(selRetention);
+            final SelectBuilder selPerception = SelectBuilder.get()
+                            .clazz(CISales.Contacts_ClassTaxinfo)
+                            .attribute(CISales.Contacts_ClassTaxinfo.Perception);
+
+            print.addSelect(selRetention, selPerception);
             print.execute();
             final TaxRetention retention = print.getSelect(selRetention);
+            final TaxPerception perception = print.getSelect(selPerception);
+
             StringBuilder js = new StringBuilder();
+            final StringBuilder label = new StringBuilder();
             if (TaxRetention.AGENT.equals(retention)) {
-                final String label = DBProperties.getProperty(
-                                TaxRetention.class.getName() + "." + TaxRetention.AGENT.toString());
+                label.append(DBProperties.getProperty(TaxRetention.class.getName()
+                                + "." + TaxRetention.AGENT.toString()));
+            }
+            if (TaxPerception.AGENT.equals(perception)) {
+                if (label.length() > 0) {
+                    label.append(", ");
+                }
+                label.append(DBProperties.getProperty(TaxPerception.class.getName()
+                                + "." + TaxPerception.AGENT.toString()));
+            }
+
+            if (StringUtils.isNotEmpty(label)) {
                 final String targetFieldName = getProperty(_parameter, "FieldName", "contactData");
                 js.append("domConstruct.destroy(\"eFapsRD4C\");")
                     .append("query('[name=\\'").append(targetFieldName)
                     .append("\\']').forEach(function (_node) {\n")
                     .append("domConstruct.create(\"span\",")
-                    .append("{ id: \"eFapsRD4C\",  title: \"").append(StringEscapeUtils.escapeEcmaScript(label))
-                    .append("\", innerHTML: \"").append(StringEscapeUtils.escapeEcmaScript(label)).append("\",")
+                    .append("{ id: \"eFapsRD4C\",  title: \"")
+                        .append(StringEscapeUtils.escapeEcmaScript(label.toString()))
+                    .append("\", innerHTML: \"").append(StringEscapeUtils.escapeEcmaScript(label.toString()))
+                        .append("\",")
                     .append(" style: \"color: red; font-size: 12pt; font-weight: bold; margin-left: 10px;\" }")
                     .append(" , _node)")
                     .append("});");
