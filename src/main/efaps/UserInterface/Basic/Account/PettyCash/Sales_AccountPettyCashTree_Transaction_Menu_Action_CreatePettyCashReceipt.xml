@@ -34,6 +34,11 @@
         <target>
             <form>Sales_PettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create">
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.PettyCashReceipt.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.PettyCashReceipt.Mime</property>
+
                 <property name="PositionType">Sales_PettyCashReceiptPosition</property>
                 <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
                 <property name="Status">Open</property>
@@ -83,6 +88,11 @@
         <target>
             <form>Sales_PettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create">
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.PettyCashReceipt.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.PettyCashReceipt.Mime</property>
+
                 <property name="PositionType">Sales_PettyCashReceiptPosition</property>
                 <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
                 <property name="Status">Open</property>
@@ -131,6 +141,11 @@
         <target>
             <form>Sales_PettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create">
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.PettyCashReceipt.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.PettyCashReceipt.Mime</property>
+
                 <property name="PositionType">Sales_PettyCashReceiptPosition</property>
                 <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
                 <property name="Status">Open</property>

@@ -21,7 +21,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8193182e-c237-49e3-af8e-02fe5d3d2732</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashReceiptTree_Menu_Action_Edit</name>
@@ -33,6 +32,11 @@
         <target>
             <form>Sales_PettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="edit">
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.PettyCashReceipt.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.PettyCashReceipt.Mime</property>
+
                 <property name="PositionType">Sales_PettyCashReceiptPosition</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"

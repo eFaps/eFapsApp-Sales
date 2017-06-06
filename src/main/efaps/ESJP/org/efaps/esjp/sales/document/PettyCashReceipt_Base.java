@@ -17,6 +17,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,6 +84,7 @@ public abstract class PettyCashReceipt_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         setValue4ContactPicker(_parameter);
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
@@ -90,7 +92,13 @@ public abstract class PettyCashReceipt_Base
         connect2Account(_parameter, createdDoc);
         createTransaction(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
-        return new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
     }
 
     /**
@@ -462,10 +470,16 @@ public abstract class PettyCashReceipt_Base
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
         updateTransaction(_parameter, editDoc);
-        return new Return();
+        final File file = createReport(_parameter, editDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
@@ -570,6 +584,7 @@ public abstract class PettyCashReceipt_Base
     public Return editJustification(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final boolean deducible = evalDeducible(_parameter);
 
         final String date = _parameter
@@ -649,9 +664,13 @@ public abstract class PettyCashReceipt_Base
             actionUpdate.add(CISales.ActionDefinitionPettyCashReceipt2Document.FromLink, actionInst);
             actionUpdate.execute();
         }
-        return new Return();
+        final File file = createReport(_parameter, new EditedDoc(update.getInstance()));
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
-
 
     @Override
     public Return dropDown4DocumentType(final Parameter _parameter)

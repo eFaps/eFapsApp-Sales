@@ -1514,6 +1514,21 @@ public final class Sales
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
 
+   /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PETTYCASHRECEIPT_JASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashReceipt.JasperReport")
+                    .description("Name of the jasperReport for PettyCashReceipt.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> PETTYCASHRECEIPT_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashReceipt.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime of the jasperReport for PettyCashReceipt.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASHRECEIPT_ASSEMPLOYEE = new BooleanSysConfAttribute()
