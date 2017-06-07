@@ -202,7 +202,7 @@
         </field>
         <field name="action">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentOrderForm.action.Label</property>
