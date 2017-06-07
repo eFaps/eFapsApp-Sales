@@ -177,7 +177,12 @@ public abstract class PaymentPanel_Base
                     if (currencyFilter) {
                         amount = BigDecimal.ZERO;
                     } else {
-                        final RateInfo rateinfo = RateInfo.getRateInfo(bean.getRate());
+                        RateInfo rateinfo = RateInfo.getRateInfo(bean.getRate());
+                        if (rateinfo.getCurrencyInstance().equals(Currency.getBaseCurrency())
+                                      && rateinfo.getCurrencyInstance().equals(rateinfo.getTargetCurrencyInstance()) ) {
+                            rateinfo = new Currency().evaluateRateInfos(ParameterUtil.instance(), bean.getDate(),
+                                            rateinfo.getCurrencyInstance(), currencyInst)[2];
+                        }
                         amount = Currency.convertToCurrency(ParameterUtil.instance(), bean.getAmount(),
                                         rateinfo, null, currencyInst);
                     }
@@ -289,7 +294,14 @@ public abstract class PaymentPanel_Base
          */
         public DynDataBean(final PaymentPanel_Base _panel)
         {
-            super(new PaymentSumReport());
+            super(new PaymentSumReport() {
+                @Override
+                public boolean isCached(final Parameter _parameter)
+                    throws EFapsException
+                {
+                    return false;
+                }
+            });
             this.panel = _panel;
         }
 

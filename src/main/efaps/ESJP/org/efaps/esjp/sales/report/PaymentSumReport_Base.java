@@ -597,8 +597,6 @@ public abstract class PaymentSumReport_Base
          */
         public BigDecimal getAmount()
         {
-
-
             return this.amount;
         }
 
