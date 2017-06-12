@@ -45,6 +45,7 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -226,9 +227,15 @@ public abstract class PaymentReport_Base
                 multi.addSelect(selCurrInst, selTargetDocInst, selTargetDocName, selCreateDocInst, selTargetDocCode,
                                 selTargetDocDate, selCreateDocName, selCreateDocRev, selCreateDocContactName,
                                 selAccount);
-                multi.addAttribute(CISales.Payment.Amount);
+                multi.addAttribute(CISales.Payment.Amount, CISales.Payment.Rate);
                 multi.execute();
                 while (multi.next()) {
+                    final Object[] rateObj = multi.getAttribute(CISales.Payment.Rate);
+                    final RateInfo rateInfo = RateInfo.getRateInfo(rateObj);
+                    BigDecimal rate = null;
+                    if (rateInfo.getRateUI().compareTo(BigDecimal.ONE) != 0) {
+                        rate = rateInfo.getRateUI();
+                    }
                     final DataBean dataBean = new DataBean()
                                     .setRelInst(multi.getCurrentInstance())
                                     .setAccount(multi.getSelect(selAccount))
@@ -241,7 +248,8 @@ public abstract class PaymentReport_Base
                                     .setCreateDocInst(multi.getSelect(selCreateDocInst))
                                     .setCreateDocName(multi.getSelect(selCreateDocName))
                                     .setCreateDocRevision(multi.getSelect(selCreateDocRev))
-                                    .setCreateDocContactName(multi.getSelect(selCreateDocContactName));
+                                    .setCreateDocContactName(multi.getSelect(selCreateDocContactName))
+                                    .setRate(rate);
                     beans.add(dataBean);
                     PaymentReport_Base.LOG.debug("Read {}", dataBean);
                 }
@@ -481,10 +489,13 @@ public abstract class PaymentReport_Base
             final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
                             .getDBProperty("Column.currency"), "currency", DynamicReports.type.stringType());
 
+            final TextColumnBuilder<BigDecimal> rateColumn = DynamicReports.col.column(getFilteredReport()
+                            .getDBProperty("Column.rate"), "rate", DynamicReports.type.bigDecimalType());
+
             final List<ColumnBuilder<?, ?>> columns = new ArrayList<>();
             columns.addAll(targetColumns);
             columns.addAll(createColumns);
-            Collections.addAll(columns, amountColumn, currencyColumn);
+            Collections.addAll(columns, amountColumn, currencyColumn, rateColumn);
 
             final Map<String, Object> filters = getFilteredReport().getFilterMap(_parameter);
             final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("groupBy");
@@ -529,7 +540,7 @@ public abstract class PaymentReport_Base
                             .getDBProperty("TitleGroup.createDoc"),
                             createColumns.toArray(new ColumnGridComponentBuilder[createColumns.size()]));
 
-            _builder.columnGrid(targetDocTitleGroup, createDocTitleGroup, amountColumn, currencyColumn)
+            _builder.columnGrid(targetDocTitleGroup, createDocTitleGroup, amountColumn, currencyColumn, rateColumn)
                     .addColumn(columns.toArray(new ColumnBuilder[columns.size()]));
 
 
@@ -560,6 +571,9 @@ public abstract class PaymentReport_Base
 
         /** The amount. */
         private BigDecimal amount;
+
+        /** The amount. */
+        private BigDecimal rate;
 
         /** The account. */
         private String account;
@@ -908,6 +922,27 @@ public abstract class PaymentReport_Base
         public DataBean setTargetDocDate(final DateTime _targetDocDate)
         {
             this.targetDocDate = _targetDocDate;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #rate}.
+         *
+         * @return value of instance variable {@link #rate}
+         */
+        public BigDecimal getRate()
+        {
+            return this.rate;
+        }
+
+        /**
+         * Setter method for instance variable {@link #rate}.
+         *
+         * @param _rate value for instance variable {@link #rate}
+         */
+        public DataBean setRate(final BigDecimal _rate)
+        {
+            this.rate = _rate;
             return this;
         }
 
