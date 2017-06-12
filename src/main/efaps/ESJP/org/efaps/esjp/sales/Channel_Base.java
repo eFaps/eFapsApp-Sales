@@ -207,6 +207,10 @@ public abstract class Channel_Base
             if (docInst.getType().isCIType(CISales.OrderOutbound) && Sales.ORDEROUTBOUND_ACTIVATECONDITION.get()) {
                 ciType = CISales.ChannelPurchaseCondition2OrderOutbound;
             }
+            if (docInst.getType().isCIType(CISales.ServiceOrderOutbound)
+                            && Sales.SERVICEORDEROUTBOUND_ACTIVATECONDITION.get()) {
+                ciType = CISales.ChannelPurchaseCondition2ServiceOrderOutbound;
+            }
             if (ciType != null) {
                 final QueryBuilder queryBldr = new QueryBuilder(ciType);
                 queryBldr.addWhereAttrEqValue(CISales.Channel2DocumentAbstract.ToAbstractLink, docInst);
