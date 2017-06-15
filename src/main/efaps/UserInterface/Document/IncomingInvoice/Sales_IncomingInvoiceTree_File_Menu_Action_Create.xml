@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -18,43 +18,34 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0634a95a-529b-464b-a6ae-5285b08934a0</uuid>
+    <uuid>9f39d324-2926-4aeb-831c-8c7f63b88661</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-Archives" />
-        </application-dependencies>
-        <name>Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot</name>
+        <name>Sales_IncomingInvoiceTree_File_Menu_Action_Create</name>
         <access>
-            <role>Archives_Admin</role>
-            <role>Archives_Modifier</role>
+            <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Archives_ArchiveRootForm</form>
-            <execute method="createRoot" program="org.efaps.esjp.archives.Archive">
+            <form>Archives_ArchiveFileForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
                 <property name="ConnectType">Sales_IncomingInvoice2ArchiveAbstract</property>
                 <property name="ConnectChildAttribute">ToLink</property>
                 <property name="ConnectParentAttribute">FromLink</property>
-                <property name="StatusGroup">Archives_ArchiveNodeStatus</property>
+                <property name="StatusGroup">Archives_ArchiveFileStatus</property>
                 <property name="Status">Editable</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
-                name="Sales_IncomingInvoiceTree_FileStrBrowser.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" index="1">
+                name="Sales_IncomingInvoiceTree_File_Menu_Action_Create.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateFilesStructurBrowser</property>
-           </trigger>
-            <trigger event="UI_ACCESSCHECK" method="checkAccess2ArchiveRoot"
-                name="Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
-                program="org.efaps.esjp.archives.Archive" index="2">
-                <property name="Object2ArchiveType">Sales_IncomingInvoice2ArchiveAbstract</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateFiles</property>
             </trigger>
         </target>
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Archives_ArchiveRoot</property>
+        <property name="TargetCreateType">Archives_ArchiveFile</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>

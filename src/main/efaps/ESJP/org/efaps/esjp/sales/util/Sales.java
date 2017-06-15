@@ -679,6 +679,20 @@ public final class Sales
                     .description("Activate the possiblity to create a TransactionDocumentShadow");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  INCOMINGINVOICE_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  INCOMINGINVOICE_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink INCOMINGINVOICE_DEFAULTWAREHOUSE = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
