@@ -185,7 +185,7 @@ public abstract class AccountPettyCashReport_Base
                             .attribute(CISales.ActionDefinitionPettyCashReceipt.Name);
             final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
                             .attribute(CIContacts.ContactAbstract.Name);
-            final List<DocumentBean> datasource = new ArrayList<DocumentBean>();
+            final List<DocumentBean> datasource = new ArrayList<>();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -223,7 +223,7 @@ public abstract class AccountPettyCashReport_Base
                 bean.setBaseNet(basenet);
                 bean.setBaseCross(basecross);
             }
-            final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
+            final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
             chain.addComparator(new Comparator<DocumentBean>()
             {
 
@@ -864,7 +864,7 @@ public abstract class AccountPettyCashReport_Base
          * Gets the liquidation.
          *
          * @return the liquidation
-         * @throws EFapsException
+         * @throws EFapsException on error
          */
         public String getLiquidation()
             throws EFapsException
@@ -875,18 +875,18 @@ public abstract class AccountPettyCashReport_Base
                 attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, this.instance);
                 final AttributeQuery attrQuery =
                                 attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink);
-
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
                 queryBldr.addWhereAttrInQuery(CISales.PettyCashBalance.ID, attrQuery);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.PettyCashBalance.Name);
                 multi.execute();
-
                 if (multi.next()) {
                     this.liquidation = multi.<String>getAttribute(CISales.PettyCashBalance.Name);
                 }
             }
-            return this.liquidation == null ? "" : this.liquidation;
+            return this.liquidation == null
+                            ? DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".WithoutLiquidation")
+                                            : this.liquidation;
         }
 
         /**

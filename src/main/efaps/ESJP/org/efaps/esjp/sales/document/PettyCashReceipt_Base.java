@@ -259,17 +259,18 @@ public abstract class PettyCashReceipt_Base
             final MultiPrintQuery multi = transQueryBldr.getPrint();
             final SelectBuilder selAccInst = SelectBuilder.get().linkto(CISales.TransactionOutbound.Account).instance();
             multi.addSelect(selAccInst);
-            multi.addAttribute(CISales.TransactionOutbound.Amount);
+            multi.addAttribute(CISales.TransactionOutbound.Amount, CISales.TransactionOutbound.Description);
             multi.executeWithoutAccessCheck();
             if (multi.next()) {
                 final Instance accInst = multi.getSelect(selAccInst);
                 final CurrencyInst accCurrencyInst = new Account().getCurrencyInst(_parameter, accInst);
                 final DateTime date = new DateTime(_editedDoc.getValue(CISales.DocumentSumAbstract.Date.name));
-
+                final String description = multi.<String>getAttribute(CISales.TransactionAbstract.Description);
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
                 final BigDecimal newAmount = (BigDecimal) evaluateAmount4Transaction(_parameter, _editedDoc,
                                 accCurrencyInst, date);
-                if (newAmount.compareTo(amount) != 0) {
+                if (newAmount.compareTo(amount) != 0
+                                || !description.equals(_editedDoc.getValue(CISales.DocumentSumAbstract.Note.name))) {
                     final Update update = new Update(multi.getCurrentInstance());
                     update.add(CISales.TransactionOutbound.Amount, newAmount);
                     update.add(CISales.TransactionOutbound.CurrencyId, accCurrencyInst.getInstance());
