@@ -28,7 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.collections4.map.LazyMap;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -38,6 +40,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -51,7 +54,6 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -59,13 +61,11 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
-import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
@@ -176,6 +176,10 @@ public abstract class AccountPettyCashReport_Base
                             .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
                             .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
                             .instance();
+            final SelectBuilder selAccName = new SelectBuilder()
+                            .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
+                            .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
+                            .attribute(CISales.AccountPettyCash.Name);
             final SelectBuilder selDocTypeName = new SelectBuilder()
                             .linkfrom(CISales.Document2DocumentType.DocumentLink)
                             .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(CIERP.DocumentType.Name);
@@ -189,7 +193,7 @@ public abstract class AccountPettyCashReport_Base
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addSelect(selAccInst, selDocTypeName, selActionName, selCurInst, selContactName);
+            multi.addSelect(selAccInst, selAccName, selDocTypeName, selActionName, selCurInst, selContactName);
             multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
                             CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name,
                             CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal);
@@ -207,21 +211,22 @@ public abstract class AccountPettyCashReport_Base
                     basecross = cross.negate();
                     basenet = net.negate();
                 }
-                final DocumentBean bean = getBean(_parameter);
+                final DocumentBean bean = getBean(_parameter)
+                                .setInstance(multi.getCurrentInstance())
+                                .setPettyCashInstance(multi.<Instance>getSelect(selAccInst))
+                                .setPettyCash(multi.getSelect(selAccName))
+                                .setAction(multi.<String>getSelect(selActionName))
+                                .setCross(cross)
+                                .setNet(net)
+                                .setCurrencyInstance(multi.<Instance>getSelect(selCurInst))
+                                .setDocTypeName(multi.<String>getSelect(selDocTypeName))
+                                .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                .setContactName(multi.<String>getSelect(selContactName))
+                                .setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                .setSwitch(isGroup(_parameter))
+                                .setBaseNet(basenet)
+                                .setBaseCross(basecross);
                 datasource.add(bean);
-                bean.setInstance(multi.getCurrentInstance());
-                bean.setPettyCashInstance(multi.<Instance>getSelect(selAccInst));
-                bean.setAction(multi.<String>getSelect(selActionName));
-                bean.setCross(cross);
-                bean.setNet(net);
-                bean.setCurrencyInstance(multi.<Instance>getSelect(selCurInst));
-                bean.setDocTypeName(multi.<String>getSelect(selDocTypeName));
-                bean.setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
-                bean.setContactName(multi.<String>getSelect(selContactName));
-                bean.setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
-                bean.setSwitch(isGroup(_parameter));
-                bean.setBaseNet(basenet);
-                bean.setBaseCross(basecross);
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
             chain.addComparator(new Comparator<DocumentBean>()
@@ -346,17 +351,18 @@ public abstract class AccountPettyCashReport_Base
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
                             DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".Column.Date"), "date",
                             DateTimeDate.get());
-            final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
-                            "http://www.efaps.org", "efapslink")
-                            .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression())
-                            .setHeight(12).setWidth(25);
-            final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
             final ColumnGroupBuilder pettyCashGroup = DynamicReports.grp.group(pettyCashColumn).groupByDataType()
                             .setStyle(DynamicReports.stl.style().setBackgroundColor(Color.YELLOW));
             final ColumnGroupBuilder liquidationGroup = DynamicReports.grp.group(liquidationColumn).groupByDataType();
             final ColumnGroupBuilder officialGroup = DynamicReports.grp.group(officialColumn).groupByDataType();
             final ColumnGroupBuilder actionGroup = DynamicReports.grp.group(actionColumn).groupByDataType();
+
+            final TextFieldBuilder<String> pettyCashTotalBldr = DynamicReports.cmp.text(
+                            DynamicReports.field("pettyCashResume", String.class))
+                            .setStyle(DynamicReports.stl.style().boldItalic()
+                                            .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+            pettyCashGroup.footer(pettyCashTotalBldr);
 
             _builder.addGroup(pettyCashGroup).addColumn(pettyCashColumn);
             if (isGroup(_parameter)) {
@@ -366,7 +372,7 @@ public abstract class AccountPettyCashReport_Base
 
             if (showDetails()) {
                 if (getExType().equals(ExportType.HTML)) {
-                    _builder.addColumn(linkColumn);
+                    _builder.addColumn(FilteredReport.getLinkColumn(_parameter, "oid"));
                 }
                 _builder.addColumn(docNameColumn, dateColumn, contactNameColumn);
             }
@@ -401,14 +407,18 @@ public abstract class AccountPettyCashReport_Base
             final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(baseAmountColumn);
             final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(baseAmountColumn);
 
-            _builder.addSubtotalAtGroupFooter(pettyCashGroup, amountSum);
+            _builder.addSubtotalAtGroupFooter(pettyCashGroup, FilteredReport.getCustomTextSubtotalBuilder(
+                            _parameter, "pettyCash", contactNameColumn), amountSum);
 
             if (isGroup(_parameter)) {
-                _builder.addSubtotalAtGroupFooter(liquidationGroup, amountSum1);
+                _builder.addSubtotalAtGroupFooter(liquidationGroup, FilteredReport.getCustomTextSubtotalBuilder(
+                                _parameter, "liquidation", contactNameColumn), amountSum1);
             }
 
-            _builder.addSubtotalAtGroupFooter(officialGroup, amountSum2);
-            _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
+            _builder.addSubtotalAtGroupFooter(officialGroup, FilteredReport.getCustomTextSubtotalBuilder(_parameter,
+                            "official", contactNameColumn), amountSum2);
+            _builder.addSubtotalAtGroupFooter(actionGroup, FilteredReport.getCustomTextSubtotalBuilder(_parameter,
+                            "action", contactNameColumn), amountSum3);
         }
 
         /**
@@ -444,35 +454,6 @@ public abstract class AccountPettyCashReport_Base
         protected AccountPettyCashReport_Base getFilteredReport()
         {
             return this.filteredReport;
-        }
-    }
-
-    /**
-     * Expression used to render a link for the UserInterface.
-     */
-    public static class LinkExpression
-        extends AbstractComplexExpression<EmbeddedLink>
-    {
-
-        /**
-         * Needed for serialization.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Costructor.
-         */
-        public LinkExpression()
-        {
-            addExpression(DynamicReports.field("oid", String.class));
-        }
-
-        @Override
-        public EmbeddedLink evaluate(final List<?> _values,
-                                     final ReportParameters _reportParameters)
-        {
-            final String oid = (String) _values.get(0);
-            return EmbeddedLink.getJasperLink(oid);
         }
     }
 
@@ -513,6 +494,9 @@ public abstract class AccountPettyCashReport_Base
         /** The petty cash instance. */
         private Instance pettyCashInstance;
 
+        /** The petty cash. */
+        private String pettyCash;
+
         /**
          * Currency.
          */
@@ -545,36 +529,61 @@ public abstract class AccountPettyCashReport_Base
          * @return value of instance variable {@link #pettyCash}
          */
         public String getPettyCash()
-
         {
-            final StringBuilder ret = new StringBuilder();
+            return this.pettyCash;
+        }
 
+        /**
+         * Gets the petty cash resume.
+         *
+         * @return the petty cash resume
+         */
+        public String getPettyCashResume()
+        {
+            String ret = null;
             try {
-                final PrintQuery print = new PrintQuery(getPettyCashInstance());
+                BigDecimal startAmount = BigDecimal.ZERO;
+                String currency = "";
+                final PrintQuery print = CachedPrintQuery.get4Request(getPettyCashInstance());
                 final SelectBuilder sel = SelectBuilder.get().linkto(CISales.AccountPettyCash.CurrencyLink).instance();
                 print.addSelect(sel);
-                print.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
+                print.addAttribute(CISales.AccountPettyCash.AmountAbstract);
                 if (print.execute()) {
-                    ret.append(print.<String>getAttribute(CISales.AccountPettyCash.Name))
-                                .append(" - ")
-                                .append(print.<BigDecimal>getAttribute(CISales.AccountPettyCash.AmountAbstract))
-                                .append(CurrencyInst.get(print.<Instance>getSelect(sel)).getSymbol());
+                    startAmount = print.getAttribute(CISales.AccountPettyCash.AmountAbstract);
+                    currency = CurrencyInst.get(print.<Instance>getSelect(sel)).getSymbol();
                 }
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
+                queryBldr.addWhereAttrEqValue(CISales.Balance.Account, getPettyCashInstance());
+                final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+                final SelectBuilder curSel = new SelectBuilder().linkto(CISales.Balance.Currency).attribute(
+                                CIERP.Currency.Symbol);
+                multi.addSelect(curSel);
+                multi.addAttribute(CISales.Balance.Amount);
+                multi.execute();
+
+                BigDecimal currentAmount = null;
+                while (multi.next()) {
+                    currentAmount = multi.<BigDecimal>getAttribute(CISales.Balance.Amount);
+                }
+                ret = DBProperties.getFormatedDBProperty(AccountPettyCashReport.class.getName() + ".PettyCashResume",
+                                (Object) getPettyCash(), currency, startAmount, currentAmount);
             } catch (final EFapsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                AccountPettyCashReport_Base.LOG.error("Catched error on evalutaion of PettyCashResume", e);
             }
-            return ret.toString();
+            return ret;
         }
 
         /**
          * Sets the switch.
          *
          * @param _isGroup the new switch
+         * @return the document bean
          */
-        public void setSwitch(final boolean _isGroup)
+        public DocumentBean setSwitch(final boolean _isGroup)
         {
             this.isGroup = _isGroup;
+            return this;
         }
 
         /**
@@ -596,19 +605,58 @@ public abstract class AccountPettyCashReport_Base
         public Map<String, ?> getMap()
             throws EFapsException
         {
-            final Map<String, Object> ret = new HashMap<>();
-            ret.put("pettyCash", getPettyCash());
-            if (getSwitch()) {
-                ret.put("liquidation", getLiquidation());
-            }
-            ret.put("official", getOfficial());
-            ret.put("action", getAction());
-            ret.put("docName", getDocName());
-            ret.put("contactName", getContactName());
-            ret.put("oid", getOid());
-            ret.put("date", getDate());
-            ret.put(CurrencyInst.get(getCurrencyInstance()).getISOCode(), getCross());
-            ret.put("baseAmount", getBaseAmount());
+            final Transformer<String, Object> transformer = new Transformer<String,Object>() {
+
+                @Override
+                public Object transform(final String _input)
+                {
+                    Object ret = null;
+                    switch (_input) {
+                        case "pettyCash":
+                            ret = getPettyCash();
+                            break;
+                        case "liquidation":
+                            try {
+                                ret = getLiquidation();
+                            } catch (final EFapsException e) {
+                                AccountPettyCashReport_Base.LOG.error("Catched erro rwhlie freading values", e);
+                            }
+                            break;
+                        case "pettyCashResume":
+                            ret = getPettyCashResume();
+                            break;
+                        case "official":
+                            ret = getOfficial();
+                            break;
+                        case "action":
+                            ret = getAction();
+                            break;
+                        case "docName":
+                            ret = getDocName();
+                            break;
+                        case "oid":
+                            ret = getOid();
+                            break;
+                        case "date":
+                            ret = getDate();
+                            break;
+                        case "baseAmount":
+                            ret = getBaseAmount();
+                            break;
+                        default:
+                            try {
+                                if (_input.equals(CurrencyInst.get(getCurrencyInstance()).getISOCode())) {
+                                    ret= getCross();
+                                }
+                            } catch (final EFapsException e) {
+                                AccountPettyCashReport_Base.LOG.error("Catched erro rwhlie freading values", e);
+                            }
+                            break;
+                    }
+                    return ret;
+                }
+            };
+            final Map<String, Object> ret = LazyMap.lazyMap(new HashMap<String, Object>(), transformer);
             return ret;
         }
 
@@ -626,29 +674,36 @@ public abstract class AccountPettyCashReport_Base
          * Sets the petty cash instance.
          *
          * @param _pettyCashInstance the new petty cash instance
+         * @return the document bean
          */
-        public void setPettyCashInstance(final Instance _pettyCashInstance)
+        public DocumentBean setPettyCashInstance(final Instance _pettyCashInstance)
         {
             this.pettyCashInstance = _pettyCashInstance;
+            return this;
         }
 
         /**
          * Sets the doc type name.
          *
          * @param _docTypeName the new doc type name
+         * @return the document bean
          */
-        public void setDocTypeName(final String _docTypeName)
+        public DocumentBean setDocTypeName(final String _docTypeName)
         {
             this.docTypeName = _docTypeName;
+            return this;
         }
 
         /**
          * Setter method for instance variable {@link #pettyCash}.
          *
          * @param _name value for instance variable {@link #pettyCash}
+         * @return the document bean
          */
-        public void setPettyCash(final String _name)
+        public DocumentBean setPettyCash(final String _name)
         {
+            this.pettyCash = _name;
+            return this;
         }
 
         /**
@@ -665,10 +720,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #typeLabel}.
          *
          * @param _typeLabel value for instance variable {@link #typeLabel}
+         * @return the document bean
          */
-        public void setTypeLabel(final String _typeLabel)
+        public DocumentBean setTypeLabel(final String _typeLabel)
         {
             this.typeLabel = _typeLabel;
+            return this;
         }
 
         /**
@@ -701,10 +758,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #action}.
          *
          * @param _action the new actionDef of the document
+         * @return the document bean
          */
-        public void setAction(final String _action)
+        public DocumentBean setAction(final String _action)
         {
             this.action = _action;
+            return this;
         }
 
         /**
@@ -721,10 +780,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #oid}.
          *
          * @param _instance the new oID of the document
+         * @return the document bean
          */
-        public void setInstance(final Instance _instance)
+        public DocumentBean setInstance(final Instance _instance)
         {
             this.instance = _instance;
+            return this;
         }
 
         /**
@@ -741,10 +802,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #docName}.
          *
          * @param _docName value for instance variable {@link #docName}
+         * @return the document bean
          */
-        public void setDocName(final String _docName)
+        public DocumentBean setDocName(final String _docName)
         {
             this.docName = _docName;
+            return this;
         }
 
         /**
@@ -771,10 +834,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #contactName}.
          *
          * @param _contactName value for instance variable {@link #contactName}
+         * @return the document bean
          */
-        public void setContactName(final String _contactName)
+        public DocumentBean setContactName(final String _contactName)
         {
             this.contactName = _contactName;
+            return this;
         }
 
         /**
@@ -791,10 +856,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #cross}.
          *
          * @param _cross value for instance variable {@link #cross}
+         * @return the document bean
          */
-        public void setCross(final BigDecimal _cross)
+        public DocumentBean setCross(final BigDecimal _cross)
         {
             this.cross = _cross;
+            return this;
         }
 
         /**
@@ -811,10 +878,12 @@ public abstract class AccountPettyCashReport_Base
          * Setter method for instance variable {@link #net}.
          *
          * @param _net value for instance variable {@link #net}
+         * @return the document bean
          */
-        public void setNet(final BigDecimal _net)
+        public DocumentBean setNet(final BigDecimal _net)
         {
             this.net = _net;
+            return this;
         }
 
         /**
@@ -832,12 +901,13 @@ public abstract class AccountPettyCashReport_Base
          *
          * @param _currencyInstance value for instance variable
          *            {@link #currencyInstance}
+         * @return the document bean
          */
-        public void setCurrencyInstance(final Instance _currencyInstance)
+        public DocumentBean setCurrencyInstance(final Instance _currencyInstance)
         {
             this.currencyInstance = _currencyInstance;
+            return this;
         }
-
 
         /**
          * Getter method for the instance variable {@link #date}.
@@ -849,15 +919,16 @@ public abstract class AccountPettyCashReport_Base
             return this.date;
         }
 
-
         /**
          * Setter method for instance variable {@link #date}.
          *
          * @param _date value for instance variable {@link #date}
+         * @return the document bean
          */
-        public void setDate(final DateTime _date)
+        public DocumentBean setDate(final DateTime _date)
         {
             this.date = _date;
+            return this;
         }
 
         /**
@@ -877,7 +948,7 @@ public abstract class AccountPettyCashReport_Base
                                 attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink);
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
                 queryBldr.addWhereAttrInQuery(CISales.PettyCashBalance.ID, attrQuery);
-                final MultiPrintQuery multi = queryBldr.getPrint();
+                final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
                 multi.addAttribute(CISales.PettyCashBalance.Name);
                 multi.execute();
                 if (multi.next()) {
@@ -893,20 +964,24 @@ public abstract class AccountPettyCashReport_Base
          * Sets the base net.
          *
          * @param _baseNet the new base net
+         * @return the document bean
          */
-        public void setBaseNet(final BigDecimal _baseNet)
+        public DocumentBean setBaseNet(final BigDecimal _baseNet)
         {
             this.baseNet = _baseNet;
+            return this;
         }
 
         /**
          * Sets the base cross.
          *
          * @param _baseCross the new base cross
+         * @return the document bean
          */
-        public void setBaseCross(final BigDecimal _baseCross)
+        public DocumentBean setBaseCross(final BigDecimal _baseCross)
         {
             this.baseCross = _baseCross;
+            return this;
         }
 
         /**
