@@ -221,7 +221,7 @@ public abstract class Payment_Base
         final Return ret = new Return();
         Instance instance = null;
         if (_parameter.getCallInstance() != null) {
-            instance = _parameter.getInstance();
+            instance = _parameter.getCallInstance();
         } else if (_parameter.getParameterValue("createdocument") != null) {
             instance = Instance.get(_parameter.getParameterValue("createdocument"));
         }
