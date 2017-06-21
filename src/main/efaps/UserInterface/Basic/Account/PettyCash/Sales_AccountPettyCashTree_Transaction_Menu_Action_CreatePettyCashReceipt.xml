@@ -56,6 +56,9 @@
             <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate">
                 <property name="Validation">POSITION</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_DocumentSumAbstract</property>
             </validate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"

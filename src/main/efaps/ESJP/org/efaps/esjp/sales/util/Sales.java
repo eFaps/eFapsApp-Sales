@@ -2288,6 +2288,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute VALIDATION_NAMEREGEX = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "validation.NameRegex")
+                    .defaultValue("(\\d{3}|(\\w{4}))-\\d{1,6}")
+                    .description("Regular Expresion used to validate name fields containing SerialNumber.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute REMINDER_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Reminder.CreateFromInvoiceAutoComplete")

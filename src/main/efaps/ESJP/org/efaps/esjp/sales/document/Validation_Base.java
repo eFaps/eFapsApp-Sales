@@ -59,6 +59,7 @@ import org.efaps.esjp.products.Storage_Base.ClosureWarning;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.listener.IOnValidation;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -359,14 +360,10 @@ public abstract class Validation_Base
             name = _parameter.getParameterValue(fieldName);
         }
 
-        if (name != null) {
-            final String[] numbers = name.split("-");
-            if (numbers.length == 2 && numbers[0].length() >= numbers[1].length()) {
-                ret.add(new InvalidNameWarning());
-            } else if (numbers.length != 2) {
+        if (StringUtils.isNotEmpty(name)) {
+            if (!name.matches(Sales.VALIDATION_NAMEREGEX.get())) {
                 ret.add(new InvalidNameWarning());
             }
-
             if ("true".equalsIgnoreCase(getProperty(_parameter, "NAME_ValidateContact"))) {
                 final Instance contactInst = getContactInstance(_parameter);
                 if (contactInst != null && contactInst.isValid()) {
@@ -475,7 +472,7 @@ public abstract class Validation_Base
         final Instance contactInst = Instance.get(contact);
         final Instance instance = _parameter.getInstance();
 
-        if (instance != null && !contactInst.isValid()) {
+        if (InstanceUtils.isKindOf(instance, CISales.DocumentAbstract) && !InstanceUtils.isValid(contactInst)) {
             final SelectBuilder selContactInst = new SelectBuilder()
                             .linkto(CISales.DocumentAbstract.Contact).instance();
 
