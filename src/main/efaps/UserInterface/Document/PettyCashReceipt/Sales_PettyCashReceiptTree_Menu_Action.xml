@@ -21,7 +21,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>aaa4ad80-c546-4e6b-846a-459de04f76ea</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashReceiptTree_Menu_Action</name>
@@ -32,6 +31,7 @@
             <child>Sales_PettyCashReceiptTree_Menu_Action_EditAmount</child>
             <child>Sales_PettyCashReceiptTree_Menu_Action_SetAccountabilityTag</child>
             <child>Sales_PettyCashReceiptTree_Menu_Action_RemoveAccountabilityTag</child>
+            <child>Sales_PettyCashReceiptTree_Menu_Action_SetCanceled</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>

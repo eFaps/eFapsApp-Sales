@@ -34,7 +34,7 @@
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_PettyCashReceiptTree_Menu_Action_EditAmount.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Status">!Booked</property>
+                <property name="Status">!Canceled</property>
             </trigger>
         </target>
         <property name="Target">modal</property>

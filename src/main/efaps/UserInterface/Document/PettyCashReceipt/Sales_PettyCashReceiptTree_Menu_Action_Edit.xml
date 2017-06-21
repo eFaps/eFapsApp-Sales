@@ -36,7 +36,6 @@
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.PettyCashReceipt.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.PettyCashReceipt.Mime</property>
-
                 <property name="PositionType">Sales_PettyCashReceiptPosition</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"

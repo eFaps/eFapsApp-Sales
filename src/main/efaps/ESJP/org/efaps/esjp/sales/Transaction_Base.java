@@ -348,6 +348,21 @@ public abstract class Transaction_Base
     }
 
     /**
+     * Method is executed as trigger after the insert of an
+     * Products_TransactionOutbound.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return deleteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        addRemoveFromAccount(_parameter, false);
+        return new Return();
+    }
+
+    /**
      *
      * @param _parameter Parameters as passed from eFaps
      * @return Return

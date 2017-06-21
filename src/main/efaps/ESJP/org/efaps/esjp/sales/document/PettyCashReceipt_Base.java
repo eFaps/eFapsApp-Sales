@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -118,7 +119,6 @@ public abstract class PettyCashReceipt_Base
         insert.execute();
         return new Return();
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -329,6 +329,34 @@ public abstract class PettyCashReceipt_Base
         return ret;
     }
 
+    /**
+     * Create the TransactionDocument for this receipt.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return deleteTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (InstanceUtils.isType(_parameter.getInstance(), CISales.PettyCashReceipt)) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _parameter.getInstance());
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+                transQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, query.getCurrentValue());
+                final InstanceQuery transQuery = transQueryBldr.getQuery();
+                transQuery.execute();
+                while (transQuery.next()) {
+                    new Delete(transQuery.getCurrentValue()).execute();
+                }
+                new Delete(query.getCurrentValue()).execute();
+            }
+        }
+        return new Return();
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFaps API

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-
 
 package org.efaps.esjp.sales.document;
 
@@ -402,7 +401,7 @@ public abstract class PettyCashBalance_Base
                 if (Sales.PETTYCASHBAL_REQUIREBOOKED4PAY.get()) {
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashReceipt);
                     attrQueryBldr.addWhereAttrNotEqValue(CISales.PettyCashReceipt.Status,
-                                    Status.find(CISales.PettyCashReceiptStatus.Booked));
+                                    Status.find(CISales.PettyCashReceiptStatus.Canceled));
 
                     final QueryBuilder chQueryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
                     chQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink,
