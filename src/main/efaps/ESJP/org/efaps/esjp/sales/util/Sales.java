@@ -1824,7 +1824,17 @@ public final class Sales
                     .key(Sales.BASE + "report.ABCReport")
                     .description("Configuration for the ABCReport.")
                     .addDefaultValue("Type01", CISales.Invoice.getType().getName())
-                    .addDefaultValue("Type02", CISales.Receipt.getType().getName());
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("Type03", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("Type04", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", "!" + CISales.InvoiceStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", "!" + CISales.ReceiptStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup03", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("Status03", "!" + CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup04", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("Status04", "!" + CISales.IncomingReceiptStatus.Replaced.key);
 
     /** See description. */
     @EFapsSysConfAttribute
