@@ -2,6 +2,7 @@
 package org.efaps.esjp.ci;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsNoUpdate;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIMsgPhrase;
 
 /**
@@ -9,6 +10,7 @@ import org.efaps.ci.CIMsgPhrase;
  * to be able to compile the classes.
  * @author The eFaps Team
  */
+@EFapsUUID("e8633952-4b53-4000-a66c-2ee62e99966e")
 @EFapsApplication("eFapsApp-Sales")
 @EFapsNoUpdate
 public final class CIMsgHumanResource
