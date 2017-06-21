@@ -32,6 +32,7 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.collections4.map.LazyMap;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -48,12 +49,14 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIMsgHumanResource;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -189,11 +192,18 @@ public abstract class AccountPettyCashReport_Base
                             .attribute(CISales.ActionDefinitionPettyCashReceipt.Name);
             final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
                             .attribute(CIContacts.ContactAbstract.Name);
+            final SelectBuilder selEmployee = SelectBuilder.get()
+                            .linkfrom(CISales.Employee2PettyCashReceipt.ToLink)
+                            .linkto(CISales.Employee2PettyCashReceipt.FromLink);
+
             final List<DocumentBean> datasource = new ArrayList<>();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addSelect(selAccInst, selAccName, selDocTypeName, selActionName, selCurInst, selContactName);
+            if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                multi.addMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase);
+            }
             multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
                             CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name,
                             CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal);
@@ -226,6 +236,9 @@ public abstract class AccountPettyCashReport_Base
                                 .setSwitch(isGroup(_parameter))
                                 .setBaseNet(basenet)
                                 .setBaseCross(basecross);
+                if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                    bean.setEmployee(multi.getMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase));
+                }
                 datasource.add(bean);
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
@@ -346,8 +359,11 @@ public abstract class AccountPettyCashReport_Base
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.ContactName"),
-                            "contactName",
+                            "contactName", DynamicReports.type.stringType()).setWidth(150);
+            final TextColumnBuilder<String> employeeColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.Employee"), "employee",
                             DynamicReports.type.stringType()).setWidth(150);
+
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
                             DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".Column.Date"), "date",
                             DateTimeDate.get());
@@ -375,6 +391,9 @@ public abstract class AccountPettyCashReport_Base
                     _builder.addColumn(FilteredReport.getLinkColumn(_parameter, "oid"));
                 }
                 _builder.addColumn(docNameColumn, dateColumn, contactNameColumn);
+                if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                    _builder.addColumn(employeeColumn);
+                }
             }
             for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                 final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(currency.getName(),
@@ -407,18 +426,20 @@ public abstract class AccountPettyCashReport_Base
             final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(baseAmountColumn);
             final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(baseAmountColumn);
 
+            final TextColumnBuilder<String> subTotalTtextColumn = Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()
+                            ? employeeColumn : contactNameColumn;
             _builder.addSubtotalAtGroupFooter(pettyCashGroup, FilteredReport.getCustomTextSubtotalBuilder(
-                            _parameter, "pettyCash", contactNameColumn), amountSum);
+                            _parameter, "pettyCash", subTotalTtextColumn), amountSum);
 
             if (isGroup(_parameter)) {
                 _builder.addSubtotalAtGroupFooter(liquidationGroup, FilteredReport.getCustomTextSubtotalBuilder(
-                                _parameter, "liquidation", contactNameColumn), amountSum1);
+                                _parameter, "liquidation", subTotalTtextColumn), amountSum1);
             }
 
             _builder.addSubtotalAtGroupFooter(officialGroup, FilteredReport.getCustomTextSubtotalBuilder(_parameter,
-                            "official", contactNameColumn), amountSum2);
+                            "official", subTotalTtextColumn), amountSum2);
             _builder.addSubtotalAtGroupFooter(actionGroup, FilteredReport.getCustomTextSubtotalBuilder(_parameter,
-                            "action", contactNameColumn), amountSum3);
+                            "action", subTotalTtextColumn), amountSum3);
         }
 
         /**
@@ -480,6 +501,9 @@ public abstract class AccountPettyCashReport_Base
 
         /** The contact name. */
         private String contactName;
+
+        /** The contact name. */
+        private String employee;
 
         /**
          * Amount.
@@ -605,7 +629,7 @@ public abstract class AccountPettyCashReport_Base
         public Map<String, ?> getMap()
             throws EFapsException
         {
-            final Transformer<String, Object> transformer = new Transformer<String,Object>() {
+            final Transformer<String, Object> transformer = new Transformer<String, Object>() {
 
                 @Override
                 public Object transform(final String _input)
@@ -643,10 +667,16 @@ public abstract class AccountPettyCashReport_Base
                         case "baseAmount":
                             ret = getBaseAmount();
                             break;
+                        case "contactName":
+                            ret=  getContactName();
+                            break;
+                        case "employee":
+                            ret = getEmployee();
+                            break;
                         default:
                             try {
                                 if (_input.equals(CurrencyInst.get(getCurrencyInstance()).getISOCode())) {
-                                    ret= getCross();
+                                    ret = getCross();
                                 }
                             } catch (final EFapsException e) {
                                 AccountPettyCashReport_Base.LOG.error("Catched erro rwhlie freading values", e);
@@ -1002,6 +1032,34 @@ public abstract class AccountPettyCashReport_Base
         public BigDecimal getBaseCross()
         {
             return this.baseCross;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #employee}.
+         *
+         * @return value of instance variable {@link #employee}
+         */
+        public String getEmployee()
+        {
+            return this.employee;
+        }
+
+        /**
+         * Setter method for instance variable {@link #employee}.
+         *
+         * @param _employee value for instance variable {@link #employee}
+         * @return the document bean
+         */
+        public DocumentBean setEmployee(final String _employee)
+        {
+            this.employee = _employee;
+            return this;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this);
         }
     }
 }
