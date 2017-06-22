@@ -63,7 +63,7 @@
                 <property name="Status01">!Replaced</property>
                 <property name="Type02">Sales_PettyCashReceipt</property>
                 <property name="StatusGroup02">Sales_PettyCashReceiptStatus</property>
-                <property name="Status02">*</property>
+                <property name="Status02">!Canceled</property>
             </trigger>
         </field>
     </definition>

@@ -200,6 +200,9 @@ public abstract class IncomingCreditNote_Base
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashReceipt);
         queryBldr.addType(CISales.FundsToBeSettledReceipt);
+        queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract,
+                        Status.find(CISales.PettyCashReceiptStatus.Canceled),
+                        Status.find(CISales.FundsToBeSettledReceiptStatus.Booked));
         return new IncomingCreditNote()
         {
 
