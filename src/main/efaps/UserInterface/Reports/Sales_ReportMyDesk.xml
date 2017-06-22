@@ -22,6 +22,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReportMyDesk</name>
+        <icon>Sales_ReportImg</icon>
         <childs>
             <child>Sales_SalesRecordReportMyDesk</child>
             <child>Sales_ABCReportMyDesk</child>
