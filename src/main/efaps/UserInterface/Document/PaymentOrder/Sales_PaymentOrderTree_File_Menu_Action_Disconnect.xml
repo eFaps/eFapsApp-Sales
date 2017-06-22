@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-   Copyright 2003 - 2017 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,38 +13,29 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
+
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>860b88df-1294-4ebb-bec1-b5f81d38bdde</uuid>
+    <uuid>803cb6e8-7fb6-4f4c-aed4-6d4aed42d83e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-Archives" />
-        </application-dependencies>
-        <name>Sales_PaymentOrderTree_File</name>
+        <name>Sales_PaymentOrderTree_File_Menu_Action_Disconnect</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
-            <menu>Sales_PaymentOrderTree_File_Menu</menu>
-            <table>Archives_Object2FileTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_PaymentOrder2ArchiveAbstract</property>
-                <property name="LinkFrom">FromLink</property>
-            </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_PaymentOrderTree_File.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PaymentOrderTree_File_Menu_Action_Disconnect.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.PaymentOrder.ActivateFiles</property>
             </trigger>
         </target>
-        <parents>
-            <parent>Sales_PaymentOrderTree</parent>
-        </parents>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
-        <property name="TargetStructurBrowserField">name</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 </ui-command>

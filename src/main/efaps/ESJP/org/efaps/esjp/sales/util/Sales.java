@@ -1374,6 +1374,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  PAYMENTORDER_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PaymentOrder.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  PAYMENTORDER_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PaymentOrder.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENTOUT_CASH_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Cash.PayableDocuments")
