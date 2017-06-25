@@ -45,6 +45,5 @@
         </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="TargetStructurBrowserField">name</property>
     </definition>
 </ui-command>
