@@ -298,6 +298,58 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DEPENDENTSLISTENER = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DependentListener")
+                    .addDefaultValue("TriggerStatus.StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("TriggerStatus.Status01", CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue("TriggerStatus.StatusGroup02",
+                                    CISales.IncomingProfServReceiptStatus.getType().getName())
+                    .addDefaultValue("TriggerStatus.Status02", CISales.IncomingProfServReceiptStatus.Canceled.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".RelationType01",
+                                    CISales.IncomingRetention2IncomingInvoice.getType().getName())
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".InstanceLink01",
+                                    CISales.IncomingRetention2IncomingInvoice.ToLink.name)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentLink01",
+                                    CISales.IncomingRetention2IncomingInvoice.FromLink.name)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentStatusGroup01",
+                                    CISales.IncomingRetentionStatus.getType().getName())
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentStatus01",
+                                    CISales.IncomingRetentionStatus.Canceled.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".RelationType02",
+                                    CISales.IncomingDetraction2IncomingInvoice.getType().getName())
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".InstanceLink02",
+                                    CISales.IncomingDetraction2IncomingInvoice.ToLink.name)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentLink02",
+                                    CISales.IncomingDetraction2IncomingInvoice.FromLink.name)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentStatusGroup02",
+                                    CISales.IncomingDetractionStatus.getType().getName())
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentStatus02",
+                                    CISales.IncomingDetractionStatus.Canceled.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".RelationType03",
+                                    CISales.IncomingPerceptionCertificate2IncomingInvoice.getType().getName())
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".InstanceLink03",
+                                    CISales.IncomingPerceptionCertificate2IncomingInvoice.ToLink.name)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentLink03",
+                                    CISales.IncomingPerceptionCertificate2IncomingInvoice.FromLink.name)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentStatusGroup03",
+                                    CISales.IncomingPerceptionCertificateStatus.getType().getName())
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".DependentStatus03",
+                                    CISales.IncomingPerceptionCertificateStatus.Canceled.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".RelationType01",
+                                    CISales.IncomingProfServRetention2IncomingProfServReceipt.getType().getName())
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".InstanceLink01",
+                                    CISales.IncomingProfServRetention2IncomingProfServReceipt.ToLink.name)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".DependentLink01",
+                                    CISales.IncomingProfServRetention2IncomingProfServReceipt.FromLink.name)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".DependentStatusGroup01",
+                                    CISales.IncomingProfServRetentionStatus.getType().getName())
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".DependentStatus01",
+                                    CISales.IncomingProfServRetentionStatus.Canceled.key)
+                    .description("Ruled for the DependetListeners");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DELIVERYNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "DeliveryNote.CreateFromInvoiceAutoComplete")
