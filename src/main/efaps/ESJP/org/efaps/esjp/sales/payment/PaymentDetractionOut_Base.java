@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -154,11 +151,12 @@ public abstract class PaymentDetractionOut_Base
     }
 
     /**
+     * Adds the parameter two doc values.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
-     * @param _detractionDoc detraction document
      * @throws EFapsException on error
      */
-    private void addParameter2DocValues(final Parameter _parameter)
+    protected void addParameter2DocValues(final Parameter _parameter)
         throws EFapsException
     {
         final Instance detractionDoc = Instance.get(_parameter.getParameterValue("detractionDoc"));
@@ -171,10 +169,19 @@ public abstract class PaymentDetractionOut_Base
             print.execute();
 
             ParameterUtil.setParameterValues(_parameter, "contact", print.<String>getSelect(selContact));
-            ParameterUtil.setParameterValues(_parameter, "serviceType", String.valueOf(print.<Long>getSelect(selServiceId)));
+            ParameterUtil.setParameterValues(_parameter, "serviceType", String.valueOf(print.<Long>getSelect(
+                            selServiceId)));
         }
     }
 
+    /**
+     * Connect bulk payment two payment document out.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _bulkDoc the bulk doc
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
+     */
     protected void connectBulkPayment2PaymentDocumentOut(final Parameter _parameter,
                                                          final CreatedDoc _bulkDoc,
                                                          final CreatedDoc _createdDoc)
@@ -194,12 +201,19 @@ public abstract class PaymentDetractionOut_Base
         }
     }
 
+    /**
+     * Update detractions.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
+     */
     protected void updateDetractions(final Parameter _parameter,
                                      final CreatedDoc _createdDoc)
         throws EFapsException
     {
         if (!_createdDoc.getPositions().isEmpty()) {
-            final String[] detractionDocs = _parameter.getParameterValues("detractionDoc");
+            final String[] detractionDocs = _parameter.getParameterValues("createDocument");
             if (detractionDocs != null && detractionDocs.length > 0) {
                 for (final String detractionDoc : detractionDocs) {
                     final Instance detractionInst = Instance.get(detractionDoc);
@@ -215,6 +229,13 @@ public abstract class PaymentDetractionOut_Base
         }
     }
 
+    /**
+     * Gets the java script for selectable rows values.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the java script for selectable rows values
+     * @throws EFapsException on error
+     */
     public Return getJavaScript4SelectableRowsValues(final Parameter _parameter)
         throws EFapsException
     {
@@ -229,6 +250,13 @@ public abstract class PaymentDetractionOut_Base
         return ret;
     }
 
+    /**
+     * Evaluate status docs.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instances the instances
+     * @throws EFapsException on error
+     */
     protected void evaluateStatusDocs(final Parameter _parameter,
                                       final List<Instance> _instances)
         throws EFapsException
@@ -254,6 +282,14 @@ public abstract class PaymentDetractionOut_Base
         }
     }
 
+    /**
+     * Gets the java script for positions.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instances the instances
+     * @return the java script for positions
+     * @throws EFapsException on error
+     */
     protected StringBuilder getJavaScript4Positions(final Parameter _parameter,
                                                     final List<Instance> _instances)
         throws EFapsException
@@ -322,11 +358,19 @@ public abstract class PaymentDetractionOut_Base
                                             getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
         }
         js.append(getSetFieldValue(0, "amount",  NumberFormatter.get().getTwoDigitsFormatter().format(total)))
-            .append(getSetFieldValue(0, "total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO)))
+            .append(getSetFieldValue(0, "total4DiscountPay",
+                            NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO)))
             .append("</script>\n");
         return js;
     }
 
+    /**
+     * Gets the on complete script.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the on complete script
+     * @throws EFapsException on error
+     */
     protected StringBuilder getOnCompleteScript(final Parameter _parameter)
         throws EFapsException
     {
@@ -352,6 +396,13 @@ public abstract class PaymentDetractionOut_Base
         }
     }
 
+    /**
+     * Recalculate amount.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return recalculateAmount(final Parameter _parameter)
         throws EFapsException
     {
@@ -377,6 +428,13 @@ public abstract class PaymentDetractionOut_Base
         return super.getRound4Amount(_amount4PayDoc, _rate).setScale(0, BigDecimal.ROUND_HALF_UP);
     }
 
+    /**
+     * Update fields for create document massive.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return updateFields4CreateDocumentMassive(final Parameter _parameter)
         throws EFapsException
     {
