@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,7 +179,7 @@ public abstract class PaymentPanel_Base
                     } else {
                         RateInfo rateinfo = RateInfo.getRateInfo(bean.getRate());
                         if (rateinfo.getCurrencyInstance().equals(Currency.getBaseCurrency())
-                                      && rateinfo.getCurrencyInstance().equals(rateinfo.getTargetCurrencyInstance()) ) {
+                                      && rateinfo.getCurrencyInstance().equals(rateinfo.getTargetCurrencyInstance())) {
                             rateinfo = new Currency().evaluateRateInfos(ParameterUtil.instance(), bean.getDate(),
                                             rateinfo.getCurrencyInstance(), currencyInst)[2];
                         }
@@ -197,21 +197,21 @@ public abstract class PaymentPanel_Base
                         values.put(bean.getPartial(), map);
                     }
                     final BigDecimal val;
-                    if (map.containsKey(bean.getType())) {
-                        val = map.get(bean.getType());
+                    if (map.containsKey(bean.getPaymentDocType())) {
+                        val = map.get(bean.getPaymentDocType());
                     } else {
                         val = BigDecimal.ZERO;
                     }
-                    map.put(bean.getType(), val.add(amount));
+                    map.put(bean.getPaymentDocType(), val.add(amount));
 
                     final BigDecimal total = totals.containsKey(bean.getPartial())
                                     ? totals.get(bean.getPartial()) : BigDecimal.ZERO;
                     totals.put(bean.getPartial(), total.add(amount));
 
-                    if (!series.containsKey(bean.getType())) {
+                    if (!series.containsKey(bean.getPaymentDocType())) {
                         final Serie<Data> serie = new Serie<>();
-                        serie.setName(bean.getType());
-                        series.put(bean.getType(), serie);
+                        serie.setName(bean.getPaymentDocType());
+                        series.put(bean.getPaymentDocType(), serie);
                     }
                 }
             }

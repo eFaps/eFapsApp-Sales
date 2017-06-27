@@ -39,6 +39,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
@@ -96,16 +97,15 @@ public abstract class PaymentSumReport_Base
     /**
      * Used to distinguish between incoming and outgoing report.
      */
-    public enum TypeGroup
+    public enum GroupBy
     {
         /** Both. */
-        NONE,
+        ACCOUNT,
         /** Incoming. */
-        BEFOREACC,
+        PAYMENTDOCTYPE,
         /** Outgoing. */
-        AFTERACC,
+        CONTACT
     }
-
 
     /**
      * Logging instance used in this class.
@@ -223,7 +223,10 @@ public abstract class PaymentSumReport_Base
                 final SelectBuilder selRateCurrencyInst = SelectBuilder.get()
                                 .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
                                 .instance();
-                multi.addSelect(selAccount, selCurrencyInst, selRateCurrencyInst);
+                final SelectBuilder selContact = SelectBuilder.get()
+                                .linkto(CISales.PaymentDocumentAbstract.Contact)
+                                .attribute(CIContacts.ContactAbstract.Name);
+                multi.addSelect(selAccount, selCurrencyInst, selRateCurrencyInst, selContact);
                 multi.addAttribute(CISales.PaymentDocumentAbstract.Amount, CISales.PaymentDocumentAbstract.Date,
                                 CISales.PaymentDocumentAbstract.Rate);
                 multi.execute();
@@ -235,8 +238,9 @@ public abstract class PaymentSumReport_Base
                         amount = amount.negate();
                     }
                     final DataBean dataBean = getBean(_parameter)
-                                    .setInstance(multi.getCurrentInstance())
+                                    .setPaymentDocInstance(multi.getCurrentInstance())
                                     .setAccount(multi.getSelect(selAccount))
+                                    .setContact(multi.getSelect(selContact))
                                     .setAmount(amount)
                                     .setCurrencyInst(multi.getSelect(selCurrencyInst))
                                     .setRateCurrencyInst(multi.getSelect(selRateCurrencyInst))
@@ -259,7 +263,10 @@ public abstract class PaymentSumReport_Base
                     final SelectBuilder selDocRateCurrencyInst = SelectBuilder.get()
                                     .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                                     .instance();
-                    docMulti.addSelect(selDocCurrencyInst, selDocRateCurrencyInst);
+                    final SelectBuilder selContactName = SelectBuilder.get()
+                                    .linkto(CISales.DocumentSumAbstract.Contact)
+                                    .attribute(CIContacts.ContactAbstract.Name);
+                    docMulti.addSelect(selDocCurrencyInst, selDocRateCurrencyInst, selContactName);
                     docMulti.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.Date,
                                     CISales.DocumentSumAbstract.Rate);
                     docMulti.execute();
@@ -271,7 +278,8 @@ public abstract class PaymentSumReport_Base
                             amount = amount.negate();
                         }
                         final DataBean dataBean = getBean(_parameter)
-                                        .setInstance(docMulti.getCurrentInstance())
+                                        .setPaymentDocInstance(docMulti.getCurrentInstance())
+                                        .setContact(docMulti.getSelect(selContactName))
                                         .setAmount(amount)
                                         .setCurrencyInst(docMulti.getSelect(selDocCurrencyInst))
                                         .setRateCurrencyInst(docMulti.getSelect(selDocRateCurrencyInst))
@@ -414,17 +422,20 @@ public abstract class PaymentSumReport_Base
          * @return the pay doc
          * @throws EFapsException on error
          */
-        protected TypeGroup getTypeGroup(final Parameter _parameter)
+        protected List<Enum<?>> getGroupBy(final Parameter _parameter)
             throws EFapsException
         {
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
 
-            final TypeGroup ret;
-            if (filterMap.containsKey("typeGroup")) {
-                final EnumFilterValue filterValue = (EnumFilterValue) filterMap.get("typeGroup");
-                ret = (TypeGroup) filterValue.getObject();
+            final List<Enum<?>> ret;
+            if (filterMap.containsKey("groupBy")) {
+                final GroupByFilterValue filterValue = (GroupByFilterValue) filterMap.get("groupBy");
+                ret = filterValue.getObject();
             } else {
-                ret = TypeGroup.NONE;
+                ret = new ArrayList<>();
+            }
+            if (ret.isEmpty()) {
+                ret.add(GroupBy.ACCOUNT);
             }
             return ret;
         }
@@ -454,8 +465,7 @@ public abstract class PaymentSumReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-
-            final TypeGroup typeGroup = getTypeGroup(_parameter);
+            final List<Enum<?>> groupBy = getGroupBy(_parameter);
 
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
 
@@ -471,21 +481,26 @@ public abstract class PaymentSumReport_Base
                                       .conditionalStyles(condition1);
             amountMeasure.setStyle(unitPriceStyle);
 
-            if (TypeGroup.BEFOREACC.equals(typeGroup)) {
-                final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab
-                                .rowGroup("type", String.class);
-                crosstab.addRowGroup(rowTypeGroup);
-            }
-
-            final CrosstabRowGroupBuilder<String> rowAccountGroup = DynamicReports.ctab
-                            .rowGroup("account", String.class)
-                            .setHeaderWidth(150);
-            crosstab.addRowGroup(rowAccountGroup);
-
-            if (TypeGroup.AFTERACC.equals(typeGroup)) {
-                final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab
-                            .rowGroup("type", String.class);
-                crosstab.addRowGroup(rowTypeGroup);
+            for (final Enum<?> obj : groupBy) {
+                switch ((GroupBy) obj) {
+                    case ACCOUNT:
+                        final CrosstabRowGroupBuilder<String> rowAccountGroup = DynamicReports.ctab.rowGroup("account",
+                                        String.class).setHeaderWidth(150);
+                        crosstab.addRowGroup(rowAccountGroup);
+                        break;
+                    case CONTACT:
+                        final CrosstabRowGroupBuilder<String> rowContactGroup = DynamicReports.ctab.rowGroup("contact",
+                                        String.class).setHeaderWidth(150);
+                        crosstab.addRowGroup(rowContactGroup);
+                        break;
+                    case PAYMENTDOCTYPE:
+                        final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup(
+                                        "paymentDocType", String.class);
+                        crosstab.addRowGroup(rowTypeGroup);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             final CrosstabColumnGroupBuilder<String> columnPartialGroup = DynamicReports.ctab.columnGroup("partial",
@@ -540,7 +555,7 @@ public abstract class PaymentSumReport_Base
         private Instance rateCurrencyInst;
 
         /** The instance. */
-        private Instance instance;
+        private Instance paymentDocInstance;
 
         /** The partial. */
         private String partial;
@@ -550,6 +565,9 @@ public abstract class PaymentSumReport_Base
 
         /** The rate. */
         private Object[] rate;
+
+        /** The contact. */
+        private String contact;
 
         /**
          * Gets the account.
@@ -639,9 +657,9 @@ public abstract class PaymentSumReport_Base
          *
          * @return value of instance variable {@link #type}
          */
-        public String getType()
+        public String getPaymentDocType()
         {
-            return getInstance().getType().getLabel();
+            return this.paymentDocInstance.getType().getLabel();
         }
 
         /**
@@ -693,9 +711,9 @@ public abstract class PaymentSumReport_Base
          *
          * @return value of instance variable {@link #instance}
          */
-        public Instance getInstance()
+        public Instance getPaymentDocInstance()
         {
-            return this.instance;
+            return this.paymentDocInstance;
         }
 
         /**
@@ -704,9 +722,9 @@ public abstract class PaymentSumReport_Base
          * @param _instance value for instance variable {@link #instance}
          * @return the data bean
          */
-        public DataBean setInstance(final Instance _instance)
+        public DataBean setPaymentDocInstance(final Instance _instance)
         {
-            this.instance = _instance;
+            this.paymentDocInstance = _instance;
             return this;
         }
 
@@ -751,6 +769,28 @@ public abstract class PaymentSumReport_Base
         public DataBean setRate(final Object[] _rate)
         {
             this.rate = _rate;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #contact}.
+         *
+         * @return value of instance variable {@link #contact}
+         */
+        public String getContact()
+        {
+            return this.contact;
+        }
+
+        /**
+         * Setter method for instance variable {@link #contact}.
+         *
+         * @param _contact value for instance variable {@link #contact}
+         * @return the data bean
+         */
+        public DataBean setContact(final String _contact)
+        {
+            this.contact = _contact;
             return this;
         }
 

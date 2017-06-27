@@ -32,17 +32,17 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">payDoc</property>
                 <property name="Field04">dateGroup</property>
-                <property name="Field05">typeGroup</property>
+                <property name="Field05">groupBy</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Enum</property>
                 <property name="FilterType04">Enum</property>
-                <property name="FilterType05">Enum</property>
+                <property name="FilterType05">GroupBy</property>
                 <property name="FilterDefault01">MONTHS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.PaymentSumReport_Base$PayDoc</property>
                 <property name="FilterDefault04">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault05">org.efaps.esjp.sales.report.PaymentSumReport_Base$TypeGroup</property>
+                <property name="FilterDefault05">org.efaps.esjp.sales.report.PaymentSumReport_Base$GroupBy</property>
                 <!-- Sales-Configuration -->
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentSumReport</property>
@@ -54,12 +54,12 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">payDoc</property>
                 <property name="Field04">dateGroup</property>
-                <property name="Field05">typeGroup</property>
+                <property name="Field05">groupBy</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.PaymentSumReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.PaymentSumReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.PaymentSumReport.payDoc</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.PaymentSumReport.dateGroup</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.PaymentSumReport.typeGroup</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.PaymentSumReport.groupBy</property>
                  <!-- Sales-Configuration -->
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentSumReport</property>

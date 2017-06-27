@@ -60,14 +60,14 @@
                 <property name="Enum">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
             </trigger>
         </field>
-        <field name="typeGroup">
+        <field name="groupBy">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIType">RADIO</property>
-            <property name="Label">org.efaps.esjp.sales.report.PaymentSumReport.typeGroup</property>
-            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
-                name="Sales_PaymentSumReportFilterForm.typeGroup.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.PaymentSumReport">
-                <property name="Enum">org.efaps.esjp.sales.report.PaymentSumReport_Base$TypeGroup</property>
+            <property name="UIType">SNIPPLET</property>
+            <property name="Label">org.efaps.esjp.sales.report.PaymentSumReport.groupBy</property>
+            <trigger event="UI_FIELD_VALUE" method="getGroupByFieldValue"
+                name="ales_PaymentSumReportFilterForm.groupConfig.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="Enum">org.efaps.esjp.sales.report.PaymentSumReport_Base$GroupBy</property>
             </trigger>
         </field>
     </definition>
