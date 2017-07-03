@@ -424,6 +424,11 @@ public abstract class IncomingInvoice_Base
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name, queryBldr));
         }
+        if (Sales.INCOMINGINVOICE_ACTIVATECONDITION.get()) {
+            InterfaceUtils.appendScript4FieldUpdate(_map,
+                            new Channel().getConditionJs(_parameter, _contactInstance,
+                                            CISales.ChannelPurchaseCondition2Contact));
+        }
     }
 
     @Override
