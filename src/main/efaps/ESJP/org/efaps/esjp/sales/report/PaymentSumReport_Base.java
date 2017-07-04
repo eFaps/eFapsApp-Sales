@@ -47,8 +47,10 @@ import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -202,6 +204,7 @@ public abstract class PaymentSumReport_Base
                     throw new EFapsException("JRException", e);
                 }
             } else {
+                final Instance reportCurrencyInst = getReportCurrency(_parameter);
 
                 final List<DataBean> beans = new ArrayList<>();
                 final GroupedByDate groupedBy = new GroupedByDate();
@@ -246,7 +249,8 @@ public abstract class PaymentSumReport_Base
                                     .setRateCurrencyInst(multi.getSelect(selRateCurrencyInst))
                                     .setDate(multi.getAttribute(CISales.PaymentDocumentAbstract.Date))
                                     .setRate(multi.getAttribute(CISales.PaymentDocumentAbstract.Rate))
-                                    .setPartial(partial);
+                                    .setPartial(partial)
+                                    .setReportCurrencyInst(reportCurrencyInst);
 
                     beans.add(dataBean);
                     PaymentSumReport_Base.LOG.debug("Read {}", dataBean);
@@ -285,7 +289,8 @@ public abstract class PaymentSumReport_Base
                                         .setRateCurrencyInst(docMulti.getSelect(selDocRateCurrencyInst))
                                         .setDate(docMulti.getAttribute(CISales.DocumentSumAbstract.Date))
                                         .setRate(multi.getAttribute(CISales.DocumentSumAbstract.Rate))
-                                        .setPartial(partial);
+                                        .setPartial(partial)
+                                        .setReportCurrencyInst(reportCurrencyInst);
                         beans.add(dataBean);
                         PaymentSumReport_Base.LOG.debug("Read {}", dataBean);
                     }
@@ -441,6 +446,25 @@ public abstract class PaymentSumReport_Base
         }
 
         /**
+         * Gets the Currency.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the pay doc
+         * @throws EFapsException on error
+         */
+        protected Instance getReportCurrency(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            Instance ret = null;
+            if (filterMap.containsKey("currency")) {
+                final CurrencyFilterValue filterValue = (CurrencyFilterValue) filterMap.get("currency");
+                ret = filterValue.getObject();
+            }
+            return ret;
+        }
+
+        /**
          * Gets the date group.
          *
          * @param _parameter the parameter
@@ -532,7 +556,7 @@ public abstract class PaymentSumReport_Base
          */
         protected DataBean getBean(final Parameter _parameter)
         {
-            return new DataBean();
+            return new DataBean(_parameter);
         }
     }
 
@@ -541,6 +565,9 @@ public abstract class PaymentSumReport_Base
      */
     public static class DataBean
     {
+
+        /** The parameter. */
+        private final Parameter parameter;
 
         /** The amount. */
         private BigDecimal amount;
@@ -557,6 +584,9 @@ public abstract class PaymentSumReport_Base
         /** The instance. */
         private Instance paymentDocInstance;
 
+        /** The report currency inst. */
+        private Instance reportCurrencyInst;
+
         /** The partial. */
         private String partial;
 
@@ -568,6 +598,16 @@ public abstract class PaymentSumReport_Base
 
         /** The contact. */
         private String contact;
+
+        /**
+         * Instantiates a new data bean.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         */
+        public DataBean(final Parameter _parameter)
+        {
+           this.parameter = _parameter;
+        }
 
         /**
          * Gets the account.
@@ -604,18 +644,44 @@ public abstract class PaymentSumReport_Base
         public String getCurrency()
             throws EFapsException
         {
-            return InstanceUtils.isValid(getRateCurrencyInst())
-                            ? CurrencyInst.get(getRateCurrencyInst()).getSymbol() : null;
+            String ret;
+            if (InstanceUtils.isValid(getReportCurrencyInst())) {
+                ret = CurrencyInst.get(getReportCurrencyInst()).getSymbol();
+            } else if (InstanceUtils.isValid(getRateCurrencyInst())) {
+                ret = CurrencyInst.get(getRateCurrencyInst()).getSymbol();
+            } else {
+                ret = null;
+            }
+            return ret;
         }
 
         /**
          * Gets the amount.
          *
          * @return the amount
+         * @throws EFapsException on error
          */
         public BigDecimal getAmount()
+            throws EFapsException
         {
-            return this.amount;
+            BigDecimal ret;
+            if (InstanceUtils.isValid(getReportCurrencyInst())) {
+                final RateInfo rateInfo = RateInfo.getRateInfo(getRate());
+                if (rateInfo.getCurrencyInstance().equals(getReportCurrencyInst())) {
+                    ret = this.amount;
+                } else if (rateInfo.getCurrencyInstance().equals(Currency.getBaseCurrency())) {
+                    final RateInfo rateInfoTmp = new Currency().evaluateRateInfo(getParameter(), getDate(),
+                                    getReportCurrencyInst());
+                    ret = Currency.convertToCurrency(getParameter(), this.amount, rateInfoTmp.reverse(),
+                                    getPaymentDocInstance().getType().getName(), getReportCurrencyInst());
+                } else {
+                    ret = Currency.convertToCurrency(getParameter(), this.amount, rateInfo, getPaymentDocInstance()
+                                    .getType().getName(), getReportCurrencyInst());
+                }
+            } else {
+                ret = this.amount;
+            }
+            return ret;
         }
 
         /**
@@ -792,6 +858,38 @@ public abstract class PaymentSumReport_Base
         {
             this.contact = _contact;
             return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #reportCurrencyInst}.
+         *
+         * @return value of instance variable {@link #reportCurrencyInst}
+         */
+        public Instance getReportCurrencyInst()
+        {
+            return this.reportCurrencyInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #reportCurrencyInst}.
+         *
+         * @param _reportCurrencyInst value for instance variable {@link #reportCurrencyInst}
+         * @return the data bean
+         */
+        public DataBean setReportCurrencyInst(final Instance _reportCurrencyInst)
+        {
+            this.reportCurrencyInst = _reportCurrencyInst;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #parameter}.
+         *
+         * @return value of instance variable {@link #parameter}
+         */
+        public Parameter getParameter()
+        {
+            return this.parameter;
         }
 
         @Override

@@ -70,5 +70,15 @@
                 <property name="Enum">org.efaps.esjp.sales.report.PaymentSumReport_Base$GroupBy</property>
             </trigger>
         </field>
+        <field name="currency">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">org.efaps.esjp.sales.report.PaymentSumReport.currency</property>
+            <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
+                name="Sales_ABCReportFilterForm.currency.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ABCReport">
+                <property name="ShowEmptyValue">true</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
