@@ -111,17 +111,16 @@ public abstract class IncomingProfServReceipt_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String seqKey = Sales.INCOMINGPROFSERVRECEIPTREVSEQ.get();
+        final String seqKey = Sales.INCOMINGPROFSERVREC_REVSEQ.get();
         final NumberGenerator numgen = isUUID(seqKey)
                         ? NumberGenerator.get(UUID.fromString(seqKey))
                         : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
-            Context.getThreadContext().setSessionAttribute(REVISIONKEY, revision);
+            Context.getThreadContext().setSessionAttribute(IncomingProfServReceipt.REVISIONKEY, revision);
             _insert.add(CISales.IncomingProfServReceipt.Revision, revision);
         }
     }
-
 
     /**
      * @param _parameter Parameter as passed by the efasp API
@@ -318,8 +317,8 @@ public abstract class IncomingProfServReceipt_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
@@ -340,8 +339,8 @@ public abstract class IncomingProfServReceipt_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
@@ -384,7 +383,7 @@ public abstract class IncomingProfServReceipt_Base
                                 .format(detraction);
                 _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.insuranceValue.name, insuranceStr);
             } catch (final ParseException e) {
-                LOG.error("Catched parsing error", e);
+                IncomingProfServReceipt_Base.LOG.error("Catched parsing error", e);
             }
         }
         final String retentionPercentStr = _parameter
@@ -401,7 +400,7 @@ public abstract class IncomingProfServReceipt_Base
                                 .format(retention);
                 _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.retentionValue.name, retentionStr);
             } catch (final ParseException e) {
-                LOG.error("Catched parsing error", e);
+                IncomingProfServReceipt_Base.LOG.error("Catched parsing error", e);
             }
         }
     }
