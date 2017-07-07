@@ -930,7 +930,7 @@ public abstract class SalesReport4Account_Base
             gridList.add(dueDateColumn);
 
             gridList.add(nameColumn);
-            if (Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)) {
+            if (!hideDetails && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)) {
                 gridList.add(revisionColumn);
             }
 
@@ -940,7 +940,7 @@ public abstract class SalesReport4Account_Base
             if (!selected.contains(GroupBy.CONTACT) && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 gridList.add(contactNameColumn);
             }
-            if (getFilteredReport().isShowAssigned() && !selected.contains(GroupBy.ASSIGNED)
+            if (!hideDetails && getFilteredReport().isShowAssigned() && !selected.contains(GroupBy.ASSIGNED)
                             && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
                 gridList.add(assignedColumn);
             }

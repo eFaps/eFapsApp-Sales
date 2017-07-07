@@ -38,6 +38,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -58,6 +59,7 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
@@ -847,10 +849,14 @@ public abstract class DocPaymentInfo_Base
                         CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).instance();
         final SelectBuilder selPaymentDocInst = new SelectBuilder().linkto(
                         CIERP.Document2PaymentDocumentAbstract.ToAbstractLink).instance();
+        final SelectBuilder selPaymentDocName = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
+                        .attribute(CIERP.PaymentDocumentAbstract.Name);
         final SelectBuilder selPaymentDocRate = new SelectBuilder().linkto(
                         CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
                         .attribute(CIERP.PaymentDocumentAbstract.Rate);
-        multi.addSelect(selCurInst, selRateCurInst, selDocInst, selPaymentDocInst, selPaymentDocRate);
+        multi.addSelect(selCurInst, selRateCurInst, selDocInst, selPaymentDocInst, selPaymentDocName,
+                        selPaymentDocRate);
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
             final Instance docInst = multi.getSelect(selDocInst);
@@ -861,6 +867,7 @@ public abstract class DocPaymentInfo_Base
             final DateTime dateTmp = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
             BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
             final Instance payDocInst = multi.getSelect(selPaymentDocInst);
+            final String name = multi.getSelect(selPaymentDocName);
             final RateInfo rateInfo;
 
             // payment was in the same currency
@@ -881,7 +888,8 @@ public abstract class DocPaymentInfo_Base
                 amount = amount.negate();
             }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
-                            .setLabel(payDocInst.getType().getLabel())
+                            .setTypeLabel(payDocInst.getType().getLabel())
+                            .setName(name)
                             .setRateInfo(rateInfo));
         }
     }
@@ -922,7 +930,11 @@ public abstract class DocPaymentInfo_Base
                         .attribute(CIERP.PaymentDocumentAbstract.Rate);
         final SelectBuilder selPaymentDocInst = new SelectBuilder().linkto(
                         CIERP.Document2PaymentDocumentAbstract.ToAbstractLink).instance();
-        taxMulti.addSelect(selTaxCurInst, selDocInst, selRateCurInst, selPaymentDocRate, selPaymentDocInst);
+        final SelectBuilder selPaymentDocName = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
+                        .attribute(CIERP.PaymentDocumentAbstract.Name);
+        taxMulti.addSelect(selTaxCurInst, selDocInst, selRateCurInst, selPaymentDocRate, selPaymentDocInst,
+                        selPaymentDocName);
         taxMulti.executeWithoutAccessCheck();
         while (taxMulti.next()) {
             final Instance docInst = taxMulti.getSelect(selDocInst);
@@ -932,6 +944,7 @@ public abstract class DocPaymentInfo_Base
             final Instance curInst = taxMulti.getSelect(selTaxCurInst);
             final DateTime dateTmp = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
             BigDecimal amount = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+            final String name = taxMulti.getSelect(selPaymentDocName);
 
             final RateInfo rateInfo;
             // payment was in the same currency
@@ -952,7 +965,8 @@ public abstract class DocPaymentInfo_Base
                 amount = amount.negate();
             }
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
-                            .setLabel(CISales.IncomingDetraction.getType().getLabel())
+                            .setTypeLabel(CISales.IncomingDetraction.getType().getLabel())
+                            .setName(name)
                             .setRateInfo(rateInfo));
         }
     }
@@ -998,7 +1012,10 @@ public abstract class DocPaymentInfo_Base
                         .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink).instance();
         final SelectBuilder selPaymentDocInst = new SelectBuilder().linkto(
                         CIERP.Document2PaymentDocumentAbstract.ToAbstractLink).instance();
-        retMulti.addSelect(retSelCur, selDocInst, selRateCurInst, selRateObj, selPaymentDocInst);
+        final SelectBuilder selPaymentDocName = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
+                        .attribute(CIERP.PaymentDocumentAbstract.Name);
+        retMulti.addSelect(retSelCur, selDocInst, selRateCurInst, selRateObj, selPaymentDocInst, selPaymentDocName);
         retMulti.executeWithoutAccessCheck();
         while (retMulti.next()) {
             final Instance docInst = retMulti.getSelect(selDocInst);
@@ -1007,10 +1024,12 @@ public abstract class DocPaymentInfo_Base
             final Instance curInst = retMulti.getSelect(retSelCur);
             final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
             final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
+            final String name = retMulti.getSelect(selPaymentDocName);
 
             final RateInfo rateInfo = RateInfo.getRateInfo(retMulti.<Object[]>getSelect(selRateObj));
             info.payPos.add(new PayPos(dateTmp, amount, curInst)
-                            .setLabel(CISales.IncomingRetention.getType().getLabel())
+                            .setTypeLabel(CISales.IncomingRetention.getType().getLabel())
+                            .setName(name)
                             .setRateInfo(rateInfo));
         }
     }
@@ -1048,17 +1067,19 @@ public abstract class DocPaymentInfo_Base
 
         final SelectBuilder selDocTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToAbstractLink);
         final SelectBuilder selDocToInst = new SelectBuilder(selDocTo).instance();
+        final SelectBuilder selDocToName = new SelectBuilder(selDocTo).attribute(CIERP.DocumentAbstract.Name);
         final SelectBuilder selDocToStatus = new SelectBuilder(selDocTo).status().key();
         final SelectBuilder selDocToRate = new SelectBuilder(selDocTo).attribute(CISales.DocumentSumAbstract.Rate);
 
-        swapMulti.addSelect(selCurInst, selDocFromInst, selDocFromRate, selDocToInst, selDocFromStatus, selDocToStatus,
-                        selDocToRate);
+        swapMulti.addSelect(selCurInst, selDocFromInst, selDocFromRate, selDocToInst, selDocToName, selDocFromStatus,
+                        selDocToStatus, selDocToRate);
         swapMulti.executeWithoutAccessCheck();
         while (swapMulti.next()) {
             if (!verifySet.contains(swapMulti.getCurrentInstance())) {
                 verifySet.add(swapMulti.getCurrentInstance());
                 final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
                 final Instance docToInst = swapMulti.getSelect(selDocToInst);
+                final String docToName = swapMulti.getSelect(selDocToName);
                 final String keyFrom = swapMulti.getSelect(selDocFromStatus);
                 final String keyTo = swapMulti.getSelect(selDocToStatus);
                 if (instance2info.containsKey(docFromInst)
@@ -1099,7 +1120,8 @@ public abstract class DocPaymentInfo_Base
                     final DateTime swapDate = swapMulti.getAttribute(CISales.Document2Document4Swap.Date);
                     final DateTime posDate = swapDate == null ? info.date : swapDate;
                     info.payPos.add(new PayPos(posDate, amount, curInst)
-                                    .setLabel(docToInst.getType().getLabel())
+                                    .setTypeLabel(docToInst.getType().getLabel())
+                                    .setName(docToName)
                                     .setRateInfo(rateInfo));
                 }
             }
@@ -1183,7 +1205,7 @@ public abstract class DocPaymentInfo_Base
             final Table table = new Table()
                 .setStyle("min-width: 350px;")
                 .addRow()
-                    .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".LabelColumn"), 3)
+                    .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".LabelColumn"), 5)
                     .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".AmountColumn"))
                     .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CurrencyColumn"))
                 .addRow()
@@ -1191,13 +1213,16 @@ public abstract class DocPaymentInfo_Base
                                     "font-weight:bold;font-size: 120%;")
                 .addRow()
                     .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"),
-                                    "font-weight:bold", 3)
+                                    "font-weight:bold", 5)
                     .addColumn(formatter.format(payInfo.getCrossTotal()), "text-align: right;")
                     .addColumn(CurrencyInst.get(payInfo.getCurrencyInstance()).getSymbol());
 
             for (final PayPos payPos  : payInfo.getPayPos()) {
                 table.addRow()
-                    .addColumn(payPos.getLabel());
+                    .addColumn(payPos.getTypeLabel())
+                    .addColumn(payPos.getName())
+                    .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate().withLocale(
+                                    Context.getThreadContext().getLocale())));
                 if (!payPos.getCurrencyInstance().equals(Currency.getBaseCurrency())) {
                     if (!currencies .contains(payPos.getCurrencyInstance())
                                     && !Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
@@ -1220,12 +1245,12 @@ public abstract class DocPaymentInfo_Base
             table
                 .addRow()
                     .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Paid"),
-                                    "font-weight:bold", 3)
+                                    "font-weight:bold", 5)
                     .addColumn(formatter.format(payInfo.getPaid(i < 1)), "text-align: right;")
                     .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol())
                 .addRow()
                         .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"),
-                                        "font-weight:bold;text-align:right", 3)
+                                        "font-weight:bold;text-align:right", 5)
                         .addColumn(formatter.format(payInfo.getBalance(i < 1)),
                                         "text-align: right;")
                         .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
@@ -1238,12 +1263,15 @@ public abstract class DocPaymentInfo_Base
                         .addColumn(CurrencyInst.get(currencyInst).getName(), "font-weight:bold;font-size: 120%;")
                     .addRow()
                         .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"),
-                                        "font-weight:bold", 3)
+                                        "font-weight:bold", 5)
                         .addColumn(formatter.format(payInfo.getRateCrossTotal()), "text-align: right;")
                         .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol());
                 for (final PayPos payPos : payInfo.getPayPos()) {
                     table.addRow()
-                        .addColumn(payPos.getLabel());
+                        .addColumn(payPos.getTypeLabel())
+                        .addColumn(payPos.getName())
+                        .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate().withLocale(
+                                    Context.getThreadContext().getLocale())));
                     if (!payPos.getCurrencyInstance().equals(currencyInst)) {
                         if (!currencies .contains(payPos.getCurrencyInstance())
                                         && !Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
@@ -1274,12 +1302,12 @@ public abstract class DocPaymentInfo_Base
                 }
                 table.addRow()
                         .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Paid"),
-                                        "font-weight:bold", 3)
+                                        "font-weight:bold", 5)
                         .addColumn(formatter.format(payInfo.getRatePaid(i < 1)), "text-align: right;")
                         .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol())
                     .addRow()
                         .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"),
-                                        "font-weight:bold;text-align:right", 3)
+                                        "font-weight:bold;text-align:right", 5)
                         .addColumn(formatter.format(payInfo.getRateBalance(i < 1)),
                                         "text-align: right;")
                         .addColumn(CurrencyInst.get(currencyInst).getSymbol());
@@ -1342,7 +1370,10 @@ public abstract class DocPaymentInfo_Base
         private final Instance currencyInstance;
 
         /** The label. */
-        private String label;
+        private String typeLabel;
+
+        /** The label. */
+        private String name;
 
         /** The rate info. */
         private RateInfo rateInfo;
@@ -1398,9 +1429,9 @@ public abstract class DocPaymentInfo_Base
          *
          * @return the label
          */
-        public String getLabel()
+        public String getTypeLabel()
         {
-            return this.label;
+            return this.typeLabel;
         }
 
         /**
@@ -1409,9 +1440,31 @@ public abstract class DocPaymentInfo_Base
          * @param _label the label
          * @return the pay pos
          */
-        public PayPos setLabel(final String _label)
+        public PayPos setTypeLabel(final String _label)
         {
-            this.label = _label;
+            this.typeLabel = _label;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #name}.
+         *
+         * @return value of instance variable {@link #name}
+         */
+        public String getName()
+        {
+            return this.name;
+        }
+
+        /**
+         * Setter method for instance variable {@link #name}.
+         *
+         * @param _name value for instance variable {@link #name}
+         * @return the pay pos
+         */
+        public PayPos setName(final String _name)
+        {
+            this.name = _name;
             return this;
         }
 
