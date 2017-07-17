@@ -358,7 +358,7 @@ public abstract class Transaction_Base
     public Return deleteTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        addRemoveFromAccount(_parameter, false);
+        addRemoveFromAccount(_parameter, true);
         return new Return();
     }
 
