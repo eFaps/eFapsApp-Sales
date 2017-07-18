@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2014 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
   limitations under the License.
 
 -->
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8da0b886-5c81-41d3-9486-236378e984ff</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
@@ -25,7 +26,7 @@
         <field character="Group" name="dateGroup">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -34,6 +35,13 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
+        </field>
+         <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
