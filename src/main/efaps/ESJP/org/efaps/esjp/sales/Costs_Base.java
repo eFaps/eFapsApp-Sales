@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.efaps.admin.datamodel.Status;
@@ -70,10 +69,11 @@ public abstract class Costs_Base
     protected BigDecimal evalAcquisitionCost(final Parameter _parameter,
                                              final Instance _productInstance,
                                              final Instance _docInst,
-                                             final Instance _currenyInst)
+                                             final Instance _currenyInst,
+                                             final DateTime _date)
         throws EFapsException
     {
-        final List<Instance> reTickInsts = getRecievingTicketInsts(_parameter, _productInstance, _docInst);
+        final List<Instance> reTickInsts = getRecievingTicketInsts(_parameter, _productInstance, _docInst, _date);
         final List<CostBean> costs = new ArrayList<>();
         for (final Instance reTickInst : reTickInsts) {
             final List<CostBean> tmpCosts = eval4Costing(_parameter, reTickInst, _productInstance);
@@ -102,15 +102,7 @@ public abstract class Costs_Base
     {
         BigDecimal ret = BigDecimal.ZERO;
         // first priority have costing informations
-        final List<CostBean> costings = _costs.stream().filter(new Predicate<CostBean>()
-        {
-
-            @Override
-            public boolean test(final CostBean _bean)
-            {
-                return _bean.isCosting();
-            }
-        }).collect(Collectors.toList());
+        final List<CostBean> costings = _costs.stream().filter(_bean -> _bean.isCosting()).collect(Collectors.toList());
         final Iterator<CostBean> iter;
         if (costings.isEmpty()) {
             iter = _costs.iterator();
@@ -274,12 +266,14 @@ public abstract class Costs_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @param _productInstance the product instance
      * @param _docInst the doc inst
+     * @param _date the date
      * @return the recieving ticket insts
      * @throws EFapsException on error
      */
     protected List<Instance> getRecievingTicketInsts(final Parameter _parameter,
                                                      final Instance _productInstance,
-                                                     final Instance _docInst)
+                                                     final Instance _docInst,
+                                                     final DateTime _date)
         throws EFapsException
     {
         final List<Instance> ret = new ArrayList<>();
@@ -300,10 +294,15 @@ public abstract class Costs_Base
             }
         }
         if (ret.isEmpty()) {
-            final PrintQuery print = CachedPrintQuery.get4Request(_docInst);
-            print.addAttribute(CIERP.DocumentAbstract.Date);
-            print.executeWithoutAccessCheck();
-            final DateTime docdate = print.getAttribute(CIERP.DocumentAbstract.Date);
+            final DateTime date;
+            if (InstanceUtils.isKindOf(_docInst, CIERP.DocumentAbstract)) {
+                final PrintQuery print = CachedPrintQuery.get4Request(_docInst);
+                print.addAttribute(CIERP.DocumentAbstract.Date);
+                print.executeWithoutAccessCheck();
+                date = print.getAttribute(CIERP.DocumentAbstract.Date);
+            } else {
+                date = _date;
+            }
 
             // must have a valid invoice or valid costing
             final QueryBuilder invAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice);
@@ -332,7 +331,7 @@ public abstract class Costs_Base
             final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicket);
             queryBldr.addWhereAttrNotEqValue(CISales.RecievingTicket.Status, Status.find(
                             CISales.RecievingTicketStatus.Canceled));
-            queryBldr.addWhereAttrLessValue(CISales.RecievingTicket.Date, docdate.withTimeAtStartOfDay().plusDays(1));
+            queryBldr.addWhereAttrLessValue(CISales.RecievingTicket.Date, date.withTimeAtStartOfDay().plusDays(1));
             queryBldr.addWhereAttrInQuery(CISales.RecievingTicket.ID, relAttrQueryBldr.getAttributeQuery(
                             CISales.Document2DocumentAbstract.ToAbstractLink));
             queryBldr.addWhereAttrInQuery(CISales.RecievingTicket.ID, posAttrQueryBldr.getAttributeQuery(
@@ -378,7 +377,26 @@ public abstract class Costs_Base
                                                    final Instance _currenyInst)
         throws EFapsException
     {
-        return new Costs().evalAcquisitionCost(_parameter, _productInstance, _docInst, _currenyInst);
+        return new Costs().evalAcquisitionCost(_parameter, _productInstance, _docInst, _currenyInst, null);
+    }
+
+    /**
+     * Gets the acquisition cost for date.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _productInstance the product instance
+     * @param _currenyInst the curreny inst
+     * @param _date the date
+     * @return the acquisition cost for date
+     * @throws EFapsException on error
+     */
+    protected static BigDecimal getAcquisitionCost4Date(final Parameter _parameter,
+                                                        final Instance _productInstance,
+                                                        final Instance _currenyInst,
+                                                        final DateTime _date)
+        throws EFapsException
+    {
+        return new Costs().evalAcquisitionCost(_parameter, _productInstance, null, _currenyInst, _date);
     }
 
     /**

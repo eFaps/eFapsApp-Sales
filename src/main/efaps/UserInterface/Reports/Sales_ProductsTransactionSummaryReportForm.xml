@@ -46,10 +46,10 @@
                 <property name="FilterDefault03">-</property>
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
-                <property name="FilterDefault06">org.efaps.esjp.products.reports.filter.CostTypeFilterValue</property>
+                <property name="FilterDefault06">org.efaps.esjp.sales.report.filter.CostTypeFilterValue</property>
                  <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="AccessAttribute05">org.efaps.sales.report.ProductsTransactionSummaryReport.ActivateAlternative</property>
+                <property name="AccessAttribute06">org.efaps.sales.report.ProductsTransactionSummaryReport.ActivateAlternative</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_ProductsTransactionSummaryReportForm.filter.UI_FIELD_VALUE.2"

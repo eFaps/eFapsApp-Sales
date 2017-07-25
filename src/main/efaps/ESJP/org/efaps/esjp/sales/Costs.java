@@ -24,6 +24,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -56,5 +57,24 @@ public class Costs
         throws EFapsException
     {
         return Costs_Base.getAcquisitionCost(_parameter, _productInstance, _docInst, _currenyInst);
+    }
+
+    /**
+     * Gets the acquisition cost.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _productInstance the product instance
+     * @param _currenyInst the curreny inst
+     * @param _date the date
+     * @return the acquisition cost
+     * @throws EFapsException on error
+     */
+    public static BigDecimal getAcquisitionCost4Date(final Parameter _parameter,
+                                                     final Instance _productInstance,
+                                                     final Instance _currenyInst,
+                                                     final DateTime _date)
+        throws EFapsException
+    {
+        return Costs_Base.getAcquisitionCost4Date(_parameter, _productInstance, _currenyInst, _date);
     }
 }

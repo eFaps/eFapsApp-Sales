@@ -2089,6 +2089,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_PRODTRANSSUM_ACQUISITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.ProductsTransactionSummaryReport.ActivateAcquisition")
+                    .description("Activate AquisitionCosting.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute REPORT_DOCPRODTRANSCOST_FAB = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocProductTransactionCostReport.AnalyzeFabrication")

@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -52,7 +52,9 @@ import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.products.Inventory;
 import org.efaps.esjp.products.Inventory_Base.InventoryBean;
 import org.efaps.esjp.products.StorageGroup;
-import org.efaps.esjp.products.reports.filter.CostTypeFilterValue;
+import org.efaps.esjp.sales.Costs;
+import org.efaps.esjp.sales.report.filter.CostTypeFilterValue;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -139,8 +141,14 @@ public abstract class ProductsTransactionSummaryReport_Base
         final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final String key = value.getField().getName();
         final Map<String, Object> map = getFilterMap(_parameter);
+        final Instance[] currencies;
+        if (Sales.REPORT_PRODTRANSSUM_ACQUISITION.get()) {
+            currencies = Currency.getAvailable().toArray(new Instance[Currency.getAvailable().size()]);
+        } else {
+            currencies = new Instance[0];
+        }
         ret.put(ReturnValues.VALUES, CostTypeFilterValue.getCostTypePositions(_parameter, (CostTypeFilterValue) map
-                        .get(key)));
+                        .get(key), currencies));
         return ret;
     }
 
@@ -195,6 +203,7 @@ public abstract class ProductsTransactionSummaryReport_Base
             final JRRewindableDataSource ret;
             if (getFilteredReport().isCached(_parameter)) {
                 ret = getFilteredReport().getDataSourceFromCache(_parameter);
+                AbstractDynamicReport_Base.LOG.debug("Got datasource for report from cache: {}", ret);
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
@@ -226,7 +235,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                 add2QueryBldr4Transaction(_parameter, attrQueryBldr);
 
                 final QueryBuilder queryBldr;
-                if (InstanceUtils.isValid(alterInst)) {
+                if (filterValue.isAlternative() && InstanceUtils.isValid(alterInst)) {
                     queryBldr = new QueryBuilder(CIProducts.CostingAlternative);
                     queryBldr.addWhereAttrEqValue(CIProducts.CostingAlternative.CurrencyLink, alterInst);
                 } else {
@@ -239,6 +248,8 @@ public abstract class ProductsTransactionSummaryReport_Base
                 final SelectBuilder selTrans = SelectBuilder.get()
                                 .linkto(CIProducts.CostingAbstract.TransactionAbstractLink);
                 final SelectBuilder selTransInst = new SelectBuilder(selTrans).instance();
+                final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(
+                                CIProducts.TransactionAbstract.Date);
                 final SelectBuilder selQuantity = new SelectBuilder(selTrans).attribute(
                                 CIProducts.TransactionAbstract.Quantity);
                 final SelectBuilder selProd = new SelectBuilder(selTrans).linkto(
@@ -247,7 +258,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                 final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
                 final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(
                                 CIProducts.ProductAbstract.Description);
-                multi.addSelect(selProdInst, selProdName, selProdDescr, selTransInst, selQuantity);
+                multi.addSelect(selProdInst, selProdName, selProdDescr, selTransInst, selTransDate, selQuantity);
                 multi.addAttribute(CIProducts.CostingAbstract.Cost);
                 multi.execute();
 
@@ -257,13 +268,20 @@ public abstract class ProductsTransactionSummaryReport_Base
                     if (beans.containsKey(prodInst)) {
                         bean = beans.get(prodInst);
                     } else {
-                        bean = new DataBean().setProdInst(prodInst).setProdName(multi.getSelect(selProdName))
-                                        .setProdDescr(multi.getSelect(selProdDescr));
+                        bean = new DataBean().setProdInst(prodInst)
+                              .setProdName(multi.getSelect(selProdName))
+                              .setProdDescr(multi.getSelect(selProdDescr));
                         beans.put(prodInst, bean);
                     }
                     final Instance transInst = multi.getSelect(selTransInst);
                     final BigDecimal quantity = multi.getSelect(selQuantity);
-                    final BigDecimal cost = multi.getAttribute(CIProducts.CostingAbstract.Cost);
+                    final BigDecimal cost;
+                    if (filterValue.isAcquisition()) {
+                        cost = Costs.getAcquisitionCost4Date(_parameter, prodInst,
+                            alterInst, multi.getSelect(selTransDate));
+                    } else {
+                        cost = multi.getAttribute(CIProducts.CostingAbstract.Cost);
+                    }
                     if (transInst.getType().isCIType(CIProducts.TransactionInbound)) {
                         bean.addIncoming(quantity, cost);
                     } else if (transInst.getType().isCIType(CIProducts.TransactionOutbound)) {
@@ -287,6 +305,24 @@ public abstract class ProductsTransactionSummaryReport_Base
                     {
                         return CIProducts.TransactionInOutAbstract.getType();
                     };
+
+                    @Override
+                    protected void addCost(final Parameter _parameter,
+                                           final List<InventoryBean> _beans,
+                                           final Set<Instance> _prodInsts)
+                        throws EFapsException
+                    {
+                        if (filterValue.isAcquisition()) {
+                            for (final InventoryBean bean : _beans) {
+                                final BigDecimal costValue = Costs.getAcquisitionCost4Date(_parameter,
+                                                bean.getProdInstance(), Instance.get(filterValue.getObject()),
+                                                getDate());
+                                bean.setCost(costValue);
+                            }
+                        } else {
+                            super.addCost(_parameter, _beans, _prodInsts);
+                        }
+                    }
                 };
                 final DateTime dateTo = (DateTime) filter.get("dateTo");
                 inventory.setDate(dateTo.plusDays(1).withTimeAtStartOfDay());
@@ -317,16 +353,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                 final List<DataBean> dataSource = new ArrayList<>(beans.values());
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
 
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-                        return _o1.getProdName().compareTo(_o2.getProdName());
-                    }
-                });
+                chain.addComparator((_o1, _o2) -> _o1.getProdName().compareTo(_o2.getProdName()));
 
                 Collections.sort(dataSource, chain);
                 ret = new JRBeanCollectionDataSource(dataSource);
@@ -845,6 +872,12 @@ public abstract class ProductsTransactionSummaryReport_Base
         {
             this.prodDescr = _prodDescr;
             return this;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this);
         }
     }
 }
