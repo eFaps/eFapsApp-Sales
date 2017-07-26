@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -396,6 +397,51 @@ public abstract class PaymentSumReport_Base
                             .withTimeAtStartOfDay().minusMinutes(1));
             _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());
+
+            final Object[] contactInsts = getContactInst(_parameter);
+            if (ArrayUtils.isNotEmpty(contactInsts)) {
+                if (isContactNegate(_parameter)) {
+                    _queryBldr.addWhereAttrNotEqValue(CIERP.DocumentAbstract.Contact, contactInsts);
+                } else {
+                    _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInsts);
+                }
+            }
+        }
+
+        /**
+         * Gets the contact inst.
+         *
+         * @param _parameter the _parameter
+         * @return the contact inst
+         * @throws EFapsException on error
+         */
+        protected Object[] getContactInst(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Object[] ret;
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
+            if (filter == null || filter != null && filter.getObject() == null) {
+                ret = new Object[] {};
+            } else {
+                ret = filter.getObject().toArray();
+            }
+            return ret;
+        }
+
+        /**
+         * Checks if is contact negate.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is contact negate
+         * @throws EFapsException on error
+         */
+        protected boolean isContactNegate(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
+            return filter != null && filter.isNegate();
         }
 
         /**
@@ -644,7 +690,7 @@ public abstract class PaymentSumReport_Base
         public String getCurrency()
             throws EFapsException
         {
-            String ret;
+            final String ret;
             if (InstanceUtils.isValid(getReportCurrencyInst())) {
                 ret = CurrencyInst.get(getReportCurrencyInst()).getSymbol();
             } else if (InstanceUtils.isValid(getRateCurrencyInst())) {
@@ -664,7 +710,7 @@ public abstract class PaymentSumReport_Base
         public BigDecimal getAmount()
             throws EFapsException
         {
-            BigDecimal ret;
+            final BigDecimal ret;
             if (InstanceUtils.isValid(getReportCurrencyInst())) {
                 final RateInfo rateInfo = RateInfo.getRateInfo(getRate());
                 if (rateInfo.getCurrencyInstance().equals(getReportCurrencyInst())) {

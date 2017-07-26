@@ -60,6 +60,37 @@
                 <property name="Enum">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
             </trigger>
         </field>
+       <field name="contactGroup" character="Group">
+            <property name="ModeEdit">READONLY</property>
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="contact">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.PaymentSumReport.contact</property>
+            <trigger program="org.efaps.esjp.sales.report.PaymentSumReport"
+                method="getInstanceSetFieldValue"
+                name="Sales_PaymentSumReportFilterForm.contact.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                 <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4Contact"
+                 name="Sales_PaymentSumReportFilterForm.contact.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.contacts.Contacts">
+                  <property name="AutoType">TOKEN</property>
+            </trigger>
+        </field>
+        <field name="contact_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.PaymentSumReport.contact_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_PaymentSumReportFilterForm.contact_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.PaymentSumReport">
+            </trigger>
+        </field>
         <field name="groupBy">
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">SNIPPLET</property>
