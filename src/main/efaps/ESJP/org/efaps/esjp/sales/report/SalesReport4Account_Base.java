@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -386,7 +385,7 @@ public abstract class SalesReport4Account_Base
                 final Set<Instance> docInsts = new HashSet<>();
                 while (multi.next()) {
                     docInsts.add(multi.getCurrentInstance());
-                    final DataBean dataBean = new DataBean(getFilteredReport().getReportKey())
+                    final DataBean dataBean = getDataBean(_parameter, getFilteredReport().getReportKey())
                                 .setDocInst(multi.getCurrentInstance())
                                 .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
                                 .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
@@ -465,131 +464,83 @@ public abstract class SalesReport4Account_Base
                     for (final Enum<?> sel : selected) {
                         switch ((GroupBy) sel) {
                             case ASSIGNED:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-
-                                    @Override
-                                    public int compare(final DataBean _o1,
-                                                       final DataBean _o2)
-                                    {
-                                        int ret = 0;
-                                        try {
-                                            ret = _o1.getAssigned().compareTo(_o2.getAssigned());
-                                        } catch (final EFapsException e) {
-                                            AbstractDynamicReport_Base.LOG.error("Catched", e);
-                                        }
-                                        return ret;
+                                chain.addComparator((_o1,
+                                 _o2) -> {
+                                    int ret1 = 0;
+                                    try {
+                                        ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
+                                    } catch (final EFapsException e) {
+                                        AbstractDynamicReport_Base.LOG.error("Catched", e);
                                     }
+                                    return ret1;
                                 });
                                 break;
                             case CONTACT:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-
-                                    @Override
-                                    public int compare(final DataBean _o1,
-                                                       final DataBean _o2)
-                                    {
-                                        return _o1.getDocContactName().compareTo(_o2.getDocContactName());
-                                    }
-                                });
+                                chain.addComparator((_o1,
+                                 _o2) -> _o1.getDocContactName().compareTo(_o2.getDocContactName()));
                                 break;
                             case DAILY:
                             case MONTHLY:
                             case YEARLY:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-                                    @Override
-                                    public int compare(final DataBean _o1,
-                                                       final DataBean _o2)
-                                    {
-                                        final int ret;
-                                        switch (filterDate) {
-                                            case CREATED:
-                                                ret = _o1.getDocCreated().compareTo(_o2.getDocCreated());
-                                                break;
-                                            case DUEDATE:
-                                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
-                                                    ret = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
-                                                } else {
-                                                    ret = 0;
-                                                }
-                                                break;
-                                            case DATE:
-                                            default:
-                                                ret = _o1.getDocDate().compareTo(_o2.getDocDate());
-                                                break;
-                                        }
-                                        return ret;
+                                chain.addComparator((_o1,
+                                 _o2) -> {
+                                    final int ret1;
+                                    switch (filterDate) {
+                                        case CREATED:
+                                            ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                                            break;
+                                        case DUEDATE:
+                                            if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                                ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                                            } else {
+                                                ret1 = 0;
+                                            }
+                                            break;
+                                        case DATE:
+                                        default:
+                                            ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
+                                            break;
                                     }
+                                    return ret1;
                                 });
                                 break;
                             case DOCTYPE:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-                                    @Override
-                                    public int compare(final DataBean _o1,
-                                                       final DataBean _o2)
-                                    {
-                                        return _o1.getDocInst().getType().getLabel().compareTo(_o2.getDocInst()
-                                                        .getType().getLabel());
-                                    }
-                                });
+                                chain.addComparator((_o1,
+                                 _o2) -> _o1.getDocInst().getType().getLabel().compareTo(_o2.getDocInst()
+                                                .getType().getLabel()));
                                 break;
                             case CONDITION:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-                                    @Override
-                                    public int compare(final DataBean _o1,
-                                                       final DataBean _o2)
-                                    {
-
-                                        return _o1.getCondition().compareTo(_o2.getCondition());
-                                    }
-                                });
+                                chain.addComparator((_o1,
+                                 _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
                                 break;
                             default:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-
-                                    @Override
-                                    public int compare(final DataBean _o1,
-                                                       final DataBean _o2)
-                                    {
-                                        return _o1.getDocContactName().compareTo(_o2.getDocContactName());
-                                    }
-                                });
+                                chain.addComparator((_o1,
+                                 _o2) -> _o1.getDocContactName().compareTo(_o2.getDocContactName()));
                                 break;
                         }
                     }
                 }
 
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-                        final int ret;
-                        switch (filterDate) {
-                            case CREATED:
-                                ret = _o1.getDocCreated().compareTo(_o2.getDocCreated());
-                                break;
-                            case DUEDATE:
-                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
-                                    ret = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
-                                } else {
-                                    ret = 0;
-                                }
-                                break;
-                            case DATE:
-                            default:
-                                ret = _o1.getDocDate().compareTo(_o2.getDocDate());
-                                break;
-                        }
-                        return ret;
+                chain.addComparator((_o1,
+                 _o2) -> {
+                    final int ret1;
+                    switch (filterDate) {
+                        case CREATED:
+                            ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                            break;
+                        case DUEDATE:
+                            if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                            } else {
+                                ret1 = 0;
+                            }
+                            break;
+                        case DATE:
+                        default:
+                            ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
+                            break;
                     }
+                    return ret1;
                 });
 
                 Collections.sort(dataSource, chain);
@@ -684,7 +635,7 @@ public abstract class SalesReport4Account_Base
                     print.addSelect(selContactInst, selContactName);
                 }
                 print.execute();
-                bean = new DataBean(getFilteredReport().getReportKey())
+                bean = getDataBean(_parameter, getFilteredReport().getReportKey())
                                 .setDocInst(print.getCurrentInstance())
                                 .setDocCreated(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
                                 .setDocDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
@@ -1166,6 +1117,17 @@ public abstract class SalesReport4Account_Base
             throws EFapsException
         {
             return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
+        }
+
+        /**
+         * Gets the data bean.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _reportKey the report key
+         * @return the data bean
+         */
+        protected DataBean getDataBean(final Parameter _parameter, final ReportKey _reportKey) {
+          return new DataBean(_reportKey);
         }
     }
 
