@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,11 +13,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -37,6 +32,11 @@
             <form>Sales_IncomingProfServReceiptForm</form>
             <execute method="edit" program="org.efaps.esjp.sales.document.IncomingProfServReceipt">
                 <property name="PositionType">Sales_IncomingProfServReceiptPosition</property>
+                <!-- Sales_ChannelPurchaseCondition2IncomingProfServReceipt -->
+                <property name="ConnectType01">de220004-b947-4d46-b1fd-ed159cce8fa8</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_IncomingProfServReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK"

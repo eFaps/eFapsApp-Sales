@@ -782,6 +782,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGPROFSERVREC_ACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingProfServReceipt.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition to IncomingProfServReceipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGPROFSERVREC_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingProfServReceipt.RevisionSequence")

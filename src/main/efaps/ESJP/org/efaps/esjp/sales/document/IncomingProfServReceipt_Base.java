@@ -36,11 +36,14 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
@@ -98,12 +101,12 @@ public abstract class IncomingProfServReceipt_Base
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
-        final EditedDoc editDoc = editDoc(_parameter);
-        updatePositions(_parameter, editDoc);
-        createUpdateTaxDoc(_parameter, editDoc, true);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
+        createUpdateTaxDoc(_parameter, editedDoc, true);
         return new Return();
     }
-
 
     @Override
     protected void add2DocCreate(final Parameter _parameter,
@@ -119,6 +122,20 @@ public abstract class IncomingProfServReceipt_Base
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingProfServReceipt.REVISIONKEY, revision);
             _insert.add(CISales.IncomingProfServReceipt.Revision, revision);
+        }
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.INCOMINGPROFSERVREC_ACTIVATECONDITION.get()) {
+            InterfaceUtils.appendScript4FieldUpdate(_map,
+                            new Channel().getConditionJs(_parameter, _contactInstance,
+                                            CISales.ChannelPurchaseCondition2Contact));
         }
     }
 
