@@ -59,6 +59,7 @@ import org.efaps.esjp.humanresource.Employee;
 import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
+import org.efaps.esjp.sales.report.SalesReport4Account.DynReport4Account;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
@@ -202,7 +203,7 @@ public abstract class SalesReport4Account_Base
         throws EFapsException
     {
         this.reportKey = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
-        return new Report4Account(this);
+        return new DynReport4Account(this);
     }
 
     /**
@@ -311,7 +312,7 @@ public abstract class SalesReport4Account_Base
     /**
      * Report class.
      */
-    public static class Report4Account
+    public abstract static class AbstractDynReport4Account
         extends AbstractDynamicReport
     {
 
@@ -325,7 +326,7 @@ public abstract class SalesReport4Account_Base
          *
          * @param _report4Account class used
          */
-        public Report4Account(final SalesReport4Account_Base _report4Account)
+        public AbstractDynReport4Account(final SalesReport4Account_Base _report4Account)
         {
             this.filteredReport = _report4Account;
         }
@@ -355,7 +356,7 @@ public abstract class SalesReport4Account_Base
                 }
             } else {
                 final Map<Instance, DataBean> beans = new HashMap<>();
-                final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+                final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
 
                 boolean offset = false;
                 if (filter.containsKey("switch")) {
@@ -465,7 +466,7 @@ public abstract class SalesReport4Account_Base
                         switch ((GroupBy) sel) {
                             case ASSIGNED:
                                 chain.addComparator((_o1,
-                                 _o2) -> {
+                                                _o2) -> {
                                     int ret1 = 0;
                                     try {
                                         ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
@@ -477,13 +478,13 @@ public abstract class SalesReport4Account_Base
                                 break;
                             case CONTACT:
                                 chain.addComparator((_o1,
-                                 _o2) -> _o1.getDocContactName().compareTo(_o2.getDocContactName()));
+                                                _o2) -> _o1.getDocContactName().compareTo(_o2.getDocContactName()));
                                 break;
                             case DAILY:
                             case MONTHLY:
                             case YEARLY:
                                 chain.addComparator((_o1,
-                                 _o2) -> {
+                                                _o2) -> {
                                     final int ret1;
                                     switch (filterDate) {
                                         case CREATED:
@@ -506,23 +507,23 @@ public abstract class SalesReport4Account_Base
                                 break;
                             case DOCTYPE:
                                 chain.addComparator((_o1,
-                                 _o2) -> _o1.getDocInst().getType().getLabel().compareTo(_o2.getDocInst()
+                                                _o2) -> _o1.getDocInst().getType().getLabel().compareTo(_o2.getDocInst()
                                                 .getType().getLabel()));
                                 break;
                             case CONDITION:
                                 chain.addComparator((_o1,
-                                 _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
+                                                _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
                                 break;
                             default:
                                 chain.addComparator((_o1,
-                                 _o2) -> _o1.getDocContactName().compareTo(_o2.getDocContactName()));
+                                                _o2) -> _o1.getDocContactName().compareTo(_o2.getDocContactName()));
                                 break;
                         }
                     }
                 }
 
                 chain.addComparator((_o1,
-                 _o2) -> {
+                                _o2) -> {
                     final int ret1;
                     switch (filterDate) {
                         case CREATED:
@@ -671,7 +672,7 @@ public abstract class SalesReport4Account_Base
         protected DateTime getReportDate(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
             final DateTime ret;
             if (filterMap.containsKey("reportDate")) {
                 ret = (DateTime) filterMap.get("reportDate");
@@ -691,11 +692,11 @@ public abstract class SalesReport4Account_Base
             throws EFapsException
         {
             return Sales.REPORT_SALES4ACCOUNTIN_SWAPINFO.get()
-                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
+                            && getFilteredReport().getReportKey().equals(ReportKey.IN)
                             || Sales.REPORT_SALES4ACCOUNTOUT_SWAPINFO.get()
-                                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
+                                            && getFilteredReport().getReportKey().equals(ReportKey.OUT)
                             || Sales.REPORT_SALES4ACCOUNTCONTACT_SWAPINFO.get()
-                                        && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.CONTACT);
+                                        && getFilteredReport().getReportKey().equals(ReportKey.CONTACT);
         }
 
         /**
@@ -708,7 +709,7 @@ public abstract class SalesReport4Account_Base
         protected FilterDate getFilterDate(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
 
             final FilterDate ret;
             if (filterMap.containsKey("filterDate")) {
@@ -729,7 +730,7 @@ public abstract class SalesReport4Account_Base
                                         final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
             final DateTime dateFrom;
             if (filter.containsKey("dateFrom")) {
                 dateFrom = (DateTime) filter.get("dateFrom");
@@ -789,7 +790,7 @@ public abstract class SalesReport4Account_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
             final GroupByFilterValue groupBy = (GroupByFilterValue) filterMap.get("groupBy");
             final List<Enum<?>> selected = groupBy == null ? new ArrayList<>() : groupBy.getObject();
             final boolean hideDetails = BooleanUtils.toBoolean((Boolean) filterMap.get("hideDetails"));
@@ -809,46 +810,46 @@ public abstract class SalesReport4Account_Base
             }
 
             final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "FilterDate1"), filter,
+                            getFilteredReport().getLabel(_parameter, "FilterDate1"), filter,
                             DateTimeMonth.get());
             final TextColumnBuilder<DateTime> yearColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "FilterDate2"), filter,
+                            getFilteredReport().getLabel(_parameter, "FilterDate2"), filter,
                             DateTimeYear.get());
             final TextColumnBuilder<DateTime> dayColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "FilterDate3"), filter,
+                            getFilteredReport().getLabel(_parameter, "FilterDate3"), filter,
                             DateTimeYear.get());
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "Date"), "docDate",
+                            getFilteredReport().getLabel(_parameter, "Date"), "docDate",
                             DateTimeDate.get());
             final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Type"), "docType",
+                            getFilteredReport().getLabel(_parameter, "Type"), "docType",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<DateTime> createdColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "Created"), "docCreated",
+                            getFilteredReport().getLabel(_parameter, "Created"), "docCreated",
                             DateTimeDate.get());
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Name"), "docName",
+                            getFilteredReport().getLabel(_parameter, "Name"), "docName",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> revisionColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Revision"), "docRevision",
+                            getFilteredReport().getLabel(_parameter, "Revision"), "docRevision",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "ContactName"), "docContactName",
+                            getFilteredReport().getLabel(_parameter, "ContactName"), "docContactName",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<DateTime> dueDateColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "DueDate"), "docDueDate",
+                            getFilteredReport().getLabel(_parameter, "DueDate"), "docDueDate",
                             DateTimeDate.get());
             final TextColumnBuilder<String> docStatusColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Status"), "docStatus",
+                            getFilteredReport().getLabel(_parameter, "Status"), "docStatus",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> conditionColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Condition"), "condition",
+                            getFilteredReport().getLabel(_parameter, "Condition"), "condition",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> assignedColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Assigned"), "assigned",
+                            getFilteredReport().getLabel(_parameter, "Assigned"), "assigned",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> swapInfoColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "SwapInfo"), "swapInfo",
+                            getFilteredReport().getLabel(_parameter, "SwapInfo"), "swapInfo",
                             DynamicReports.type.stringType()).setWidth(120);
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
@@ -881,7 +882,7 @@ public abstract class SalesReport4Account_Base
             gridList.add(dueDateColumn);
 
             gridList.add(nameColumn);
-            if (!hideDetails && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)) {
+            if (!hideDetails && getFilteredReport().getReportKey().equals(ReportKey.OUT)) {
                 gridList.add(revisionColumn);
             }
 
@@ -905,13 +906,13 @@ public abstract class SalesReport4Account_Base
 
             for (final CurrencyInst currency : getCurrencyInst4Report(_parameter)) {
                 final TextColumnBuilder<BigDecimal> crossColumn = DynamicReports.col.column(
-                                this.filteredReport.getLabel(_parameter, "crossTotal"),
+                                getFilteredReport().getLabel(_parameter, "crossTotal"),
                                 "crossTotal_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
                 final TextColumnBuilder<BigDecimal> payColumn = DynamicReports.col.column(
-                                this.filteredReport.getLabel(_parameter, "payed"),
+                                getFilteredReport().getLabel(_parameter, "payed"),
                                 "payed_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
                 final TextColumnBuilder<BigDecimal> result = crossColumn.subtract(payColumn);
-                result.setTitle(this.filteredReport.getLabel(_parameter, "result"));
+                result.setTitle(getFilteredReport().getLabel(_parameter, "result"));
 
                 final ColumnTitleGroupBuilder titelGroup = DynamicReports.grid.titleGroup(currency.getName(),
                                 crossColumn, payColumn, result);
@@ -921,7 +922,7 @@ public abstract class SalesReport4Account_Base
                 if (!hideDetails && !currency.getInstance().equals(Currency.getBaseCurrency())
                                 && !isCurrencyBase(_parameter)) {
                     final TextColumnBuilder<BigDecimal> rateColumn = DynamicReports.col.column(
-                                    this.filteredReport.getLabel(_parameter, "rate"),
+                                    getFilteredReport().getLabel(_parameter, "rate"),
                                     "rate_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
                     columnList.add(rateColumn);
                     titelGroup.add(rateColumn);
@@ -1003,44 +1004,44 @@ public abstract class SalesReport4Account_Base
                 Collections.addAll(columnList, createdColumn, docStatusColumn);
             }
 
-            _builder.addSubtotalAtSummary(DynamicReports.sbt.text(this.filteredReport.getLabel(
+            _builder.addSubtotalAtSummary(DynamicReports.sbt.text(getFilteredReport().getLabel(
                             _parameter, "summaryTotal"), grpTtlClm));
 
             for (final Enum<?> sel : selected) {
                 switch ((GroupBy) sel) {
                     case ASSIGNED:
                         _builder.groupBy(assignedGroup);
-                        _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(assignedGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "assignedGroupTotal"), grpTtlClm));
                         break;
                     case CONTACT:
                         _builder.groupBy(contactGroup);
-                        _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "contactGroupTotal"), grpTtlClm));
                         break;
                     case DAILY:
                         _builder.groupBy(dayGroup);
-                        _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "dayGroupTotal"), grpTtlClm));
                         break;
                     case MONTHLY:
                         _builder.groupBy(monthGroup);
-                        _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "monthGroupTotal"), grpTtlClm));
                         break;
                     case YEARLY:
                         _builder.groupBy(yearGroup);
-                        _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "yearGroupTotal"), grpTtlClm));
                         break;
                     case DOCTYPE:
                         _builder.groupBy(docTypeGroup);
-                        _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "docTypeGroupTotal"), grpTtlClm));
                         break;
                     case CONDITION:
                         _builder.groupBy(conditionGroup);
-                        _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.text(this.filteredReport
+                        _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.text(getFilteredReport()
                                         .getLabel(_parameter, "conditionGroupTotal"), grpTtlClm));
                         break;
                     default:
@@ -1063,7 +1064,7 @@ public abstract class SalesReport4Account_Base
             throws EFapsException
         {
             Collection<CurrencyInst> ret = new HashSet<>();
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
             if (filter.containsKey("currency")) {
                 final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
                 if ("BASE".equals(currency.getKey())) {
@@ -1126,8 +1127,10 @@ public abstract class SalesReport4Account_Base
          * @param _reportKey the report key
          * @return the data bean
          */
-        protected DataBean getDataBean(final Parameter _parameter, final ReportKey _reportKey) {
-          return new DataBean(_reportKey);
+        protected DataBean getDataBean(final Parameter _parameter,
+                                       final ReportKey _reportKey)
+        {
+            return new DataBean(_reportKey);
         }
     }
 

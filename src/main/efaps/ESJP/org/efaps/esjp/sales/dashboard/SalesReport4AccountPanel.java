@@ -14,42 +14,40 @@
  * limitations under the License.
  *
  */
-
-package org.efaps.esjp.sales.report;
+package org.efaps.esjp.sales.dashboard;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * The Class SalesReport4AccountPanel.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("3dc21670-5ae1-4646-ae86-4ed61ddab0a6")
+@EFapsUUID("2948cf53-1a3f-4016-a31b-3a33b150572c")
 @EFapsApplication("eFapsApp-Sales")
-public class SalesReport4Account
-    extends SalesReport4Account_Base
+public class SalesReport4AccountPanel
+    extends SalesReport4AccountPanel_Base
 {
 
-    /**
-     * The Class DynReport4Account.
-     *
-     * @author The eFaps Team
-     */
-    public static class DynReport4Account
-        extends AbstractDynReport4Account
-    {
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
-        /**
-         * Instantiates a new dyn report for account.
-         *
-         * @param _report4Account the report 4 account
-         */
-        public DynReport4Account(final SalesReport4Account_Base _report4Account)
-        {
-            super(_report4Account);
-        }
+    /**
+     * Instantiates a new sales4 contact panel.
+     */
+    public SalesReport4AccountPanel()
+    {
+        super();
+    }
+
+    /**
+     * Instantiates a new sales4 contact panel_ base.
+     *
+     * @param _config the _config
+     */
+    public SalesReport4AccountPanel(final String _config)
+    {
+        super(_config);
     }
 }
