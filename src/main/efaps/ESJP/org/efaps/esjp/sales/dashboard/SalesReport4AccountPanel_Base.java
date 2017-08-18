@@ -33,9 +33,12 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IEsjpSnipplet;
+import org.efaps.db.Instance;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.report.SalesReport4Account;
 import org.efaps.esjp.sales.report.SalesReport4Account.DynReport4Account;
 import org.efaps.esjp.sales.report.SalesReport4Account_Base;
@@ -124,6 +127,18 @@ public abstract class SalesReport4AccountPanel_Base
         throws EFapsException
     {
         return Integer.parseInt(getConfig().getProperty("Duration", "10"));
+    }
+
+    /**
+     * Gets the currency inst.
+     *
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    protected Instance getCurrencyInst()
+        throws EFapsException
+    {
+        return Instance.get(getConfig().getProperty("CurrencyOID", Currency.getBaseCurrency().getOid()));
     }
 
     /**
@@ -234,6 +249,16 @@ public abstract class SalesReport4AccountPanel_Base
                     amount = amount.subtract(payed);
                 }
                 values.put(docContactName, amount);
+            }
+
+            final Instance currencyInst = getCurrencyInst();
+            if (!Currency.getBaseCurrency().equals(currencyInst)) {
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(ParameterUtil.instance(), new DateTime(),
+                        currencyInst);
+                for (final Entry<String, BigDecimal> entry : values.entrySet()) {
+                    final BigDecimal amount = entry.getValue().multiply(rateInfo.getRate());
+                    values.put(entry.getKey(), amount);
+                }
             }
 
             final Comparator<Map.Entry<String, BigDecimal>> byMapValues = (_left,
