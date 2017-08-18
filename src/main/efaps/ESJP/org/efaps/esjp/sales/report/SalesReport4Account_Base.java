@@ -331,6 +331,24 @@ public abstract class SalesReport4Account_Base
             this.filteredReport = _report4Account;
         }
 
+        @Override
+        protected String getTitle(final Parameter _parameter)
+        {
+            String ret;
+            switch(getFilteredReport().getReportKey()) {
+                case IN:
+                    ret = DBProperties.getProperty("Sales_PaymentDocument_Report4AccountMyDesk.Title");
+                    break;
+                case OUT:
+                    ret = DBProperties.getProperty("Sales_PaymentDocumentOut_Report4AccountMyDesk.Title");
+                    break;
+                default:
+                    ret = super.getTitle(_parameter);
+                break;
+            }
+            return ret;
+        }
+
         /**
          * Gets the filtered report.
          *
