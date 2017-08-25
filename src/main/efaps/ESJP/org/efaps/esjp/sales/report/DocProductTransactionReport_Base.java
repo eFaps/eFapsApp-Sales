@@ -247,7 +247,7 @@ public abstract class DocProductTransactionReport_Base
 
                 final MultiPrintQuery multi = getQueryBldr(_parameter).getPrint();
                 final SelectBuilder selDoc = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Document);
-                final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();;
+                final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
                 final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
                 final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
                 final SelectBuilder selDocContact = new SelectBuilder(selDoc)
@@ -274,6 +274,7 @@ public abstract class DocProductTransactionReport_Base
                     final DateTime date = multi.getSelect(selDocDate);
                     final UoM uoM = Dimension.getUoM(multi.getAttribute(CIProducts.TransactionAbstract.UoM));
                     final DataBean dataBean = getBean(_parameter)
+                        .setTransInst(multi.getCurrentInstance())
                         .setUoM(uoM.getName())
                         .setQuantity(quantity)
                         .setProductInst(productInst)
@@ -581,6 +582,9 @@ public abstract class DocProductTransactionReport_Base
     public static class DataBean
     {
 
+        /** The transaction instance. */
+        private Instance transInst;
+
         /** The uo M. */
         private String uoM;
 
@@ -828,6 +832,27 @@ public abstract class DocProductTransactionReport_Base
         public DataBean setDocInst(final Instance _docInst)
         {
             this.docInst = _docInst;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #transactionInstance}.
+         *
+         * @return value of instance variable {@link #transactionInstance}
+         */
+        public Instance getTransInst()
+        {
+          return this.transInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transactionInstance}.
+         *
+         * @param _transactionInstance value for instance variable {@link #transactionInstance}
+         */
+        public DataBean setTransInst(final Instance _transactionInstance)
+        {
+            this.transInst = _transactionInstance;
             return this;
         }
 

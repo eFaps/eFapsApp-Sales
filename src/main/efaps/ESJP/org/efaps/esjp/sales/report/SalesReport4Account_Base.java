@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -334,7 +334,7 @@ public abstract class SalesReport4Account_Base
         @Override
         protected String getTitle(final Parameter _parameter)
         {
-            String ret;
+            final String ret;
             switch(getFilteredReport().getReportKey()) {
                 case IN:
                     ret = DBProperties.getProperty("Sales_PaymentDocument_Report4AccountMyDesk.Title");
@@ -344,7 +344,7 @@ public abstract class SalesReport4Account_Base
                     break;
                 default:
                     ret = super.getTitle(_parameter);
-                break;
+                    break;
             }
             return ret;
         }
@@ -595,7 +595,7 @@ public abstract class SalesReport4Account_Base
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                 queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
                                 attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                queryBldr.addWhereAttrGreaterValue(CISales.Payment.Date, reportDate.minusMinutes(1));
+                queryBldr.addWhereAttrGreaterValue(CISales.Payment.Date, reportDate.minusMinutes(1).plusDays(1));
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder seDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
                 multi.addSelect(seDocInst);
