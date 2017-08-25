@@ -128,14 +128,16 @@
             <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
-                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="update4DocumentType"
-                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="documentType4View">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
@@ -167,12 +169,12 @@
             <property name="ModeEdit">NONE</property>
             <property name="Width">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" 
+                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
-                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_UPDATE" 
+                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="contactData">
@@ -188,8 +190,8 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
@@ -202,6 +204,7 @@
                 <property name="Status">Active</property>
             </trigger>
         </field>
+
         <field name="action4View">
             <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].oid</property>
             <property name="Select">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].attribute[Name]</property>

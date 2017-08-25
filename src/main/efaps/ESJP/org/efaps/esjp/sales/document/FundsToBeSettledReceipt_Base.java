@@ -259,7 +259,8 @@ public abstract class FundsToBeSettledReceipt_Base
      */
     protected boolean evalDeducible(final Parameter _parameter)
     {
-        return !"NONE".equals(_parameter.getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptForm.documentType.name));
+        return !"NONE".equals(_parameter.getParameterValue(
+                        CIFormSales.Sales_FundsToBeSettledReceiptForm.documentType.name));
     }
 
     /**
@@ -293,7 +294,8 @@ public abstract class FundsToBeSettledReceipt_Base
 
         if (inst.isValid()) {
             final PrintQuery print = new PrintQuery(inst);
-            final SelectBuilder selContInst = new SelectBuilder().linkto(CISales.FundsToBeSettledReceipt.Contact).instance();
+            final SelectBuilder selContInst = new SelectBuilder()
+                            .linkto(CISales.FundsToBeSettledReceipt.Contact).instance();
             final SelectBuilder selContName = new SelectBuilder().linkto(CISales.FundsToBeSettledReceipt.Contact)
                             .attribute(CIContacts.Contact.Name);
             print.addSelect(selContInst, selContName);
@@ -348,10 +350,10 @@ public abstract class FundsToBeSettledReceipt_Base
 
         final String contact = _parameter
                         .getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptJustificationEditForm.contact.name);
-        final String docName = _parameter
-                        .getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptJustificationEditForm.name4create.name);
-        final String docType = _parameter
-                        .getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptJustificationEditForm.documentType.name);
+        final String docName = _parameter.getParameterValue(
+                        CIFormSales.Sales_FundsToBeSettledReceiptJustificationEditForm.name4create.name);
+        final String docType = _parameter.getParameterValue(
+                        CIFormSales.Sales_FundsToBeSettledReceiptJustificationEditForm.documentType.name);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
         queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _parameter.getCallInstance());
@@ -367,7 +369,7 @@ public abstract class FundsToBeSettledReceipt_Base
             update.add(CISales.FundsToBeSettledReceipt.Contact, Instance.get(contact));
             update.add(CISales.FundsToBeSettledReceipt.Name, docName);
 
-            Update relUpdate;
+            final Update relUpdate;
             if (docTypeRelInst != null && docTypeRelInst.isValid()) {
                 relUpdate = new Update(docTypeRelInst);
             } else {
@@ -382,10 +384,12 @@ public abstract class FundsToBeSettledReceipt_Base
                 new Delete(docTypeRelInst).execute();
             }
             final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
-            final SelectBuilder posSel = SelectBuilder.get().linkfrom(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt,
+            final SelectBuilder posSel = SelectBuilder.get()
+                            .linkfrom(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt,
                             CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.ToLink)
                             .attribute(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.Position);
-            final SelectBuilder nameSel = SelectBuilder.get().linkfrom(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt,
+            final SelectBuilder nameSel = SelectBuilder.get()
+                            .linkfrom(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt,
                             CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.ToLink)
                             .linkto(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.FromLink)
                             .attribute(CISales.AccountFundsToBeSettled.Name);
@@ -396,7 +400,6 @@ public abstract class FundsToBeSettledReceipt_Base
         update.execute();
         return new Return();
     }
-
 
     @Override
     public Return dropDown4DocumentType(final Parameter _parameter)
@@ -415,43 +418,68 @@ public abstract class FundsToBeSettledReceipt_Base
                                                 + ".NONEPosition.Label"));
                 _values.add(0, ddPos);
             };
-        }.dropDownFieldValue(_parameter);
+        }.getOptionListFieldValue(_parameter);
     }
 
+    /**
+     * The Class EvaluatePositionWarning.
+     */
     public static class EvaluatePositionWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate position warning.
+         */
         public EvaluatePositionWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * The Class EvaluateDeducibleDocWarning.
+     */
     public static class EvaluateDeducibleDocWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate deducible doc warning.
+         */
         public EvaluateDeducibleDocWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * The Class EvaluateNotDeducibleDocWarning.
+     */
     public static class EvaluateNotDeducibleDocWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate not deducible doc warning.
+         */
         public EvaluateNotDeducibleDocWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * The Class EvaluateBalanceAccountDocWarning.
+     *
+     */
     public static class EvaluateBalanceAccountDocWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate balance account doc warning.
+         */
         public EvaluateBalanceAccountDocWarning()
         {
 
