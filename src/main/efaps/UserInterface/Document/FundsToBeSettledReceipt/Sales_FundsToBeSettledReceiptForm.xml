@@ -568,14 +568,16 @@
             <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
-                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="update4DocumentType"
-                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="documentType4View">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
@@ -1051,14 +1053,16 @@
             <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
-                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="update4DocumentType"
-                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="documentType4View">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>

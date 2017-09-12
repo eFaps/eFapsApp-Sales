@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -32,14 +32,17 @@
                 <property name="Mime">pdf</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Init.UI_ACCESSCHECK.1" event="UI_ACCESSCHECK" index="1">
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Init.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK" index="1">
                 <property name="Status">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4initFunds"
-                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Init.UI_ACCESSCHECK.2" event="UI_ACCESSCHECK" index="2">
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Init.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK" index="2">
             </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

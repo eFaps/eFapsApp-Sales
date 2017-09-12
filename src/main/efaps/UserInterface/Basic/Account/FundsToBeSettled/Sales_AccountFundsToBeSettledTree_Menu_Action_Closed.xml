@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>31e2f22c-3af3-44d6-ab62-4df0bf815b54</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledTree_Menu_Action_Closed</name>
@@ -39,14 +33,20 @@
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Closed.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Closed.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK"
+                index="1">
                 <property name="Status">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4initFunds"
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Closed.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK" index="2">
+                <property name="Inverse">true</property>
             </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

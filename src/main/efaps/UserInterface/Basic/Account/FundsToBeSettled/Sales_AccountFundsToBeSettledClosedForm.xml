@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2014 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>1c66a88f-2e6e-495e-b9d9-7f5b2f7be164</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledClosedForm</name>
@@ -114,6 +108,31 @@
             <property name="Columns">70</property>
             <property name="Rows">5</property>
             <property name="Required">true</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Width">98</property>
+            <trigger program="org.efaps.esjp.sales.document.GenericDocumentSum"
+                method="autoComplete4Contact"
+                name="Sales_AccountFundsToBeSettledClosedForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.GenericDocumentSum"
+                method="updateFields4Contact"
+                name="Sales_AccountFundsToBeSettledClosedForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

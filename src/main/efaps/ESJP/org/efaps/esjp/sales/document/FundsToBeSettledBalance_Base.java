@@ -201,7 +201,7 @@ public abstract class FundsToBeSettledBalance_Base
 
             ret = insert.getInstance();
 
-            final List<Instance> lstInst = new ArrayList<Instance>();
+            final List<Instance> lstInst = new ArrayList<>();
             if (withDateConf) {
                 final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
                 if (oids != null) {
@@ -356,6 +356,7 @@ public abstract class FundsToBeSettledBalance_Base
             actionRelType = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
+            Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
             final Insert insert = new Insert(type);
             insert.add(CISales.DocumentSumAbstract.Name, name);
             insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
@@ -377,6 +378,9 @@ public abstract class FundsToBeSettledBalance_Base
             insert.add(CISales.DocumentSumAbstract.Note,
                             _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                                             CISales.DocumentSumAbstract.Note.name)));
+            if (contactInst.isValid()) {
+                insert.add(CISales.DocumentSumAbstract.Contact, contactInst);
+            }
             insert.execute();
 
             final Insert relInsert = new Insert(relation);
