@@ -27,7 +27,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <table>Sales_PaymentDocumentAbstractOutUnfilteredTable</table>
+            <table>Sales_PaymentDocumentOut4ToBeSettledTable</table>
             <!-- use any of tghe Out docs to acces the method -->
             <evaluate program="org.efaps.esjp.sales.payment.PaymentCheckOut"
                 method="getPaymentDocuments4ToBeSettled">
