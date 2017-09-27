@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@
                 method="getFilterFieldValue" name="Sales_AccountPettyCashReportForm.filter.UI_FIELD_VALUE.2"
                 event="UI_FIELD_VALUE" index="2">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
+                <property name="CachedReportAddInstanceCriteria">true</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">switch</property>
@@ -58,6 +59,7 @@
                 method="generateReport" name="Sales_AccountPettyCashReportForm.report.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
+                <property name="CachedReportAddInstanceCriteria">true</property>
                 <property name="Type01">Sales_IncomingCreditNote</property>
                 <property name="StatusGroup01">Sales_IncomingCreditNoteStatus</property>
                 <property name="Status01">!Replaced</property>

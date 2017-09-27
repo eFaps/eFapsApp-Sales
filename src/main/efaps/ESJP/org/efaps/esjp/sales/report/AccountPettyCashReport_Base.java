@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +53,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.util.Sales;
@@ -70,11 +70,12 @@ import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
- * Report used to analyze receipt for professional fees (Recibos Honorarios) by
- * grouping them by month and contact.
+ * Report used to analyze Petty Cash.
  *
  * @author The eFaps Team
  */
@@ -173,132 +174,110 @@ public abstract class AccountPettyCashReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final SelectBuilder selCurInst = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-            final SelectBuilder selAccInst = new SelectBuilder()
-                            .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
-                            .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
-                            .instance();
-            final SelectBuilder selAccName = new SelectBuilder()
-                            .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
-                            .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
-                            .attribute(CISales.AccountPettyCash.Name);
-            final SelectBuilder selDocTypeName = new SelectBuilder()
-                            .linkfrom(CISales.Document2DocumentType.DocumentLink)
-                            .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(CIERP.DocumentType.Name);
-            final SelectBuilder selActionName = new SelectBuilder()
-                            .linkfrom(CISales.ActionDefinitionPettyCashReceipt2Document.ToLink)
-                            .linkto(CISales.ActionDefinitionPettyCashReceipt2Document.FromLink)
-                            .attribute(CISales.ActionDefinitionPettyCashReceipt.Name);
-            final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
-                            .attribute(CIContacts.ContactAbstract.Name);
-            final SelectBuilder selEmployee = SelectBuilder.get()
-                            .linkfrom(CISales.Employee2PettyCashReceipt.ToLink)
-                            .linkto(CISales.Employee2PettyCashReceipt.FromLink);
-
-            final List<DocumentBean> datasource = new ArrayList<>();
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
-            add2QueryBldr(_parameter, queryBldr);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addSelect(selAccInst, selAccName, selDocTypeName, selActionName, selCurInst, selContactName);
-            if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
-                multi.addMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase);
-            }
-            multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
-                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name,
-                            CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal);
-            multi.execute();
-            while (multi.next()) {
-                BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                BigDecimal net = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
-
-                BigDecimal basecross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                BigDecimal basenet = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
-                if (multi.getCurrentInstance().getType().isKindOf(CISales.IncomingCreditNote.getType())) {
-                    cross = cross.negate();
-                    net = net.negate();
-
-                    basecross = cross.negate();
-                    basenet = net.negate();
+            final JRRewindableDataSource ret;
+            if (getFilteredReport().isCached(_parameter)) {
+                ret = getFilteredReport().getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    LOG.error("Catched JRException", e);
                 }
-                final DocumentBean bean = getBean(_parameter)
-                                .setInstance(multi.getCurrentInstance())
-                                .setPettyCashInstance(multi.<Instance>getSelect(selAccInst))
-                                .setPettyCash(multi.getSelect(selAccName))
-                                .setAction(multi.<String>getSelect(selActionName))
-                                .setCross(cross)
-                                .setNet(net)
-                                .setCurrencyInstance(multi.<Instance>getSelect(selCurInst))
-                                .setDocTypeName(multi.<String>getSelect(selDocTypeName))
-                                .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                                .setContactName(multi.<String>getSelect(selContactName))
-                                .setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                                .setSwitch(isGroup(_parameter))
-                                .setBaseNet(basenet)
-                                .setBaseCross(basecross);
+            } else {
+                final SelectBuilder selCurInst = new SelectBuilder()
+                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                final SelectBuilder selAccInst = new SelectBuilder()
+                                .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
+                                .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
+                                .instance();
+                final SelectBuilder selAccName = new SelectBuilder()
+                                .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
+                                .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
+                                .attribute(CISales.AccountPettyCash.Name);
+                final SelectBuilder selDocTypeName = new SelectBuilder()
+                                .linkfrom(CISales.Document2DocumentType.DocumentLink)
+                                .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                                .attribute(CIERP.DocumentType.Name);
+                final SelectBuilder selActionName = new SelectBuilder()
+                                .linkfrom(CISales.ActionDefinitionPettyCashReceipt2Document.ToLink)
+                                .linkto(CISales.ActionDefinitionPettyCashReceipt2Document.FromLink)
+                                .attribute(CISales.ActionDefinitionPettyCashReceipt.Name);
+                final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                                .attribute(CIContacts.ContactAbstract.Name);
+                final SelectBuilder selEmployee = SelectBuilder.get()
+                                .linkfrom(CISales.Employee2PettyCashReceipt.ToLink)
+                                .linkto(CISales.Employee2PettyCashReceipt.FromLink);
+
+                final List<DocumentBean> datasource = new ArrayList<>();
+                final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+                add2QueryBldr(_parameter, queryBldr);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addSelect(selAccInst, selAccName, selDocTypeName, selActionName, selCurInst, selContactName);
                 if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
-                    bean.setEmployee(multi.getMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase));
+                    multi.addMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase);
                 }
-                datasource.add(bean);
-            }
-            final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
-            chain.addComparator(new Comparator<DocumentBean>()
-            {
+                multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
+                                CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name,
+                                CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal);
+                multi.execute();
+                while (multi.next()) {
+                    BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    BigDecimal net = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
 
-                @Override
-                public int compare(final DocumentBean _o1,
-                                   final DocumentBean _o2)
-                {
-                    return _o1.getPettyCash().compareTo(_o2.getPettyCash());
-                }
-            });
-            if (isGroup(_parameter)) {
-                chain.addComparator(new Comparator<DocumentBean>()
-                {
+                    BigDecimal basecross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    BigDecimal basenet = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
+                    if (multi.getCurrentInstance().getType().isKindOf(CISales.IncomingCreditNote.getType())) {
+                        cross = cross.negate();
+                        net = net.negate();
 
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        int ret = 0;
-                        try {
-                            ret =  _o1.getLiquidation().compareTo(_o2.getLiquidation());
-                        } catch (final EFapsException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        return ret;
+                        basecross = cross.negate();
+                        basenet = net.negate();
                     }
-                });
-            }
-            chain.addComparator(new Comparator<DocumentBean>()
-            {
-
-                @Override
-                public int compare(final DocumentBean _o1,
-                                   final DocumentBean _o2)
-                {
-                    return _o1.getOfficial().compareTo(_o2.getOfficial());
+                    final DocumentBean bean = getBean(_parameter)
+                                    .setInstance(multi.getCurrentInstance())
+                                    .setPettyCashInstance(multi.<Instance>getSelect(selAccInst))
+                                    .setPettyCash(multi.getSelect(selAccName))
+                                    .setAction(multi.<String>getSelect(selActionName))
+                                    .setCross(cross)
+                                    .setNet(net)
+                                    .setCurrencyInstance(multi.<Instance>getSelect(selCurInst))
+                                    .setDocTypeName(multi.<String>getSelect(selDocTypeName))
+                                    .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                    .setContactName(multi.<String>getSelect(selContactName))
+                                    .setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                    .setSwitch(isGroup(_parameter))
+                                    .setBaseNet(basenet)
+                                    .setBaseCross(basecross);
+                    if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                        bean.setEmployee(multi.getMsgPhrase(selEmployee,
+                                        CIMsgHumanResource.EmployeeWithNumberMsgPhrase));
+                    }
+                    datasource.add(bean);
                 }
-            });
-            chain.addComparator(new Comparator<DocumentBean>()
-            {
-
-                @Override
-                public int compare(final DocumentBean _o1,
-                                   final DocumentBean _o2)
-                {
-                    return _o1.getAction().compareTo(_o2.getAction());
+                final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
+                chain.addComparator((_o1, _o2) -> _o1.getPettyCash().compareTo(_o2.getPettyCash()));
+                if (isGroup(_parameter)) {
+                    chain.addComparator((_o1, _o2) -> {
+                        int ret1 = 0;
+                        try {
+                            ret1 =  _o1.getLiquidation().compareTo(_o2.getLiquidation());
+                        } catch (final EFapsException e) {
+                            LOG.error("Catched", e);
+                        }
+                        return ret1;
+                    });
                 }
-            });
-            Collections.sort(datasource, chain);
+                chain.addComparator((_o1, _o2) -> _o1.getOfficial().compareTo(_o2.getOfficial()));
+                chain.addComparator((_o1, _o2) -> _o1.getAction().compareTo(_o2.getAction()));
+                Collections.sort(datasource, chain);
 
-            final Collection<Map<String, ?>> col = new ArrayList<>();
-            for (final DocumentBean bean : datasource) {
-                col.add(bean.getMap());
+                final Collection<Map<String, ?>> col = new ArrayList<>();
+                for (final DocumentBean bean : datasource) {
+                    col.add(bean.getMap());
+                }
+                ret = new JRMapCollectionDataSource(col);
+                getFilteredReport().cache(_parameter, ret);
             }
-
-            return new JRMapCollectionDataSource(col);
+            return ret;
         }
 
         /**
@@ -327,8 +306,7 @@ public abstract class AccountPettyCashReport_Base
             attrQueryBldr.addWhereAttrNotEqValue(CISales.Account2DocumentWithTrans.Type,
                             CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.getType().getId(),
                             CISales.AccountFundsToBeSettled2IncomingCreditNote.getType().getId());
-            if (instance != null && instance.isValid()
-                            && CISales.AccountPettyCash.getType().equals(instance.getType())) {
+            if (InstanceUtils.isType(instance, CISales.AccountPettyCash)) {
                 attrQueryBldr.addWhereAttrEqValue(CISales.Account2DocumentWithTrans.FromLinkAbstract, instance);
             }
             final AttributeQuery attrQuery = attrQueryBldr
@@ -629,62 +607,57 @@ public abstract class AccountPettyCashReport_Base
         public Map<String, ?> getMap()
             throws EFapsException
         {
-            final Transformer<String, Object> transformer = new Transformer<String, Object>() {
-
-                @Override
-                public Object transform(final String _input)
-                {
-                    Object ret = null;
-                    switch (_input) {
-                        case "pettyCash":
-                            ret = getPettyCash();
-                            break;
-                        case "liquidation":
-                            try {
-                                ret = getLiquidation();
-                            } catch (final EFapsException e) {
-                                AccountPettyCashReport_Base.LOG.error("Catched erro rwhlie freading values", e);
+            final Transformer<String, Object> transformer = _input -> {
+                Object ret = null;
+                switch (_input) {
+                    case "pettyCash":
+                        ret = getPettyCash();
+                        break;
+                    case "liquidation":
+                        try {
+                            ret = getLiquidation();
+                        } catch (final EFapsException e1) {
+                            AccountPettyCashReport_Base.LOG.error("Catched", e1);
+                        }
+                        break;
+                    case "pettyCashResume":
+                        ret = getPettyCashResume();
+                        break;
+                    case "official":
+                        ret = getOfficial();
+                        break;
+                    case "action":
+                        ret = getAction();
+                        break;
+                    case "docName":
+                        ret = getDocName();
+                        break;
+                    case "oid":
+                        ret = getOid();
+                        break;
+                    case "date":
+                        ret = getDate();
+                        break;
+                    case "baseAmount":
+                        ret = getBaseAmount();
+                        break;
+                    case "contactName":
+                        ret =  getContactName();
+                        break;
+                    case "employee":
+                        ret = getEmployee();
+                        break;
+                    default:
+                        try {
+                            if (_input.equals(CurrencyInst.get(getCurrencyInstance()).getISOCode())) {
+                                ret = getCross();
                             }
-                            break;
-                        case "pettyCashResume":
-                            ret = getPettyCashResume();
-                            break;
-                        case "official":
-                            ret = getOfficial();
-                            break;
-                        case "action":
-                            ret = getAction();
-                            break;
-                        case "docName":
-                            ret = getDocName();
-                            break;
-                        case "oid":
-                            ret = getOid();
-                            break;
-                        case "date":
-                            ret = getDate();
-                            break;
-                        case "baseAmount":
-                            ret = getBaseAmount();
-                            break;
-                        case "contactName":
-                            ret=  getContactName();
-                            break;
-                        case "employee":
-                            ret = getEmployee();
-                            break;
-                        default:
-                            try {
-                                if (_input.equals(CurrencyInst.get(getCurrencyInstance()).getISOCode())) {
-                                    ret = getCross();
-                                }
-                            } catch (final EFapsException e) {
-                                AccountPettyCashReport_Base.LOG.error("Catched erro rwhlie freading values", e);
-                            }
-                            break;
-                    }
-                    return ret;
+                        } catch (final EFapsException e2) {
+                            AccountPettyCashReport_Base.LOG.error("Catched", e2);
+                        }
+                        break;
                 }
+                return ret;
             };
             final Map<String, Object> ret = LazyMap.lazyMap(new HashMap<String, Object>(), transformer);
             return ret;
