@@ -458,7 +458,19 @@ public final class Sales
     public static final PropertiesSysConfAttribute DOCVSDOCREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocVsDocReport")
-                    .description("Properties to configure the DocVsDocReport.");
+                    .description("Properties to configure the DocVsDocReport."
+                                    + "VersusNN=KEY\n"
+                                    + "KEY.Label= Boleta vs. Guia de Remision\n"
+                                    + "KEY.Criteria=DateAfter|Relation\n"
+                                    + "KEY.left.TypeNN=Sales_Receipt\n"
+                                    + "KEY.left.StatusGroupNN=Sales_ReceiptStatus\n"
+                                    + "KEY.left.StatusNN=Draft\n"
+                                    + "KEY.right.TypeNN=Sales_DeliveryNote\n"
+                                    + "KEY.right.StatusGroupNN=Sales_DeliveryNoteStatus\n"
+                                    + "KEY.right.StatusNN=Open\n"
+                                    + "KEY.relation.TypeNN=Sales_Receipt2DeliveryNote\n"
+                                    + "KEY.relation.LeftAttributeNN=FromLink\n"
+                                    + "KEY.relation.RightAttributeNN=ToLink");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017     The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.datamodel.Status;
@@ -50,11 +51,11 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
-import org.efaps.util.UUIDUtil;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,29 +136,24 @@ public abstract class DocVsDocReport_Base
         throws EFapsException
     {
         final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        final String key = value.getField().getName();
+        final String fieldName = value.getField().getName();
         final Map<String, Object> map = getFilterMap(_parameter);
-        Integer val = 0;
-        if (map.containsKey(key)) {
-            final Object obj = map.get(key);
+        String key = "";
+        if (map.containsKey(fieldName)) {
+            final Object obj = map.get(fieldName);
             if (obj instanceof VersusFilterValue) {
-                val = ((VersusFilterValue) obj).getObject();
+                key = ((VersusFilterValue) obj).getObject();
             }
         } else {
-            map.put(key, "");
+            map.put(fieldName, "");
         }
-        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
-        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-        types.putAll(analyseProperty(_parameter, "Type", 100));
-        for (int i = 0; i < 100; i++) {
-            if (types.containsKey(i)) {
-                final DropDownPosition pos = new org.efaps.esjp.common.uiform.Field().getDropDownPosition(
-                                _parameter, i, getVersusLabel(types, i));
-                pos.setSelected(val == i);
-                values.add(pos);
-            } else {
-                break;
-            }
+        final List<DropDownPosition> values = new ArrayList<>();
+        final Map<Integer, String> versus = PropertiesUtil.analyseProperty(Sales.DOCVSDOCREPORT.get(), "Versus", 0);
+        for (final String vs : versus.values()) {
+            final DropDownPosition pos = new org.efaps.esjp.common.uiform.Field().getDropDownPosition(
+                                _parameter, vs, Sales.DOCVSDOCREPORT.get().getProperty(vs + ".Label", vs));
+            pos.setSelected(key.equals(vs));
+            values.add(pos);
         }
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, values);
@@ -173,9 +169,8 @@ public abstract class DocVsDocReport_Base
     {
         final Object ret;
         if ("Versus".equalsIgnoreCase(_type)) {
-            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-            types.putAll(analyseProperty(_parameter, "Type", 100));
-            ret = new VersusFilterValue(types).setObject(0);
+            final Map<Integer, String> versus = PropertiesUtil.analyseProperty(Sales.DOCVSDOCREPORT.get(), "Versus", 0);
+            ret = new VersusFilterValue().setObject(versus.values().iterator().next());
         } else {
             ret = super.getDefaultValue(_parameter, _field, _type, _default);
         }
@@ -196,69 +191,27 @@ public abstract class DocVsDocReport_Base
     }
 
     /**
-     * Gets the versus label.
-     *
-     * @param _types the types
-     * @param _idx the idx
-     * @return the versus label
-     * @throws CacheReloadException the cache reload exception
-     */
-    public static String getVersusLabel(final Map<Integer, String> _types,
-                                        final int _idx)
-        throws CacheReloadException
-    {
-        final String typeStr1 = _types.get(_idx);
-        final Type type1;
-        if (UUIDUtil.isUUID(typeStr1)) {
-            type1 = Type.get(UUID.fromString(typeStr1));
-        } else {
-            type1 = Type.get(typeStr1);
-        }
-        final String typeStr2 = _types.get(_idx + 100);
-        final Type type2;
-        if (UUIDUtil.isUUID(typeStr2)) {
-            type2 = Type.get(UUID.fromString(typeStr1));
-        } else {
-            type2 = Type.get(typeStr2);
-        }
-        return type1.getLabel() + " vs. " + type2.getLabel();
-    }
-
-    /**
      * Filter that has a Instance as base.
      */
     public static class VersusFilterValue
-        extends AbstractFilterValue<Integer>
+        extends AbstractFilterValue<String>
     {
         /**
          * Needed for serialization.
          */
         private static final long serialVersionUID = 1L;
 
-        /** The types. */
-        private final Map<Integer, String> types;
-
-        /**
-         * Instantiates a new versus filter value.
-         *
-         * @param _types the types
-         */
-        public VersusFilterValue(final Map<Integer, String> _types)
-        {
-            this.types = _types;
-        }
-
         @Override
         public String getLabel(final Parameter _parameter)
             throws EFapsException
         {
-            return getVersusLabel(this.types, getObject());
+            return Sales.DOCVSDOCREPORT.get().getProperty(getObject() + ".Label", getObject());
         }
 
         @Override
-        public AbstractFilterValue<Integer> parseObject(final String[] _values)
+        public AbstractFilterValue<String> parseObject(final String[] _values)
         {
-            setObject(Integer.valueOf(_values[0]));
+            setObject(_values[0]);
             return this;
         }
     }
@@ -297,12 +250,10 @@ public abstract class DocVsDocReport_Base
                 }
             } else {
                 final List<DataBean> dataSource = new ArrayList<>();
-
-                final List<DocBean> lefts = getDocBeans(_parameter, 0, null);
-                final List<DocBean> rights = getDocBeans(_parameter, 100, lefts);
+                final List<DocBean> lefts = getDocBeans(_parameter, null);
+                final List<DocBean> rights = getDocBeans(_parameter, lefts);
 
                 final Map<Instance, DocComparator> map = new HashMap<>();
-
                 // 1. group by Contacts
                 for (final DocBean docBean : lefts) {
                     if (!map.containsKey(docBean.getContactInstance())) {
@@ -322,17 +273,8 @@ public abstract class DocVsDocReport_Base
                 }
 
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-                        return _o1.getContactName().compareTo(_o2.getContactName());
-                    }
-                });
-
+                chain.addComparator((_o1, _o2) -> _o1.getContactName().compareTo(_o2.getContactName()));
+                Collections.sort(dataSource, chain);
                 ret = new JRBeanCollectionDataSource(dataSource);
                 getFilteredReport().cache(_parameter, ret);
             }
@@ -343,20 +285,18 @@ public abstract class DocVsDocReport_Base
          * Gets the doc beans.
          *
          * @param _parameter Parameter as passed by the eFaps API
-         * @param _offset the offset
          * @param _previous the previous
          * @return the doc beans
          * @throws EFapsException on error
          */
         protected List<DocBean> getDocBeans(final Parameter _parameter,
-                                            final int _offset,
                                             final List<DocBean> _previous)
             throws EFapsException
         {
             final List<DocBean> ret = new ArrayList<>();
             // only execute if no previous are given or when a not empty list is given
-            if (_previous == null || (_previous != null && !_previous.isEmpty())) {
-                final QueryBuilder attrQueryBldr = getAttrQueryBuilder(_parameter, _offset);
+            if (_previous == null || _previous != null && !_previous.isEmpty()) {
+                final QueryBuilder attrQueryBldr = getAttrQueryBuilder(_parameter, _previous != null);
                 final Object[] contactInsts = getContactInsts(_parameter);
                 if (contactInsts.length > 0) {
                     attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, getContactInsts(_parameter));
@@ -374,6 +314,7 @@ public abstract class DocVsDocReport_Base
                 final MultiPrintQuery multi = queryBldr.getPrint();
 
                 final SelectBuilder selDoc = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink);
+                final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
                 final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Date);
                 final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Name);
                 final SelectBuilder selContact = new SelectBuilder(selDoc).linkto(CISales.DocumentAbstract.Contact);
@@ -386,12 +327,13 @@ public abstract class DocVsDocReport_Base
                 final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(
                                 CIProducts.ProductAbstract.Description);
 
-                multi.addSelect(selDocDate, selDocName, selContactInst, selContactName,
+                multi.addSelect(selDocInst, selDocDate, selDocName, selContactInst, selContactName,
                                 selProdInst, selProdName, selProdDescr);
                 multi.addAttribute(CISales.PositionAbstract.Quantity);
                 multi.execute();
                 while (multi.next()) {
                     final DocBean bean = new DocBean()
+                            .setDocInst(multi.getSelect(selDocInst))
                             .setDocDate(multi.<DateTime>getSelect(selDocDate))
                             .setDocName(multi.<String>getSelect(selDocName))
                             .setContactInstance(multi.<Instance>getSelect(selContactInst))
@@ -410,26 +352,33 @@ public abstract class DocVsDocReport_Base
          * Gets the attr query builder.
          *
          * @param _parameter Parameter as passed by the eFaps API
-         * @param _offset the offset
+         * @param _right the right
          * @return the attr query builder
          * @throws EFapsException on error
          */
         protected QueryBuilder getAttrQueryBuilder(final Parameter _parameter,
-                                                   final int _offset)
+                                                   final boolean _right)
             throws EFapsException
         {
-            final int selected = getSelected(_parameter) + _offset;
-            final Map<Integer, String> types = analyseProperty(_parameter, "Type", _offset);
-            final String typeStr = types.get(selected);
-
-            final Type type;
-            if (isUUID(typeStr)) {
-                type = Type.get(UUID.fromString(typeStr));
-            } else {
-                type = Type.get(typeStr);
+            final Properties versusProperties = getVsProperties(_parameter);
+            final Properties properties = PropertiesUtil.getProperties4Prefix(versusProperties, _right ? "right"
+                            : "left", true);
+            final Map<Integer, String> types = PropertiesUtil.analyseProperty(properties, "Type", 0);
+            QueryBuilder ret = null;
+            for (final String typeStr : types.values()) {
+                final Type type;
+                if (isUUID(typeStr)) {
+                    type = Type.get(UUID.fromString(typeStr));
+                } else {
+                    type = Type.get(typeStr);
+                }
+                if (ret == null) {
+                    ret = new QueryBuilder(type);
+                } else {
+                    ret.addType(type);
+                }
             }
-            final QueryBuilder ret = new QueryBuilder(type);
-            final List<Status> statusList = getStatusListFromProperties(_parameter, _offset);
+            final List<Status> statusList = getStatusListFromProperties(_parameter, properties);
             if (!statusList.isEmpty()) {
                 ret.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
             }
@@ -477,12 +426,12 @@ public abstract class DocVsDocReport_Base
          * @return the selected
          * @throws EFapsException on error
          */
-        protected int getSelected(final Parameter _parameter)
+        protected Properties getVsProperties(final Parameter _parameter)
             throws EFapsException
         {
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final VersusFilterValue filter = (VersusFilterValue) filterMap.get("versus");
-            return filter.getObject();
+            return PropertiesUtil.getProperties4Prefix(Sales.DOCVSDOCREPORT.get(), filter.getObject(), true);
         }
 
         /**
@@ -498,7 +447,7 @@ public abstract class DocVsDocReport_Base
             final Object[] ret;
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
-            if (filter == null || (filter != null && filter.getObject() == null)) {
+            if (filter == null || filter != null && filter.getObject() == null) {
                 ret = new Object[] {};
             } else {
                 ret = filter.getObject().toArray();
@@ -585,101 +534,196 @@ public abstract class DocVsDocReport_Base
         public Collection<DataBean> getDataBeans(final Parameter _parameter)
             throws EFapsException
         {
-            final List<DataBean> ret = new ArrayList<>();
-
+            final List<DataBean> ret;
             switch (getCompareCriteria(_parameter)) {
                 case "DateAfter":
-                    sort(_parameter, getLeftDocuments());
-                    sort(_parameter, getRightDocuments());
-
-                    for (final DocBean leftBean : getLeftDocuments()) {
-                        final DataBean dataBean = new DataBean()
-                                        .addLeft(leftBean)
-                                        .setContactName(leftBean.getContactName())
-                                        .setProductName(leftBean.getProductName())
-                                        .setProductDesc(leftBean.getProductDesc())
-                                        .setQuantity(leftBean.getQuantity());
-                        ret.add(dataBean);
-                        boolean found = false;
-                        final Iterator<DocBean> iter = getRightDocuments().iterator();
-                        while (iter.hasNext() && !found) {
-                            final DocBean rightBean = iter.next();
-                            if (rightBean.getDocDate().isAfter(leftBean.getDocDate())) {
-                                if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
-                                    BigDecimal currentQuantity = dataBean.getQuantity();
-                                    // if currentQuantity > rightQuanity remove the right bean
-                                    if (currentQuantity.compareTo(rightBean.getQuantity()) > 0) {
-                                        currentQuantity = currentQuantity.subtract(rightBean.getQuantity());
-                                        dataBean.getRightBeans().add(rightBean);
-                                        iter.remove();
-                                    } else if (currentQuantity.compareTo(rightBean.getQuantity()) == 0) {
-                                        currentQuantity = BigDecimal.ZERO;
-                                        dataBean.getRightBeans().add(rightBean);
-                                        iter.remove();
-                                        found = true;
-                                    } else {
-                                    // currentQuantity < rightQuanity mark as found but keep the rightbean
-                                        currentQuantity = BigDecimal.ZERO;
-                                        dataBean.getRightBeans().add(rightBean);
-                                        found = true;
-                                    }
-                                    dataBean.setQuantity(currentQuantity);
-                                }
-                            } else {
-                                iter.remove();
-                            }
-                        }
-                    }
+                    ret = getDataBeans4DateAfter(_parameter);
                     break;
                 case "DateEqualOrAfter":
-                    sort(_parameter, getLeftDocuments());
-                    sort(_parameter, getRightDocuments());
-
-                    for (final DocBean leftBean : getLeftDocuments()) {
-                        final DataBean dataBean = new DataBean()
-                                        .addLeft(leftBean)
-                                        .setContactName(leftBean.getContactName())
-                                        .setProductName(leftBean.getProductName())
-                                        .setProductDesc(leftBean.getProductDesc())
-                                        .setQuantity(leftBean.getQuantity());
-                        ret.add(dataBean);
-                        boolean found = false;
-                        final Iterator<DocBean> iter = getRightDocuments().iterator();
-                        while (iter.hasNext() && !found) {
-                            final DocBean rightBean = iter.next();
-                            if (rightBean.getDocDate().isAfter(leftBean.getDocDate())
-                                            || rightBean.getDocDate().isEqual(leftBean.getDocDate())) {
-                                if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
-                                    BigDecimal currentQuantity = dataBean.getQuantity();
-                                    // if currentQuantity > rightQuanity remove the right bean
-                                    if (currentQuantity.compareTo(rightBean.getQuantity()) > 0) {
-                                        currentQuantity = currentQuantity.subtract(rightBean.getQuantity());
-                                        dataBean.getRightBeans().add(rightBean);
-                                        iter.remove();
-                                    } else if (currentQuantity.compareTo(rightBean.getQuantity()) == 0) {
-                                        currentQuantity = BigDecimal.ZERO;
-                                        dataBean.getRightBeans().add(rightBean);
-                                        iter.remove();
-                                        found = true;
-                                    } else {
-                                    // currentQuantity < rightQuanity mark as found but keep the rightbean
-                                        currentQuantity = BigDecimal.ZERO;
-                                        dataBean.getRightBeans().add(rightBean);
-                                        found = true;
-                                    }
-                                    dataBean.setQuantity(currentQuantity);
-                                }
-                            } else {
-                                iter.remove();
-                            }
-                        }
-                    }
+                    ret = getDataBeans4DateEqualOrAfter(_parameter);
+                    break;
+                case "Relation":
+                    ret = getDataBeans4Relation(_parameter);
                     break;
                 default:
-                    LOG.error("No Criteria found for selected:", getDynamicReport().getSelected(_parameter));
+                    LOG.error("No Criteria found for selected");
+                    ret = new ArrayList<>();
                     break;
             }
             return ret;
+        }
+
+        /**
+         * Gets the data beans for date after.
+         *
+         * @param _parameter the parameter
+         * @return the data beans for date after
+         */
+        protected List<DataBean> getDataBeans4DateAfter(final Parameter _parameter)
+        {
+            final List<DataBean> ret = new ArrayList<>();
+            sort(_parameter, getLeftDocuments());
+            sort(_parameter, getRightDocuments());
+
+            for (final DocBean leftBean : getLeftDocuments()) {
+                final DataBean dataBean = new DataBean()
+                                .addLeft(leftBean)
+                                .setContactName(leftBean.getContactName())
+                                .setProductName(leftBean.getProductName())
+                                .setProductDesc(leftBean.getProductDesc())
+                                .setQuantity(leftBean.getQuantity());
+                ret.add(dataBean);
+                boolean found = false;
+                final Iterator<DocBean> iter = getRightDocuments().iterator();
+                while (iter.hasNext() && !found) {
+                    final DocBean rightBean = iter.next();
+                    if (rightBean.getDocDate().isAfter(leftBean.getDocDate())) {
+                        if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
+                            BigDecimal currentQuantity = dataBean.getQuantity();
+                            // if currentQuantity > rightQuanity remove the right bean
+                            if (currentQuantity.compareTo(rightBean.getQuantity()) > 0) {
+                                currentQuantity = currentQuantity.subtract(rightBean.getQuantity());
+                                dataBean.getRightBeans().add(rightBean);
+                                iter.remove();
+                            } else if (currentQuantity.compareTo(rightBean.getQuantity()) == 0) {
+                                currentQuantity = BigDecimal.ZERO;
+                                dataBean.getRightBeans().add(rightBean);
+                                iter.remove();
+                                found = true;
+                            } else {
+                            // currentQuantity < rightQuanity mark as found but keep the rightbean
+                                currentQuantity = BigDecimal.ZERO;
+                                dataBean.getRightBeans().add(rightBean);
+                                found = true;
+                            }
+                            dataBean.setQuantity(currentQuantity);
+                        }
+                    } else {
+                        iter.remove();
+                    }
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Gets the data beans for date equal or after.
+         *
+         * @param _parameter the parameter
+         * @return the data beans for date equal or after
+         */
+        protected List<DataBean> getDataBeans4DateEqualOrAfter(final Parameter _parameter)
+        {
+            final List<DataBean> ret = new ArrayList<>();
+            sort(_parameter, getLeftDocuments());
+            sort(_parameter, getRightDocuments());
+
+            for (final DocBean leftBean : getLeftDocuments()) {
+                final DataBean dataBean = new DataBean()
+                                .addLeft(leftBean)
+                                .setContactName(leftBean.getContactName())
+                                .setProductName(leftBean.getProductName())
+                                .setProductDesc(leftBean.getProductDesc())
+                                .setQuantity(leftBean.getQuantity());
+                ret.add(dataBean);
+                boolean found = false;
+                final Iterator<DocBean> iter = getRightDocuments().iterator();
+                while (iter.hasNext() && !found) {
+                    final DocBean rightBean = iter.next();
+                    if (rightBean.getDocDate().isAfter(leftBean.getDocDate())
+                                    || rightBean.getDocDate().isEqual(leftBean.getDocDate())) {
+                        if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
+                            BigDecimal currentQuantity = dataBean.getQuantity();
+                            // if currentQuantity > rightQuanity remove the right bean
+                            if (currentQuantity.compareTo(rightBean.getQuantity()) > 0) {
+                                currentQuantity = currentQuantity.subtract(rightBean.getQuantity());
+                                dataBean.getRightBeans().add(rightBean);
+                                iter.remove();
+                            } else if (currentQuantity.compareTo(rightBean.getQuantity()) == 0) {
+                                currentQuantity = BigDecimal.ZERO;
+                                dataBean.getRightBeans().add(rightBean);
+                                iter.remove();
+                                found = true;
+                            } else {
+                            // currentQuantity < rightQuanity mark as found but keep the rightbean
+                                currentQuantity = BigDecimal.ZERO;
+                                dataBean.getRightBeans().add(rightBean);
+                                found = true;
+                            }
+                            dataBean.setQuantity(currentQuantity);
+                        }
+                    } else {
+                        iter.remove();
+                    }
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Gets the data beans for relation.
+         *
+         * @param _parameter the parameter
+         * @return the data beans for relation
+         * @throws EFapsException the e faps exception
+         */
+        protected List<DataBean> getDataBeans4Relation(final Parameter _parameter)
+            throws EFapsException
+        {
+            final List<DataBean> ret = new ArrayList<>();
+            final Properties vsProperties = getDynamicReport().getVsProperties(_parameter);
+            final Properties properties = PropertiesUtil.getProperties4Prefix(vsProperties, "relation", true);
+            for (final DocBean leftBean : getLeftDocuments()) {
+                final DataBean dataBean = new DataBean()
+                                .addLeft(leftBean)
+                                .setContactName(leftBean.getContactName())
+                                .setProductName(leftBean.getProductName())
+                                .setProductDesc(leftBean.getProductDesc())
+                                .setQuantity(leftBean.getQuantity());
+                ret.add(dataBean);
+                final Set<Instance> rightInsts = new HashSet<>();
+                final QueryBuilder relQueryBldr = getQueryBldrFromProperties(_parameter, properties);
+                relQueryBldr.addWhereAttrEqValue(properties.getProperty("LeftAttribute"), leftBean.getDocInst());
+                final MultiPrintQuery multi = relQueryBldr.getCachedPrint4Request();
+                final SelectBuilder selRightInst = SelectBuilder.get()
+                                .linkto(properties.getProperty("RightAttribute")).instance();
+                multi.addSelect(selRightInst);
+                multi.execute();
+                while (multi.next()) {
+                    rightInsts.add(multi.getSelect(selRightInst));
+                }
+                final List<DocBean> rightDocs = getRightDocuments().stream()
+                                .filter(bean -> rightInsts.contains(bean.getDocInst()))
+                                .collect(Collectors.toList());
+                boolean found = false;
+                final Iterator<DocBean> iter = rightDocs.iterator();
+                while (iter.hasNext() && !found) {
+                    final DocBean rightBean = iter.next();
+                    if (rightBean.getProductInstance().equals(leftBean.getProductInstance())) {
+                        BigDecimal currentQuantity = dataBean.getQuantity();
+                        // if currentQuantity > rightQuanity remove the right bean
+                        if (currentQuantity.compareTo(rightBean.getQuantity()) > 0) {
+                            currentQuantity = currentQuantity.subtract(rightBean.getQuantity());
+                            dataBean.getRightBeans().add(rightBean);
+                            getRightDocuments().remove(rightBean);
+                        } else if (currentQuantity.compareTo(rightBean.getQuantity()) == 0) {
+                            currentQuantity = BigDecimal.ZERO;
+                            dataBean.getRightBeans().add(rightBean);
+                            getRightDocuments().remove(rightBean);
+                            found = true;
+                        } else {
+                            // currentQuantity < rightQuanity mark as found but keep the rightbean
+                            currentQuantity = BigDecimal.ZERO;
+                            dataBean.getRightBeans().add(rightBean);
+                            found = true;
+                        }
+                        dataBean.setQuantity(currentQuantity);
+                    }
+                }
+            }
+            return ret.stream()
+                        .filter(bean -> bean.getQuantity().compareTo(BigDecimal.ZERO) != 0)
+                        .collect(Collectors.toList());
         }
 
         /**
@@ -692,9 +736,7 @@ public abstract class DocVsDocReport_Base
         protected String getCompareCriteria(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<Integer, String> criteria = analyseProperty(_parameter, "Criteria");
-            final String ret = criteria.get(getDynamicReport().getSelected(_parameter));
-            return ret == null ? "" : ret;
+            return getDynamicReport().getVsProperties(_parameter).getProperty("Criteria", "No Criteria");
         }
 
         /**
@@ -707,33 +749,9 @@ public abstract class DocVsDocReport_Base
                             final List<DocBean> _list)
         {
             final ComparatorChain<DocBean> chain = new ComparatorChain<>();
-            chain.addComparator(new Comparator<DocBean>()
-            {
-                @Override
-                public int compare(final DocBean _o1,
-                                   final DocBean _o2)
-                {
-                    return _o1.getDocDate().compareTo(_o2.getDocDate());
-                }
-            });
-            chain.addComparator(new Comparator<DocBean>()
-            {
-                @Override
-                public int compare(final DocBean _o1,
-                                   final DocBean _o2)
-                {
-                    return _o1.getDocName().compareTo(_o2.getDocName());
-                }
-            });
-            chain.addComparator(new Comparator<DocBean>()
-            {
-                @Override
-                public int compare(final DocBean _o1,
-                                   final DocBean _o2)
-                {
-                    return _o1.getProductName().compareTo(_o2.getProductName());
-                }
-            });
+            chain.addComparator((_o1, _o2) -> _o1.getDocDate().compareTo(_o2.getDocDate()));
+            chain.addComparator((_o1, _o2) -> _o1.getDocName().compareTo(_o2.getDocName()));
+            chain.addComparator((_o1, _o2) -> _o1.getProductName().compareTo(_o2.getProductName()));
             Collections.sort(_list, chain);
         }
 
@@ -753,6 +771,10 @@ public abstract class DocVsDocReport_Base
      */
     public static class DocBean
     {
+
+
+        /** The doc inst. */
+        private Instance docInst;
 
         /** The doc name. */
         private String docName;
@@ -777,6 +799,28 @@ public abstract class DocVsDocReport_Base
 
         /** The quantity. */
         private BigDecimal quantity;
+
+        /**
+         * Gets the doc inst.
+         *
+         * @return the doc inst
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+        /**
+         * Sets the doc inst.
+         *
+         * @param _docInst the new doc inst
+         * @return the doc bean
+         */
+        public DocBean setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+            return this;
+        }
 
         /**
          * Gets the product instance.
