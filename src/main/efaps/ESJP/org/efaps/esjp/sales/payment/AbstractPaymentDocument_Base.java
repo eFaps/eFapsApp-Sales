@@ -1991,7 +1991,7 @@ public abstract class AbstractPaymentDocument_Base
                 }
             }
 
-            if (updatePayment) {
+            if (updatePayment || multi.getInstanceList().size() == 0) {
                 final Update update = new Update(queryInst.getCurrentValue());
                 update.add(CISales.Payment.Amount, BigDecimal.ZERO);
                 update.executeWithoutAccessCheck();
