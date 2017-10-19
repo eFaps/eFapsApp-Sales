@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -145,6 +145,18 @@
                 <property name="AttributeExists">org.efaps.sales.IncomingExchange.RevisionSequence</property>
             </trigger>
          </field>
+         <field character="Group" name="action4ViewGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingExchangeForm.action4ViewGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Config -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.BinIncomingExchange.Activate</property>
+            </trigger>
+         </field>
          <field name="action4View">
             <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
             <property name="Select">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
@@ -160,6 +172,20 @@
                 program="org.efaps.esjp.sales.document.IncomingExchange">
                 <property name="Key">Sales_IncomingExchange</property>
                 <property name="Access">!NONE</property>
+            </trigger>
+        </field>
+        <field name="bin">
+            <property name="Label">Sales_BinIncomingExchange.Label</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_BinIncomingExchange2IncomingExchange#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_BinIncomingExchange2IncomingExchange#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingExchangeForm.bin.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Config -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.BinIncomingExchange.Activate</property>
             </trigger>
         </field>
         <field character="Heading" name="headingContact">
