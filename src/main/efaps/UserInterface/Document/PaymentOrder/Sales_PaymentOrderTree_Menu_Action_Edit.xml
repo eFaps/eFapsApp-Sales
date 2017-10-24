@@ -48,5 +48,6 @@
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">400</property>
         <property name="WindowWidth">950</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

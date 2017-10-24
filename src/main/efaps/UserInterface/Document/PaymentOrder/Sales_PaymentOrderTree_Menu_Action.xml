@@ -30,6 +30,7 @@
             <child>Sales_PaymentOrderTree_Menu_Action_SetClosed</child>
             <child>Sales_PaymentOrderTree_Menu_Action_SetAccountabilityTag</child>
             <child>Sales_PaymentOrderTree_Menu_Action_RemoveAccountabilityTag</child>
+            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
