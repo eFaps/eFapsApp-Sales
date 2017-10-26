@@ -108,7 +108,7 @@
             <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
-            <key>Aborted</key>
+            <key>Canceled</key>
         </status>
 
         <status group="Sales_InvoiceStatus">
@@ -219,6 +219,7 @@
             <key>Open</key>
             <key>Closed</key>
             <key>Verified</key>
+            <key>Canceled</key>
         </status>
 
         <status group="Sales_FundsToBeSettledReceiptStatus">

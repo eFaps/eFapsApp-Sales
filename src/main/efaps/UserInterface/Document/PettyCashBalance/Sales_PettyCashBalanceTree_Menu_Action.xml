@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 5313 $
- Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
- Last Changed By: $Author: miguel.a.aranya $
-
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d0723571-42e8-4ce4-ab89-4f29cf0d043a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashBalanceTree_Menu_Action</name>
@@ -33,6 +27,7 @@
             <child>Sales_PettyCashBalanceTree_Menu_Action_CreateReport</child>
             <child>Sales_PettyCashBalanceTree_Menu_Action_SetVerified</child>
             <child>Sales_PettyCashBalanceTree_Menu_Action_CreateDocument</child>
+            <child>Sales_PettyCashBalanceTree_Menu_Action_SetCanceled</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>

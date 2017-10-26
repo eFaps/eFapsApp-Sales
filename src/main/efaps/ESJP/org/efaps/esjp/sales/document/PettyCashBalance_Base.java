@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -37,6 +36,7 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -48,6 +48,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -201,8 +202,8 @@ public abstract class PettyCashBalance_Base
                 final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute(
                                             CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name);
                 if (oids != null) {
-                    for (int i = 0; i < oids.length; i++) {
-                        final Instance instPay = Instance.get(oids[i]);
+                    for (final String oid : oids) {
+                        final Instance instPay = Instance.get(oid);
                         lstInst.add(instPay);
                     }
                 } else {
@@ -276,8 +277,7 @@ public abstract class PettyCashBalance_Base
             transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
             transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
             transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
-            transInsert.add(CISales.TransactionAbstract.Description,
-                        DBProperties.getProperty("org.efaps.esjp.sales.Accountg_Base.Transaction.CashDeskBalance"));
+            transInsert.add(CISales.TransactionAbstract.Description, getDBProperty("transaction.Create"));
             transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
             transInsert.execute();
         }
@@ -483,4 +483,80 @@ public abstract class PettyCashBalance_Base
         return new Return();
     }
 
+    /**
+     * Cancel.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the eFaps exception
+     */
+    public Return cancel(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, instance);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, instance);
+
+        final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+        transQueryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQueryBldr.getAttributeQuery(
+                        CISales.Payment.ID));
+        final MultiPrintQuery multi = transQueryBldr.getPrint();
+        multi.addAttribute(CISales.TransactionAbstract.Amount,
+                        CISales.TransactionAbstract.CurrencyId,
+                        CISales.TransactionAbstract.Payment,
+                        CISales.TransactionAbstract.Account);
+        multi.execute();
+        while (multi.next()) {
+            final CIType type;
+            if (InstanceUtils.isKindOf(multi.getCurrentInstance(), CISales.TransactionOutbound)) {
+                type = CISales.TransactionInbound;
+            } else {
+                type = CISales.TransactionOutbound;
+            }
+            final Insert transInsert = new Insert(type);
+            transInsert.add(CISales.TransactionAbstract.Amount, multi.<BigDecimal>getAttribute(
+                            CISales.TransactionAbstract.Amount));
+            transInsert.add(CISales.TransactionAbstract.CurrencyId, multi.<Long>getAttribute(
+                            CISales.TransactionAbstract.CurrencyId));
+            transInsert.add(CISales.TransactionAbstract.Payment, multi.<Long>getAttribute(
+                            CISales.TransactionAbstract.Payment));
+            transInsert.add(CISales.TransactionAbstract.Account, multi.<Long>getAttribute(
+                            CISales.TransactionAbstract.Account));
+            transInsert.add(CISales.TransactionAbstract.Description, getDBProperty("transaction.Cancel"));
+            transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
+            transInsert.execute();
+        }
+
+        final QueryBuilder paymentQueryBldr = new QueryBuilder(CISales.Payment);
+        paymentQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, instance);
+        final MultiPrintQuery paymentMulti = paymentQueryBldr.getPrint();
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+        paymentMulti.addSelect(sel);
+        paymentMulti.execute();
+        while (paymentMulti.next()) {
+            final Instance docInst = paymentMulti.getSelect(sel);
+            if (InstanceUtils.isKindOf(docInst, CISales.PettyCashReceipt)
+                            || InstanceUtils.isKindOf(docInst, CISales.IncomingCreditNote)) {
+                final Update update = new Update(paymentMulti.getCurrentInstance());
+                update.add(CISales.Payment.TargetDocument, (Object) null);
+                update.execute();
+            }
+        }
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+        queryBldr.addType(CISales.PettyCashBalance2IncomingCreditNote);
+        queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, instance);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            new Delete(query.getCurrentValue()).execute();
+        }
+
+        final Update update = new Update(instance);
+        update.add(CISales.PettyCashBalance.Status, Status.find(CISales.PettyCashBalanceStatus.Canceled));
+        update.execute();
+        return new Return();
+    }
 }
