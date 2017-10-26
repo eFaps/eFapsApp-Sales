@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-01-26T00:00:54 -->
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- 2017-10-25T22:35:27 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentOrder" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="6bf3b51f-4849-4f13-9889-0a053add68ca">
 	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -134,7 +134,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<text><![CDATA[Contacto:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement x="505" y="0" width="50" height="15" uuid="616f9d0e-d855-4642-b12f-d3a7cb785be8">
+				<reportElement x="495" y="0" width="60" height="15" uuid="616f9d0e-d855-4642-b12f-d3a7cb785be8">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -145,7 +145,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="465" y="0" width="40" height="15" uuid="2137fb2b-8218-4f33-b759-90da6c43029d">
+				<reportElement x="455" y="0" width="40" height="15" uuid="2137fb2b-8218-4f33-b759-90da6c43029d">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
