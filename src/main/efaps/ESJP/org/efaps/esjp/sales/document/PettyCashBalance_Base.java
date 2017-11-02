@@ -506,7 +506,8 @@ public abstract class PettyCashBalance_Base
         multi.addAttribute(CISales.TransactionAbstract.Amount,
                         CISales.TransactionAbstract.CurrencyId,
                         CISales.TransactionAbstract.Payment,
-                        CISales.TransactionAbstract.Account);
+                        CISales.TransactionAbstract.Account,
+                        CISales.TransactionAbstract.Date);
         multi.execute();
         while (multi.next()) {
             final CIType type;
@@ -525,7 +526,8 @@ public abstract class PettyCashBalance_Base
             transInsert.add(CISales.TransactionAbstract.Account, multi.<Long>getAttribute(
                             CISales.TransactionAbstract.Account));
             transInsert.add(CISales.TransactionAbstract.Description, getDBProperty("transaction.Cancel"));
-            transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
+            transInsert.add(CISales.TransactionAbstract.Date, multi.<DateTime>getAttribute(
+                            CISales.TransactionAbstract.Date));
             transInsert.execute();
         }
 
