@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -334,16 +333,8 @@ public abstract class ProductStockReport_Base
             final List<DataBean> dataSource = new ArrayList<>(beans.values());
             final int rowQ = String.valueOf(docInsts.size()).length();
 
-            Collections.sort(dataSource, new Comparator<DataBean>()
-            {
-
-                @Override
-                public int compare(final DataBean _o1,
-                                   final DataBean _o2)
-                {
-                    return _o1.getDocName().compareTo(_o2.getDocName());
-                }
-            });
+            Collections.sort(dataSource, (_o1,
+             _o2) -> _o1.getDocName().compareTo(_o2.getDocName()));
             Instance current = null;
             int cont = Sales.RESERVATIONACTIVATE.get() ? 2 : 1;
             for (final DataBean bean : dataSource) {
@@ -372,27 +363,11 @@ public abstract class ProductStockReport_Base
                 }
             }
 
-            final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
-            chain.addComparator(new Comparator<ProductStockReport_Base.DataBean>()
-            {
-
-                @Override
-                public int compare(final DataBean _o1,
-                                   final DataBean _o2)
-                {
-                    return _o1.getProdName().compareTo(_o2.getProdName());
-                }
-            });
-            chain.addComparator(new Comparator<ProductStockReport_Base.DataBean>()
-            {
-
-                @Override
-                public int compare(final DataBean _o1,
-                                   final DataBean _o2)
-                {
-                    return _o1.getDocName().compareTo(_o2.getDocName());
-                }
-            });
+            final ComparatorChain<DataBean> chain = new ComparatorChain<>();
+            chain.addComparator((_o1,
+             _o2) -> _o1.getProdName().compareTo(_o2.getProdName()));
+            chain.addComparator((_o1,
+             _o2) -> _o1.getDocName().compareTo(_o2.getDocName()));
             Collections.sort(dataSource, chain);
 
             return new JRBeanCollectionDataSource(dataSource);
@@ -434,7 +409,7 @@ public abstract class ProductStockReport_Base
                 attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
                 if (statusGrps.containsKey(key)) {
                     final String[] statusArr = status.get(key).split(";");
-                    final List<Status> statusLst = new ArrayList<Status>();
+                    final List<Status> statusLst = new ArrayList<>();
                     for (final String stat : statusArr) {
                         final Status st = Status.find(statusGrps.get(key), stat);
                         statusLst.add(st);

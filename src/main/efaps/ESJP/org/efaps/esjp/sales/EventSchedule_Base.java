@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -182,12 +182,12 @@ public abstract class EventSchedule_Base
 
         final int selected = getSelectedRow(_parameter);
         final Instance docInst = Instance.get(_parameter.getParameterValues("document")[selected]);
-        String name;
+        final String name;
         BigDecimal netPrice = BigDecimal.ZERO;
         BigDecimal rateNetPrice = BigDecimal.ZERO;
-        String symbol;
-        String rateSymbol;
-        String contactName;
+        final String symbol;
+        final String rateSymbol;
+        final String contactName;
         if (docInst.isValid()) {
             final SelectBuilder selSymbol = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
@@ -391,7 +391,8 @@ public abstract class EventSchedule_Base
                 final Instance docInst = multi.getCurrentInstance();
                 final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
                 final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                final BigDecimal rateCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                final BigDecimal rateCrossTotal = multi.<BigDecimal>getAttribute(
+                                CISales.DocumentSumAbstract.RateCrossTotal);
                 final String symbol = multi.<String>getSelect(selSymbol);
                 final String rateSymbol = multi.<String>getSelect(selRateSymbol);
                 final String contactName = multi.<String>getSelect(selContactNameSel);

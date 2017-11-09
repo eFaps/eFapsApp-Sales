@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -298,7 +298,7 @@ public abstract class SalesReport4AccountPanel_Base
             for (int i = 1; i < y + 1; i++) {
                 final Map<String, Object> map = new HashMap<>();
                 map.put("value", i);
-                map.put("text", StringEscapeUtils.escapeEcmaScript((y + 1 - i) + "."));
+                map.put("text", StringEscapeUtils.escapeEcmaScript(y + 1 - i + "."));
                 labels.add(map);
             }
             chart.addAxis(new Axis().setName("y").setVertical(true).setMin(0).setLabels(Util.mapCollectionToObjectArray(

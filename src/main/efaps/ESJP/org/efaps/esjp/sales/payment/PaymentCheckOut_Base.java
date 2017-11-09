@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
@@ -320,7 +320,7 @@ public abstract class PaymentCheckOut_Base
     {
         final Return ret = new Return();
 
-        Map<Instance, String> values;
+        final Map<Instance, String> values;
         if (Context.getThreadContext().containsRequestAttribute(PaymentCheckOut_Base.PAYMENT)) {
             values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
                             PaymentCheckOut_Base.PAYMENT);
@@ -388,7 +388,7 @@ public abstract class PaymentCheckOut_Base
     {
         final Return ret = new Return();
 
-        Map<Instance, String> values;
+        final Map<Instance, String> values;
         if (Context.getThreadContext().containsRequestAttribute(PaymentCheckOut_Base.ACCOUNT)) {
             values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
                             PaymentCheckOut_Base.ACCOUNT);

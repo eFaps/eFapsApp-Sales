@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -655,8 +655,8 @@ public abstract class Account_Base
                                 CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name);
             }
             if (oids != null) {
-                for (int i = 0; i < oids.length; i++) {
-                    final Instance instPay = Instance.get(oids[i]);
+                for (final String oid : oids) {
+                    final Instance instPay = Instance.get(oid);
                     lstInst.add(instPay);
                 }
             }

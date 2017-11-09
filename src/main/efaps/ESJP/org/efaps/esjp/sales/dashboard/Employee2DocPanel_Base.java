@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -191,16 +191,8 @@ public abstract class Employee2DocPanel_Base
                     }
                 }
             }
-            final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues = new Comparator<
-                            Map.Entry<Instance, BigDecimal>>()
-            {
-                @Override
-                public int compare(final Map.Entry<Instance, BigDecimal> _left,
-                                   final Map.Entry<Instance, BigDecimal> _right)
-                {
-                    return _right.getValue().compareTo(_left.getValue());
-                }
-            };
+            final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues = (_left,
+             _right) -> _right.getValue().compareTo(_left.getValue());
             // create a list of map entries
             final List<Map.Entry<Instance, BigDecimal>> sorted = new ArrayList<>();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,12 @@ package org.efaps.esjp.sales;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -155,16 +154,8 @@ public abstract class Channel_Base
                 }
                 values.add(obj);
             }
-            Collections.sort(values, new Comparator<Object[]>()
-            {
-
-                @Override
-                public int compare(final Object[] _arg0,
-                                   final Object[] _arg1)
-                {
-                    return String.valueOf(_arg0[1]).compareTo(String.valueOf(_arg1[1]));
-                }
-            });
+            Collections.sort(values, (_arg0,
+             _arg1) -> String.valueOf(_arg0[1]).compareTo(String.valueOf(_arg1[1])));
 
             if (!values.isEmpty()) {
                 final Integer days = defaultObj == null ? (Integer) values.get(0)[2] : (Integer) defaultObj[2];

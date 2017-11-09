@@ -33,7 +33,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
