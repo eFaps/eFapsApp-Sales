@@ -31,7 +31,7 @@
         <field name="code">
             <property name="Attribute">Code</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Code.Label</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_PaymentDocumentAbstractTable.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">!org.efaps.sales.payment.DeactivateCodeGeneration</property>

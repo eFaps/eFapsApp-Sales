@@ -29,7 +29,7 @@
             <property name="ModeView">READONLY</property>
             <property name="Attribute">Code</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
-                name="Sales_PaymentDepositForm.code.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField">
+                name="Sales_PaymentDepositForm.code.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">!org.efaps.sales.payment.DeactivateCodeGeneration</property>
             </trigger>

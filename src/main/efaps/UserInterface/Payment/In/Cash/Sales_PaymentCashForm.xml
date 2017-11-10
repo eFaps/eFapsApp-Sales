@@ -28,7 +28,7 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Attribute">Code</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_PaymentCashForm.code.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">

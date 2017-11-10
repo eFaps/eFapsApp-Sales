@@ -32,7 +32,7 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_ChannelSalesCondition</property>
             </evaluate>
-             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_ChannelSalesConditionMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.Channel.ActivateSalesCondition</property>

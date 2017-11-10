@@ -30,7 +30,7 @@
             <property name="Attribute">Code</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_PaymentCheckOutForm.code.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessOnField">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">!org.efaps.sales.payment.out.DeactivateCodeGeneration</property>
             </trigger>
