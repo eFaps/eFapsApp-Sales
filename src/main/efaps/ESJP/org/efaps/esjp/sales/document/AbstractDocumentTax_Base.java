@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.IUIValue;
@@ -50,6 +49,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.util.EFapsException;
+import org.efaps.util.RandomUtil;
 import org.joda.time.DateTime;
 
 /**
@@ -74,7 +74,7 @@ public abstract class AbstractDocumentTax_Base
     public static final String REQKEY4DOCTAXINFO = AbstractDocumentTax.class.getName() + ".RequestKey4DocTaxInfo";
 
     /**
-     * Executed from a Command execute vent to create a new Incoming
+     * Executed from a Command execute event to create a new Incoming
      * PerceptionCertificate.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -99,13 +99,16 @@ public abstract class AbstractDocumentTax_Base
             } else {
                 update = new Insert(type);
                 final PrintQuery print = new PrintQuery(_createdDoc.getInstance());
-                print.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.Contact,
-                                CISales.DocumentSumAbstract.Salesperson, CISales.DocumentSumAbstract.Group,
-                                CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CurrencyId,
-                                CISales.DocumentSumAbstract.RateCurrencyId, CISales.DocumentSumAbstract.Name);
+                print.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.DueDate,
+                                CISales.DocumentSumAbstract.Contact, CISales.DocumentSumAbstract.Salesperson,
+                                CISales.DocumentSumAbstract.Group, CISales.DocumentSumAbstract.Rate,
+                                CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
+                                CISales.DocumentSumAbstract.Name);
                 print.executeWithoutAccessCheck();
                 update.add(CISales.DocumentSumAbstract.Date,
                                 print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
+                update.add(CISales.DocumentSumAbstract.DueDate,
+                                print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate));
                 update.add(CISales.DocumentSumAbstract.Contact,
                                 print.<Long>getAttribute(CISales.DocumentSumAbstract.Contact));
                 update.add(CISales.DocumentSumAbstract.Salesperson,
@@ -216,10 +219,10 @@ public abstract class AbstractDocumentTax_Base
                         || uiObject.getDisplay().equals(Display.HIDDEN)) {
             // TODO configurable
             final String fieldName = "taxDocType" + _docInst.getOid();
-            final String id1 = RandomStringUtils.randomAlphanumeric(6);
-            final String id2 = RandomStringUtils.randomAlphanumeric(6);
-            final String id3 = RandomStringUtils.randomAlphanumeric(6);
-            final String id4 = RandomStringUtils.randomAlphanumeric(6);
+            final String id1 = RandomUtil.randomAlphanumeric(6);
+            final String id2 = RandomUtil.randomAlphanumeric(6);
+            final String id3 = RandomUtil.randomAlphanumeric(6);
+            final String id4 = RandomUtil.randomAlphanumeric(6);
 
             ret.append("<input type=\"radio\" value=\"").append("NONE").append("\" name=\"")
                             .append(fieldName).append("\" id=\"").append(id1).append("\"");
@@ -889,7 +892,7 @@ public abstract class AbstractDocumentTax_Base
 
         /**
          * Analyze payment.
-         * @throws EFapsException
+         * @throws EFapsException on error
          */
         protected void analyzePayment()
             throws EFapsException

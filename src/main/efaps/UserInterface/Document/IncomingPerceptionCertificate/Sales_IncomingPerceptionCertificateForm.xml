@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
   limitations under the License.
 
 -->
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b2f39c4e-2f7c-4535-8336-dec4c39e2360</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
@@ -25,7 +26,7 @@
         <field name="dateGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -35,6 +36,13 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
+        <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
+        </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -42,8 +50,10 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate" method="getSalesPersonFieldValue"
-                name="Sales_IncomingPerceptionCertificateForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
+                method="getSalesPersonFieldValue"
+                name="Sales_IncomingPerceptionCertificateForm.salesperson.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -128,12 +138,16 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Width">98</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate" method="autoComplete4Contact"
-                name="Sales_IncomingPerceptionCertificate.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
+                method="autoComplete4Contact"
+                name="Sales_IncomingPerceptionCertificate.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate" method="updateFields4Contact"
-            name="Sales_IncomingPerceptionCertificateForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
+                method="updateFields4Contact"
+                name="Sales_IncomingPerceptionCertificateForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -154,10 +168,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate" method="rateCurrencyFieldValueUI"
-                name="Sales_IncomingPerceptionCertificateForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
-            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate" method="updateFields4RateCurrency"
-                name="Sales_IncomingPerceptionCertificateForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
+                method="rateCurrencyFieldValueUI"
+                name="Sales_IncomingPerceptionCertificateForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
+                method="updateFields4RateCurrency"
+                name="Sales_IncomingPerceptionCertificateForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -169,7 +187,7 @@
             <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
                 method="rateFieldValueUI"
                 name="Sales_IncomingPerceptionCertificateForm.rate.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
+                event="UI_FIELD_VALUE">
                 <property name="UI">true</property>
             </trigger>
         </field>
@@ -232,7 +250,7 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-             <property name="ModeView">NONE</property>
+            <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate"
                 method="rateFieldValueUI"
                 name="Sales_IncomingPerceptionCertificateForm.rate.UI_FIELD_VALUE"

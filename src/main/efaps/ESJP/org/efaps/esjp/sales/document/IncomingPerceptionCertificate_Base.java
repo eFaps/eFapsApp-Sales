@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.sales.document;
 
@@ -55,7 +51,6 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  *
  */
-
 @EFapsUUID("7a5f02e9-4e72-46a7-9334-48abca41d026")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingPerceptionCertificate_Base
@@ -205,7 +200,6 @@ public abstract class IncomingPerceptionCertificate_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.IncomingDocumentTax2Document.OID);
         multi.execute();
-
         return multi;
     }
 
@@ -221,10 +215,16 @@ public abstract class IncomingPerceptionCertificate_Base
         } else {
             ret = super.getCrossTotal(_parameter, _calcList);
         }
-
         return ret;
     }
 
+    /**
+     * Parses the big decimal.
+     *
+     * @param _value the value
+     * @return the big decimal
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal parseBigDecimal(final String _value)
         throws EFapsException
     {
