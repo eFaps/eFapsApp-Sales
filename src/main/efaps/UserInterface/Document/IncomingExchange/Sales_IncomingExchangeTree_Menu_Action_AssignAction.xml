@@ -29,6 +29,10 @@
         <target>
             <form>Sales_IncomingExchange_AssignActionForm</form>
             <execute method="assignAction" program="org.efaps.esjp.sales.document.IncomingExchange" />
+            <validate program="org.efaps.esjp.sales.document.IncomingExchange"
+                method="validateAssignDifferentAction"
+                index="1">
+            </validate>
             <trigger event="UI_ACCESSCHECK" index="1" method="accessCheck4Action"
                 name="Sales_IncomingExchangeTree_Menu_Action_AssignAction.UI_ACCESSCHECK.1"
                 program="org.efaps.esjp.sales.document.IncomingExchange">
