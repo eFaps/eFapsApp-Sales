@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -109,13 +110,15 @@
                 program="org.efaps.esjp.sales.report.SalesReport4Account">
             </trigger>
         </field>
-        <field name="hideDetails">
+        <field name="reportType">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-            <property name="Label">org.efaps.esjp.sales.report.SalesReport4Account.hideDetails</property>
-            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
-                name="Sales_PaymentDocumentOut_Report4AccountFilterForm.hideDetails.UI_FIELD_VALUE"
-                program="org.efaps.esjp.erp.FilteredReport" />
+            <property name="UIType">RADIO</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesReport4Account.reportType</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_PaymentDocumentOut_FilterForm.reportType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesReport4Account" >
+                <property name="Enum">org.efaps.esjp.sales.report.SalesReport4Account_Base$ReportType</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>
