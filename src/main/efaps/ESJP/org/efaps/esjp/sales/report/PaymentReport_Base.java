@@ -442,7 +442,7 @@ public abstract class PaymentReport_Base
         }
 
         @Override
-        protected void addColumnDefintion(final Parameter _parameter,
+        protected void addColumnDefinition(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {

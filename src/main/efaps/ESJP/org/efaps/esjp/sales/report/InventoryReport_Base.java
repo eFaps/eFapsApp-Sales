@@ -122,11 +122,11 @@ public abstract class InventoryReport_Base
         }
 
         @Override
-        protected void addColumnDefintion(final Parameter _parameter,
+        protected void addColumnDefinition(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            super.addColumnDefintion(_parameter, _builder);
+            super.addColumnDefinition(_parameter, _builder);
 
             final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(DBProperties
                             .getProperty(InventoryReport.class.getName() + ".Column.docName"),

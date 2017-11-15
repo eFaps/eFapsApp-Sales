@@ -187,11 +187,11 @@ public abstract class ProductsTransactionResultReport_Base
         }
 
         @Override
-        protected void addColumnDefintion(final Parameter _parameter,
+        protected void addColumnDefinition(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            super.addColumnDefintion(_parameter, _builder);
+            super.addColumnDefinition(_parameter, _builder);
 
             if (!Valuation.NONE.equals(getValuation(_parameter))) {
                 final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
