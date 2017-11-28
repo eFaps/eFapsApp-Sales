@@ -33,8 +33,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -556,6 +556,11 @@ public abstract class Swap_Base
                         print.getAttribute(CISales.DocumentSumAbstract.RateNetTotal) + rateCurrInst.getSymbol());
         ret.put("status", Status.get(
                         print.<Long>getAttribute(CISales.DocumentSumAbstract.StatusAbstract)).getLabel());
+        final Parameter parameter = ParameterUtil.clone(_parameter);
+        ParameterUtil.setProperty(parameter, "SwapFrom", "true");
+        ret.put("swapBalanceFrom", getSwapBalance(parameter, _docInst));
+        ParameterUtil.setProperty(parameter, "SwapFrom", "false");
+        ret.put("swapBalanceTo", getSwapBalance(parameter, _docInst));
         ret.putAll(getPositionUpdateMap(_parameter, _docInst));
         return ret;
     }
@@ -851,12 +856,27 @@ public abstract class Swap_Base
     public Return getSwapBalanceFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final BigDecimal swapTotal = getSwapTotal(_parameter, _parameter.getInstance());
-        final PrintQuery print = CachedPrintQuery.get4Request(_parameter.getInstance());
+        return new Return().put(ReturnValues.VALUES, getSwapBalance(_parameter, _parameter.getInstance()));
+    }
+
+    /**
+     * Gets the swap balance.
+     *
+     * @param _parameter the parameter
+     * @param _docInst the doc inst
+     * @return the swap balance
+     * @throws EFapsException the e faps exception
+     */
+    protected BigDecimal getSwapBalance(final Parameter _parameter,
+                                        final Instance _docInst)
+        throws EFapsException
+    {
+        final BigDecimal swapTotal = getSwapTotal(_parameter, _docInst);
+        final PrintQuery print = CachedPrintQuery.get4Request(_docInst);
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         print.execute();
         final BigDecimal total = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-        return new Return().put(ReturnValues.VALUES, total.subtract(swapTotal));
+        return total.subtract(swapTotal);
     }
 
     /**
