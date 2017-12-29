@@ -644,7 +644,8 @@ public abstract class SalesReport4Account_Base
                 final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
                 swapQueryBldr.addWhereAttrInQuery(CISales.Document2Document4Swap.FromLink,
                                 attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                swapQueryBldr.addWhereAttrGreaterValue(CISales.Document2Document4Swap.Date, reportDate.minusMinutes(1));
+                swapQueryBldr.addWhereAttrGreaterValue(CISales.Document2Document4Swap.Date,
+                                reportDate.minusMinutes(1).plusDays(1));
                 final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
                 final SelectBuilder selDocInst = SelectBuilder.get()
                                 .linkto(CISales.Document2Document4Swap.FromLink).instance();
