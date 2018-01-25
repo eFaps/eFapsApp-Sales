@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2018 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -48,6 +49,28 @@
                 name="Sales_SalesProductReportFilterForm.dateConfig.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.PaymentReport">
                 <property name="Enum">org.efaps.esjp.sales.report.PaymentReport_Base$PayDoc</property>
+            </trigger>
+        </field>
+        <field name="payDocTypeGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="payDocType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">CHECKBOX</property>
+            <property name="Label">org.efaps.esjp.sales.report.PaymentReport.payDocType</property>
+            <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
+                name="Sales_PaymentReportFilterForm.payDocType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.PaymentReport">
+            </trigger>
+        </field>
+        <field name="payDocType_negate">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">org.efaps.esjp.sales.report.PaymentReport.payDocType_negate</property>
+             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_PaymentReportFilterForm.contact_negate.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.PaymentReport">
             </trigger>
         </field>
         <field name="contactGroup" character="Group">

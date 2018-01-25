@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2018 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -31,21 +32,24 @@
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">payDoc</property>
-                <property name="Field04">contact</property>
-                <property name="Field05">currency</property>
-                <property name="Field06">groupBy</property>
+                <property name="Field04">payDocType</property>
+                <property name="Field05">contact</property>
+                <property name="Field06">currency</property>
+                <property name="Field07">groupBy</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Enum</property>
-                <property name="FilterType04">InstanceSet</property>
-                <property name="FilterType05">Currency</property>
-                <property name="FilterType06">GroupBy</property>
+                <property name="FilterType04">Type</property>
+                <property name="FilterType05">InstanceSet</property>
+                <property name="FilterType06">Currency</property>
+                <property name="FilterType07">GroupBy</property>
                 <property name="FilterDefault01">TODAY</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">org.efaps.esjp.sales.report.PaymentReport_Base$PayDoc</property>
-                <property name="FilterDefault04">-</property>
+                <property name="FilterDefault04">NONE</property>
                 <property name="FilterDefault05">-</property>
-                <property name="FilterDefault06">org.efaps.esjp.sales.report.PaymentReport_Base$Grouping</property>
+                <property name="FilterDefault06">-</property>
+                <property name="FilterDefault07">org.efaps.esjp.sales.report.PaymentReport_Base$Grouping</property>
                 <!-- Sales-Configuration -->
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentReport</property>
@@ -56,15 +60,17 @@
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">payDoc</property>
-                <property name="Field04">contact</property>
-                <property name="Field05">currency</property>
-                <property name="Field06">groupBy</property>
+                <property name="Field04">payDocType</property>
+                <property name="Field05">contact</property>
+                <property name="Field06">currency</property>
+                <property name="Field07">groupBy</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.PaymentReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.PaymentReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.PaymentReport.payDoc</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.PaymentReport.contact</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.PaymentReport.currency</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.PaymentReport.groupBy</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.PaymentReport.payDocType</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.PaymentReport.contact</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.PaymentReport.currency</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.PaymentReport.groupBy</property>
                  <!-- Sales-Configuration -->
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentReport</property>

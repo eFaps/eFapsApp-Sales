@@ -21,14 +21,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -42,6 +47,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
@@ -146,6 +152,15 @@ public abstract class PaymentReport_Base
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
         return ret;
+    }
+
+    @Override
+    protected List<Type> getTypeList(final Parameter _parameter, final String _fieldName)
+        throws EFapsException
+    {
+        return CISales.PaymentDocumentIOAbstract.getType().getChildTypes().stream()
+                        .filter(type -> !type.isAbstract())
+                        .collect(Collectors.toList());
     }
 
     /**
@@ -261,55 +276,19 @@ public abstract class PaymentReport_Base
                     for (final Enum<?> sel : selected) {
                         switch ((Grouping) sel) {
                             case CONTACT:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-
-                                    @Override
-                                    public int compare(final DataBean _arg0,
-                                                       final DataBean _arg1)
-                                    {
-                                        return _arg0.getCreateDocContactName()
-                                                        .compareTo(_arg1.getCreateDocContactName());
-                                    }
-                                });
+                                chain.addComparator((_arg0, _arg1) -> _arg0.getCreateDocContactName()
+                                                .compareTo(_arg1.getCreateDocContactName()));
                                 break;
                             case TYPE:
-                                chain.addComparator(new Comparator<DataBean>()
-                                {
-
-                                    @Override
-                                    public int compare(final DataBean _arg0,
-                                                       final DataBean _arg1)
-                                    {
-                                        return _arg0.getTargetDocType().compareTo(_arg1.getTargetDocType());
-                                    }
-                                });
+                                chain.addComparator((_arg0, _arg1) -> _arg0.getTargetDocType().compareTo(_arg1.getTargetDocType()));
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _arg0,
-                                       final DataBean _arg1)
-                    {
-                        return _arg0.getTargetDocDate().compareTo(_arg1.getTargetDocDate());
-                    }
-                });
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _arg0,
-                                       final DataBean _arg1)
-                    {
-                        return _arg0.getTargetDocCode().compareTo(_arg1.getTargetDocCode());
-                    }
-                });
+                chain.addComparator((_arg0, _arg1) -> _arg0.getTargetDocDate().compareTo(_arg1.getTargetDocDate()));
+                chain.addComparator((_arg0, _arg1) -> _arg0.getTargetDocCode().compareTo(_arg1.getTargetDocCode()));
                 Collections.sort(beans, chain);
                 ret = new JRBeanCollectionDataSource(beans);
                 getFilteredReport().cache(_parameter, ret);
@@ -328,37 +307,66 @@ public abstract class PaymentReport_Base
                                         final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final DateTime dateFrom;
-            if (filter.containsKey("dateFrom")) {
-                dateFrom = (DateTime) filter.get("dateFrom");
+            if (filterMap.containsKey("dateFrom")) {
+                dateFrom = (DateTime) filterMap.get("dateFrom");
             } else {
                 dateFrom = new DateTime().minusMonths(1);
             }
             final DateTime dateTo;
-            if (filter.containsKey("dateTo")) {
-                dateTo = (DateTime) filter.get("dateTo");
+            if (filterMap.containsKey("dateTo")) {
+                dateTo = (DateTime) filterMap.get("dateTo");
             } else {
                 dateTo = new DateTime();
             }
-
-            final QueryBuilder attrQueryBldr;
-            switch (getPayDoc(_parameter)) {
-                case IN:
-                    attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
-                                    PayDoc.IN.name());
-                    break;
-                case OUT:
-                    attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
-                                    PayDoc.OUT.name());
-                    break;
-                case BOTH:
-                default:
-                    attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
-                                    PayDoc.BOTH.name());
-                    break;
+            QueryBuilder attrQueryBldr = null;
+            if (filterMap.containsKey("payDocType")) {
+                final TypeFilterValue filter = (TypeFilterValue) filterMap.get("payDocType");
+                if (!filter.getObject().isEmpty() && filter.getObject().iterator().next() > 0) {
+                    Set<Type> types = new HashSet<>();
+                    for (final Long id : filter.getObject()) {
+                        types.add(Type.get(id));
+                    }
+                    if (filter.isNegate()) {
+                        types = SetUtils.difference(CISales.PaymentDocumentIOAbstract.getType().getChildTypes(), types)
+                                        .stream().filter(type -> !type.isAbstract())
+                                        .collect(Collectors.toSet());
+                    }
+                    final Iterator<Type> typeIter = types.iterator();
+                    attrQueryBldr = new QueryBuilder(typeIter.next());
+                    while (typeIter.hasNext()) {
+                        attrQueryBldr.addType(typeIter.next());
+                    }
+                    final List<Status> statusList = getStatusListFromProperties(_parameter,
+                                    PropertiesUtil.getProperties4Prefix(Sales.REPORT_PAYMENT.get(),
+                                                    PayDoc.BOTH.name(), true));
+                    if (!statusList.isEmpty()) {
+                        Type tempType = attrQueryBldr.getType();
+                        while (!tempType.isCheckStatus() && tempType.getParentType() != null) {
+                            tempType = tempType.getParentType();
+                        }
+                        attrQueryBldr.addWhereAttrEqValue(tempType.getStatusAttribute(), statusList.toArray());
+                    }
+                }
             }
-
+            if (attrQueryBldr == null) {
+                switch (getPayDoc(_parameter)) {
+                    case IN:
+                        attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
+                                        PayDoc.IN.name());
+                        break;
+                    case OUT:
+                        attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
+                                        PayDoc.OUT.name());
+                        break;
+                    case BOTH:
+                    default:
+                        attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_PAYMENT.get(),
+                                        PayDoc.BOTH.name());
+                        break;
+                }
+            }
             attrQueryBldr.addWhereAttrGreaterValue(CISales.PaymentDocumentIOAbstract.Date, dateFrom
                             .withTimeAtStartOfDay().minusMinutes(1));
             attrQueryBldr.addWhereAttrLessValue(CISales.PaymentDocumentIOAbstract.Date, dateTo.plusDays(1)
@@ -367,8 +375,8 @@ public abstract class PaymentReport_Base
             _queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQueryBldr.getAttributeQuery(
                             CISales.PaymentDocumentIOAbstract.ID));
 
-            if (filter.containsKey("contact")) {
-                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filter.get("contact");
+            if (filterMap.containsKey("contact")) {
+                final InstanceSetFilterValue filterValue = (InstanceSetFilterValue) filterMap.get("contact");
                 if (filterValue != null) {
                     final Iterator<Instance> instanceIter = filterValue.getObject().iterator();
                     while (instanceIter.hasNext()) {
