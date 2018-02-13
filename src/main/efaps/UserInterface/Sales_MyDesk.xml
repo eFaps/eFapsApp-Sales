@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2018 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,11 +15,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
 <ui-menu xmlns="http://www.efaps.org/xsd"
@@ -27,7 +22,6 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>70b1b5b6-11e5-4b05-ab5d-da6a25612234</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_MyDesk</name>
@@ -47,6 +41,7 @@
             <child>Sales_ScheduleMyDesk</child>
             <child>Sales_ReportMyDesk</child>
             <child>Sales_CashFlowMyDesk</child>
+            <child>Sales_CreditMgmtMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
