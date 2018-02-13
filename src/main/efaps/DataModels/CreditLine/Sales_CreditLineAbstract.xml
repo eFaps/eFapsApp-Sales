@@ -85,6 +85,25 @@
             <sqlcolumn>CONTACTID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Amount</name>
+            <type>Decimal</type>
+            <sqltable>Sales_CreditLineSQLTable</sqltable>
+            <sqlcolumn>AMOUNT</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CurrencyLink</name>
+            <type>LinkWithRanges</type>
+            <typelink>ERP_Currency</typelink>
+            <sqltable>Sales_CreditLineSQLTable</sqltable>
+            <sqlcolumn>CURRENCYID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_CreditLineAbstract.CurrencyLink.RANGE_VALUE"
+                event="RANGE_VALUE">
+                <property name="Value">Name</property>
+                <property name="Type">ERP_Currency</property>
+            </trigger>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Sales_CreditLineSQLTable</sqltable>

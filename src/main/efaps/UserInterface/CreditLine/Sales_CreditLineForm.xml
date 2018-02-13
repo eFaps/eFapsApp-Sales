@@ -55,6 +55,17 @@
             <property name="ModeCreate">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="Width">8</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+         <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Width">60</property>

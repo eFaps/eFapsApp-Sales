@@ -33,6 +33,8 @@
             <column name="STATUS"       type="INTEGER"      not-null="true"/>
             <column name="NOTE"         type="STRING_SHORT"                 length="2048"/>
             <column name="CONTACTID"    type="INTEGER"      not-null="true"/>
+            <column name="AMOUNT"       type="DECIMAL"      not-null="true" length="10" scale="2"/>
+            <column name="CURRENCYID"   type="INTEGER"      not-null="true"/>
             <column name="CREATOR"      type="INTEGER"      not-null="true"/>
             <column name="CREATED"      type="DATETIME"     not-null="true"/>
             <column name="MODIFIER"     type="INTEGER"      not-null="true"/>
