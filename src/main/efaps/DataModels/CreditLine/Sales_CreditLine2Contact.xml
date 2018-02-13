@@ -21,7 +21,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditLine2Contact</name>
         <parent>Sales_CreditLine2ObjectAbstract</parent>
-        <purpose abstract="true"/>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
