@@ -32,8 +32,8 @@
                 name="Sales_CreditLineMyDesk.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
-                <property name="SystemConfig">CreditLine.Activate</property>
-                <property name="PropertiesAttribute">org.efaps.sales.CreditLine.Activate</property>
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.CreditLine.Activate</property>
             </trigger>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_CreditLineAbstract</property>

@@ -18,14 +18,16 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>c7716e4c-9cb6-4512-a50d-74ee65affb43</uuid>
+    <uuid>58cb6e51-fdee-4f13-8d28-71bcbf7d038a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree_Contact_Menu_Action</name>
+        <name>Sales_CreditLineTree_Menu_Action</name>
         <childs>
-            <child>Sales_CreditLineTree_Contact_Menu_Action_AddExisting</child>
-            <child>Sales_CreditLineTree_Contact_Menu_Action_Disconnect</child>
+            <child>Sales_CreditLineTree_Menu_Action_Edit</child>
+            <child>Sales_CreditLineTree_Menu_Action_SetApproved</child>
+            <child>Sales_CreditLineTree_Menu_Action_SetCanceled</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>

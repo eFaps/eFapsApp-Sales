@@ -28,9 +28,6 @@
             <form>Sales_CreditLineForm</form>
         </target>
         <type>Sales_CreditLine</type>
-        <childs>
-            <child>Sales_CreditLineTree_Contact</child>
-        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

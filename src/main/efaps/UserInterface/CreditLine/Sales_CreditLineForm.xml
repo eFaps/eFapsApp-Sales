@@ -25,11 +25,35 @@
         <name>Sales_CreditLineForm</name>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Width">15</property>
-            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="Label">Sales_CreditLine/ContactLink.Label</property>
+            <property name="Attribute">ContactLink</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="Required">true</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
+                name="Sales_CreditLineForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.contacts.Contacts" method="updateFields4Contact"
+                name="Sales_CreditLineForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[ContactLink].oid</property>
+            <property name="Select">linkto[ContactLink].attribute[Name]</property>
+            <property name="Label">Sales_CreditLine/ContactLink.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="HRef">TREE</property>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_CreditLineForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="description">
             <property name="Attribute">Description</property>
@@ -40,7 +64,6 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
@@ -51,27 +74,33 @@
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="creator">
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
             <property name="Attribute">Creator</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field character="Group" name="modifyGroup">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifier">
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
             <property name="Attribute">Modifier</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
+            <property name="ModeEdit">NONE</property>
         </field>
     </definition>
 </ui-form>

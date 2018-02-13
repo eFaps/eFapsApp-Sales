@@ -18,23 +18,28 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2a15dd7d-8c50-4e91-b023-0a7a6d8ed1ba</uuid>
+    <uuid>5a0a8263-a9e3-4a64-ab5d-0556507b4e31</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree_Contact_Menu_Action_AddExisting</name>
+        <name>Sales_CreditLineTree_Menu_Action_SetCanceled</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <search>Sales_CreditLineTree_Contact_Menu_Action_AddExisting_Search</search>
-            <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectType">Sales_CreditLine2Contact</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Canceled</property>
             </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_CreditLineTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">!Canceled</property>
+            </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

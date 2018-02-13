@@ -78,6 +78,13 @@
             </trigger>
         </attribute>
         <attribute>
+            <name>ContactLink</name>
+            <type>Link</type>
+            <typelink>Contacts_Contact</typelink>
+            <sqltable>Sales_CreditLineSQLTable</sqltable>
+            <sqlcolumn>CONTACTID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Sales_CreditLineSQLTable</sqltable>

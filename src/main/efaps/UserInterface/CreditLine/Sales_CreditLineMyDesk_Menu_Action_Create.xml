@@ -16,7 +16,8 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>808bc671-fa90-4ef8-8a50-854a2622cfd3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
@@ -28,14 +29,15 @@
         <target>
             <form>Sales_CreditLineForm</form>
             <execute method="create" program="org.efaps.esjp.sales.CreditLine">
-                 <!-- Default NumberGenerator: Sales_CreditSequence -->
-                <property name="NumberGenerator">d636611e-e148-4c9d-9d21-1d35430f59a7</property>
+                <!-- Sales-Configuration -->
+                <property name="NumGenSystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="NumGenSystemConfigAttribute">org.efaps.sales.CreditLine.NumberGenerator</property>
                 <property name="StatusGroup">Sales_CreditLineStatus</property>
-                <property name="Status">Active</property>
+                <property name="Status">Draft</property>
             </execute>
         </target>
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_Credit</property>
+        <property name="TargetCreateType">Sales_CreditLine</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>

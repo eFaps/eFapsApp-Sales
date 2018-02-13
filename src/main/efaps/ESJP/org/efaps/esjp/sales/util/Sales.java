@@ -251,6 +251,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute CREDITLINE_NUMGEN = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditLine.NumberGenerator")
+                    .defaultValue(CINumGenSales.CreditLineSequence.uuid.toString())
+                    .description("NumberGenerator for CreditLine.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREDITNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "CreditNote.CreateFromInvoiceAutoComplete")

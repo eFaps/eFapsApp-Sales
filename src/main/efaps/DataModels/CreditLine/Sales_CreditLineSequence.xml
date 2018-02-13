@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2018 The eFaps Team
 
@@ -15,15 +16,14 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>82dc3c02-10e9-4255-b8e1-4887e189b003</uuid>
+    <uuid>017e77be-a91b-487f-a0f2-bd21be9ea566</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree_Contact_Menu</name>
-        <childs>
-            <child>Sales_CreditLineTree_Contact_Menu_Action</child>
-        </childs>
+        <name>Sales_CreditLineSequence</name>
+        <format>LdC-%05d</format>
+        <startvalue>1</startvalue>
     </definition>
-</ui-menu>
+</numbergenerator>

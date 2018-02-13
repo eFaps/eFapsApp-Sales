@@ -33,6 +33,12 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_CreditLine/Name.Label</property>
         </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[ContactLink].oid</property>
+            <property name="Select">linkto[ContactLink].attribute[Name]</property>
+            <property name="Label">Sales_CreditLine/ContactLink.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Label">Sales_CreditLine/Description.Label</property>

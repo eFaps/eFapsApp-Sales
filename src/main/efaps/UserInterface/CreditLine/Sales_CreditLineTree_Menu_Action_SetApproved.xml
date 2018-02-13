@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2018 The eFaps Team
 
@@ -17,20 +18,28 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6bfab94e-2c8c-4467-a7fc-5f7d0e7cf341</uuid>
+    <uuid>b78fa310-990d-4db2-9a59-4875c23696c9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree_Contact</name>
+        <name>Sales_CreditLineTree_Menu_Action_SetApproved</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
+        </access>
         <target>
-            <menu>Sales_CreditLineTree_Contact_Menu</menu>
-            <table>Sales_ChannelCondition2ContactTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_CreditLine2ContactAbstract</property>
-                <property name="LinkFrom">FromAbstractLink</property>
-            </evaluate>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Approved</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_CreditLineTree_Menu_Action_SetApproved.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Draft</property>
+            </trigger>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

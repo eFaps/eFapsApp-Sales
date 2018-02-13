@@ -17,18 +17,26 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ea87e491-2196-43d1-ac3c-371d7c8bd857</uuid>
+    <uuid>ba1c23c0-beee-4742-9874-fbde7a81a04b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree_Contact_Menu_Action_Disconnect</name>
+        <name>Sales_CreditLineTree_Menu_Action_Edit</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+            <form>Sales_CreditLineForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_CreditLineTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Draft</property>
+            </trigger>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

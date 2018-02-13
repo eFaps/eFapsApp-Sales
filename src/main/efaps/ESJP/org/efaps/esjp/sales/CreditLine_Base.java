@@ -17,12 +17,39 @@
 
 package org.efaps.esjp.sales;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.erp.Naming;
+import org.efaps.util.EFapsException;
 
 @EFapsUUID("bc0668dd-36b1-4762-949a-be0b732008d1")
 @EFapsApplication("eFapsApp-Sales")
 public class CreditLine_Base
 {
 
+    /**
+     * Creates a new CreditLine.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Create() {
+            @Override
+            protected void add2basicInsert(final Parameter _parameter, final Insert _insert)
+                throws EFapsException
+            {
+                super.add2basicInsert(_parameter, _insert);
+                _insert.add(CISales.CreditLine.Name, new Naming().fromNumberGenerator(_parameter, null));
+            }
+        }.execute(_parameter);
+    }
 }
