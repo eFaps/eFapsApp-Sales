@@ -16,22 +16,18 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0b25ea63-5bbf-444a-9ef2-df54612b2411</uuid>
+    <uuid>62dcfa01-d52f-469f-ba69-e0519f6c190a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree</name>
-        <target>
-            <menu>Sales_CreditLineTree_Menu</menu>
-            <form>Sales_CreditLineForm</form>
-        </target>
-        <type>Sales_CreditLine</type>
+        <name>Sales_CreditLineTree_Document_Menu_Action_AddExisting_Search</name>
+        <default>
+            <command>Sales_DocumentSearch</command>
+        </default>
         <childs>
-            <child>Sales_CreditLineTree_Document</child>
+            <child>Sales_DocumentSearch</child>
         </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
     </definition>
-</ui-menu>
+</ui-search>

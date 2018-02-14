@@ -16,22 +16,20 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0b25ea63-5bbf-444a-9ef2-df54612b2411</uuid>
+    <uuid>990e5ece-9732-41d5-b340-1c2508512653</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree</name>
+        <name>Sales_CreditLineTree_Document_Menu_Action_Disconnect</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
-            <menu>Sales_CreditLineTree_Menu</menu>
-            <form>Sales_CreditLineForm</form>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <type>Sales_CreditLine</type>
-        <childs>
-            <child>Sales_CreditLineTree_Document</child>
-        </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>
