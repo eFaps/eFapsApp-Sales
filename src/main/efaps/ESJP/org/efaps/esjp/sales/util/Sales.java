@@ -251,6 +251,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREDITLINE_LISTENER = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditLine.Listener")
+                    .description("Listener configuration for CreditLine.")
+                    .addDefaultValue("ADD.StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("ADD.Status01", CISales.InvoiceStatus.Draft.key)
+                    .addDefaultValue("ADD.StatusGroup02", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("ADD.Status02", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("REMOVE.StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("REMOVE.Status01", CISales.InvoiceStatus.Paid.key)
+                    .addDefaultValue("REMOVE.StatusGroup02", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("REMOVE.Status02", CISales.InvoiceStatus.Replaced.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute CREDITLINE_NUMGEN = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "CreditLine.NumberGenerator")
