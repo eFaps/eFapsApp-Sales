@@ -38,5 +38,11 @@
             <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <trigger program="org.efaps.esjp.sales.CreditLine" method="postInsertTrigger"
+            name="Sales_CreditLine2DocumentSum.INSERT_POST" event="INSERT_POST"></trigger>
+        <trigger program="org.efaps.esjp.sales.CreditLine" method="preDeleteTrigger"
+            name="Sales_CreditLine2DocumentSum.DELETE_PRE" event="DELETE_PRE"></trigger>
+        <trigger program="org.efaps.esjp.sales.CreditLine" method="postDeleteTrigger"
+            name="Sales_CreditLine2DocumentSum.DELETE_POST" event="DELETE_POST"></trigger>
     </definition>
 </datamodel-type>

@@ -61,6 +61,9 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
+        <field name="applied">
+            <property name="Attribute">Applied</property>
+        </field>
          <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
             <property name="ModeEdit">EDITABLE</property>

@@ -90,6 +90,12 @@
             <sqltable>Sales_CreditLineSQLTable</sqltable>
             <sqlcolumn>AMOUNT</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>Applied</name>
+            <type>Decimal</type>
+            <sqltable>Sales_CreditLineSQLTable</sqltable>
+            <sqlcolumn>APPLIED</sqlcolumn>
+        </attribute>
         <attribute>
             <name>CurrencyLink</name>
             <type>LinkWithRanges</type>

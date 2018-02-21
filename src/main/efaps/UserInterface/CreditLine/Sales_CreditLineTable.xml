@@ -44,6 +44,11 @@
             <property name="Label">Sales_CreditLine/Amount.Label</property>
             <property name="Align">right</property>
         </field>
+        <field name="applied">
+            <property name="Attribute">Applied</property>
+            <property name="Label">Sales_CreditLine/Applied.Label</property>
+            <property name="Align">right</property>
+        </field>
         <field name="currency">
             <property name="Select">linkto[CurrencyLink].attribute[Symbol]</property>
             <property name="Label">Sales_CreditLine/CurrencyLink.Label</property>

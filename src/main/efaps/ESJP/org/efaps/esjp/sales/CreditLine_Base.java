@@ -17,6 +17,7 @@
 
 package org.efaps.esjp.sales;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,19 +26,25 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.Naming;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -180,5 +187,122 @@ public class CreditLine_Base
         final Properties properties = Sales.CREDITLINE_LISTENER.get();
         return getStatusListFromProperties(ParameterUtil.instance(),
                         PropertiesUtil.getProperties4Prefix(properties, "REMOVE"));
+    }
+
+    /**
+     * Calculate credit line.
+     *
+     * @param _parameter the parameter
+     * @param _lineInst the line instance
+     * @throws EFapsException the e faps exception
+     */
+    public void calculateCreditLine(final Parameter _parameter, final Instance _lineInst)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_lineInst);
+        final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.CreditLine.CurrencyLink).instance();
+        print.addSelect(selCurInst);
+        print.executeWithoutAccessCheck();
+
+        final Instance lineCurInst = print.getSelect(selCurInst);
+
+        BigDecimal applied = BigDecimal.ZERO;
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.CreditLine2DocumentSum);
+        attrQueryBldr.addWhereAttrEqValue(CISales.CreditLine2DocumentSum.FromLink, _lineInst);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
+                        attrQueryBldr.getAttributeQuery(CISales.CreditLine2DocumentSum.ToLink));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .instance();
+        multi.addSelect(selRateCurInst);
+        multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.CrossTotal);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final BigDecimal crossTotal = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            final BigDecimal rateCrossTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+
+            final Instance rateCurInst = multi.getSelect(selRateCurInst);
+            // the same currency
+            if (rateCurInst.equals(lineCurInst)) {
+                applied = applied.add(rateCrossTotal);
+                // base currency
+            } else if (lineCurInst.equals(Currency.getBaseCurrency())) {
+                applied = applied.add(crossTotal);
+            } else {
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, "", lineCurInst);
+                final BigDecimal amount = crossTotal.multiply(rateInfo.getRate());
+                applied = applied.add(amount);
+            }
+        }
+        final Update update = new Update(_lineInst);
+        update.add(CISales.CreditLine.Applied, applied);
+        update.executeWithoutTrigger();
+    }
+
+    /**
+     * Post insert trigger.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return postInsertTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance lineInst = getCreditLineInstance(_parameter);
+        calculateCreditLine(_parameter, lineInst);
+        return new Return();
+    }
+
+    /**
+     * Pre delete trigger.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return preDeleteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance lineInst = getCreditLineInstance(_parameter);
+        Context.getThreadContext().setRequestAttribute(this.getClass().getName() + ".CreditLineInstance", lineInst);
+        return new Return();
+    }
+
+    /**
+     * Post delete trigger.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return postDeleteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance lineInst = (Instance) Context.getThreadContext().getRequestAttribute(this.getClass().getName()
+                        + ".CreditLineInstance");
+        calculateCreditLine(_parameter, lineInst);
+        return new Return();
+    }
+
+    /**
+     * Gets the credit line instance.
+     *
+     * @param _parameter the parameter
+     * @return the credit line instance
+     * @throws EFapsException the e faps exception
+     */
+    protected Instance getCreditLineInstance(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance relInstane = _parameter.getInstance();
+        final PrintQuery print = new PrintQuery(relInstane);
+        final SelectBuilder selLineInst = SelectBuilder.get().linkto(CISales.CreditLine2DocumentSum.FromLink)
+                        .instance();
+        print.addSelect(selLineInst);
+        print.executeWithoutAccessCheck();
+        return print.getSelect(selLineInst);
     }
 }
