@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -158,9 +159,20 @@ public abstract class PaymentReport_Base
     protected List<Type> getTypeList(final Parameter _parameter, final String _fieldName)
         throws EFapsException
     {
-        return CISales.PaymentDocumentIOAbstract.getType().getChildTypes().stream()
-                        .filter(type -> !type.isAbstract())
-                        .collect(Collectors.toList());
+        List<Type> ret = super.getTypeList(_parameter, _fieldName);
+        if (ret.size() < 2) {
+            ret = CISales.PaymentDocumentIOAbstract.getType().getChildTypes().stream()
+                            .filter(type -> !type.isAbstract())
+                            .collect(Collectors.toList());
+        }
+        return ret;
+    }
+
+    @Override
+    protected Properties getProperties4TypeList(final Parameter _parameter, final String _fieldName)
+        throws EFapsException
+    {
+        return PropertiesUtil.getProperties4Prefix(Sales.REPORT_PAYMENT.get(), PayDoc.BOTH.name(), true);
     }
 
     /**
