@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -60,6 +61,7 @@ import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
+import org.efaps.util.RandomUtil;
 import org.joda.time.DateTime;
 
 /**
@@ -152,7 +154,7 @@ public abstract class TransactionDocument_Base
         connect2ProductDocumentType(_parameter, ret);
 
         final List<Position> positions = getPositions4Document(_parameter, _docInst);
-        final Map<Instance, Set<Instance>> prod2ind = getProduct2IndividualMap(_parameter);
+        final Map<Instance, Set<IndividualWithQuantity>> prod2ind = getProduct2IndividualMap(_parameter);
         final List<String> prodOids = new ArrayList<>();
         int i = 1;
         for (final Position pos : positions) {
@@ -163,12 +165,12 @@ public abstract class TransactionDocument_Base
             posIns.add(CISales.PositionAbstract.Quantity, pos.getQuantity());
             String descr =  pos.getDescr();
             if (prod2ind.containsKey(pos.getProdInstance())) {
-                final Set<Instance> indInsts = prod2ind.get(pos.getProdInstance());
-                final Iterator<Instance> individualIter = indInsts.iterator();
+                final Set<IndividualWithQuantity> indInsts = prod2ind.get(pos.getProdInstance());
+                final Iterator<IndividualWithQuantity> individualIter = indInsts.iterator();
                 int j = 0;
                 while (individualIter.hasNext() && j < pos.getQuantity().intValue()) {
-                    final Instance indInst = individualIter.next();
-                    final PrintQuery indPrint = new PrintQuery(indInst);
+                    final IndividualWithQuantity indInst = individualIter.next();
+                    final PrintQuery indPrint = new PrintQuery(indInst.getIndividual());
                     indPrint.addAttribute(CIProducts.ProductAbstract.Name);
                     indPrint.executeWithoutAccessCheck();
                     final String individualName = indPrint.getAttribute(CIProducts.ProductAbstract.Name);
@@ -395,15 +397,7 @@ public abstract class TransactionDocument_Base
                 }
                 switch (individual) {
                     case INDIVIDUAL:
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(
-                                        CIProducts.StoreableProductAbstract2IndividualAbstract);
-                        attrQueryBldr.addWhereAttrEqValue(
-                                        CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract,
-                                        pos.getProdInstance());
-                        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
-                        queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQueryBldr.getAttributeQuery(
-                                        CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract));
-                        final List<Instance> prodInsts = queryBldr.getQuery().execute();
+                        final List<Instance> prodInsts = getIndividuals(pos.getProdInstance());
                         if (prodInsts.isEmpty()) {
                             stockHtml.append(getDBProperty("NOINDIVIDUAL"));
                         } else {
@@ -418,6 +412,45 @@ public abstract class TransactionDocument_Base
                                     .append(inventoryBean.getProdOID())
                                     .append("\">")
                                     .append(inventoryBean.getProdName()).append("</label>");
+                            }
+                        }
+                        break;
+                    case BATCH:
+                        final List<Instance> batches = getIndividuals(pos.getProdInstance());
+                        if (batches.isEmpty()) {
+                            stockHtml.append(getDBProperty("NOINDIVIDUAL"));
+                        } else {
+                            final Map<Instance, InventoryBean> inventoryBeans = Inventory.getInventory4Products(
+                                            _parameter, _storageInst, date,
+                                            batches.toArray(new Instance[batches.size()]));
+                            if (inventoryBeans.isEmpty()) {
+                                stockHtml.append(getDBProperty("NOSTOCK"));
+                            }
+                            BigDecimal quantity = pos.getQuantity();
+                            for (final InventoryBean inventoryBean : inventoryBeans.values()) {
+                                if (stockHtml.length() > 0) {
+                                    stockHtml.append("<br/>");
+                                }
+                                BigDecimal batchSize = BigDecimal.ZERO;
+                                if (quantity.compareTo(BigDecimal.ZERO) > 0) {
+                                    if (inventoryBean.getQuantity().compareTo(quantity) > 0) {
+                                        batchSize = quantity;
+                                        quantity = BigDecimal.ZERO;
+                                    } else {
+                                        batchSize = inventoryBean.getQuantity();
+                                        quantity = quantity.subtract(inventoryBean.getQuantity());
+                                    }
+                                }
+                                final String inputId = RandomUtil.randomAlphabetic(5);
+                                stockHtml.append("<label><input type=\"checkbox\" name=\"individual\" value=\"")
+                                    .append(inventoryBean.getProdOID())
+                                    .append("\" onclick=\"document.getElementById('")
+                                    .append(inputId)
+                                    .append("').disabled = !this.checked;\" >")
+                                    .append(inventoryBean.getProdName()).append("</label>")
+                                    .append("<input id=").append(inputId)
+                                    .append(" type=\"number\" name=\"batchSize\" value=\"")
+                                    .append(batchSize).append("\" disabled>");
                             }
                         }
                         break;
@@ -440,6 +473,17 @@ public abstract class TransactionDocument_Base
         return table.toHtml();
     }
 
+    protected List<Instance> getIndividuals(final Instance _prodInst) throws EFapsException {
+        final QueryBuilder attrQueryBldr = new QueryBuilder(
+                        CIProducts.StoreableProductAbstract2IndividualAbstract);
+        attrQueryBldr.addWhereAttrEqValue(CIProducts.StoreableProductAbstract2IndividualAbstract.FromAbstract,
+                        _prodInst);
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
+        queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQueryBldr.getAttributeQuery(
+                        CIProducts.StoreableProductAbstract2IndividualAbstract.ToAbstract));
+        return queryBldr.getQuery().execute();
+    }
+
     /**
      * Gets the positions for the  transaction document.
      *
@@ -457,7 +501,7 @@ public abstract class TransactionDocument_Base
         List<Position> ret = getPositions4Document(_parameter, _docInst);
         if (Products.ACTIVATEINDIVIDUAL.get()) {
             final List<Position> replacement = new ArrayList<>();
-            final Map<Instance, Set<Instance>> map = getProduct2IndividualMap(_parameter);
+            final Map<Instance, Set<IndividualWithQuantity>> map = getProduct2IndividualMap(_parameter);
             final Iterator<Position> iter = ret.iterator();
             while (iter.hasNext()) {
                 final Position pos = iter.next();
@@ -467,22 +511,23 @@ public abstract class TransactionDocument_Base
                 final ProductIndividual individual = print.getAttribute(CIProducts.ProductAbstract.Individual);
                 switch (individual) {
                     case INDIVIDUAL:
+                    case BATCH:
                         replacement.add(pos);
-                        final Set<Instance> individualInsts = map.get(pos.getProdInstance());
+                        final Set<IndividualWithQuantity> individualInsts = map.get(pos.getProdInstance());
                         if (CollectionUtils.isNotEmpty(individualInsts)) {
-                            final Iterator<Instance> individualIter = individualInsts.iterator();
+                            final Iterator<IndividualWithQuantity> individualIter = individualInsts.iterator();
                             int i = 0;
                             while (individualIter.hasNext() && i < pos.getQuantity().intValue()) {
-                                final Instance indInst = individualIter.next();
-                                final PrintQuery indPrint = new PrintQuery(indInst);
+                                final IndividualWithQuantity indInst = individualIter.next();
+                                final PrintQuery indPrint = new PrintQuery(indInst.getIndividual());
                                 indPrint.addAttribute(CIProducts.ProductAbstract.Name);
                                 indPrint.executeWithoutAccessCheck();
                                 final String individualName = indPrint.getAttribute(CIProducts.ProductAbstract.Name);
                                 replacement.add(new Position(pos.getInstance())
-                                                    .setProdInstance(indInst)
+                                                    .setProdInstance(indInst.getIndividual())
                                                     .setProdName(individualName)
                                                     .setDescr(pos.getDescr())
-                                                    .setQuantity(BigDecimal.ONE)
+                                                    .setQuantity(indInst.getQuantity())
                                                     .setUoM(pos.getUoM()));
                                 individualIter.remove();
                                 i++;
@@ -506,21 +551,28 @@ public abstract class TransactionDocument_Base
      * @return the product 2 individual map
      * @throws EFapsException on error
      */
-    protected Map<Instance, Set<Instance>> getProduct2IndividualMap(final Parameter _parameter)
+    protected Map<Instance, Set<IndividualWithQuantity>> getProduct2IndividualMap(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<Instance, Set<Instance>> ret = new HashMap<>();
+        final Map<Instance, Set<IndividualWithQuantity>> ret = new HashMap<>();
         final List<Instance> individuals = getInstances(_parameter, "individual");
+        final String[] quantities = _parameter.getParameterValues("batchSize");
+        int idx = 0;
         for (final Instance individual : individuals) {
             final Instance prodInst = new Product().getProduct4Individual(_parameter, individual);
-            final Set<Instance> set;
+            final Set<IndividualWithQuantity> set;
             if (ret.containsKey(prodInst)) {
                 set = ret.get(prodInst);
             } else {
                 set = new HashSet<>();
                 ret.put(prodInst, set);
             }
-            set.add(individual);
+            final IndividualWithQuantity inq = new IndividualWithQuantity()
+                            .setIndividual(individual)
+                            .setQuantity(ArrayUtils.isNotEmpty(quantities)
+                                            ? NumberFormatter.parse(quantities[idx]) : BigDecimal.ONE);
+            set.add(inq);
+            idx++;
         }
         return ret;
     }
@@ -536,4 +588,57 @@ public abstract class TransactionDocument_Base
         return getRevisionSequenceFieldValue(_parameter, TransactionDocument.REVISIONKEY);
     }
 
+
+    public static class IndividualWithQuantity {
+
+        /** The individual. */
+        private Instance individual;
+
+        /** The quantity. */
+        private BigDecimal quantity;
+
+        /**
+         * Gets the individual.
+         *
+         * @return the individual
+         */
+        public Instance getIndividual()
+        {
+            return this.individual;
+        }
+
+        /**
+         * Sets the individual.
+         *
+         * @param _individual the individual
+         * @return the individual with quantity
+         */
+        public IndividualWithQuantity setIndividual(final Instance _individual)
+        {
+            this.individual = _individual;
+            return this;
+        }
+
+        /**
+         * Gets the quantity.
+         *
+         * @return the quantity
+         */
+        public BigDecimal getQuantity()
+        {
+            return this.quantity;
+        }
+
+        /**
+         * Sets the quantity.
+         *
+         * @param _quantity the quantity
+         * @return the individual with quantity
+         */
+        public IndividualWithQuantity setQuantity(final BigDecimal _quantity)
+        {
+            this.quantity = _quantity;
+            return this;
+        }
+    }
 }
