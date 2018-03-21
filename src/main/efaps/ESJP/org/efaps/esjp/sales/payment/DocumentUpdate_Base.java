@@ -39,6 +39,7 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
+import org.efaps.esjp.sales.CreditLine;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -96,6 +97,7 @@ public abstract class DocumentUpdate_Base
                 setStatus(_parameter, instance, targetStatus);
             }
         }
+        new CreditLine().updateCreditLine(_parameter, _docInstance);
         return new Return();
     }
 

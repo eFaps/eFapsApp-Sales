@@ -16,19 +16,21 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>58cb6e51-fdee-4f13-8d28-71bcbf7d038a</uuid>
+    <uuid>eeefc991-7b43-45c9-a788-e44bfaf806f7</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditLineTree_Menu_Action</name>
-        <childs>
-            <child>Sales_CreditLineTree_Menu_Action_Edit</child>
-            <child>Sales_CreditLineTree_Menu_Action_SetApproved</child>
-            <child>Sales_CreditLineTree_Menu_Action_SetCanceled</child>
-            <child>Sales_CreditLineTree_Menu_Action_Evaluate</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_CreditLineTree_Menu_Action_Evaluate</name>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <execute method="evaluate" program="org.efaps.esjp.sales.CreditLine"/>
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
-</ui-menu>
+</ui-command>

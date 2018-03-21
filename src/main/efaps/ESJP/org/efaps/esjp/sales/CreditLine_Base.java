@@ -85,11 +85,13 @@ public class CreditLine_Base
     public void updateCreditLine(final Parameter _parameter, final Instance _docInstance)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_docInstance);
-        print.addAttribute(_docInstance.getType().getStatusAttribute());
-        print.executeWithoutAccessCheck();
-        updateCreditLine(_parameter, _docInstance,
-                        Status.get(print.<Long>getAttribute(_docInstance.getType().getStatusAttribute())));
+        if (Sales.CREDITLINE_ACTIVATE.get()) {
+            final PrintQuery print = new PrintQuery(_docInstance);
+            print.addAttribute(_docInstance.getType().getStatusAttribute());
+            print.executeWithoutAccessCheck();
+            updateCreditLine(_parameter, _docInstance,
+                            Status.get(print.<Long>getAttribute(_docInstance.getType().getStatusAttribute())));
+        }
     }
 
     /**
@@ -304,5 +306,42 @@ public class CreditLine_Base
         print.addSelect(selLineInst);
         print.executeWithoutAccessCheck();
         return print.getSelect(selLineInst);
+    }
+
+    /**
+     * Evaluate.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return evaluate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.CreditLine2DocumentSum);
+        queryBldr.addWhereAttrEqValue(CISales.CreditLine2DocumentSum.FromLink, _parameter.getInstance());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            new Delete(query.getCurrentValue()).executeWithoutTrigger();
+        }
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CISales.CreditLine.ContactLink);
+        print.execute();
+        final Long contactId = print.getAttribute(CISales.CreditLine.ContactLink);
+
+        final QueryBuilder docQueryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        docQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contactId);
+        docQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract, getAddStatusList().toArray());
+        final InstanceQuery docQuery = docQueryBldr.getQuery();
+        docQuery.execute();
+        while (docQuery.next()) {
+            final Insert insert = new Insert(CISales.CreditLine2DocumentSum);
+            insert.add(CISales.CreditLine2DocumentSum.FromLink, _parameter.getInstance());
+            insert.add(CISales.CreditLine2DocumentSum.ToLink, docQuery.getCurrentValue());
+            insert.executeWithoutTrigger();
+        }
+        calculateCreditLine(_parameter, _parameter.getInstance());
+        return new Return();
     }
 }
