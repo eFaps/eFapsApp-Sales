@@ -24,9 +24,12 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditLineTree_Document_Menu_Action_AddExisting_Search</name>
         <default>
-            <command>Sales_DocumentSearch</command>
+            <command>Sales_InvoiceSearch</command>
         </default>
         <childs>
+            <child>Sales_InvoiceSearch</child>
+            <child>Sales_ReceiptSearch</child>
+            <child>Sales_ReminderSearch</child>
             <child>Sales_DocumentSearch</child>
         </childs>
     </definition>

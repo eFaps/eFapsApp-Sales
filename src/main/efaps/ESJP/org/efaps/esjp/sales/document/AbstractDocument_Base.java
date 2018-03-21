@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -720,9 +720,9 @@ public abstract class AbstractDocument_Base
     public Return getJavaScript4Search(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder js = new StringBuilder();
         final Object uiObject = _parameter.get(ParameterValues.CLASS);
         Status status = null;
+        String selContact = null;
         if (uiObject instanceof UIForm) {
             final AbstractCommand cmd = ((UIForm) uiObject).getCallingCommand();
             if (cmd != null) {
@@ -737,18 +737,21 @@ public abstract class AbstractDocument_Base
                         }
                     }
                 }
+                selContact = cmd.getProperty("Select4SearchContact");
             }
         }
 
         final Instance instance = _parameter.getInstance() != null
                         ? _parameter.getInstance() : _parameter.getCallInstance();
-        js.append("<script type=\"text/javascript\">\n")
-                        .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){\n");
-        if (instance != null && instance.isValid() && instance.getType().isKindOf(CIERP.DocumentAbstract)) {
-            final SelectBuilder selContactId = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).id();
-            final SelectBuilder selContactName = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
+        final StringBuilder js = new StringBuilder();
+        if (InstanceUtils.isValid(instance)
+                        && (instance.getType().isKindOf(CIERP.DocumentAbstract) || selContact != null)) {
+            final SelectBuilder selContactId = selContact == null
+                            ? new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact).id()
+                            : new SelectBuilder(selContact).id();
+            final SelectBuilder selContactName = selContact == null
+                    ? new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name)
+                    : new SelectBuilder(selContact).attribute(CIContacts.Contact.Name) ;
             final PrintQuery print = new PrintQuery(instance);
             print.addSelect(selContactId, selContactName);
             print.execute();
@@ -762,9 +765,9 @@ public abstract class AbstractDocument_Base
         if (status != null) {
             js.append(getSetFieldValue(0, "status", Long.valueOf(status.getId()).toString()));
         }
-        js.append(" })});").append("</script>");
+
         final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, js.toString());
+        retVal.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 1500));
         return retVal;
     }
 
@@ -1233,16 +1236,8 @@ public abstract class AbstractDocument_Base
 
         final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
-        Collections.sort(strValues, new Comparator<Map<String, Object>>()
-        {
-            @Override
-            public int compare(final Map<String, Object> _o1,
-                               final Map<String, Object> _o2)
-            {
-                return String.valueOf(_o1.get("productAutoComplete"))
-                                .compareTo(String.valueOf(_o2.get("productAutoComplete")));
-            }
-        });
+        Collections.sort(strValues, (_o1, _o2) -> String.valueOf(_o1.get("productAutoComplete"))
+                        .compareTo(String.valueOf(_o2.get("productAutoComplete"))));
         final Set<String> noEscape = new HashSet<>();
         noEscape.add("uoM");
 

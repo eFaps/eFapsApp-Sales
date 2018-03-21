@@ -38,7 +38,7 @@
             <property name="Label">Sales_Receipt/Contact.Label</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_ReceiptSearchForm.contact.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.Exchange">
+                program="org.efaps.esjp.sales.document.Receipt">
                 <property name="Key">ID</property>
             </trigger>
         </field>
@@ -48,12 +48,24 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_Receipt/Name.Label</property>
         </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Width">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_Receipt/Status.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getStatusDropDownFieldValue"
+                name="Sales_ReceiptSearchForm.status.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="StatusGroup">Sales_ReceiptStatus</property>
+                <property name="AddWildcard4Search">true</property>
+            </trigger>
+        </field>
         <field name="javaScript">
             <property name="ModeSearch">HIDDEN</property>
             <property name="UIType">SNIPPLET</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScript4Search"
                 name="Sales_ReceiptSearchForm.javaScript.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.Exchange" />
+                program="org.efaps.esjp.sales.document.Receipt" />
         </field>
     </definition>
 </ui-form>

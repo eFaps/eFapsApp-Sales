@@ -33,5 +33,6 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
+        <property name="Select4SearchContact">linkto[ContactLink]</property>
     </definition>
 </ui-command>
