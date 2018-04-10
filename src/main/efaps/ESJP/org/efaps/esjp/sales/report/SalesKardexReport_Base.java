@@ -583,33 +583,36 @@ public abstract class SalesKardexReport_Base
      * @param _transDocInst the trans doc inst
      * @throws EFapsException on error
      */
-    protected void add2Map4DocumentTypeOut(final Parameter _parameter,
-                                           final Map<String, Object> _map,
+    protected void add2Map4DocumentTypeOut(final Parameter _parameter, final Map<String, Object> _map,
                                            final Instance _transDocInst)
         throws EFapsException
     {
-        String docOper = "-";
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-        queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _transDocInst);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selDocTypeLink = SelectBuilder.get().linkto(CISales.Document2DocumentType.DocumentTypeLink);
-        final SelectBuilder selDocTypeLinkName = new SelectBuilder(selDocTypeLink).attribute(CIERP.DocumentType.Name);
-        final SelectBuilder selDocTypeLinkType = new SelectBuilder(selDocTypeLink).type();
-        multi.addSelect(selDocTypeLinkType, selDocTypeLinkName);
-        multi.execute();
-        while (multi.next()) {
-            if (multi.<Type>getSelect(selDocTypeLinkType).equals(CISales.ProductDocumentType.getType())) {
-                docOper = multi.<String>getSelect(selDocTypeLinkName);
-                break;
+        if (InstanceUtils.isValid(_transDocInst)) {
+            String docOper = "-";
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
+            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _transDocInst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocTypeLink = SelectBuilder.get().linkto(
+                            CISales.Document2DocumentType.DocumentTypeLink);
+            final SelectBuilder selDocTypeLinkName = new SelectBuilder(selDocTypeLink).attribute(
+                            CIERP.DocumentType.Name);
+            final SelectBuilder selDocTypeLinkType = new SelectBuilder(selDocTypeLink).type();
+            multi.addSelect(selDocTypeLinkType, selDocTypeLinkName);
+            multi.execute();
+            while (multi.next()) {
+                if (multi.<Type>getSelect(selDocTypeLinkType).equals(CISales.ProductDocumentType.getType())) {
+                    docOper = multi.<String>getSelect(selDocTypeLinkName);
+                    break;
+                }
             }
+            if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_transDocInst.getType().getId())) {
+                _map.put(Field.TRANS_DOC_TYPE.getKey(), SalesKardexReport_Base.DOCTYPE_MAP.get(_transDocInst.getType()
+                                .getId()));
+            } else {
+                _map.put(Field.TRANS_DOC_TYPE.getKey(), "-");
+            }
+            _map.put(Field.TRANS_DOC_OPERATION.getKey(), docOper);
         }
-        if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_transDocInst.getType().getId())) {
-            _map.put(Field.TRANS_DOC_TYPE.getKey(), SalesKardexReport_Base.DOCTYPE_MAP.get(_transDocInst.getType()
-                            .getId()));
-        } else {
-            _map.put(Field.TRANS_DOC_TYPE.getKey(), "-");
-        }
-        _map.put(Field.TRANS_DOC_OPERATION.getKey(), docOper);
     }
 
     /**
