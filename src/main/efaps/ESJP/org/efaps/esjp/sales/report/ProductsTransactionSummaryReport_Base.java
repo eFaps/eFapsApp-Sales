@@ -325,7 +325,8 @@ public abstract class ProductsTransactionSummaryReport_Base
                     }
                 };
                 final DateTime dateTo = (DateTime) filter.get("dateTo");
-                inventory.setDate(dateTo.plusDays(1).withTimeAtStartOfDay());
+                // to calculate backwards the start must be the exact date
+                inventory.setDate(dateTo.withTimeAtStartOfDay());
                 if (InstanceUtils.isValid(alterInst)) {
                     inventory.setCurrencyInst(alterInst);
                     inventory.setAlternativeCurrencyInst(alterInst);
