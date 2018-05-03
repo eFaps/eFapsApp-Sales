@@ -21,11 +21,14 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -45,7 +48,6 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.FilteredReport;
@@ -62,12 +64,12 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  * TODO comment!.
@@ -84,6 +86,13 @@ public abstract class ProductsTransactionSummaryReport_Base
      * Logging instance used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(ProductsTransactionSummaryReport.class);
+
+    public enum ProdDocDisplay {
+        NONE,
+        INCOMING,
+        OUTGOOING,
+        BOTH
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -176,6 +185,9 @@ public abstract class ProductsTransactionSummaryReport_Base
         /** The filtered report. */
         private final ProductsTransactionSummaryReport_Base filteredReport;
 
+        /** The data source. */
+        private DataSource dataSource;
+
         /**
          * Instantiates a new dyn products transaction summary report.
          *
@@ -200,17 +212,25 @@ public abstract class ProductsTransactionSummaryReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final JRRewindableDataSource ret;
+            return this.dataSource;
+        }
+
+        /**
+         * Eval data source.
+         *
+         * @param _parameter the parameter
+         * @throws EFapsException the e faps exception
+         */
+        protected void evalDataSource(final Parameter _parameter)
+            throws EFapsException
+        {
             if (getFilteredReport().isCached(_parameter)) {
-                ret = getFilteredReport().getDataSourceFromCache(_parameter);
-                AbstractDynamicReport_Base.LOG.debug("Got datasource for report from cache: {}", ret);
-                try {
-                    ret.moveFirst();
-                } catch (final JRException e) {
-                    AbstractDynamicReport_Base.LOG.error("error", e);
-                    throw new EFapsException("JRException", e);
-                }
+                this.dataSource = (DataSource) getFilteredReport().getDataSourceFromCache(_parameter);
+                ProductsTransactionSummaryReport_Base.LOG.debug("Got datasource for report from cache: {}",
+                                this.dataSource);
+                this.dataSource.moveFirst();
             } else {
+                final ProdDocDisplay prodDocDisplay = evaluateProdDocDisplay(_parameter);
                 final Map<Instance, DataBean> beans = new HashMap<>();
                 final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
                 final CostTypeFilterValue filterValue = (CostTypeFilterValue) filterMap.get("costType");
@@ -245,8 +265,20 @@ public abstract class ProductsTransactionSummaryReport_Base
                                 .getAttributeQuery(CIProducts.TransactionInOutAbstract.ID));
 
                 final MultiPrintQuery multi = queryBldr.getPrint();
+
                 final SelectBuilder selTrans = SelectBuilder.get()
                                 .linkto(CIProducts.CostingAbstract.TransactionAbstractLink);
+                final SelectBuilder prodDocTypeSel = new SelectBuilder(selTrans)
+                                .linkto(CIProducts.TransactionInOutAbstract.Document)
+                                .linkfrom(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract)
+                                .linkto(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract)
+                                .attribute(CIERP.DocumentTypeAbstract.Description);
+                final SelectBuilder prodDocTypeOidSel = new SelectBuilder(selTrans)
+                                .linkto(CIProducts.TransactionInOutAbstract.Document)
+                                .linkfrom(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract)
+                                .linkto(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract)
+                                .oid();
+
                 final SelectBuilder selTransInst = new SelectBuilder(selTrans).instance();
                 final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(
                                 CIProducts.TransactionAbstract.Date);
@@ -258,10 +290,14 @@ public abstract class ProductsTransactionSummaryReport_Base
                 final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
                 final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(
                                 CIProducts.ProductAbstract.Description);
+                if (!ProdDocDisplay.NONE.equals(prodDocDisplay)) {
+                    multi.addSelect(prodDocTypeSel, prodDocTypeOidSel);
+                }
                 multi.addSelect(selProdInst, selProdName, selProdDescr, selTransInst, selTransDate, selQuantity);
                 multi.addAttribute(CIProducts.CostingAbstract.Cost);
                 multi.execute();
-
+                final Map<String, String> incomingProdDocTypes = new HashMap<>();
+                final Map<String, String> outgoingProdDocTypes = new HashMap<>();
                 while (multi.next()) {
                     final Instance prodInst = multi.getSelect(selProdInst);
                     final DataBean bean;
@@ -273,6 +309,10 @@ public abstract class ProductsTransactionSummaryReport_Base
                               .setProdDescr(multi.getSelect(selProdDescr));
                         beans.put(prodInst, bean);
                     }
+                    if (!ProdDocDisplay.NONE.equals(prodDocDisplay)) {
+                        bean.setProdDocType(multi.getSelect(prodDocTypeSel))
+                            .setProdDocTypeOid(multi.getSelect(prodDocTypeOidSel));
+                    }
                     final Instance transInst = multi.getSelect(selTransInst);
                     final BigDecimal quantity = multi.getSelect(selQuantity);
                     final BigDecimal cost;
@@ -283,9 +323,11 @@ public abstract class ProductsTransactionSummaryReport_Base
                         cost = multi.getAttribute(CIProducts.CostingAbstract.Cost);
                     }
                     if (transInst.getType().isCIType(CIProducts.TransactionInbound)) {
-                        bean.addIncoming(quantity, cost);
+                        incomingProdDocTypes.put(bean.getProdDocTypeOid(), bean.getProdDocType());
+                        bean.addIncoming(prodDocDisplay, quantity, cost);
                     } else if (transInst.getType().isCIType(CIProducts.TransactionOutbound)) {
-                        bean.addOutgoing(quantity, cost);
+                        bean.addOutgoing(prodDocDisplay, quantity, cost);
+                        outgoingProdDocTypes.put(bean.getProdDocTypeOid(), bean.getProdDocType());
                     }
                 }
                 final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
@@ -351,16 +393,17 @@ public abstract class ProductsTransactionSummaryReport_Base
                     }
                 }
 
-                final List<DataBean> dataSource = new ArrayList<>(beans.values());
+                final List<DataBean> data = new ArrayList<>(beans.values());
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-
                 chain.addComparator((_o1, _o2) -> _o1.getProdName().compareTo(_o2.getProdName()));
-
-                Collections.sort(dataSource, chain);
-                ret = new JRBeanCollectionDataSource(dataSource);
-                getFilteredReport().cache(_parameter, ret);
+                Collections.sort(data, chain);
+                final Collection<Map<String, ?>> mapCol = new ArrayList<>();
+                for (final DataBean bean : data) {
+                    mapCol.add(bean.getMap());
+                }
+                this.dataSource = new DataSource(mapCol, incomingProdDocTypes, outgoingProdDocTypes);
+                getFilteredReport().cache(_parameter, this.dataSource);
             }
-            return ret;
         }
 
         /**
@@ -456,11 +499,35 @@ public abstract class ProductsTransactionSummaryReport_Base
             return ret;
         }
 
+        /**
+         * Evaluate prod doc display.
+         *
+         * @param _parameter the parameter
+         * @return the prod doc display
+         * @throws EFapsException the e faps exception
+         */
+        protected ProdDocDisplay evaluateProdDocDisplay(final Parameter _parameter)
+            throws EFapsException
+        {
+            final ProdDocDisplay ret;
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final EnumFilterValue value = (EnumFilterValue) filter.get("prodDocDisplay");
+            if (value != null) {
+                ret = (ProdDocDisplay) value.getObject();
+            } else {
+                ret = ProdDocDisplay.NONE;
+            }
+            return ret;
+        }
+
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
+            evalDataSource(_parameter);
+            final ProdDocDisplay prodDocDisplay = evaluateProdDocDisplay(_parameter);
+
             final TextColumnBuilder<String> prodNameColumn = DynamicReports.col.column(this.filteredReport
                             .getDBProperty("ProdName"), "prodName", DynamicReports.type.stringType());
             final TextColumnBuilder<String> prodDescrColumn = DynamicReports.col.column(this.filteredReport
@@ -474,21 +541,56 @@ public abstract class ProductsTransactionSummaryReport_Base
             final TextColumnBuilder<BigDecimal> startUnitPriceColumn = DynamicReports.col.column(this.filteredReport
                             .getDBProperty("StartUnitPrice"), "startUnitPrice", DynamicReports.type.bigDecimalType());
 
-            final TextColumnBuilder<BigDecimal> incomingQtyColumn = DynamicReports.col.column(this.filteredReport
-                            .getDBProperty("IncomingQty"), "incomingQty", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> incomingValueColumn = DynamicReports.col.column(this.filteredReport
-                            .getDBProperty("IncomingValue"), "incomingValue", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> incomingUnitPriceColumn = DynamicReports.col.column(this.filteredReport
-                            .getDBProperty("IncomingUnitPrice"), "incomingUnitPrice", DynamicReports.type
-                                            .bigDecimalType());
+            final List<ColumnBuilder<?, ?>> incomingColumns = new ArrayList<>();
+            if (ProdDocDisplay.BOTH.equals(prodDocDisplay) || ProdDocDisplay.INCOMING.equals(prodDocDisplay)) {
+                final Map<String, String> sorted = new TreeMap<>((_key0,_key1)
+                            -> DynProductsTransactionSummaryReport.this.dataSource.getIncomingProdDocTypes().get(_key0)
+                            .compareTo(
+                          DynProductsTransactionSummaryReport.this.dataSource.getIncomingProdDocTypes().get(_key1)));
+                sorted.putAll(this.dataSource.getIncomingProdDocTypes());
+                for (final Entry<String, String> entry : sorted.entrySet()) {
+                    final String qtyKey = "INCOMING-Qty" + entry.getKey();
+                    final String valueKey = "INCOMING-Value" + entry.getKey();
+                    incomingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
+                                    + this.filteredReport.getDBProperty("IncomingQty"), qtyKey, DynamicReports.type
+                                    .bigDecimalType()));
+                    incomingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
+                                    + this.filteredReport.getDBProperty("IncomingValue"), valueKey, DynamicReports.type
+                                    .bigDecimalType()));
+                }
+            }
+            incomingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("IncomingQty"),
+                            "incomingQty", DynamicReports.type.bigDecimalType()));
+            incomingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("IncomingValue"),
+                            "incomingValue", DynamicReports.type.bigDecimalType()));
+            incomingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("IncomingUnitPrice"),
+                            "incomingUnitPrice", DynamicReports.type.bigDecimalType()));
 
-            final TextColumnBuilder<BigDecimal> outgoingQtyColumn = DynamicReports.col.column(this.filteredReport
-                            .getDBProperty("OutgoingQty"), "outgoingQty", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> outgoingValueColumn = DynamicReports.col.column(this.filteredReport
-                            .getDBProperty("OutgoingValue"), "outgoingValue", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> outgoingUnitPriceColumn = DynamicReports.col.column(this.filteredReport
-                            .getDBProperty("OutgoingUnitPrice"), "outgoingUnitPrice", DynamicReports.type
-                                            .bigDecimalType());
+            final List<ColumnBuilder<?, ?>> outgoingColumns = new ArrayList<>();
+            if (ProdDocDisplay.BOTH.equals(prodDocDisplay) || ProdDocDisplay.OUTGOOING.equals(prodDocDisplay)) {
+                final Map<String, String> sorted = new TreeMap<>((_key0,_key1)
+                                -> DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocTypes()
+                                .get(_key0).compareTo(
+                          DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocTypes().get(_key1)));
+                sorted.putAll(this.dataSource.getOutgoingProdDocTypes());
+                for (final Entry<String, String> entry : sorted.entrySet()) {
+                    final String qtyKey = "OUTGOOING-Qty" + entry.getKey();
+                    final String valueKey = "OUTGOOING-Value" + entry.getKey();
+                    outgoingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
+                                    + this.filteredReport.getDBProperty("OutgoingQty"), qtyKey, DynamicReports.type
+                                    .bigDecimalType()));
+                    outgoingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
+                                    + this.filteredReport.getDBProperty("OutgoingValue"), valueKey, DynamicReports.type
+                                    .bigDecimalType()));
+                }
+            }
+
+            outgoingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("OutgoingQty"),
+                            "outgoingQty", DynamicReports.type.bigDecimalType()));
+            outgoingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("OutgoingValue"),
+                            "outgoingValue", DynamicReports.type.bigDecimalType()));
+            outgoingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("OutgoingUnitPrice"),
+                            "outgoingUnitPrice", DynamicReports.type.bigDecimalType()));
 
             final TextColumnBuilder<BigDecimal> endQtyColumn = DynamicReports.col.column(this.filteredReport
                             .getDBProperty("EndQty"), "endQty", DynamicReports.type.bigDecimalType());
@@ -500,19 +602,20 @@ public abstract class ProductsTransactionSummaryReport_Base
             final ColumnTitleGroupBuilder startGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
                             "StartTitleGrp"), startQtyColumn,  startUnitPriceColumn, startValueColumn);
             final ColumnTitleGroupBuilder inGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
-                            "IncomingTitleGrp"), incomingQtyColumn, incomingUnitPriceColumn, incomingValueColumn);
+                            "IncomingTitleGrp"),
+                            incomingColumns.toArray(new ColumnGridComponentBuilder[incomingColumns.size()]));
             final ColumnTitleGroupBuilder outGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
-                            "OutgoingTitleGrp"), outgoingQtyColumn, outgoingUnitPriceColumn, outgoingValueColumn);
+                            "OutgoingTitleGrp"),
+                            outgoingColumns.toArray(new ColumnGridComponentBuilder[outgoingColumns.size()]));
 
             final ColumnTitleGroupBuilder endGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
                             "EndTitleGrp"), endQtyColumn, endUnitPriceColumn, endValueColumn);
 
             _builder.columnGrid(prodNameColumn, prodDescrColumn, startGrp, inGrp, outGrp, endGrp)
-                .addColumn(prodNameColumn, prodDescrColumn,
-                            startQtyColumn, startUnitPriceColumn, startValueColumn,
-                            incomingQtyColumn, incomingUnitPriceColumn, incomingValueColumn,
-                            outgoingQtyColumn, outgoingUnitPriceColumn, outgoingValueColumn,
-                            endQtyColumn, endUnitPriceColumn, endValueColumn);
+                .addColumn(prodNameColumn, prodDescrColumn, startQtyColumn, startUnitPriceColumn, startValueColumn)
+                .addColumn(incomingColumns.toArray(new ColumnBuilder[incomingColumns.size()]))
+                .addColumn(outgoingColumns.toArray(new ColumnBuilder[outgoingColumns.size()]))
+                .addColumn(endQtyColumn, endUnitPriceColumn, endValueColumn);
         }
     }
 
@@ -550,6 +653,14 @@ public abstract class ProductsTransactionSummaryReport_Base
         /** The end value. */
         private BigDecimal endValue;
 
+        /** The prod doc type. */
+        private String prodDocType;
+
+        /** The prod doc type. */
+        private String prodDocTypeOid;
+
+        /** The prod doc type map. */
+        private final Map<String, BigDecimal> prodDocTypeMap = new HashMap<>();
         /**
          * Getter method for the instance variable {@link #prodInst}.
          *
@@ -585,11 +696,12 @@ public abstract class ProductsTransactionSummaryReport_Base
         /**
          * Setter method for instance variable {@link #incoming}.
          *
+         * @param _prodDocDisplay the prod doc display
          * @param _qty the qty
          * @param _cost the cost
          * @return the data bean
          */
-        public DataBean addIncoming(final BigDecimal _qty,
+        public DataBean addIncoming(final ProdDocDisplay _prodDocDisplay, final BigDecimal _qty,
                                     final BigDecimal _cost)
         {
             if (this.incomingQty == null) {
@@ -600,6 +712,18 @@ public abstract class ProductsTransactionSummaryReport_Base
             }
             this.incomingQty = this.incomingQty.add(_qty);
             this.incomingValue = this.incomingValue.add(_qty.multiply(_cost));
+            if (ProdDocDisplay.INCOMING.equals(_prodDocDisplay) || ProdDocDisplay.BOTH.equals(_prodDocDisplay)) {
+                final String qtyKey = "INCOMING-Qty" + getProdDocTypeOid();
+                final String valueKey = "INCOMING-Value" + getProdDocTypeOid();
+                if (!this.prodDocTypeMap.containsKey(qtyKey)) {
+                    this.prodDocTypeMap.put(qtyKey, BigDecimal.ZERO);
+                }
+                if (!this.prodDocTypeMap.containsKey(valueKey)) {
+                    this.prodDocTypeMap.put(valueKey, BigDecimal.ZERO);
+                }
+                this.prodDocTypeMap.put(qtyKey, this.prodDocTypeMap.get(qtyKey).add(_qty));
+                this.prodDocTypeMap.put(valueKey, this.prodDocTypeMap.get(valueKey).add(_qty.multiply(_cost)));
+            }
             return this;
         }
 
@@ -616,11 +740,13 @@ public abstract class ProductsTransactionSummaryReport_Base
         /**
          * Setter method for instance variable {@link #incoming}.
          *
+         * @param _prodDocDisplay the prod doc display
          * @param _qty the qty
          * @param _cost the cost
          * @return the data bean
          */
-        public DataBean addOutgoing(final BigDecimal _qty,
+        public DataBean addOutgoing(final ProdDocDisplay _prodDocDisplay,
+                                    final BigDecimal _qty,
                                     final BigDecimal _cost)
         {
             if (this.outgoingQty == null) {
@@ -631,6 +757,18 @@ public abstract class ProductsTransactionSummaryReport_Base
             }
             this.outgoingQty = this.outgoingQty.add(_qty);
             this.outgoingValue = this.outgoingValue.add(_qty.multiply(_cost));
+            if (ProdDocDisplay.OUTGOOING.equals(_prodDocDisplay) || ProdDocDisplay.BOTH.equals(_prodDocDisplay)) {
+                final String qtyKey = "OUTGOOING-Qty" + getProdDocTypeOid();
+                final String valueKey = "OUTGOOING-Value" + getProdDocTypeOid();
+                if (!this.prodDocTypeMap.containsKey(qtyKey)) {
+                    this.prodDocTypeMap.put(qtyKey, BigDecimal.ZERO);
+                }
+                if (!this.prodDocTypeMap.containsKey(valueKey)) {
+                    this.prodDocTypeMap.put(valueKey, BigDecimal.ZERO);
+                }
+                this.prodDocTypeMap.put(qtyKey, this.prodDocTypeMap.get(qtyKey).add(_qty));
+                this.prodDocTypeMap.put(valueKey, this.prodDocTypeMap.get(valueKey).add(_qty.multiply(_cost)));
+            }
             return this;
         }
 
@@ -875,10 +1013,126 @@ public abstract class ProductsTransactionSummaryReport_Base
             return this;
         }
 
+        /**
+         * Gets the prod doc type.
+         *
+         * @return the prod doc type
+         */
+        public String getProdDocType()
+        {
+            return this.prodDocType;
+        }
+
+        /**
+         * Sets the prod doc type.
+         *
+         * @param _prodDocType the new prod doc type
+         * @return the data bean
+         */
+        public DataBean setProdDocType(final String _prodDocType)
+        {
+            this.prodDocType = _prodDocType;
+            return this;
+        }
+
+        /**
+         * Gets the prod doc type.
+         *
+         * @return the prod doc type
+         */
+        public String getProdDocTypeOid()
+        {
+            return this.prodDocTypeOid;
+        }
+
+        /**
+         * Sets the prod doc type oid.
+         *
+         * @param _prodDocTypeOid the prod doc type oid
+         * @return the data bean
+         */
+        public DataBean setProdDocTypeOid(final String _prodDocTypeOid)
+        {
+            this.prodDocTypeOid = _prodDocTypeOid;
+            return this;
+        }
+
+        /**
+         * Gets the map.
+         *
+         * @return the map
+         */
+        public Map<String, Object> getMap() {
+            final Map<String, Object> ret = new HashMap<>();
+            ret.put("prodName", getProdName());
+            ret.put("prodDescr", getProdDescr());
+            ret.put("startQty", getStartQty());
+            ret.put("startValue", getStartValue());
+            ret.put("startUnitPrice", getStartUnitPrice());
+            ret.put("incomingQty", getIncomingQty());
+            ret.put("incomingValue", getIncomingValue());
+            ret.put("incomingUnitPrice", getIncomingUnitPrice());
+            ret.put("outgoingQty", getOutgoingQty());
+            ret.put("outgoingValue", getOutgoingValue());
+            ret.put("outgoingUnitPrice", getOutgoingUnitPrice());
+            ret.put("endQty", getEndQty());
+            ret.put("endValue", getEndValue());
+            ret.put("endUnitPrice", getEndUnitPrice());
+            ret.putAll(this.prodDocTypeMap);
+            return ret;
+        }
+
         @Override
         public String toString()
         {
             return ToStringBuilder.reflectionToString(this);
+        }
+    }
+
+    /**
+     * The Class DataSource.
+     */
+    public static class DataSource
+        extends JRMapCollectionDataSource
+    {
+
+        /** The incoming prod doc types. */
+        private final Map<String, String> incomingProdDocTypes;
+
+        /** The outgoing prod doc types. */
+        private final Map<String, String> outgoingProdDocTypes;
+
+        /**
+         * Instantiates a new data source.
+         *
+         * @param _col the col
+         */
+        public DataSource(final Collection<Map<String, ?>> _col, final Map<String, String> _incomingProdDocTypes,
+                          final Map<String, String> _outgoingProdDocTypes)
+        {
+            super(_col);
+            this.incomingProdDocTypes = _incomingProdDocTypes;
+            this.outgoingProdDocTypes = _outgoingProdDocTypes;
+        }
+
+        /**
+         * Gets the incoming prod doc types.
+         *
+         * @return the incoming prod doc types
+         */
+        public Map<String, String> getIncomingProdDocTypes()
+        {
+            return this.incomingProdDocTypes;
+        }
+
+        /**
+         * Gets the outgoing prod doc types.
+         *
+         * @return the outgoing prod doc types
+         */
+        public Map<String, String> getOutgoingProdDocTypes()
+        {
+            return this.outgoingProdDocTypes;
         }
     }
 }
