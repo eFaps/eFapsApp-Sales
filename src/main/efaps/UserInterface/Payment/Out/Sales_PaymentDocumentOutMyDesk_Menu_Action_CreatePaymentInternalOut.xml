@@ -26,11 +26,10 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_PaymentInternalForm</form>
+            <form>Sales_PaymentInternalOutForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentInternalOut">
                 <!-- default Numbergenerator Sales_PaymentInternalOutSequence-->
                 <property name="NumberGenerator">becf1430-cf2c-4510-8c91-1c17e73f7ca6</property>
-
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentInternalOutStatus</property>
