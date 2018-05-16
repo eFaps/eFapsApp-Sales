@@ -255,7 +255,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                 add2QueryBldr4Transaction(_parameter, attrQueryBldr);
 
                 final QueryBuilder queryBldr;
-                if (filterValue.isAlternative() && InstanceUtils.isValid(alterInst)) {
+                if (filterValue != null && filterValue.isAlternative() && InstanceUtils.isValid(alterInst)) {
                     queryBldr = new QueryBuilder(CIProducts.CostingAlternative);
                     queryBldr.addWhereAttrEqValue(CIProducts.CostingAlternative.CurrencyLink, alterInst);
                 } else {
@@ -316,7 +316,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                     final Instance transInst = multi.getSelect(selTransInst);
                     final BigDecimal quantity = multi.getSelect(selQuantity);
                     final BigDecimal cost;
-                    if (filterValue.isAcquisition()) {
+                    if (filterValue != null && filterValue.isAcquisition()) {
                         cost = Costs.getAcquisitionCost4Date(_parameter, prodInst,
                             alterInst, multi.getSelect(selTransDate));
                     } else {
@@ -354,7 +354,7 @@ public abstract class ProductsTransactionSummaryReport_Base
                                            final Set<Instance> _prodInsts)
                         throws EFapsException
                     {
-                        if (filterValue.isAcquisition()) {
+                        if (filterValue != null && filterValue.isAcquisition()) {
                             for (final InventoryBean bean : _beans) {
                                 final BigDecimal costValue = Costs.getAcquisitionCost4Date(_parameter,
                                                 bean.getProdInstance(), Instance.get(filterValue.getObject()),
