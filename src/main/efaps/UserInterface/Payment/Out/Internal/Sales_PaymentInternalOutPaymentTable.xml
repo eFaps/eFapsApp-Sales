@@ -50,9 +50,9 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentInternalOut"
                 method="autoComplete4CreateDocument"
-                name="Sales_PaymentDepositPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_PaymentInternalOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
@@ -60,9 +60,9 @@
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentInternalOut"
                 method="updateFields4CreateDocument"
-                name="Sales_PaymentDepositPaymentTable.product.UI_FIELD_UPDATE"
+                name="Sales_PaymentInternalOutPaymentTable.product.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="createDocumentDesc">
@@ -72,9 +72,9 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.createDocumentDesc.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentInternalOut"
                 method="createDocumentDescFieldValue"
-                name="Sales_PaymentDepositPaymentTable.paymentRate.UI_FIELD_VALUE"
+                name="Sales_PaymentInternalOutPaymentTable.paymentRate.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="createDocumentStatus">
@@ -89,9 +89,9 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentInternalOut"
                 method="updateFields4PaymentRate"
-                name="Sales_PaymentDepositPaymentTable.paymentRate.UI_FIELD_UPDATE"
+                name="Sales_PaymentInternalOutPaymentTable.paymentRate.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
@@ -107,9 +107,9 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentInternalOut"
                 method="updateFields4PaymentAmount"
-                name="Sales_PaymentDepositPaymentTable.paymentAmount.UI_FIELD_UPDATE"
+                name="Sales_PaymentInternalOutPaymentTable.paymentAmount.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="paymentDiscount">
@@ -118,16 +118,16 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentInternalOut"
                 method="updateFields4PaymentDiscount"
-                name="Sales_PaymentDepositPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
+                name="Sales_PaymentInternalOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Sales_PaymentDepositPaymentTable.paymentAmountDesc.Label</property>
+            <property name="Label">Sales_PaymentInternalOutPaymentTable.paymentAmountDesc.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink">
@@ -135,12 +135,12 @@
             <property name="SelectAlternateOID">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].oid</property>
             <property name="Select">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
             <property name="HRef">TREE</property>
-            <property name="Label">Sales_PaymentDepositPaymentTable.accountLink.Label</property>
+            <property name="Label">Sales_PaymentInternalOutPaymentTable.accountLink.Label</property>
              <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                name="Sales_PaymentDepositPaymentTable.accountLink.UI_ACCESSCHECK"
+                name="Sales_PaymentInternalOutPaymentTable.accountLink.UI_ACCESSCHECK"
                 method="check4Status"
                 event="UI_ACCESSCHECK">
-                <property name="StatusGroup01">Sales_PaymentDepositStatus</property>
+                <property name="StatusGroup01">Sales_PaymentInternalOutStatus</property>
                 <property name="Status01">!Draft</property>
                 <property name="StatusGroup02">Sales_PaymentStatus</property>
                 <property name="Status02">!Pending</property>
@@ -152,10 +152,10 @@
             <property name="Label">Sales_PaymentTable.accountLink4Draft.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                name="Sales_PaymentDepositPaymentTable.accountLink4Draft.UI_ACCESSCHECK"
+                name="Sales_PaymentInternalOutPaymentTable.accountLink4Draft.UI_ACCESSCHECK"
                 method="check4Status"
                 event="UI_ACCESSCHECK">
-                <property name="StatusGroup01">Sales_PaymentDepositStatus</property>
+                <property name="StatusGroup01">Sales_PaymentInternalOutStatus</property>
                 <property name="Status01">Draft</property>
                 <property name="StatusGroup02">Sales_PaymentStatus</property>
                 <property name="Status02">Pending</property>
