@@ -48,7 +48,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.common.AbstractCommon;
@@ -81,26 +80,29 @@ public abstract class SalesKardexBatchReport_Base
 
         final KardexReport baseResport = new KardexReport();
         final List<Instance> storageInst = baseResport.getStorageInstList(_parameter);
-        final QueryBuilder queryBuilder = new QueryBuilder(CIProducts.TransactionAbstract);
-        queryBuilder.addWhereAttrEqValue(CIProducts.TransactionAbstract.Storage, storageInst.toArray());
+        final QueryBuilder attrQueryBuilder = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        attrQueryBuilder.addWhereAttrEqValue(CIProducts.TransactionAbstract.Storage, storageInst.toArray());
+
+        final QueryBuilder queryBuilder = new QueryBuilder(CIProducts.ProductAbstract);
+        queryBuilder.addWhereAttrInQuery(CIProducts.ProductAbstract.ID,
+                        attrQueryBuilder.getAttributeQuery(CIProducts.TransactionAbstract.Product));
+
         final MultiPrintQuery multi = queryBuilder.getPrint();
-        final SelectBuilder selProdInst = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Product).instance();
-        final SelectBuilder selProdName = SelectBuilder.get().linkto(CIProducts.TransactionAbstract.Product).attribute(
-                        CIProducts.ProductAbstract.Name);
-        multi.addSelect(selProdInst, selProdName);
+        multi.addAttribute(CIProducts.ProductAbstract.Name);
         multi.executeWithoutAccessCheck();
         final Map<Instance, String> product2Name = new HashMap<>();
         while (multi.next()) {
-            final Instance prodInst = multi.getSelect(selProdInst);
-            final String prodName = multi.getSelect(selProdName);
+            final Instance prodInst = multi.getCurrentInstance();
+            final String prodName = multi.getAttribute(CIProducts.ProductAbstract.Name);
             product2Name.putIfAbsent(prodInst, prodName);
+            LOG.debug("Adding {} with {}", prodName, prodInst);
         }
         final FileUtil fileUtil = new FileUtil();
 
         final Map<Instance, String> product2Path = new HashMap<>();
         for (final Entry<Instance, String> entry : product2Name.entrySet()) {
             final KardexReport report = new KardexReport();
-            ParameterUtil.addParameterValues(_parameter,
+            ParameterUtil.setParameterValues(_parameter,
                             CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name, entry.getKey().getOid());
             final Return temp = report.createReport(_parameter);
             final File file = (File) temp.get(ReturnValues.VALUES);
@@ -111,31 +113,27 @@ public abstract class SalesKardexBatchReport_Base
                 LOG.error("Catched IOException", e);
             }
             product2Path.put(entry.getKey(), tmpFile.getAbsolutePath());
+            LOG.debug("Adding file {}", tmpFile.getAbsolutePath());
         }
 
-        final Workbook targetWb = new XSSFWorkbook();
-        final Sheet baseSheet = targetWb.createSheet("Inventario");
-        for (final Entry<Instance, String> entry : product2Path.entrySet()) {
-            Workbook workbook;
-            try {
-                workbook = WorkbookFactory.create(new File(entry.getValue()));
+        final Return ret = new Return();
+        try (final Workbook targetWb = new XSSFWorkbook()) {
+            final Sheet baseSheet = targetWb.createSheet("Inventario");
+            for (final Entry<Instance, String> entry : product2Path.entrySet()) {
+                LOG.debug("Reading to Workbook file {}", entry.getValue());
+                final Workbook workbook = WorkbookFactory.create(new File(entry.getValue()));
                 final Sheet sheet = workbook.getSheetAt(0);
                 final Sheet newSheet = targetWb.createSheet(product2Name.get(entry.getKey()));
                 copySheet(sheet, newSheet, true);
                 appendSheet(sheet, baseSheet, true, 2);
-            } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-                LOG.error("Catched Exception", e);
             }
-        }
-        final Return ret = new Return();
-        try {
             final File temp = fileUtil.getFile(baseResport.getReportName(_parameter, dateFrom, dateTo), "xlsx");
             final FileOutputStream fileOut = new FileOutputStream(temp);
             targetWb.write(fileOut);
             fileOut.close();
             ret.put(ReturnValues.VALUES, temp);
             ret.put(ReturnValues.TRUE, true);
-        } catch (final IOException e) {
+        } catch (final IOException | EncryptedDocumentException | InvalidFormatException e) {
             LOG.error("Catched IOException", e);
         }
         return ret;
