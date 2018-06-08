@@ -271,7 +271,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement x="320" y="50" width="980" height="15" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1"/>
-                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement x="160" y="80" width="1140" height="15" uuid="6525dc71-3948-441f-b530-4e8415b61981"/>
@@ -279,7 +279,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement x="80" y="35" width="1220" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
-                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
                 <reportElement x="80" y="95" width="1220" height="15" uuid="7837ec59-7af0-4616-9c8f-d1d8bb3ab70c"/>

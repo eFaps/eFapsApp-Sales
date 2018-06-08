@@ -26,7 +26,6 @@ import java.util.Map;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -34,6 +33,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
@@ -588,30 +588,20 @@ public abstract class SalesKardexReport_Base
         throws EFapsException
     {
         if (InstanceUtils.isValid(_transDocInst)) {
-            String docOper = "-";
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _transDocInst);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selDocTypeLink = SelectBuilder.get().linkto(
-                            CISales.Document2DocumentType.DocumentTypeLink);
-            final SelectBuilder selDocTypeLinkName = new SelectBuilder(selDocTypeLink).attribute(
-                            CIERP.DocumentType.Name);
-            final SelectBuilder selDocTypeLinkType = new SelectBuilder(selDocTypeLink).type();
-            multi.addSelect(selDocTypeLinkType, selDocTypeLinkName);
-            multi.execute();
-            while (multi.next()) {
-                if (multi.<Type>getSelect(selDocTypeLinkType).equals(CISales.ProductDocumentType.getType())) {
-                    docOper = multi.<String>getSelect(selDocTypeLinkName);
-                    break;
-                }
-            }
+            final PrintQuery print = CachedPrintQuery.get4Request(_transDocInst);
+            final SelectBuilder sel = SelectBuilder.get()
+                            .linkfrom(CISales.Document2ProductDocumentType.DocumentLink)
+                            .linkto(CISales.Document2ProductDocumentType.DocumentTypeLink)
+                            .attribute(CISales.ProductDocumentType.Name);
+            print.addSelect(sel);
+            print.execute();
+            _map.put(Field.TRANS_DOC_OPERATION.getKey(), print.getSelect(sel));
             if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_transDocInst.getType().getId())) {
                 _map.put(Field.TRANS_DOC_TYPE.getKey(), SalesKardexReport_Base.DOCTYPE_MAP.get(_transDocInst.getType()
                                 .getId()));
             } else {
                 _map.put(Field.TRANS_DOC_TYPE.getKey(), "-");
             }
-            _map.put(Field.TRANS_DOC_OPERATION.getKey(), docOper);
         }
     }
 
@@ -636,10 +626,11 @@ public abstract class SalesKardexReport_Base
      * @param _from fromdate
      * @param _to to date
      * @return name of the report
+     * @throws EFapsException on error
      */
     protected String getReportName(final Parameter _parameter,
                                    final DateTime _from,
-                                   final DateTime _to)
+                                   final DateTime _to) throws EFapsException
     {
         return DBProperties.getProperty("Sales_Products_KardexOfficial.Label", "es") + "-" + getDateLabel(_from, _to);
     }
@@ -650,11 +641,13 @@ public abstract class SalesKardexReport_Base
      * @param _from the from
      * @param _to the to
      * @return the date label
+     * @throws EFapsException on error
      */
     protected String getDateLabel(final DateTime _from,
-                                  final DateTime _to)
+                                  final DateTime _to) throws EFapsException
     {
-        return _from.toString(DateTimeFormat.shortDate()) + " - " + _to.toString(DateTimeFormat.shortDate());
+        return _from.toString(DateTimeFormat.shortDate().withLocale(Context.getThreadContext().getLocale())) + " - "
+                        + _to.toString(DateTimeFormat.shortDate().withLocale(Context.getThreadContext().getLocale()));
     }
 
     /**
