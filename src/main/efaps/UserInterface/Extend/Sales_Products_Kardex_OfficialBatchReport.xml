@@ -41,5 +41,6 @@
         <property name="TargetShowFile">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Products_TransactionInbound</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
 </ui-command>
