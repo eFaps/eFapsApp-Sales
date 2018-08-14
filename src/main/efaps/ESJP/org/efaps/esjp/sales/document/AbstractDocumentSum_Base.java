@@ -512,6 +512,7 @@ public abstract class AbstractDocumentSum_Base
         if (_cal != null) {
             _map.put("quantity", _cal.getQuantityStr());
             _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr());
+            _map.put("netUnitPrice4Read", _cal.getNetUnitPriceFmtStr());
             _map.put("netPrice", _cal.getNetPriceFmtStr());
             _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr());
             _map.put("discount", _cal.getDiscountFmtStr());
@@ -730,6 +731,7 @@ public abstract class AbstractDocumentSum_Base
                     calculator.applyRate(newInst, RateInfo.getRate(_parameter, rateInfos[2],
                                     getTypeName4SysConf(_parameter)));
                     map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr());
+                    map2.put("netUnitPrice4Read", calculator.getNetUnitPriceFmtStr());
                     map2.put("netPrice", calculator.getNetPriceFmtStr());
                     map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr());
                     map2.put("crossPrice", calculator.getCrossPriceFmtStr());
@@ -892,6 +894,7 @@ public abstract class AbstractDocumentSum_Base
                                     getTypeName4SysConf(_parameter)));
                 }
                 map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr());
+                map2.put("netUnitPrice4Read", calculator.getNetUnitPriceFmtStr());
                 map2.put("netPrice", calculator.getNetPriceFmtStr());
                 map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr());
                 map2.put("crossPrice", calculator.getCrossPriceFmtStr());
