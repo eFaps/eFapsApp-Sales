@@ -52,6 +52,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.PriceList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.HtmlTable;
@@ -175,15 +176,18 @@ public abstract class PriceUtil_Base
      * @param _parameter Parameter as passed form the efaps API
      * @param _oid oid of the product the price is wanted for
      * @param _typeUUID uuid of the price type wanted
+     * @param _rateInfoKey key to get the corresponding rate
      * @return price for the product as BigDecimal
      * @throws EFapsException on error
      */
     public ProductPrice getPrice(final Parameter _parameter,
                                  final String _oid,
-                                 final UUID _typeUUID)
+                                 final UUID _typeUUID,
+                                 final String _rateInfoKey)
         throws EFapsException
     {
-        return getPrice(_parameter, getDateFromParameter(_parameter), Instance.get(_oid), _typeUUID, true);
+        return getPrice(_parameter, getDateFromParameter(_parameter),
+                        Instance.get(_oid), _typeUUID, _rateInfoKey, true);
     }
 
     /**
@@ -202,7 +206,7 @@ public abstract class PriceUtil_Base
                                  final CIType _type)
         throws EFapsException
     {
-        return getPrice(_parameter, _date, _instance, _type.getType().getUUID(), true);
+        return getPrice(_parameter, _date, _instance, _type.getType().getUUID(), null, true);
     }
 
     /**
@@ -220,6 +224,7 @@ public abstract class PriceUtil_Base
                                  final DateTime _date,
                                  final Instance _instance,
                                  final UUID _typeUUID,
+                                 final String _rateInfoKey,
                                  final boolean _cache)
         throws EFapsException
     {
@@ -262,7 +267,7 @@ public abstract class PriceUtil_Base
                 boolean first = true;
                 while (multi.next()) {
                     final Instance pgInst = multi.getSelect(selPGInst);
-                    if ((first && (pgInst == null || pgInst != null && !pgInst.isValid()))
+                    if (first && (pgInst == null || pgInst != null && !pgInst.isValid())
                                     || groupApplies(_parameter, pgInst)) {
                         first = false;
                         final Instance origCurrInst = multi.getSelect(selCurrInst);
@@ -279,8 +284,10 @@ public abstract class PriceUtil_Base
                             ret.setCurrentPrice(price);
                         } else {
                             if (currentInst != null) {
-                                final BigDecimal[] rates = getRates(_parameter, currentInst, origCurrInst);
-                                ret.setCurrentPrice(price.multiply(rates[2]));
+                                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date,
+                                                origCurrInst, currentInst);
+                                final BigDecimal rate = RateInfo.getRate(_parameter, rateInfos[2], _rateInfoKey);
+                                ret.setCurrentPrice(price.divide(rate, 8, BigDecimal.ROUND_HALF_UP));
                             } else {
                                 ret.setCurrentPrice(price);
                             }
@@ -289,10 +296,11 @@ public abstract class PriceUtil_Base
                             ret.setBasePrice(price);
                             ret.setBaseRate(BigDecimal.ONE);
                         } else {
-                            final BigDecimal[] rates = getRates(_parameter, currentInst == null
-                                            ? baseInst : currentInst, baseInst);
-                            ret.setBasePrice(price.multiply(rates[2]));
-                            ret.setBaseRate(rates[2]);
+                            final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date, baseInst,
+                                            currentInst == null ? baseInst : currentInst);
+                            final BigDecimal rate = RateInfo.getRate(_parameter, rateInfos[2], _rateInfoKey);
+                            ret.setBasePrice(price.multiply(price.divide(rate, 8, BigDecimal.ROUND_HALF_UP)));
+                            ret.setBaseRate(rate);
                         }
                     }
                 }
@@ -454,6 +462,7 @@ public abstract class PriceUtil_Base
                                         final Instance _curInstance)
         throws EFapsException
     {
+
         final QueryBuilder queryBldr = new QueryBuilder(CIERP.CurrencyRateClient);
         queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateClient.CurrencyLink, _curInstance.getId());
         queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateClient.ValidFrom, _date.plusSeconds(1));
@@ -536,8 +545,8 @@ public abstract class PriceUtil_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<String, List<String>> mapProd = new HashMap<String, List<String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, List<String>> mapProd = new HashMap<>();
+        final Map<String, String> map = new HashMap<>();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
         final String[] childOids = (String[]) others.get("selectedRow");
@@ -551,7 +560,7 @@ public abstract class PriceUtil_Base
                 print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
                 if (print.execute()) {
                     final List<String> lstPrice =
-                                    getPrices4Product(_parameter, range, interval, print.getCurrentInstance());
+                                getPrices4Product(_parameter, range, interval, print.getCurrentInstance());
                     mapProd.put(print.<String>getAttribute(CIProducts.ProductAbstract.Name) + " - "
                                     + print.<String>getAttribute(CIProducts.ProductAbstract.Description), lstPrice);
                 }
@@ -584,7 +593,7 @@ public abstract class PriceUtil_Base
     {
         @SuppressWarnings("unchecked")
         final Map<String, String[]> parameters = (Map<String, String[]>) _parameter.get(ParameterValues.PARAMETERS);
-        final List<String> lstPrice = new ArrayList<String>();
+        final List<String> lstPrice = new ArrayList<>();
         final DateTimeFormatter fmt = getDateFormat(null);
         final DateTimeFormatter fmt2 = getDateFormat("MM/dd");
 
@@ -607,7 +616,7 @@ public abstract class PriceUtil_Base
                         parameters.put("date_eFapsDate", new String[] { dateCont.toString(fmt) });
                         if (_instanceProduct != null) {
                             final ProductPrice price = getPrice(_parameter, _instanceProduct.getOid(),
-                                            CIProducts.ProductPricelistRetail.uuid);
+                                            CIProducts.ProductPricelistRetail.uuid, null);
                             priceInter.setLstInterval(price.getBasePrice());
                         }
                         dateCont = dateCont.plusDays(1);
@@ -987,7 +996,7 @@ public abstract class PriceUtil_Base
         /**
          * List with the prices for each day of the interval.
          */
-        private final List<BigDecimal> lstInterval = new ArrayList<BigDecimal>();
+        private final List<BigDecimal> lstInterval = new ArrayList<>();
 
         /**
          * Current price.

@@ -287,7 +287,8 @@ public abstract class Calculator_Base
                 if (_priceFromDB) {
                     this.productPrice = evalPriceFromDB(_parameter);
                     if (_config != null && isIncludeMinRetail(_parameter)) {
-                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                                        getPosKey());
                     }
                 }
             }
@@ -308,7 +309,8 @@ public abstract class Calculator_Base
                 print.executeWithoutAccessCheck();
                 this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && isIncludeMinRetail(_parameter)) {
-                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                                    getPosKey());
                 }
             } else {
                 this.taxCatId = 0;
@@ -375,7 +377,8 @@ public abstract class Calculator_Base
                 if (_priceFromDB) {
                     this.productPrice = evalPriceFromDB(_parameter);
                     if (_config != null && isIncludeMinRetail(_parameter)) {
-                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                                        getPosKey());
                     }
                 }
             }
@@ -395,7 +398,8 @@ public abstract class Calculator_Base
                 print.execute();
                 this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && isIncludeMinRetail(_parameter)) {
-                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                                    getPosKey());
                 }
             } else {
                 this.taxCatId = 0;
@@ -437,7 +441,7 @@ public abstract class Calculator_Base
                 break;
             case "PriceList":
             default:
-                ret = new PriceUtil().getPrice(_parameter, getOid(), getPriceListUUID());
+                ret = new PriceUtil().getPrice(_parameter, getOid(), getPriceListUUID(), getPosKey());
                 break;
         }
         return ret;

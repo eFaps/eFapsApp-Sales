@@ -3104,6 +3104,7 @@ public abstract class AbstractDocument_Base
 
             if (getNetUnitPrice() != null) {
                 ret.put("netUnitPrice", upFrmt.format(getNetUnitPrice()));
+                ret.put("netUnitPrice4Read", upFrmt.format(getNetUnitPrice()));
             }
             if (getDiscountNetUnitPrice() != null) {
                 ret.put("discountNetUnitPrice", upFrmt.format(getDiscountNetUnitPrice()));
