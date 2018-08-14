@@ -857,7 +857,7 @@ public abstract class AbstractDocumentSum_Base
     }
 
     /**
-     * Update the form after change of date.
+     * Update the form after change of date. (Seems to be unused)
      *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return javascript for update

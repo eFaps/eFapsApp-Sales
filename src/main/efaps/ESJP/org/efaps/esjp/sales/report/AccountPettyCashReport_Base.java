@@ -353,7 +353,7 @@ public abstract class AccountPettyCashReport_Base
             final ColumnGroupBuilder actionGroup = DynamicReports.grp.group(actionColumn).groupByDataType();
 
             final TextFieldBuilder<String> pettyCashTotalBldr = DynamicReports.cmp.text(
-                            DynamicReports.field("pettyCashResume", String.class))
+                            DynamicReports.<String>field("pettyCashResume", String.class))
                             .setStyle(DynamicReports.stl.style().boldItalic()
                                             .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
             pettyCashGroup.footer(pettyCashTotalBldr);

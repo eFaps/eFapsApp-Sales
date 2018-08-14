@@ -1592,7 +1592,8 @@ public abstract class Calculator_Base
     public void applyRate(final Instance _currencyInstance,
                           final BigDecimal _rate)
     {
-        this.productPrice.setCurrentPrice(this.productPrice.getCurrentPrice().multiply(_rate));
+        this.productPrice.setCurrentPrice(this.productPrice.getCurrentPrice()
+                        .divide(_rate, 8, BigDecimal.ROUND_HALF_UP));
         this.productPrice.setCurrentCurrencyInstance(_currencyInstance);
         this.productNetUnitPrice = null;
         this.productCrossUnitPrice = null;
