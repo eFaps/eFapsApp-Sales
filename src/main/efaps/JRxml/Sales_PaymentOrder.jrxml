@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
-<!-- 2017-10-25T22:35:27 -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- 2018-08-22T00:02:01 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentOrder" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="6bf3b51f-4849-4f13-9889-0a053add68ca">
 	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -65,62 +65,62 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 	<field name="currencyName" class="java.lang.String"/>
 	<field name="note" class="java.lang.String"/>
 	<pageHeader>
-		<band height="122">
-			<staticText>
-				<reportElement x="0" y="50" width="555" height="20" uuid="78935920-5ccb-4095-be8c-4c6962507c17"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Solicitud de Pago]]></text>
-			</staticText>
+		<band height="90">
+			<image>
+				<reportElement x="0" y="0" width="125" height="70" uuid="e96c4c5d-ed75-487c-863b-e66862694c5e"/>
+				<imageExpression><![CDATA["JasperImage.DefaultLogo"]]></imageExpression>
+			</image>
 			<textField>
-				<reportElement x="0" y="70" width="555" height="20" uuid="d642f535-ee2b-4aa1-8469-60ba7257b132">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="local_mesure_unity" value="pixel"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
+				<reportElement x="0" y="0" width="555" height="15" uuid="e78e839f-ddb5-411a-9378-0433a4f34cf1"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["No. " + $F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Solicitud de Pago: " + $F{name}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="280" y="0" width="274" height="12" uuid="daf846f9-9c3a-4c09-9c18-c6609feff15e">
+			<staticText>
+				<reportElement x="400" y="15" width="40" height="15" uuid="2137fb2b-8218-4f33-b759-90da6c43029d">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="495" y="15" width="60" height="15" uuid="616f9d0e-d855-4642-b12f-d3a7cb785be8">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="280" y="12" width="274" height="12" uuid="3ef67a9e-81fc-44ad-89f6-97e54851ba05">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="495" y="30" width="60" height="15" uuid="637c6ea6-aa5e-4954-a36e-8e5ddbdd7787">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="280" y="24" width="274" height="12" uuid="3b903439-53a5-4474-952e-43339bc50ddc">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{CompanyStreet}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="280" y="36" width="274" height="12" uuid="c62aef80-67ff-4289-8cb9-131b58f7e3a3">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$P{CompanyDistrict} + " " + $P{CompanyCity}]]></textFieldExpression>
-			</textField>
+			<staticText>
+				<reportElement x="400" y="30" width="95" height="15" uuid="04fdb848-034b-4026-886a-c6c8539660b2"/>
+				<text><![CDATA[Fecha de Entrega:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="69">
+		<band height="40">
 			<staticText>
-				<reportElement x="0" y="15" width="70" height="15" uuid="853f8488-36f5-4996-a4bc-b0159927a90d">
+				<reportElement x="0" y="0" width="70" height="15" uuid="853f8488-36f5-4996-a4bc-b0159927a90d">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -133,35 +133,8 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				</textElement>
 				<text><![CDATA[Contacto:]]></text>
 			</staticText>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement x="495" y="0" width="60" height="15" uuid="616f9d0e-d855-4642-b12f-d3a7cb785be8">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="455" y="0" width="40" height="15" uuid="2137fb2b-8218-4f33-b759-90da6c43029d">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Fecha:]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="70" y="15" width="485" height="15" uuid="8be7afb2-a23c-4ed4-93b2-7d5a5a3976e6">
+				<reportElement x="70" y="0" width="485" height="15" uuid="8be7afb2-a23c-4ed4-93b2-7d5a5a3976e6">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -169,7 +142,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="440" y="44" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="3c6521ae-ca70-45c3-bd7d-b74367221ddd">
+				<reportElement x="440" y="21" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="3c6521ae-ca70-45c3-bd7d-b74367221ddd">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -179,7 +152,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<textFieldExpression><![CDATA[$F{rateCrossTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="540" y="44" width="15" height="12" isPrintWhenDetailOverflows="true" uuid="950be8f2-9193-4ad6-a069-e2a3c58352bf">
+				<reportElement x="540" y="21" width="15" height="12" isPrintWhenDetailOverflows="true" uuid="950be8f2-9193-4ad6-a069-e2a3c58352bf">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -192,7 +165,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="340" y="44" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="0f255ead-0f4a-4a67-aac2-a77f6b783c17"/>
+				<reportElement x="340" y="21" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="0f255ead-0f4a-4a67-aac2-a77f6b783c17"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
