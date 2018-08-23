@@ -16,20 +16,15 @@
  limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>deec6718-3e9f-4d8e-87fd-298cac87acf0</uuid>
+    <uuid>f076ab7b-7b0c-41eb-8ce7-a94e43dd8ef8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountabilityTag4CollectionOrder</name>
-        <parent>Sales_AbstractAccountabilityTag4Document</parent>
-        <attribute>
-            <name>CollectionOrderLink</name>
-            <type>Link</type>
-            <typelink>Sales_CollectionOrder</typelink>
-            <sqltable>Common_TagSQLTable</sqltable>
-            <sqlcolumn>OBJECTID</sqlcolumn>
-        </attribute>
+        <name>Sales_PaymentDocumentOut4ToBeSettledMyDesk_Menu</name>
+        <childs>
+            <child>Sales_PaymentDocumentOut4ToBeSettledMyDesk_Menu_Action</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>

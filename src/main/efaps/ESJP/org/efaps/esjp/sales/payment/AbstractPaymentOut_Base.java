@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -42,6 +44,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.tag.Tag;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
@@ -50,11 +53,8 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -63,11 +63,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractPaymentOut_Base
     extends AbstractPaymentDocument
 {
-
-    /**
-     * Logger for this class.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractPaymentOut.class);
 
     @Override
     protected String getDocName4Create(final Parameter _parameter)
@@ -229,6 +224,12 @@ public abstract class AbstractPaymentOut_Base
                                 .getAttributeQuery(CISales.DocumentAbstract.ID));
 
                 final QueryBuilder queryBldr1 = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
+                queryBldr1.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
+                                Status.find(CISales.PaymentCashOutStatus.Canceled),
+                                Status.find(CISales.PaymentCheckOutStatus.Canceled),
+                                Status.find(CISales.PaymentDepositOutStatus.Canceled),
+                                Status.find(CISales.PaymentDetractionOutStatus.Canceled),
+                                Status.find(CISales.PaymentInternalOutStatus.Canceled));
                 queryBldr1.addWhereAttrInQuery(CISales.PaymentDocumentOutAbstract.ID, attrQueryBldr1.getAttributeQuery(
                                 CISales.Payment.TargetDocument));
                 ret.addAll(queryBldr1.getQuery().execute());
@@ -241,6 +242,12 @@ public abstract class AbstractPaymentOut_Base
                                     .getAttributeQuery(CIERP.Tag4DocumentAbstract.DocumentAbstractLink));
 
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
+                    queryBldr.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
+                                    Status.find(CISales.PaymentCashOutStatus.Canceled),
+                                    Status.find(CISales.PaymentCheckOutStatus.Canceled),
+                                    Status.find(CISales.PaymentDepositOutStatus.Canceled),
+                                    Status.find(CISales.PaymentDetractionOutStatus.Canceled),
+                                    Status.find(CISales.PaymentInternalOutStatus.Canceled));
                     queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentOutAbstract.ID, attrQueryBldr
                                     .getAttributeQuery(CISales.Payment.TargetDocument));
 
@@ -250,6 +257,36 @@ public abstract class AbstractPaymentOut_Base
             }
         }.execute(_parameter);
         return ret;
+    }
+
+    /**
+     * Removes the accountability tag.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return removeAccountabilityTags(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> paymentDocInsts = getSelectedInstances(_parameter);
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, paymentDocInsts.toArray());
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQueryBldr
+                        .getAttributeQuery(CISales.Payment.CreateDocument));
+
+        final List<Instance> instances = queryBldr.getQuery().execute();
+
+        final Type abstractTagType = CISales.AbstractAccountabilityTag4Document.getType();
+        for (final Type tagType : abstractTagType.getChildTypes()) {
+            for (final Instance instance : instances) {
+                Tag.untagObject(_parameter, instance, tagType);
+            }
+        }
+        return new Return();
     }
 
     /**

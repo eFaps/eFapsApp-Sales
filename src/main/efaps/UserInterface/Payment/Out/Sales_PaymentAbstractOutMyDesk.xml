@@ -28,6 +28,7 @@
             <child>Sales_PaymentDocumentOut_Report4AccountMyDesk</child>
             <child>Sales_PaymentDocumentOut_Report4AccountCompIndMyDesk</child>
             <child>Sales_PaymentOrderMyDesk</child>
+            <child>Sales_PaymentDocumentOut4ToBeSettledMyDesk</child>
             <child>Sales_BulkPaymentMyDesk</child>
             <child>Sales_BulkPaymentDefinitionMyDesk</child>
             <child>Sales_PaymentRetention_Report</child>
