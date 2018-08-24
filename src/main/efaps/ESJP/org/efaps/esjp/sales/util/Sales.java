@@ -745,6 +745,46 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FROMPRODUCTREQUEST = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.CreateFromProductRequest")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice "
+                                    + "and Product Request.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMPRODUCTREQUESTAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.CreateFromProductRequestAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of Product Request to create "
+                                    + "Incoming Invoice from.")
+                    .addDefaultValue("Type", CISales.ProductRequest.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.ProductRequestStatus.getType().getName())
+                    .addDefaultValue("Status", CISales.ProductRequestStatus.Open.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FROMSERVICEREQUEST = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.CreateFromServiceRequest")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice "
+                                    + "and Service Request.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMSERVICEREQUESTAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.CreateFromServiceRequestAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of Product Request to create "
+                                    + "Incoming Invoice from.")
+                    .addDefaultValue("Type", CISales.ServiceRequest.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.ServiceRequestStatus.getType().getName())
+                    .addDefaultValue("Status", CISales.ServiceRequestStatus.Open.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INCOMINGINVOICE_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.ActivateCondition")

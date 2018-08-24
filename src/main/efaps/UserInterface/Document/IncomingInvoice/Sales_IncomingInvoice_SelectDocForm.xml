@@ -100,6 +100,56 @@
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromRecievingTicket</property>
            </trigger>
         </field>
+        <field name="productRequest">
+            <property name="Label">Sales_ProductRequest.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="autoComplete4Doc"
+                name="Sales_IncomingInvoice_SelectDocForm.productRequest.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromProductRequestAutoComplete</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4Document"
+                name="Sales_IncomingInvoice_SelectDocForm.productRequest.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingInvoice_SelectDocForm.productRequest.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromProductRequest</property>
+           </trigger>
+        </field>
+        <field name="serviceRequest">
+            <property name="Label">Sales_ServiceRequest.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="autoComplete4Doc"
+                name="Sales_IncomingInvoice_SelectDocForm.serviceRequest.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromServiceRequestAutoComplete</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4Document"
+                name="Sales_IncomingInvoice_SelectDocForm.ServiceRequest.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingInvoice_SelectDocForm.serviceRequest.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromServiceRequest</property>
+           </trigger>
+        </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_IncomingInvoice_SelectDocForm.info.Label</property>
