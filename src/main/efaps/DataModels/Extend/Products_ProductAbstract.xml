@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2018 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -118,6 +118,12 @@
             <type>String</type>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>CODE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Note</name>
+            <type>String</type>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>NOTE</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
