@@ -1773,6 +1773,20 @@ public final class Sales
                     .description("Activate the mechanism to write Comments for Order Outbound");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PRODUCTREQUEST_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ProductRequest.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PRODUCTREQUEST_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ProductRequest.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink PRODSTOCKRPTSTORAGEGRP = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
@@ -2360,6 +2374,20 @@ public final class Sales
                     .key(Sales.BASE + "ServiceRequest.Mime")
                     .clazz(JasperMime.class)
                     .description("Mime of the jasperReport for ServiceRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEREQUEST_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ServiceRequest.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEREQUEST_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ServiceRequest.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
 
     /** See description. */
     @EFapsSysConfAttribute

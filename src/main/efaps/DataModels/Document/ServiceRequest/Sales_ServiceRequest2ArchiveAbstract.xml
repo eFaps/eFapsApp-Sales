@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2018 The eFaps Team
 
@@ -18,19 +17,19 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3809b419-2d59-47f6-810e-2f4577cf6bb1</uuid>
+    <uuid>ecf4e14c-f83b-4de6-931e-4bf35682d059</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
             <application name="eFapsApp-Archives" />
         </application-dependencies>
-        <name>Sales_ProductRequest2ArchiveAbstract</name>
+        <name>Sales_ServiceRequest2ArchiveAbstract</name>
         <parent>Archives_Document2ArchiveAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_ProductRequest</typelink>
+            <typelink>Sales_ServiceRequest</typelink>
             <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
