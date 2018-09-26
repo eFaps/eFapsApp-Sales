@@ -59,8 +59,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("25511cee-f877-4c38-a2d9-7b377d596964")
@@ -70,6 +68,13 @@ public abstract class SalesKardexBatchReport_Base
 {
     private static final Logger LOG = LoggerFactory.getLogger(SalesKardexBatchReport.class);
 
+    /**
+     * Creates the report.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return createReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -106,7 +111,7 @@ public abstract class SalesKardexBatchReport_Base
                             CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name, entry.getKey().getOid());
             final Return temp = report.createReport(_parameter);
             final File file = (File) temp.get(ReturnValues.VALUES);
-            final File tmpFile = fileUtil.getFile("SK" + entry.getKey().getOid() , "xlxs");
+            final File tmpFile = fileUtil.getFile("SK" + entry.getKey().getOid(), "xlxs");
             try {
                 Files.copy(file.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (final IOException e) {
@@ -125,6 +130,7 @@ public abstract class SalesKardexBatchReport_Base
                 final Sheet sheet = workbook.getSheetAt(0);
                 final Sheet newSheet = targetWb.createSheet(product2Name.get(entry.getKey()));
                 copySheet(sheet, newSheet, true);
+                workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
                 appendSheet(sheet, baseSheet, true, 2);
             }
             final File temp = fileUtil.getFile(baseResport.getReportName(_parameter, dateFrom, dateTo), "xlsx");
@@ -139,6 +145,14 @@ public abstract class SalesKardexBatchReport_Base
         return ret;
     }
 
+    /**
+     * Append sheet.
+     *
+     * @param _sourceSheet the source sheet
+     * @param _targetSheet the target sheet
+     * @param _copyStyle the copy style
+     * @param _offset the offset
+     */
     protected void appendSheet(final Sheet _sourceSheet, final Sheet _targetSheet, final boolean _copyStyle,
                                final int _offset)
     {
@@ -165,6 +179,13 @@ public abstract class SalesKardexBatchReport_Base
         }
     }
 
+    /**
+     * Copy sheet.
+     *
+     * @param _sourceSheet the source sheet
+     * @param _targetSheet the target sheet
+     * @param _copyStyle the copy style
+     */
     protected void copySheet(final Sheet _sourceSheet, final Sheet _targetSheet, final boolean _copyStyle)
     {
         int maxColumnNum = 0;
@@ -185,6 +206,17 @@ public abstract class SalesKardexBatchReport_Base
         }
     }
 
+    /**
+     * Copy row.
+     *
+     * @param _srcSheet the src sheet
+     * @param _destSheet the dest sheet
+     * @param _srcRow the src row
+     * @param _destRow the dest row
+     * @param _styleMap the style map
+     * @param mergedRegions the merged regions
+     * @param _copyFormular the copy formular
+     */
     protected void copyRow(final Sheet _srcSheet, final Sheet _destSheet, final Row _srcRow, final Row _destRow,
                            final Map<Integer, CellStyle> _styleMap, final Set<CellRangeAddressWrapper> mergedRegions,
                            final boolean _copyFormular)
@@ -248,6 +280,14 @@ public abstract class SalesKardexBatchReport_Base
         return !_mergedRegions.contains(_newMergedRegion);
     }
 
+    /**
+     * Copy cell.
+     *
+     * @param _oldCell the old cell
+     * @param _newCell the new cell
+     * @param _styleMap the style map
+     * @param _copyFormular the copy formular
+     */
     protected void copyCell(final Cell _oldCell, final Cell _newCell, final Map<Integer, CellStyle> _styleMap,
                             final boolean _copyFormular)
     {
@@ -331,10 +371,10 @@ public abstract class SalesKardexBatchReport_Base
                 ret = super.equals(_object);
             } else {
                 final CellRangeAddressWrapper wrapper = (CellRangeAddressWrapper) _object;
-                ret = this.range.getFirstColumn() == wrapper.range.getFirstColumn() && this.range
-                                .getFirstRow() == wrapper.range.getFirstRow() && this.range
-                                                .getLastColumn() == wrapper.range.getLastColumn() && this.range
-                                                                .getLastRow() == wrapper.range.getLastRow();
+                ret = this.range.getFirstColumn() == wrapper.range.getFirstColumn()
+                                && this.range.getFirstRow() == wrapper.range.getFirstRow()
+                                && this.range.getLastColumn() == wrapper.range.getLastColumn()
+                                && this.range.getLastRow() == wrapper.range.getLastRow();
             }
             return ret;
         }
@@ -352,8 +392,12 @@ public abstract class SalesKardexBatchReport_Base
         }
     }
 
-    public static class KardexReport extends SalesKardexReport {
-
+    /**
+     * The Class KardexReport.
+     */
+    public static class KardexReport
+        extends SalesKardexReport
+    {
         @Override
         protected List<Instance> getStorageInstList(final Parameter _parameter)
             throws EFapsException
@@ -361,5 +405,4 @@ public abstract class SalesKardexBatchReport_Base
             return super.getStorageInstList(_parameter);
         }
     }
-
 }

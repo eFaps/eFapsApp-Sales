@@ -1,410 +1,407 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-02-08T21:50:05 -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_KardexOfficial" language="groovy" pageWidth="1400" pageHeight="1190" orientation="Landscape" columnWidth="1400" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" isIgnorePagination="true" uuid="330f23a7-ed04-40b1-854f-1983657fdfe2">
-    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
-    <property name="ireport.zoom" value="1.0"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
-    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
-    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
-    <property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
-    <property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="false"/>
-    <property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
-    <property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="false"/>
-    <property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
-    <property name="com.jaspersoft.studio.unit." value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-    <property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-    <import value="java.math.BigDecimal"/>
-    <import value="org.efaps.number2words.Converter"/>
-    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
-    <parameter name="Periode" class="java.lang.String"/>
-    <parameter name="CompanyName" class="java.lang.String"/>
-    <parameter name="CompanyTaxNum" class="java.lang.String"/>
-    <parameter name="StorageName" class="java.lang.String"/>
-    <parameter name="ProductName" class="java.lang.String"/>
-    <parameter name="ProductDesc" class="java.lang.String"/>
-    <parameter name="ProductUoM" class="java.lang.String"/>
-    <parameter name="ProductExistType" class="java.lang.String"/>
-    <field name="transDate" class="org.joda.time.DateTime">
-        <property name="Key" value="transDate"/>
-    </field>
-    <field name="transDocType" class="java.lang.String">
-        <property name="Key" value="transDocType"/>
-    </field>
-    <field name="transDocSerie" class="java.lang.String">
-        <property name="Key" value="transDocSerie"/>
-    </field>
-    <field name="transDocNumber" class="java.lang.String">
-        <property name="Key" value="transDocNumber"/>
-    </field>
-    <field name="transDocOperation" class="java.lang.String">
-        <property name="Key" value="transDocOperation"/>
-    </field>
-    <field name="transInboundQuantity" class="java.math.BigDecimal">
-        <property name="Key" value="transInboundQuantity"/>
-    </field>
-    <field name="transInboundCost" class="java.math.BigDecimal">
-        <property name="Key" value="transInboundCost"/>
-    </field>
-    <field name="transOutboundQuantity" class="java.math.BigDecimal">
-        <property name="Key" value="transOutboundQuantity"/>
-    </field>
-    <field name="transComment" class="java.lang.String">
-        <property name="Key" value="transComment"/>
-    </field>
-    <variable name="OFFSET" class="java.lang.Integer">
-        <variableExpression><![CDATA[Integer.valueOf(13)]]></variableExpression>
-        <initialValueExpression><![CDATA[]]></initialValueExpression>
-    </variable>
-    <columnHeader>
-        <band height="200">
-            <staticText>
-                <reportElement x="320" y="155" width="80" height="45" uuid="97e553a7-746c-469e-bf9d-76f973dd3873"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[TIPO DE
+	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="false"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<import value="java.math.BigDecimal"/>
+	<import value="org.efaps.number2words.Converter"/>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<parameter name="Periode" class="java.lang.String"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
+	<parameter name="StorageName" class="java.lang.String"/>
+	<parameter name="ProductName" class="java.lang.String"/>
+	<parameter name="ProductDesc" class="java.lang.String"/>
+	<parameter name="ProductUoM" class="java.lang.String"/>
+	<parameter name="ProductExistType" class="java.lang.String"/>
+	<field name="transDate" class="org.joda.time.DateTime">
+		<property name="Key" value="transDate"/>
+	</field>
+	<field name="transDocType" class="java.lang.String">
+		<property name="Key" value="transDocType"/>
+	</field>
+	<field name="transDocSerie" class="java.lang.String">
+		<property name="Key" value="transDocSerie"/>
+	</field>
+	<field name="transDocNumber" class="java.lang.String">
+		<property name="Key" value="transDocNumber"/>
+	</field>
+	<field name="transDocOperation" class="java.lang.String">
+		<property name="Key" value="transDocOperation"/>
+	</field>
+	<field name="transInboundQuantity" class="java.math.BigDecimal">
+		<property name="Key" value="transInboundQuantity"/>
+	</field>
+	<field name="transInboundCost" class="java.math.BigDecimal">
+		<property name="Key" value="transInboundCost"/>
+	</field>
+	<field name="transOutboundQuantity" class="java.math.BigDecimal">
+		<property name="Key" value="transOutboundQuantity"/>
+	</field>
+	<field name="transComment" class="java.lang.String">
+		<property name="Key" value="transComment"/>
+	</field>
+	<variable name="OFFSET" class="java.lang.Integer">
+		<variableExpression><![CDATA[Integer.valueOf(13)]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<columnHeader>
+		<band height="200">
+			<staticText>
+				<reportElement x="320" y="155" width="80" height="45" uuid="97e553a7-746c-469e-bf9d-76f973dd3873"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE
 OPERACIÓN
 (TABLA 12)]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="155" width="320" height="30" uuid="0d609019-f524-4e7b-86dc-3499d7127b00"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[DOCUMENTO DE TRASLADO, COMPROBANTE DE PAGO
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="155" width="320" height="30" uuid="0d609019-f524-4e7b-86dc-3499d7127b00"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTO DE TRASLADO, COMPROBANTE DE PAGO
 DOCUMENTO INTERNO O SIMILAR]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="400" y="170" width="100" height="30" uuid="377a4b89-2efa-465e-b006-19368051f22a"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[CANTIDAD]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="500" y="170" width="100" height="30" uuid="5a38680b-d874-4dfe-a21e-b75f1582606d"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[COSTO UNITARIO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="600" y="170" width="100" height="30" uuid="dae64661-304b-4d5f-966a-2923296947be"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[COSTO TOTAL]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="700" y="170" width="100" height="30" uuid="a26d6a6b-3391-43ae-a2e1-36d4b247086b"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[CANTIDAD]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="800" y="170" width="100" height="30" uuid="ff3b50c7-a867-42e4-bf0a-8a7ce255f184"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[COSTO UNITARIO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="900" y="170" width="100" height="30" uuid="ead1fdcc-2e25-4f81-b136-d003328d6387"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[COSTO TOTAL]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="1000" y="170" width="100" height="30" uuid="16b61d15-c656-47ef-8187-2121ffc8b74c"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[CANTIDAD]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="1100" y="170" width="100" height="30" uuid="6429c7f0-279c-4173-9014-a5e4325a0bb2"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[COSTO UNITARIO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="1200" y="170" width="100" height="30" uuid="e1a7298b-3e8b-4e2b-88cd-95591f52077b"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[COSTO TOTAL]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="700" y="155" width="300" height="15" uuid="ae5a7d7d-cad7-4e57-955d-05d1ab8bd16c"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[SALIDAS]]></text>
-            </staticText>
-            <staticText>
-                <reportElement mode="Transparent" x="1000" y="155" width="300" height="15" backcolor="#FFFFFF" uuid="ead15e33-3b35-467c-ac35-ff2a70d4ba77"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[SALDO FINAL]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="400" y="155" width="300" height="15" uuid="5cca04ed-753b-4d6e-8ea3-8b9e2bf0ecb4"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[ENTRADAS]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="0" y="0" width="1300" height="20" uuid="20412978-7a7c-4f8f-ae9d-6eb5e98cabb5"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-                    <font size="14" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA["REGISTRO DE INVENTARIO PERMANENTE VALORIZADO - DETALLE DEL INVENTARIO VALORIZADO"]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="20" width="80" height="15" uuid="e5e10c20-34c1-4cc8-ae64-40feefbd7e8b"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[PERIODO:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="35" width="80" height="15" uuid="9ace98cb-1e17-478c-8738-4c98b35e02ac"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[RUC:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="50" width="320" height="15" uuid="54f977e4-c8b9-4918-a9c6-3911a8ec0582"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACIÓN O RAZÓN SOCIAL:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="80" y="185" width="80" height="15" uuid="d9a1940d-734e-4203-b626-a09212be35d4"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[TIPO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="160" y="185" width="80" height="15" uuid="3a9233de-9370-41e3-af91-e48e8c5c2c6e"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[SERIE]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="185" width="80" height="15" uuid="86687539-9fd6-42ef-826b-aa350230ed06"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[FECHA]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="240" y="185" width="80" height="15" uuid="2e5f642c-9b32-4bb2-9df9-0e2c81ac6b47"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[NÚMERO]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="65" width="160" height="15" uuid="0967e616-ede1-4b7d-9584-77f6b2f6956b"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[ESTABLECIMIENTO:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="110" width="80" height="15" uuid="08590140-42b9-4967-bba7-f38d6f6de521"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[DESCRIPCIÓN:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="95" width="80" height="15" uuid="9a0b8a4e-9f5b-45b2-b59c-2517bd539719"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[TIPO:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="80" width="160" height="15" uuid="870d656a-980a-47db-ae8d-f524cb6c8cf7"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[CÓDIGO DE LA EXISTENCIA:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="140" width="160" height="15" uuid="dc983188-6448-4522-ad77-8d950681a01f"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[MÉTODO DE VALUACIÓN:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="125" width="240" height="15" uuid="a861f668-4ccd-499f-a49e-fc9014fc7efb"/>
-                <textElement>
-                    <font size="9" isBold="true"/>
-                </textElement>
-                <text><![CDATA[CÓDIGO DE LA UNIDAD DE MEDIDA:]]></text>
-            </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="20" width="1220" height="15" uuid="64bac294-d887-434b-befa-31b0339fd626"/>
-                <textFieldExpression><![CDATA[$P{Periode}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="320" y="50" width="980" height="15" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1"/>
-                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="160" y="80" width="1140" height="15" uuid="6525dc71-3948-441f-b530-4e8415b61981"/>
-                <textFieldExpression><![CDATA[$P{ProductName}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="35" width="1220" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
-                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="95" width="1220" height="15" uuid="7837ec59-7af0-4616-9c8f-d1d8bb3ab70c"/>
-                <textFieldExpression><![CDATA[$P{ProductExistType}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="160" y="65" width="1140" height="15" uuid="93a88b04-b74d-4340-b905-2627e2ce9011"/>
-                <textFieldExpression><![CDATA[$P{StorageName}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="160" y="140" width="1140" height="15" uuid="939aaaee-f629-408d-b07e-fd098d2c16f1"/>
-                <textFieldExpression><![CDATA["Promedio"]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="240" y="125" width="1060" height="15" uuid="336c1f5c-3d79-43e1-b422-4ed797539bc7"/>
-                <textFieldExpression><![CDATA[$P{ProductUoM}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="110" width="1220" height="15" uuid="2f31ab8d-19fa-4b9f-ba47-4f3191b40051"/>
-                <textFieldExpression><![CDATA[$P{ProductDesc}]]></textFieldExpression>
-            </textField>
-        </band>
-    </columnHeader>
-    <detail>
-        <band height="14">
-            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{transDate}.toDate()]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="80" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{transDocType}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="160" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{transDocSerie}]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="240" y="0" width="80" height="14" isPrintWhenDetailOverflows="true" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{transDocNumber}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="320" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
-                <textElement textAlignment="Center"/>
-                <textFieldExpression><![CDATA[$F{transDocOperation}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="400" y="0" width="100" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[$F{transInboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transInboundQuantity}) != 0 ? $F{transInboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="500" y="0" width="100" height="14" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
-                    <printWhenExpression><![CDATA[new Boolean($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) != -1)]]></printWhenExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[$F{transInboundCost} != null ? $F{transInboundCost} : BigDecimal.ZERO]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="500" y="0" width="100" height="14" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
-                    <printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1)]]></printWhenExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="600" y="0" width="100" height="14" uuid="c99026ea-ac7f-4f6f-8c49-d15bacea2342">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND((F" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*G"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="700" y="0" width="100" height="14" uuid="4aac53ef-4724-4614-bd1c-64a0688dbda3"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[$F{transOutboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transOutboundQuantity}) != 0 ? $F{transOutboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="800" y="0" width="100" height="14" uuid="be2d922e-23b3-4e97-ab37-b991a0bbed9f">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),2)"]]></propertyExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="900" y="0" width="100" height="14" uuid="8389e165-6cb3-4b5d-b6a7-19c7ddcea5a4">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToTallestObject" x="1000" y="0" width="100" height="14" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+F"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-I"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="1100" y="0" width="100" height="14" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(H" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",(N"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+H"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="1200" y="0" width="100" height="14" uuid="edcfe3e5-3356-4b71-90e7-681fd431c388">
-                    <propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement x="1300" y="0" width="100" height="14" isPrintWhenDetailOverflows="true" uuid="d47eff01-8dc0-45b3-be8f-4dd57f826228"/>
-                <textFieldExpression><![CDATA[$F{transComment}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
-    <columnFooter>
-        <band height="50"/>
-    </columnFooter>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="170" width="100" height="30" uuid="377a4b89-2efa-465e-b006-19368051f22a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="500" y="170" width="100" height="30" uuid="5a38680b-d874-4dfe-a21e-b75f1582606d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO UNITARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="600" y="170" width="100" height="30" uuid="dae64661-304b-4d5f-966a-2923296947be"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="700" y="170" width="100" height="30" uuid="a26d6a6b-3391-43ae-a2e1-36d4b247086b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="800" y="170" width="100" height="30" uuid="ff3b50c7-a867-42e4-bf0a-8a7ce255f184"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO UNITARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="900" y="170" width="100" height="30" uuid="ead1fdcc-2e25-4f81-b136-d003328d6387"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1000" y="170" width="100" height="30" uuid="16b61d15-c656-47ef-8187-2121ffc8b74c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1100" y="170" width="100" height="30" uuid="6429c7f0-279c-4173-9014-a5e4325a0bb2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO UNITARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1200" y="170" width="100" height="30" uuid="e1a7298b-3e8b-4e2b-88cd-95591f52077b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTO TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="700" y="155" width="300" height="15" uuid="ae5a7d7d-cad7-4e57-955d-05d1ab8bd16c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALIDAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1000" y="155" width="300" height="15" backcolor="#FFFFFF" uuid="ead15e33-3b35-467c-ac35-ff2a70d4ba77"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO FINAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="155" width="300" height="15" uuid="5cca04ed-753b-4d6e-8ea3-8b9e2bf0ecb4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTRADAS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="1300" height="20" uuid="20412978-7a7c-4f8f-ae9d-6eb5e98cabb5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REGISTRO DE INVENTARIO PERMANENTE VALORIZADO - DETALLE DEL INVENTARIO VALORIZADO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="80" height="15" uuid="e5e10c20-34c1-4cc8-ae64-40feefbd7e8b"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERIODO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="35" width="80" height="15" uuid="9ace98cb-1e17-478c-8738-4c98b35e02ac"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="50" width="320" height="15" uuid="54f977e4-c8b9-4918-a9c6-3911a8ec0582"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACIÓN O RAZÓN SOCIAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="185" width="80" height="15" uuid="d9a1940d-734e-4203-b626-a09212be35d4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="185" width="80" height="15" uuid="3a9233de-9370-41e3-af91-e48e8c5c2c6e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SERIE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="185" width="80" height="15" uuid="86687539-9fd6-42ef-826b-aa350230ed06"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="185" width="80" height="15" uuid="2e5f642c-9b32-4bb2-9df9-0e2c81ac6b47"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NÚMERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="65" width="160" height="15" uuid="0967e616-ede1-4b7d-9584-77f6b2f6956b"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTABLECIMIENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="110" width="80" height="15" uuid="08590140-42b9-4967-bba7-f38d6f6de521"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="95" width="80" height="15" uuid="9a0b8a4e-9f5b-45b2-b59c-2517bd539719"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="160" height="15" uuid="870d656a-980a-47db-ae8d-f524cb6c8cf7"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO DE LA EXISTENCIA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="140" width="160" height="15" uuid="dc983188-6448-4522-ad77-8d950681a01f"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MÉTODO DE VALUACIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="125" width="240" height="15" uuid="a861f668-4ccd-499f-a49e-fc9014fc7efb"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO DE LA UNIDAD DE MEDIDA:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="20" width="1220" height="15" uuid="64bac294-d887-434b-befa-31b0339fd626"/>
+				<textFieldExpression><![CDATA[$P{Periode}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="320" y="50" width="980" height="15" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1"/>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="160" y="80" width="1140" height="15" uuid="6525dc71-3948-441f-b530-4e8415b61981"/>
+				<textFieldExpression><![CDATA[$P{ProductName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="35" width="1220" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="95" width="1220" height="15" uuid="7837ec59-7af0-4616-9c8f-d1d8bb3ab70c"/>
+				<textFieldExpression><![CDATA[$P{ProductExistType}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="160" y="65" width="1140" height="15" uuid="93a88b04-b74d-4340-b905-2627e2ce9011"/>
+				<textFieldExpression><![CDATA[$P{StorageName}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="160" y="140" width="1140" height="15" uuid="939aaaee-f629-408d-b07e-fd098d2c16f1"/>
+				<textFieldExpression><![CDATA["Promedio"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="240" y="125" width="1060" height="15" uuid="336c1f5c-3d79-43e1-b422-4ed797539bc7"/>
+				<textFieldExpression><![CDATA[$P{ProductUoM}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="110" width="1220" height="15" uuid="2f31ab8d-19fa-4b9f-ba47-4f3191b40051"/>
+				<textFieldExpression><![CDATA[$P{ProductDesc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{transDate}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="80" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{transDocType}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="160" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{transDocSerie}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="240" y="0" width="80" height="14" isPrintWhenDetailOverflows="true" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{transDocNumber}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="320" y="0" width="80" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{transDocOperation}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="400" y="0" width="100" height="14" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{transInboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transInboundQuantity}) != 0 ? $F{transInboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="500" y="0" width="100" height="14" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) != -1)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{transInboundCost} != null ? $F{transInboundCost} : BigDecimal.ZERO]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="500" y="0" width="100" height="14" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="600" y="0" width="100" height="14" uuid="c99026ea-ac7f-4f6f-8c49-d15bacea2342">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND((F" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*G"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="700" y="0" width="100" height="14" uuid="4aac53ef-4724-4614-bd1c-64a0688dbda3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{transOutboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transOutboundQuantity}) != 0 ? $F{transOutboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="800" y="0" width="100" height="14" uuid="be2d922e-23b3-4e97-ab37-b991a0bbed9f">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,IF(ISNUMBER(M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0)),2)"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="900" y="0" width="100" height="14" uuid="8389e165-6cb3-4b5d-b6a7-19c7ddcea5a4">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="1000" y="0" width="100" height="14" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(ISNUMBER(L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0)+F"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-I"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="1100" y="0" width="100" height="14" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(H" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0, IF(ISNUMBER(M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0),(IF(ISNUMBER(N"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),N"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0)+H"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="1200" y="0" width="100" height="14" uuid="edcfe3e5-3356-4b71-90e7-681fd431c388">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="1300" y="0" width="100" height="14" isPrintWhenDetailOverflows="true" uuid="d47eff01-8dc0-45b3-be8f-4dd57f826228"/>
+				<textFieldExpression><![CDATA[$F{transComment}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="50"/>
+	</columnFooter>
 </jasperReport>

@@ -161,8 +161,10 @@ public abstract class SalesKardexReport_Base
                         CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateTo.name);
         final Instance productInst = Instance.get(_parameter.getParameterValue(
                         CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name));
-        final Instance storageGroupInst = Instance.get(_parameter.getParameterValue(
+        final Instance storageInst = Instance.get(_parameter.getParameterValue(
                         CIFormSales.Sales_Products_Kardex_OfficialReportForm.storage.name));
+        final Instance storageGroupInst = Instance.get(_parameter.getParameterValue(
+                        CIFormSales.Sales_Products_Kardex_OfficialReportForm.storageGroup.name));
         final DateTime from = new DateTime(dateFrom);
         final DateTime to = new DateTime(dateTo);
 
@@ -186,7 +188,14 @@ public abstract class SalesKardexReport_Base
             report.getJrParameters().put("ProductUoM", product.getProductUoM());
             report.getJrParameters().put("ProductExistType", product.getProductExistType());
         }
-        if (storageGroupInst.isValid()) {
+        if (storageInst.isValid()) {
+            final PrintQuery print = new PrintQuery(storageInst);
+            print.addAttribute(CIProducts.StorageAbstract.Name);
+            print.execute();
+
+            report.getJrParameters().put("StorageName", print.<String>getAttribute(
+                            CIProducts.StorageGroupAbstract.Name));
+        } else if (storageGroupInst.isValid()) {
             final PrintQuery print = new PrintQuery(storageGroupInst);
             print.addAttribute(CIProducts.StorageGroupAbstract.Name);
             print.execute();
