@@ -18,45 +18,39 @@
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>99f9b4e4-5b83-42ee-9917-7088cfafa827</uuid>
+    <uuid>cd14b1ec-b1eb-43d9-b528-830839abab5f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductDocumentsTable</name>
+        <name>Sales_TransactionDocumentTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="HRef">Type</property>
-            <property name="Label">Sales_DocumentAbstract/Type.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">ERP_DocumentAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
-            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
-        </field>
-         <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Sales_DocumentAbstract/Revision.Label</property>
+            <property name="Label">ERP_DocumentAbstract/Name.Label</property>
         </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
+            <property name="FilterDefault">MONTH</property>
             <property name="Attribute">Date</property>
-            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+            <property name="Label">ERP_DocumentAbstract/Date.Label</property>
         </field>
-        <field name="status">
-            <property name="FilterType">PICKLIST</property>
-            <property name="Attribute">StatusAbstract</property>
-            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
-        </field>
-        <field name="documentType">
+        <field name="productDocumentType">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
-            <property name="Label">Sales_ReturnSlip.documentType.Label</property>
-            <property name="FilterType">PICKLIST</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_TransactionDocumentForm.productDocumentType.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">ERP_DocumentAbstract/StatusAbstract.Label</property>
         </field>
     </definition>
 </ui-table>

@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1784,23 +1785,32 @@ public abstract class AbstractDocumentSum_Base
         } else {
             value = _parameter.getParameterValue("productDocumentType");
         }
-        final Instance instDocType = Instance.get(value);
-        if (instDocType.isValid() && _parameter.getInstance().isValid()) {
-            final QueryBuilder queryBldr = new QueryBuilder(getType4DocCreate(_parameter));
-            queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
-                            _parameter.getInstance());
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
 
-            final Update update;
-            if (query.next()) {
-                update = new Update(query.getCurrentValue());
+        final Instance instDocType = Instance.get(value);
+        if (InstanceUtils.isValid(instDocType)) {
+            final List<Instance> documentInstances;
+            if (InstanceUtils.isValid(_parameter.getInstance())) {
+                documentInstances = Collections.singletonList(_parameter.getInstance());
             } else {
-                update = new Insert(getType4DocCreate(_parameter));
-                update.add(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, _parameter.getInstance());
+                documentInstances = getSelectedInstances(_parameter);
             }
-            update.add(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract, instDocType);
-            update.execute();
+
+            for (final Instance documentInst : documentInstances) {
+                final QueryBuilder queryBldr = new QueryBuilder(getType4DocCreate(_parameter));
+                queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, documentInst);
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+
+                final Update update;
+                if (query.next()) {
+                    update = new Update(query.getCurrentValue());
+                } else {
+                    update = new Insert(getType4DocCreate(_parameter));
+                    update.add(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, documentInst);
+                }
+                update.add(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract, instDocType);
+                update.execute();
+            }
         }
         return new Return();
     }
