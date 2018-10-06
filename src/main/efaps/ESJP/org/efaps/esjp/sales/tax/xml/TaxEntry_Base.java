@@ -56,6 +56,12 @@ public abstract class TaxEntry_Base
     private BigDecimal amount;
 
     /**
+     * Amount of the Tax.
+     */
+    @XmlAttribute(name = "base")
+    private BigDecimal base;
+
+    /**
      * UUID of the Tax.
      */
     @XmlAttribute(name = "uuid")
@@ -98,6 +104,26 @@ public abstract class TaxEntry_Base
     public void setAmount(final BigDecimal _amount)
     {
         this.amount = _amount;
+    }
+
+    /**
+     * Gets the amount of the Tax.
+     *
+     * @return the amount of the Tax
+     */
+    public BigDecimal getBase()
+    {
+        return this.base;
+    }
+
+    /**
+     * Sets the amount of the Tax.
+     *
+     * @param _base the new amount of the Tax
+     */
+    public void setBase(final BigDecimal _base)
+    {
+        this.base = _base;
     }
 
     /**

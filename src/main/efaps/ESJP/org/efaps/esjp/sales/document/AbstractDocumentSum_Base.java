@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -83,6 +82,7 @@ import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.payment.DocPaymentInfo_Base;
 import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.TaxAmount;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
@@ -1407,20 +1407,20 @@ public abstract class AbstractDocumentSum_Base
                               final Instance _currencyInst)
         throws EFapsException
     {
-        final Map<Tax, BigDecimal> values = new HashMap<>();
+        final Map<Tax, TaxAmount> values = new HashMap<>();
         for (final Calculator calc : _calcList) {
             if (!calc.isWithoutTax()) {
-                final Map<Tax, BigDecimal> valMap = calc.getTaxesAmounts();
-                for (final Entry<Tax, BigDecimal> entry : valMap.entrySet()) {
-                    if (!values.containsKey(entry.getKey())) {
-                        values.put(entry.getKey(), BigDecimal.ZERO);
+                for (final TaxAmount taxAmount : calc.getTaxesAmounts()) {
+                    if (!values.containsKey(taxAmount.getTax())) {
+                        values.put(taxAmount.getTax(), new TaxAmount().setTax(taxAmount.getTax()));
                     }
-                    values.put(entry.getKey(), values.get(entry.getKey()).add(entry.getValue()));
+                    values.get(taxAmount.getTax())
+                        .addAmount(taxAmount.getAmount())
+                        .addBase(taxAmount.getBase());
                 }
             }
         }
         final Taxes ret = new Taxes();
-
         if (!_calcList.isEmpty()) {
             final Calculator calc = _calcList.iterator().next();
             UUID currencyUUID = null;
@@ -1428,11 +1428,12 @@ public abstract class AbstractDocumentSum_Base
                 final CurrencyInst curInst = CurrencyInst.get(_currencyInst);
                 currencyUUID = curInst.getUUID();
             }
-            for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
+            for (final TaxAmount taxAmount : values.values()) {
                 final TaxEntry taxentry = new TaxEntry();
-                taxentry.setAmount(entry.getValue());
-                taxentry.setUUID(entry.getKey().getUUID());
-                taxentry.setCatUUID(entry.getKey().getTaxCat().getUuid());
+                taxentry.setAmount(taxAmount.getAmount());
+                taxentry.setBase(taxAmount.getBase());
+                taxentry.setUUID(taxAmount.getTax().getUUID());
+                taxentry.setCatUUID(taxAmount.getTax().getTaxCat().getUuid());
                 taxentry.setCurrencyUUID(currencyUUID);
                 taxentry.setDate(calc.getDate());
                 ret.getEntries().add(taxentry);
@@ -1458,6 +1459,7 @@ public abstract class AbstractDocumentSum_Base
         final Taxes ret = getRateTaxes(_parameter, _calcList, _baseCurrInst);
         for (final TaxEntry entry  : ret.getEntries()) {
             entry.setAmount(entry.getAmount().divide(_rate, BigDecimal.ROUND_HALF_UP));
+            entry.setBase(entry.getBase().divide(_rate, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
     }

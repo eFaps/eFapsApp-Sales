@@ -22,10 +22,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
@@ -42,6 +42,7 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.TaxAmount;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.tax.Tax_Base;
@@ -1537,23 +1538,29 @@ public abstract class Calculator_Base
     }
 
     /**
-     * Get a map of taxes for teh current position.
-     * @return mapping of tax to amount
+     * Get the amount of taxes for the current position.
+     * @return taxes amounts
      * @throws EFapsException on error
      */
-    public Map<Tax, BigDecimal> getTaxesAmounts()
+    public Set<TaxAmount> getTaxesAmounts()
         throws EFapsException
     {
-        final Map<Tax, BigDecimal> ret = new HashMap<>();
+        final Set<TaxAmount> ret = new HashSet<>();
         final List<Tax> taxestemp = getTaxes();
         for (final Tax tax : taxestemp) {
             final BigDecimal net = getNetPrice();
             if (tax.equals(Tax_Base.getZeroTax())) {
-                ret.put(tax, BigDecimal.ZERO);
+                ret.add(new TaxAmount()
+                                .setTax(tax)
+                                .setAmount(BigDecimal.ZERO)
+                                .setBase(net));
             } else {
                 final DecimalFormat format = NumberFormatter.get().getFrmt4Tax(getPosKey());
                 final int decDigCant = format.getMaximumFractionDigits();
-                ret.put(tax, net.multiply(tax.getFactor()).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                ret.add(new TaxAmount()
+                                .setTax(tax)
+                                .setAmount(net.multiply(tax.getFactor()).setScale(decDigCant, BigDecimal.ROUND_HALF_UP))
+                                .setBase(net));
             }
         }
         return ret;
@@ -1758,8 +1765,8 @@ public abstract class Calculator_Base
                 ret = Calculator.getNetTotal(_parameter, _calcList);
                 for (final Calculator calc : _calcList) {
                     if (!calc.isWithoutTax()) {
-                        for (final BigDecimal amount : calc.getTaxesAmounts().values()) {
-                            ret = ret.add(amount);
+                        for (final TaxAmount taxAmount : calc.getTaxesAmounts()) {
+                            ret = ret.add(taxAmount.getAmount());
                         }
                     }
                 }
