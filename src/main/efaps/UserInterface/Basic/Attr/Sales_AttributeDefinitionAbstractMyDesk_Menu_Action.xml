@@ -30,6 +30,8 @@
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateTransferReason</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateFinancialInstitute</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateFundsToBeSettledReason</child>
+            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateCreditReason</child>
+            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateReminderReason</child>
         </childs>
         <parents>
             <parent>ERP_AttributeDefinitionMyDesk_Menu</parent>

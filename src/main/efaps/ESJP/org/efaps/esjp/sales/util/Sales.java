@@ -313,6 +313,13 @@ public final class Sales
                     .description("Use a NumberGenerator for the Name.");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CREDITNOTE_REASON = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.ActivateReason")
+                    .description("Activate/Deactivate the mechanism to assign a Reason to CreditNote.");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink DEFAULTCURRENCY4DOC = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
@@ -2527,6 +2534,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Reminder.CreateFromInvoiceAutoComplete")
                     .description("Possibiloity to overwrite the configuraiton for the Automcomplete for Invoice.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REMINDER_REASON = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Reminder.ActivateReason")
+                    .description("Activate/Deactivate the mechanism to assign a Reason to CreditNote.");
 
     /** See description. */
     @EFapsSysConfAttribute

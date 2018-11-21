@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2018 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,25 +15,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6409ee95-3cd2-4063-8080-d010466fd5c7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditNote</name>
         <parent>Sales_DocumentSumAbstract</parent>
-
         <attribute>
             <name>Status</name>
             <type>Status</type>
@@ -44,7 +34,20 @@
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
                 name="Sales_CreditNote.Status.RANGE_VALUE" event="RANGE_VALUE" />
         </attribute>
-
+        <attribute>
+            <name>CreditReason</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionCreditReason</typelink>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER1</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                     name="Sales_CreditNote.CreditReason.RANGE_VALUE"
+                     event="RANGE_VALUE">
+                <property name="Value">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="Type">Sales_AttributeDefinitionCreditReason</property>
+                <property name="DefaultRegex">01*</property>
+            </trigger>
+        </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_CreditNote.ACCESSCHECK" event="ACCESSCHECK" />
     </definition>

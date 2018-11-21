@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -42,8 +44,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("a66a61fd-487a-4764-9e72-f65050c1d39e")
@@ -90,6 +90,15 @@ public abstract class CreditNote_Base
         return ret;
     }
 
+    @Override
+    protected void add2DocCreate(final Parameter _parameter, final Insert _insert, final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+        _insert.add(CISales.CreditNote.CreditReason, _parameter.getParameterValue(
+                        CIFormSales.Sales_CreditNoteForm.creditReason.name));
+    }
+
     /**
      * Edit.
      *
@@ -112,6 +121,15 @@ public abstract class CreditNote_Base
             }
         }
         return ret;
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter, final Update _update, final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        _update.add(CISales.CreditNote.CreditReason, _parameter.getParameterValue(
+                        CIFormSales.Sales_CreditNoteForm.creditReason.name));
     }
 
     @Override

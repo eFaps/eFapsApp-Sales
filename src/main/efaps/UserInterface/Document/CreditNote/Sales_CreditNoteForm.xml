@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2018 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -176,6 +175,21 @@
             <property name="Width">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="creditReason">
+            <property name="Attribute">CreditReason</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_CreditNoteForm.creditReason.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">70a6a397-b8ef-40c5-853e-cff331bc79bb</property>
+                <property name="Attribute">org.efaps.sales.CreditNote.ActivateReason</property>
+                <property name="Default">true</property>
+           </trigger>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -552,6 +566,21 @@
             <property name="Columns">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="creditReason">
+            <property name="Attribute">CreditReason</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_CreditNoteForm.creditReason.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">70a6a397-b8ef-40c5-853e-cff331bc79bb</property>
+                <property name="Attribute">org.efaps.sales.CreditNote.ActivateReason</property>
+                <property name="Default">true</property>
+           </trigger>
         </field>
         <field name="headingProject" character="Heading">
             <property name="Level">2</property>

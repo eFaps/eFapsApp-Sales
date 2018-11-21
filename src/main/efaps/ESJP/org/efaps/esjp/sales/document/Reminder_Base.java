@@ -29,7 +29,10 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -85,6 +88,14 @@ public abstract class Reminder_Base
         return ret;
     }
 
+    @Override
+    protected void add2DocCreate(final Parameter _parameter, final Insert _insert, final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+        _insert.add(CISales.Reminder.ReminderReason, _parameter.getParameterValue(
+                        CIFormSales.Sales_ReminderForm.reminderReason.name));
+    }
     /**
      * Edit.
      *
@@ -107,6 +118,15 @@ public abstract class Reminder_Base
             }
         }
         return ret;
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter, final Update _update, final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        _update.add(CISales.Reminder.ReminderReason, _parameter.getParameterValue(
+                        CIFormSales.Sales_ReminderForm.reminderReason.name));
     }
 
     @Override
