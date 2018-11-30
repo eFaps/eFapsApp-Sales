@@ -51,7 +51,6 @@ public abstract class ProductionOrder_Base
         connect2Derived(_parameter, createdDoc);
         createPositions(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
-        executeProcess(_parameter, createdDoc);
 
         final File file = createReport(_parameter, createdDoc);
         if (file != null) {

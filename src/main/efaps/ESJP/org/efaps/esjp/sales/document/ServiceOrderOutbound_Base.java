@@ -77,7 +77,6 @@ public abstract class ServiceOrderOutbound_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
-        executeProcess(_parameter, createdDoc);
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
     }

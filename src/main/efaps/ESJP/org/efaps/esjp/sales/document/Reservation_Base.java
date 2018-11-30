@@ -73,7 +73,6 @@ public abstract class Reservation_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
-        executeProcess(_parameter, createdDoc);
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
     }
@@ -205,7 +204,7 @@ public abstract class Reservation_Base
                                                               final Instance _prodInst)
         throws EFapsException
     {
-        final List<Instance> ret = new ArrayList<Instance>();
+        final List<Instance> ret = new ArrayList<>();
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
         queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _prodInst.getId());

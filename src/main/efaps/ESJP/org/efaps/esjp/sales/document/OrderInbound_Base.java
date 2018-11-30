@@ -49,7 +49,6 @@ public abstract class OrderInbound_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        executeProcess(_parameter, createdDoc);
         return new Return();
     }
 
