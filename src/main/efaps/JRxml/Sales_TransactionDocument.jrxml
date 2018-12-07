@@ -92,7 +92,7 @@
         <defaultValueExpression><![CDATA[60182.54428]]></defaultValueExpression>
     </parameter>
     <queryString language="eFaps">
-        <![CDATA[print $P!{INSTANCE}
+        <![CDATA[print obj $P!{INSTANCE}
  select
  attribute[Name] as name,
  attribute[Date] as date,
