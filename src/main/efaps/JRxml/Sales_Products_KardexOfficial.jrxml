@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_KardexOfficial" language="groovy" pageWidth="1400" pageHeight="1190" orientation="Landscape" columnWidth="1400" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" isIgnorePagination="true" uuid="330f23a7-ed04-40b1-854f-1983657fdfe2">
+<!-- 2018-12-13T21:55:35 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_KardexOfficial" pageWidth="1400" pageHeight="1190" orientation="Landscape" columnWidth="1400" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" isIgnorePagination="true" uuid="330f23a7-ed04-40b1-854f-1983657fdfe2">
 	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
@@ -346,14 +347,12 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="600" y="0" width="100" height="14" uuid="c99026ea-ac7f-4f6f-8c49-d15bacea2342">
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND((F" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*G"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="700" y="0" width="100" height="14" uuid="4aac53ef-4724-4614-bd1c-64a0688dbda3"/>
@@ -365,35 +364,30 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,IF(ISNUMBER(M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0)),2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="900" y="0" width="100" height="14" uuid="8389e165-6cb3-4b5d-b6a7-19c7ddcea5a4">
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="1000" y="0" width="100" height="14" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(ISNUMBER(L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0)+F"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-I"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="1100" y="0" width="100" height="14" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(H" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0, IF(ISNUMBER(M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0),(IF(ISNUMBER(N"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),N"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",0)+H"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="1200" y="0" width="100" height="14" uuid="edcfe3e5-3356-4b71-90e7-681fd431c388">
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="1300" y="0" width="100" height="14" isPrintWhenDetailOverflows="true" uuid="d47eff01-8dc0-45b3-be8f-4dd57f826228"/>
@@ -402,6 +396,38 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="50"/>
+		<band height="14">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="400" y="0" width="100" height="14" uuid="3263495a-69e8-46b9-8cc4-cf8cf3e4dca9">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(F" +  ($V{OFFSET} + 1) +":F"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="600" y="0" width="100" height="14" uuid="d6b4433c-00f0-4c25-8ba2-9903ac5dd3eb">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(H" +  ($V{OFFSET} + 1) +":H"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="700" y="0" width="100" height="14" uuid="797574fd-2f0f-4205-bdcb-220c0dd9c1c5">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(I" +  ($V{OFFSET} + 1) +":I"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="900" y="0" width="100" height="14" uuid="a76c8d69-7bb8-48bb-9f91-e85972c3cdf7">
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(K" +  ($V{OFFSET} + 1) +":K"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+			</textField>
+			<staticText>
+				<reportElement x="320" y="0" width="80" height="14" uuid="d019e9cd-2b47-48dc-989a-d6b220dfbb21"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+		</band>
 	</columnFooter>
 </jasperReport>

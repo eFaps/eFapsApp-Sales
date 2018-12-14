@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -161,16 +162,19 @@ public abstract class SalesKardexBatchReport_Base
         final Set<CellRangeAddressWrapper> mergedRegions = new HashSet<>();
         final boolean first = _targetSheet.getLastRowNum() == 0;
         int j = first ? 0 : _targetSheet.getLastRowNum() + 1 + _offset;
+        final Set<Integer> skip = new HashSet<>(Arrays.asList(1, 2, 3));
         for (int i = _sourceSheet.getFirstRowNum(); i <= _sourceSheet.getLastRowNum(); i++) {
-            final Row srcRow = _sourceSheet.getRow(i);
-            final Row destRow = _targetSheet.createRow(j);
-            if (srcRow != null) {
-                copyRow(_sourceSheet, _targetSheet, srcRow, destRow, styleMap, mergedRegions, false);
-                if (srcRow.getLastCellNum() > maxColumnNum) {
-                    maxColumnNum = srcRow.getLastCellNum();
+            if (first || !skip.contains(i)) {
+                final Row srcRow = _sourceSheet.getRow(i);
+                final Row destRow = _targetSheet.createRow(j);
+                if (srcRow != null) {
+                    copyRow(_sourceSheet, _targetSheet, srcRow, destRow, styleMap, mergedRegions, false);
+                    if (srcRow.getLastCellNum() > maxColumnNum) {
+                        maxColumnNum = srcRow.getLastCellNum();
+                    }
                 }
+                j++;
             }
-            j++;
         }
         if (first) {
             for (int i = 0; i <= maxColumnNum; i++) {
