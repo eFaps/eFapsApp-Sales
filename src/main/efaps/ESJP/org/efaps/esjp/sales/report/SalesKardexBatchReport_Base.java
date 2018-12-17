@@ -162,7 +162,7 @@ public abstract class SalesKardexBatchReport_Base
         final Set<CellRangeAddressWrapper> mergedRegions = new HashSet<>();
         final boolean first = _targetSheet.getLastRowNum() == 0;
         int j = first ? 0 : _targetSheet.getLastRowNum() + 1 + _offset;
-        final Set<Integer> skip = new HashSet<>(Arrays.asList(1, 2, 3));
+        final Set<Integer> skip = new HashSet<>(Arrays.asList(0, 1, 2, 3));
         for (int i = _sourceSheet.getFirstRowNum(); i <= _sourceSheet.getLastRowNum(); i++) {
             if (first || !skip.contains(i)) {
                 final Row srcRow = _sourceSheet.getRow(i);
