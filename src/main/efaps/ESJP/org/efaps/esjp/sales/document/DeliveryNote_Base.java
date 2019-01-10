@@ -21,7 +21,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -273,17 +272,8 @@ public abstract class DeliveryNote_Base
         }
         add2AutoComplete4DeparturePoint(_parameter, list);
 
-        Collections.sort(list, new Comparator<Map<String, String>>()
-        {
-
-            @Override
-            public int compare(final Map<String, String> _o1,
-                               final Map<String, String> _o2)
-            {
-                return _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
-                                _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()));
-            }
-        });
+        Collections.sort(list, (_o1, _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
+                        _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey())));
         ret.put(ReturnValues.VALUES, list);
         return ret;
     }
@@ -425,6 +415,7 @@ public abstract class DeliveryNote_Base
                     if (dataDriver == null) {
                         _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name, "");
                     } else {
+                        final ArrayList<String> name = (ArrayList<String>) dataDriver.get("Name");
                         final ArrayList<String> license = (ArrayList<String>) dataDriver.get("License");
                         final List<Boolean> defaults = (ArrayList<Boolean>) dataDriver.get("DefaultSelected");
                         int i = 0;
@@ -437,7 +428,7 @@ public abstract class DeliveryNote_Base
                             i++;
                         }
                         _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name,
-                                        license.isEmpty() || !sel ? "" : license.get(i));
+                                        license.isEmpty() || !sel ? "" : name.get(i) + " - " + license.get(i));
                     }
                 }
             }
@@ -537,16 +528,8 @@ public abstract class DeliveryNote_Base
 
         add2AutoComplete4ArrivalPoint(_parameter, list);
 
-        Collections.sort(list, new Comparator<Map<String, String>>()
-        {
-            @Override
-            public int compare(final Map<String, String> _o1,
-                               final Map<String, String> _o2)
-            {
-                return _o1.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()).compareTo(
-                                _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()));
-            }
-        });
+        Collections.sort(list, (_o1, _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()).compareTo(
+                        _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey())));
         ret.put(ReturnValues.VALUES, list);
         return ret;
     }
@@ -836,6 +819,7 @@ public abstract class DeliveryNote_Base
      * @return map list for auto-complete.
      * @throws EFapsException on error.
      */
+    @SuppressWarnings("unchecked")
     public Return autoComplete4VehicleDriverInfo(final Parameter _parameter)
         throws EFapsException
     {
@@ -861,14 +845,16 @@ public abstract class DeliveryNote_Base
                                 .getAttributeSet(CIContacts.ClassCarrier.DriverSet.name);
 
                 if (dataCarrier != null) {
-                    @SuppressWarnings("unchecked")
-                    final List<String> values = (ArrayList<String>) dataCarrier.get("License");
-                    for (final String val : values) {
+                    final List<String> names = (ArrayList<String>) dataCarrier.get("Name");
+                    final List<String> licenses = (ArrayList<String>) dataCarrier.get("License");
+                    int idx =  0;
+                    for (final String val : licenses) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
                             final Map<String, String> map = new HashMap<>();
-                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
+                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), names.get(idx) + " - " + val);
                             list.add(map);
                         }
+                        idx++;
                     }
                 }
             }
