@@ -1167,6 +1167,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute ORDERINBOUND_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.RevisionSequence")
+                    .defaultValue(CINumGenSales.OrderInboundRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final ListSysConfAttribute PAYMENT_DOCS4OBLIGATION = new ListSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.Documents4Obligations")

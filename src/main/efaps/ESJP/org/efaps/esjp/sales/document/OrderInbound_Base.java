@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,23 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.UUID;
+
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("77aebe5f-aebd-4662-b503-efdc6e46d9d3")
@@ -52,6 +57,24 @@ public abstract class OrderInbound_Base
         return new Return();
     }
 
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String seqKey = Sales.INCOMINGINVOICE_REVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
+        if (numgen != null) {
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
+            _insert.add(CISales.IncomingInvoice.Revision, revision);
+        }
+    }
+    
+    
     /**
      * Edit.
      *
