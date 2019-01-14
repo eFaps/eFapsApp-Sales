@@ -1173,8 +1173,6 @@ public final class Sales
                     .defaultValue(CINumGenSales.OrderInboundRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
 
-
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final ListSysConfAttribute PAYMENT_DOCS4OBLIGATION = new ListSysConfAttribute()

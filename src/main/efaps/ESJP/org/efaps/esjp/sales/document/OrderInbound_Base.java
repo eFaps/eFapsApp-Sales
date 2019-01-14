@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,18 +29,20 @@ import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
- * @author The eFaps Team
  */
 @EFapsUUID("77aebe5f-aebd-4662-b503-efdc6e46d9d3")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class OrderInbound_Base
     extends AbstractDocumentSum
 {
+    /**
+     * Used to store the Revision in the Context.
+     */
+    public static final String REVISIONKEY =  OrderInbound.class.getName() + ".RevisionKey";
 
     /**
      * Method for create a new Incoming Order.
@@ -63,18 +65,28 @@ public abstract class OrderInbound_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String seqKey = Sales.INCOMINGINVOICE_REVSEQ.get();
+        final String seqKey = Sales.ORDERINBOUND_REVSEQ.get();
         final NumberGenerator numgen = isUUID(seqKey)
                         ? NumberGenerator.get(UUID.fromString(seqKey))
                         : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
-            Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
-            _insert.add(CISales.IncomingInvoice.Revision, revision);
+            Context.getThreadContext().setSessionAttribute(OrderInbound.REVISIONKEY, revision);
+            _insert.add(CISales.OrderInbound.Revision, revision);
         }
     }
-    
-    
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
+    public Return showRevisionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getRevisionSequenceFieldValue(_parameter, OrderInbound.REVISIONKEY);
+    }
+
     /**
      * Edit.
      *

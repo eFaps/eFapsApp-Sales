@@ -23,8 +23,12 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundTable</name>
-        <field name="name">
+        <field name="revision">
             <property name="HRef">TREE</property>
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_OrderInbound/Revision.Label</property>
+        </field>
+        <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_OrderInbound/Name.Label</property>
         </field>
@@ -88,13 +92,6 @@
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_OrderInbound/Status.Label</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>

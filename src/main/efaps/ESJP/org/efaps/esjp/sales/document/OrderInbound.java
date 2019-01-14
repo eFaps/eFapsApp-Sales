@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,4 +32,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class OrderInbound
     extends OrderInbound_Base
 {
+    /**
+     * Used to store the Revision in the Context.
+     */
+    public static final String REVISIONKEY =  OrderInbound_Base.REVISIONKEY;
 }

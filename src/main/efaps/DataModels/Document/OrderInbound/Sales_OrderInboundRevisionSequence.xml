@@ -14,13 +14,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
---><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>570615a0-a2cc-47eb-9d76-c42afe887298</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundRevisionSequence</name>
-        <format>C-%05d</format>
+        <format>PR-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>
