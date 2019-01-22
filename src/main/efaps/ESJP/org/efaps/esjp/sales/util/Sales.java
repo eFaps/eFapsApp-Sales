@@ -407,6 +407,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DELIVERYNOTE_FROMORINAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.CreateFromOrderInboundAutoComplete")
+                    .description("AutoComplete and Activation for Create from OrderInbound for DeliveryNote.")
+                    .addDefaultValue("Type", CISales.OrderInbound.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.OrderInboundStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.OrderInboundStatus.Open.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute DELIVERYNOTE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "DeliveryNote.JasperReport")

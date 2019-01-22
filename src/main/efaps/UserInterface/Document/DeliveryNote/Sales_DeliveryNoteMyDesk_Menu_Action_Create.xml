@@ -54,6 +54,12 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">receipt</property>
+
+                <!-- Sales_OrderInbound2DeliveryNote -->
+                <property name="ConnectType02">bee70a3a-9eb0-4948-8cc8-59d68cec2ac7</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">orderInbound</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
                 <property name="Validation">POSITION</property>
@@ -105,11 +111,17 @@
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">receipt</property>
 
-                <!-- Projects_ProjectService2DeliveryNote -->
-                <property name="ConnectType02">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
+                <!-- Sales_OrderInbound2DeliveryNote -->
+                <property name="ConnectType02">bee70a3a-9eb0-4948-8cc8-59d68cec2ac7</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
-                <property name="ConnectForeignField02">project</property>
+                <property name="ConnectForeignField02">orderInbound</property>
+
+                <!-- Projects_ProjectService2DeliveryNote -->
+                <property name="ConnectType03">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
                 <property name="Validation">POSITION</property>

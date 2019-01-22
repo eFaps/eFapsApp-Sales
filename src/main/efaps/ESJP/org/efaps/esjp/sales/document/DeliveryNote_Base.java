@@ -316,6 +316,12 @@ public abstract class DeliveryNote_Base
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_DeliveryNoteForm.receipt.name, queryBldr));
         }
+        if (Sales.DELIVERYNOTE_FROMORINAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.DELIVERYNOTE_FROMORINAC.get());
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_DeliveryNoteForm.orderInbound.name, queryBldr));
+        }
     }
 
 
@@ -344,6 +350,12 @@ public abstract class DeliveryNote_Base
                             Sales.DELIVERYNOTE_FROMRECEIPTAC.get());
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_DeliveryNoteForm.receipt.name, queryBldr));
+        }
+        if (Sales.DELIVERYNOTE_FROMORINAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.DELIVERYNOTE_FROMORINAC.get());
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_DeliveryNoteForm.orderInbound.name, queryBldr));
         }
         return ret;
     }
@@ -878,21 +890,44 @@ public abstract class DeliveryNote_Base
     public Return connect2InvoiceTrigger(final Parameter _parameter)
         throws EFapsException
     {
+        return connect2DocumentTrigger(_parameter, CISales.Invoice2DeliveryNote, CISales.Receipt2DeliveryNote);
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new return
+     * @throws EFapsException on error
+     */
+    public Return connect2ReceiptTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        return connect2DocumentTrigger(_parameter, CISales.Invoice2DeliveryNote, CISales.Receipt2DeliveryNote);
+    }
+
+    public Return connect2OrderInboundTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        return connect2DocumentTrigger(_parameter, CISales.OrderInbound2DeliveryNote);
+    }
+
+    protected Return connect2DocumentTrigger(final Parameter _parameter, final CIType... _types)
+        throws EFapsException
+    {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         final SelectBuilder selStatus = SelectBuilder.get()
                         .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
                         .attribute(CISales.DeliveryNote.Status);
         final SelectBuilder selDelNoteInst = SelectBuilder.get()
                         .linkto(CISales.Document2DocumentAbstract.ToAbstractLink).instance();
-        final SelectBuilder selInvoiceInst = SelectBuilder.get()
+        final SelectBuilder selDocumentInst = SelectBuilder.get()
                         .linkto(CISales.Document2DocumentAbstract.FromAbstractLink).instance();
-        print.addSelect(selStatus, selDelNoteInst, selInvoiceInst);
+        print.addSelect(selStatus, selDelNoteInst, selDocumentInst);
         print.addAttribute(CISales.Document2DocumentAbstract.ToAbstractLink,
                         CISales.Document2DocumentAbstract.FromAbstractLink);
         print.executeWithoutAccessCheck();
         final Status status = Status.get(print.<Long>getSelect(selStatus));
 
-        final Instance invoiceInst = print.<Instance>getSelect(selInvoiceInst);
+        final Instance documentInst = print.<Instance>getSelect(selDocumentInst);
         final Instance delNoteInst = print.<Instance>getSelect(selDelNoteInst);
 
         // if the deliverynote ticket was open check if the status must change
@@ -901,8 +936,10 @@ public abstract class DeliveryNote_Base
             final DocComparator comp = new DocComparator();
             comp.setDocInstance(delNoteInst);
             // check for the case that there are n Invoices for the given DeliveryNote
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice2DeliveryNote);
-            queryBldr.addType(CISales.Receipt2DeliveryNote);
+            final QueryBuilder queryBldr = new QueryBuilder(_types[0]);
+            if (_types.length > 1) {
+                queryBldr.addType(_types[1]);
+            }
             queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, delNoteInst);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selInvInst = SelectBuilder.get()
@@ -923,11 +960,11 @@ public abstract class DeliveryNote_Base
             } else {
                 // check for the case that for the n DeliveryNotes for the Invoice
                 final DocComparator invComp = new DocComparator();
-                invComp.setDocInstance(invoiceInst);
+                invComp.setDocInstance(documentInst);
                 // check for the case that there are n Invoices for the given DeliveryNote
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Invoice2DeliveryNote);
                 queryBldr.addType(CISales.Receipt2DeliveryNote);
-                queryBldr2.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, invoiceInst);
+                queryBldr2.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, documentInst);
                 final MultiPrintQuery multi2 = queryBldr2.getPrint();
                 final SelectBuilder selDelInst = SelectBuilder.get()
                                 .linkto(CISales.Document2DocumentAbstract.ToAbstractLink).instance();
@@ -959,16 +996,5 @@ public abstract class DeliveryNote_Base
         }
         DocComparator.markPartial(_parameter, _parameter.getInstance());
         return new Return();
-    }
-
-    /**
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return new return
-     * @throws EFapsException on error
-     */
-    public Return connect2ReceiptTrigger(final Parameter _parameter)
-        throws EFapsException
-    {
-        return connect2InvoiceTrigger(_parameter);
     }
 }

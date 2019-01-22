@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2019 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -75,6 +75,34 @@
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromReceiptAutoComplete</property>
+           </trigger>
+        </field>
+        <field name="orderInbound">
+            <property name="Label">Sales_OrderInbound.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Doc"
+                name="Sales_DeliveryNote_SelectDocForm.orderInbound.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type01">Sales_OrderInbound</property>
+                <property name="StatusGroup01">Sales_OrderInboundStatus</property>
+                <property name="Status01">*</property>
+                 <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.DeliveryNote.CreateFromOrderInboundAutoComplete</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Document"
+                name="Sales_DeliveryNote_SelectDocForm.orderInbound.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNote_SelectDocForm.orderInbound.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromOrderInboundAutoComplete</property>
            </trigger>
         </field>
         <field name="info">
