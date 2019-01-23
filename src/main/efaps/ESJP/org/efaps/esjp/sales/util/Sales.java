@@ -1185,6 +1185,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute ORDERINBOUND_FROMQUOTATIONAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.CreateFromQuotationAutoComplete")
+                    .description("AutoComplete and Activation for Create from Quotation for OrderInbound.")
+                    .addDefaultValue("Type", CISales.Quotation.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.QuotationStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.QuotationStatus.Open.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final ListSysConfAttribute PAYMENT_DOCS4OBLIGATION = new ListSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.Documents4Obligations")

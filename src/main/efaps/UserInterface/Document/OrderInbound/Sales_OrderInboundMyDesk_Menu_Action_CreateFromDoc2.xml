@@ -36,6 +36,11 @@
                 <property name="Status">Digitized</property>
                 <property name="PositionType">Sales_OrderInboundPosition</property>
 
+                <!-- Sales_Quotation2OrderInbound -->
+                <property name="ConnectType01">d8da0533-a5a8-4dc9-ad2e-6bd7c93c2d5a</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">quotation</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.OrderInbound" method="validate">
                 <property name="Validation">POSITION</property>

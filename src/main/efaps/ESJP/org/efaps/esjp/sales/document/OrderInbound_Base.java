@@ -17,6 +17,8 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
@@ -28,7 +30,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
@@ -56,6 +62,8 @@ public abstract class OrderInbound_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         return new Return();
     }
 
@@ -121,6 +129,39 @@ public abstract class OrderInbound_Base
         throws EFapsException
     {
         return CISales.OrderInbound;
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+
+        if (Sales.ORDERINBOUND_FROMQUOTATIONAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.ORDERINBOUND_FROMQUOTATIONAC.get());
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_OrderInboundForm.quotation.name, queryBldr));
+        }
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+
+        if (Sales.ORDERINBOUND_FROMQUOTATIONAC.exists()) {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
+                            Sales.ORDERINBOUND_FROMQUOTATIONAC.get());
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_OrderInboundForm.quotation.name, queryBldr));
+        }
+        return ret;
     }
 
     /**

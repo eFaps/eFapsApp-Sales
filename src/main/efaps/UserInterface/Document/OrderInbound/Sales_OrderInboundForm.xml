@@ -265,7 +265,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="RowSpan">4</property>
+            <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -385,6 +385,21 @@
             <trigger program="org.efaps.esjp.sales.document.OrderInbound" method="accessCheck4Rate"
                 name="Sales_OrderInboundForm.rateCrossTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
+        <field name="quotation">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_OrderInboundForm.quotation.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderInboundForm.quotation.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.OrderInbound.CreateFromQuotationAutoComplete</property>
+           </trigger>
+        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
@@ -397,5 +412,4 @@
                 event="UI_FIELD_VALUE" />
         </field>
     </definition>
-
 </ui-form>
