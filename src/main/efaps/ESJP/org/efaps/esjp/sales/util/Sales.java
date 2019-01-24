@@ -1170,6 +1170,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute ORDERINBOUND_PRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.")
+                    .addDefaultValue("Type", CIProducts.ProductStandart.getType().getName());
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute ORDERINBOUND_STATUS4CREATE = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderInbound.Status4Create")
