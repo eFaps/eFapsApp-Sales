@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.humanresource.Employee;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -102,12 +103,14 @@ public abstract class PaymentSumReport_Base
      */
     public enum GroupBy
     {
-        /** Both. */
+        /** Account Group. */
         ACCOUNT,
-        /** Incoming. */
+        /** PAYMENTDOCTYPE Group. */
         PAYMENTDOCTYPE,
-        /** Outgoing. */
-        CONTACT
+        /** Contact Group. */
+        CONTACT,
+        /** Assigned Group. */
+        ASSIGNED
     }
 
     /**
@@ -167,6 +170,46 @@ public abstract class PaymentSumReport_Base
         throws EFapsException
     {
         return new DynPaymentSumReport(this);
+    }
+
+    /**
+     * Checks if is show assigned.
+     *
+     * @return true, if is show assigned
+     * @throws EFapsException on error
+     */
+    protected boolean isShowAssigned()
+        throws EFapsException
+    {
+        return Sales.REPORT_PAYMENTSUM_ASSIGENED.get();
+    }
+
+    @Override
+    protected GroupByFilterValue getGroupByFilterValue(final Parameter _parameter,
+                                                       final String _className)
+    {
+        final GroupByFilterValue ret = new GroupByFilterValue()
+        {
+
+            /** The Constant serialVersionUID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public List<Enum<?>> getInactive()
+            {
+                final List<Enum<?>> ret = super.getInactive();
+                try {
+                    if (!isShowAssigned()) {
+                        ret.remove(GroupBy.ASSIGNED);
+                    }
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+                return ret;
+            }
+        }.setClassName(_className);
+        ret.setObject(new ArrayList<>());
+        return ret;
     }
 
     /**
@@ -230,7 +273,10 @@ public abstract class PaymentSumReport_Base
                 final SelectBuilder selContact = SelectBuilder.get()
                                 .linkto(CISales.PaymentDocumentAbstract.Contact)
                                 .attribute(CIContacts.ContactAbstract.Name);
-                multi.addSelect(selAccount, selCurrencyInst, selRateCurrencyInst, selContact);
+                final SelectBuilder selContactInst = SelectBuilder.get()
+                                .linkto(CISales.PaymentDocumentAbstract.Contact)
+                                .instance();
+                multi.addSelect(selAccount, selCurrencyInst, selRateCurrencyInst, selContact, selContactInst);
                 multi.addAttribute(CISales.PaymentDocumentAbstract.Amount, CISales.PaymentDocumentAbstract.Date,
                                 CISales.PaymentDocumentAbstract.Rate);
                 multi.execute();
@@ -245,6 +291,7 @@ public abstract class PaymentSumReport_Base
                                     .setPaymentDocInstance(multi.getCurrentInstance())
                                     .setAccount(multi.getSelect(selAccount))
                                     .setContact(multi.getSelect(selContact))
+                                    .setContactInst(multi.getSelect(selContactInst))
                                     .setAmount(amount)
                                     .setCurrencyInst(multi.getSelect(selCurrencyInst))
                                     .setRateCurrencyInst(multi.getSelect(selRateCurrencyInst))
@@ -568,6 +615,11 @@ public abstract class PaymentSumReport_Base
                                         "paymentDocType", String.class);
                         crosstab.addRowGroup(rowTypeGroup);
                         break;
+                    case ASSIGNED:
+                        final CrosstabRowGroupBuilder<String> rowAssignedGroup = DynamicReports.ctab.rowGroup(
+                                        "assigned", String.class).setHeaderWidth(150);
+                        crosstab.addRowGroup(rowAssignedGroup);
+                        break;
                     default:
                         break;
                 }
@@ -644,6 +696,9 @@ public abstract class PaymentSumReport_Base
 
         /** The contact. */
         private String contact;
+
+        /** The contact inst. */
+        private Instance contactInst;
 
         /**
          * Instantiates a new data bean.
@@ -907,6 +962,28 @@ public abstract class PaymentSumReport_Base
         }
 
         /**
+         * Gets the contact inst.
+         *
+         * @return the contact inst
+         */
+        public Instance getContactInst()
+        {
+            return this.contactInst;
+        }
+
+        /**
+         * Sets the contact inst.
+         *
+         * @param _contactInst the contact inst
+         * @return the data bean
+         */
+        public DataBean setContactInst(final Instance _contactInst)
+        {
+            this.contactInst = _contactInst;
+            return this;
+        }
+
+        /**
          * Getter method for the instance variable {@link #reportCurrencyInst}.
          *
          * @return value of instance variable {@link #reportCurrencyInst}
@@ -936,6 +1013,24 @@ public abstract class PaymentSumReport_Base
         public Parameter getParameter()
         {
             return this.parameter;
+        }
+
+        /**
+         * Gets the assigned.
+         *
+         * @return the assigned
+         * @throws EFapsException on error
+         */
+        public String getAssigned()
+            throws EFapsException
+        {
+            final String ret;
+            if (InstanceUtils.isValid(getContactInst())) {
+                ret = Employee.getEmployeeAssigned2Contact(new Parameter(), getContactInst());
+            } else {
+                ret = "";
+            }
+            return ret;
         }
 
         @Override

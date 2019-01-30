@@ -1739,18 +1739,6 @@ public abstract class SalesReport4Account_Base
         }
 
         /**
-         * Sets the condition.
-         *
-         * @param _assigned the assigned
-         * @return the data bean
-         */
-        public DataBean setAssigned(final String _assigned)
-        {
-            this.condition = _assigned;
-            return this;
-        }
-
-        /**
          * Gets the contact inst.
          *
          * @return the contact inst
