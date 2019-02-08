@@ -1890,21 +1890,28 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute QUOTATIONACTIVATECONDITION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute QUOTATION_ASSEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Quotation.AssignEmployee")
+                    .description("Allows to assign to an Employee.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute QUOTATION_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Quotation.ActivateCondition")
                     .description("Activate Condition for Quotation.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute QUOTATIONJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute QUOTATION_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Quotation.JasperReport")
                     .description("Name of the jasperReport for Quotation");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> QUOTATIONMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> QUOTATION_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Quotation.Mime")
                     .clazz(JasperMime.class)

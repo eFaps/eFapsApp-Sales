@@ -23,6 +23,12 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuotationMyDesk_Menu_Action_Create</name>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <access>
             <role>Sales_Salesman</role>
             <role>Sales_Admin</role>
@@ -33,7 +39,6 @@
                 <property name="PositionType">Sales_QuotationPosition</property>
                 <property name="StatusGroup">Sales_QuotationStatus</property>
                 <property name="Status">Draft</property>
-                 
 
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
@@ -46,6 +51,58 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.Quotation" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">DUPLICATEDPOSITION</property>
+            </validate>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Quotation</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_QuotationMyDesk_Menu_Action_Create</name>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <access>
+            <role>Sales_Salesman</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_QuotationForm</form>
+            <execute program="org.efaps.esjp.sales.document.Quotation" method="create">
+                <property name="PositionType">Sales_QuotationPosition</property>
+                <property name="StatusGroup">Sales_QuotationStatus</property>
+                <property name="Status">Draft</property>
+
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.Quotation.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.Quotation.Mime</property>
+                <property name="NoDataSource">true</property>
+
+                <!-- Sales_ChannelSalesCondition2Quotation -->
+                <property name="ConnectType01">9bb9efae-e3c9-4b68-908b-4b80b821643c</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
+
+                <!-- Sales_Employee2Quotation -->
+                <property name="ConnectType02">7407dfa9-b35e-4240-92d7-19463ad88af0</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Quotation" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
