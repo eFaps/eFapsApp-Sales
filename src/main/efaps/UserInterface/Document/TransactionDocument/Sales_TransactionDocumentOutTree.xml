@@ -30,6 +30,7 @@
         <type>Sales_TransactionDocumentOut</type>
         <childs>
             <child>Sales_TransactionDocumentTree_Transaction</child>
+            <child>Sales_TransactionDocumentOutTree_Doc</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
