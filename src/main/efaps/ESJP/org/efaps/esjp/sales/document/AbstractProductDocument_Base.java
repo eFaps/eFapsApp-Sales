@@ -706,6 +706,30 @@ public abstract class AbstractProductDocument_Base
         return retVal;
     }
 
+    public Return updateFields4ProductDocumentType(final Parameter _parameter)
+        throws EFapsException
+    {
+      final Return ret = new Return();
+      org.efaps.admin.ui.field.Field field = (org.efaps.admin.ui.field.Field) _parameter.get(ParameterValues.UIOBJECT);
+      Instance instance = Instance.get(_parameter.getParameterValue(field.getName()));
+      if (InstanceUtils.isKindOf(instance, CISales.ProductDocumentType)) {
+          PrintQuery print = new PrintQuery(instance);
+          SelectBuilder sel = SelectBuilder.get().linkto(CISales.ProductDocumentType.CounterpartLink).instance();
+          print.addSelect(sel);
+          print.executeWithoutAccessCheck();
+          Instance counterpartInstance = print.getSelect(sel);
+          if (counterpartInstance.isValid()) {
+              final List<Map<String, Object>> list = new ArrayList<>();
+              final Map<String, Object> map = new HashMap<>();
+              list.add(map);
+              map.put(getProperty(_parameter, "TargetField"), counterpartInstance.getOid());
+              ret.put(ReturnValues.VALUES, list);
+          }
+      }
+      return ret;
+    }
+
+
     @Override
     public Return getJavaScriptUIValue(final Parameter _parameter)
         throws EFapsException

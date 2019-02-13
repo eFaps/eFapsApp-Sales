@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,19 +14,13 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
+ 
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>42ec125b-46ee-4822-8de4-b4cd55072f74</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductDocumentType</name>
@@ -36,6 +31,13 @@
             <className>org.efaps.esjp.sales.util.Sales$ProdDocActivation</className>
             <sqltable>ERP_DocumentTypeSQLTable</sqltable>
             <sqlcolumn>INTV</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CounterpartLink</name>
+            <type>Link</type>
+            <typelink>Sales_ProductDocumentType</typelink>
+            <sqltable>ERP_DocumentTypeSQLTable</sqltable>
+            <sqlcolumn>LINKID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

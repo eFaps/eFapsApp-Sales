@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -38,6 +39,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -56,6 +58,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.products.Inventory;
 import org.efaps.esjp.products.Inventory_Base.InventoryBean;
 import org.efaps.esjp.products.Product;
+import org.efaps.esjp.products.Transaction_Base;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.sales.util.Sales;
@@ -588,6 +591,40 @@ public abstract class TransactionDocument_Base
         return getRevisionSequenceFieldValue(_parameter, TransactionDocument.REVISIONKEY);
     }
 
+    public Instance createDocument(final Parameter _parameter,
+                                   final CIType _type, final DateTime _date)
+        throws EFapsException
+    {
+        final Insert insert = new Insert(_type);
+        String seqKey;
+        if (_type.equals(CISales.TransactionDocumentOut)) {
+            seqKey = Sales.TRANSDOCOUT_SEQ.get();
+        } else {
+            seqKey = Sales.TRANSDOCIN_SEQ.get();
+        }
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
+        if (numgen != null) {
+            final String name = numgen.getNextVal();
+            insert.add(CISales.DocumentAbstract.Name, name);
+
+            String newName;
+            final String currentName = (String) Context.getThreadContext().getSessionAttribute(Transaction_Base.NAMEKEY);
+            if (StringUtils.isNotEmpty(currentName)) {
+                newName = currentName + " -> " + name;
+            } else {
+                newName = name;
+            }
+            Context.getThreadContext().setSessionAttribute(Transaction_Base.NAMEKEY, newName);
+
+        }
+        insert.add(CISales.TransactionDocumentAbstract.Date, _date);
+        insert.add(CISales.TransactionDocumentAbstract.StatusAbstract,
+                        Status.find(CISales.TransactionDocumentStatus.Open));
+        insert.execute();
+        return insert.getInstance();
+    }
 
     public static class IndividualWithQuantity {
 
@@ -604,7 +641,7 @@ public abstract class TransactionDocument_Base
          */
         public Instance getIndividual()
         {
-            return this.individual;
+            return individual;
         }
 
         /**
@@ -615,7 +652,7 @@ public abstract class TransactionDocument_Base
          */
         public IndividualWithQuantity setIndividual(final Instance _individual)
         {
-            this.individual = _individual;
+            individual = _individual;
             return this;
         }
 
@@ -626,7 +663,7 @@ public abstract class TransactionDocument_Base
          */
         public BigDecimal getQuantity()
         {
-            return this.quantity;
+            return quantity;
         }
 
         /**
@@ -637,7 +674,7 @@ public abstract class TransactionDocument_Base
          */
         public IndividualWithQuantity setQuantity(final BigDecimal _quantity)
         {
-            this.quantity = _quantity;
+            quantity = _quantity;
             return this;
         }
     }

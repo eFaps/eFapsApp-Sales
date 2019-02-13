@@ -2519,6 +2519,28 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TRANSDOCIN_SEQ = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "TransactionDocumentIn.Sequence")
+                    .defaultValue(CINumGenSales.TransactionDocumentInSequence.uuid.toString())
+                    .description("Sequence for TransactionDocumentIn");
+
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TRANSDOCOUT_SEQ = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "TransactionDocumentOut.Sequence")
+                    .defaultValue(CINumGenSales.TransactionDocumentOutSequence.uuid.toString())
+                    .description("Sequence for TransactionDocumentOut");
+
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TRANSDOCOUT2IN_JASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "TransactionDocumentOut2In.JasperReport")
+                    .defaultValue("Sales_TransactionDocOut2In")
+                    .description("JasperReport for TransactionDocOut2In");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute TRANSDOCSHADOWIN_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "TransactionDocumentShadowIn.RevisionSequence")
@@ -2608,17 +2630,31 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink EXTEND_PRODDOC4MOVEMASS = new SysConfLink()
+    public static final SysConfLink EXTEND_PRODDOC4MOVEMASSOUT = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "extend.ProductDocumentType4MoveMassive")
-                    .description("Default Product Document type for move massive.");
+                    .key(Sales.BASE + "extend.ProductDocumentType4MoveMassiveOut")
+                    .description("Default Product Document type for move massive - Outgoing.");
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink EXTEND_PRODDOC4MOVE = new SysConfLink()
+    public static final SysConfLink EXTEND_PRODDOC4MOVEMASSIN = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "extend.ProductDocumentType4Move")
-                    .description("Default Product Document type for move.");
+                    .key(Sales.BASE + "extend.ProductDocumentType4MoveMassiveIn")
+                    .description("Default Product Document type for move massive - Incoming.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink EXTEND_PRODDOC4MOVEOUT = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "extend.ProductDocumentType4MoveOut")
+                    .description("Default Product Document type for move - Outgoing.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink EXTEND_PRODDOC4MOVEIN = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "extend.ProductDocumentType4MoveIn")
+                    .description("Default Product Document type for move - Incoming.");
 
     /**
      * Singelton.

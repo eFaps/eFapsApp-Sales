@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2019 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -54,22 +55,56 @@
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
         </field>
-         <field name="productDocumentType">
+        <field name="productDocumentTypeHeading" character="Heading">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Products_InventoryMoveForm.productDocumentTypeHeading.Heading</property>
+            <property name="Level">2</property>
+        </field>
+        <field name="productDocumentTypeGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="productDocumentTypeOut">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Products_InventoryMoveForm.productDocumentType.Label</property>
+            <property name="Label">Products_InventoryMoveForm.productDocumentTypeOut.Label</property>
             <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="getOptionListFieldValue"
-                name="Products_InventoryMoveForm.productDocumentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Products_InventoryMoveForm.productDocumentTypeOut.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
                 <property name="ValueSelect">attribute[OID]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <!-- Sales-Configuration -->
                 <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="DefaultLink">org.efaps.sales.extend.ProductDocumentType4MoveMassive</property>
+                <property name="DefaultLink">org.efaps.sales.extend.ProductDocumentType4MoveMassiveOut</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.TransactionDocument" method="updateFields4ProductDocumentType"
+                name="Products_InventoryMoveForm.productDocumentTypeOut.UI_FIELD_VALUE"
+                event="UI_FIELD_UPDATE">
+                <property name="TargetField">productDocumentTypeIn</property>
+            </trigger>
+        </field>
+        <field name="productDocumentTypeIn">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Products_InventoryMoveForm.productDocumentTypeIn.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getOptionListFieldValue"
+                name="Products_InventoryMoveForm.productDocumentTypeIn.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.extend.ProductDocumentType4MoveMassiveIn</property>
             </trigger>
         </field>
         <field name="transactionHeading" character="Heading">

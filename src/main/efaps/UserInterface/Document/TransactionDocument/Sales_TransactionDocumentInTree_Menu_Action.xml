@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright 2003 - 2019 The eFaps Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b5f38a9f-5978-46a9-8a40-4f92a6e6b737</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_TransactionDocumentInTree_Menu_Action</name>
+        <childs>
+            <child>Sales_TransactionDocumentInTree_Menu_Action_Edit</child>
+            <child>Sales_TransactionDocumentInTree_Menu_Action_SetCanceled</child>
+            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
+            <child>ERP_DocumentAbstractTree_Action_Checkout</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
+        </childs>
+    </definition>
+</ui-menu>
