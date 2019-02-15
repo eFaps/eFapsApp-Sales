@@ -187,9 +187,7 @@ public abstract class DocPositionGroupedByDate_Base
             if (defaultUoMID != null) {
                 final UoM defaultUoM = Dimension.getUoM(defaultUoMID);
                 uoMStr = defaultUoM.getName();
-                if (defaultUoM.equals(uom)) {
-                    map.put("quantity", quantity);
-                } else {
+                if (!defaultUoM.equals(uom)) {
                     quantity = quantity.multiply(new BigDecimal(uom.getNumerator()))
                                     .setScale(8, BigDecimal.ROUND_HALF_UP)
                                     .divide(new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP);
@@ -204,9 +202,8 @@ public abstract class DocPositionGroupedByDate_Base
                                     .setScale(8, BigDecimal.ROUND_HALF_UP)
                                     .divide(new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP);
                 }
-                map.put("quantity", quantity);
             }
-
+            map.put("quantity", quantity);
             map.put("uoM", uom);
             map.put("uoMStr", uoMStr);
             map.put("docInstance", docInst);
@@ -363,7 +360,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public DateTime getStart()
         {
-            return this.start;
+            return start;
         }
 
         /**
@@ -373,7 +370,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public void setStart(final DateTime _start)
         {
-            this.start = _start;
+            start = _start;
         }
 
         /**
@@ -383,7 +380,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public DateTime getEnd()
         {
-            return this.end;
+            return end;
         }
 
         /**
@@ -393,7 +390,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public void setEnd(final DateTime _end)
         {
-            this.end = _end;
+            end = _end;
         }
 
         /**
@@ -403,7 +400,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public DateGroup getDateGourp()
         {
-            return this.dateGourp;
+            return dateGourp;
         }
 
         /**
@@ -413,7 +410,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public void setDateGourp(final DateGroup _dateGourp)
         {
-            this.dateGourp = _dateGourp;
+            dateGourp = _dateGourp;
         }
 
         /**
@@ -423,7 +420,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public Properties getProps()
         {
-            return this.props;
+            return props;
         }
 
         /**
@@ -433,7 +430,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public void setProps(final Properties _props)
         {
-            this.props = _props;
+            props = _props;
         }
 
         /**
@@ -443,7 +440,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public Set<Type> getTypes()
         {
-            return this.types;
+            return types;
         }
 
         /**
@@ -453,7 +450,7 @@ public abstract class DocPositionGroupedByDate_Base
          */
         public void setTypes(final Set<Type> _types)
         {
-            this.types = _types;
+            types = _types;
         }
     }
 }
