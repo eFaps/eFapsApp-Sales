@@ -1109,7 +1109,7 @@ public final class Sales
     public static final PropertiesSysConfAttribute INVOICE_PRODUCTAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.ProductAutoComplete")
-                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");;
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1606,6 +1606,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PaymentOrder.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  PAYMENTORDER_ASSIGNACTION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PaymentOrder.AssignAction")
+                    .description("Activate the Action mechanism for PaymentOrder");
 
     /** See description. */
     @EFapsSysConfAttribute

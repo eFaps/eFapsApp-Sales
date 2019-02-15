@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2017 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,6 +33,14 @@
             <property name="Select">linkfrom[Sales_ActionDefinitionPaymentOrder2Document#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="Label">Sales_PaymentOrderForm.action.Label</property>
             <property name="FilterType">PICKLIST</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_PaymentOrderTable.action4View.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PaymentOrder.AssignAction</property>
+           </trigger>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>

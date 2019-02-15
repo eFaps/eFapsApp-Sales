@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2019 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -219,6 +220,14 @@
                  <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
                 <property name="Status">Active</property>
             </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_PaymentOrderForm.action.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PaymentOrder.AssignAction</property>
+           </trigger>
         </field>
         <field name="action4View">
             <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionPaymentOrder2Document#ToLink].linkto[FromLink].oid</property>
@@ -229,6 +238,14 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_PaymentOrderForm.action.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_PaymentOrderForm.action4View.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PaymentOrder.AssignAction</property>
+           </trigger>
         </field>
         <field name="note">
             <property name="Columns">80</property>
