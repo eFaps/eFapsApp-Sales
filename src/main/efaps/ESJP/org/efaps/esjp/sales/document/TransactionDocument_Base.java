@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,11 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
@@ -68,8 +71,6 @@ import org.efaps.util.RandomUtil;
 import org.joda.time.DateTime;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("8f2539fd-4e71-4f5a-bab2-6329b3dcebbf")
@@ -624,6 +625,46 @@ public abstract class TransactionDocument_Base
                         Status.find(CISales.TransactionDocumentStatus.Open));
         insert.execute();
         return insert.getInstance();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    @Override
+    public Return changeStatusWithInverseTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInstance = _parameter.getInstance();
+        final boolean in = InstanceUtils.isKindOf(docInstance, CISales.TransactionDocumentIn);
+        final boolean out = InstanceUtils.isKindOf(docInstance, CISales.TransactionDocumentOut);
+        if (in || out) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionDocOut2In);
+            queryBldr.addWhereAttrEqValue(in ? CISales.TransactionDocOut2In.ToLink : CISales.TransactionDocOut2In.FromLink, docInstance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selCounterpartInst = SelectBuilder.get()
+                            .linkto(in ? CISales.TransactionDocOut2In.FromLink :  CISales.TransactionDocOut2In.ToLink).instance();
+            final SelectBuilder selCounterpartStatus = SelectBuilder.get()
+                            .linkto(in ? CISales.TransactionDocOut2In.FromLink :  CISales.TransactionDocOut2In.ToLink).status();
+            multi.addSelect(selCounterpartInst, selCounterpartStatus);
+            multi.execute();
+            if (multi.next()) {
+                final Status status = multi.getSelect(selCounterpartStatus);
+                if (status.getKey() != CISales.TransactionDocumentStatus.Canceled.key) {
+                    final Instance counterpartInst = multi.getSelect(selCounterpartInst);
+                    final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, counterpartInst);
+                    new StatusValue().setStatus(parameter);
+                    inverseTransaction(counterpartInst);
+                }
+            }
+            new StatusValue().setStatus(_parameter);
+            inverseTransaction(docInstance);
+        } else {
+            new StatusValue().setStatus(_parameter);
+            inverseTransaction(docInstance);
+        }
+        return new Return();
     }
 
     public static class IndividualWithQuantity {

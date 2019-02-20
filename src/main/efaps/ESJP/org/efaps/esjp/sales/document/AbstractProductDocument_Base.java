@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -95,7 +92,6 @@ import org.slf4j.LoggerFactory;
  * basic class for documents that do not have prices.
  *
  * @author The eFaps Team
- * @version $Id: AbstractDocument_Base.java 3674 2010-01-28 18:52:35Z jan.moxter$
  */
 @EFapsUUID("92e52f22-f3f2-43b3-87c3-ad224d9832fc")
 @EFapsApplication("eFapsApp-Sales")
@@ -710,14 +706,14 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
       final Return ret = new Return();
-      org.efaps.admin.ui.field.Field field = (org.efaps.admin.ui.field.Field) _parameter.get(ParameterValues.UIOBJECT);
-      Instance instance = Instance.get(_parameter.getParameterValue(field.getName()));
+      final org.efaps.admin.ui.field.Field field = (org.efaps.admin.ui.field.Field) _parameter.get(ParameterValues.UIOBJECT);
+      final Instance instance = Instance.get(_parameter.getParameterValue(field.getName()));
       if (InstanceUtils.isKindOf(instance, CISales.ProductDocumentType)) {
-          PrintQuery print = new PrintQuery(instance);
-          SelectBuilder sel = SelectBuilder.get().linkto(CISales.ProductDocumentType.CounterpartLink).instance();
+          final PrintQuery print = new PrintQuery(instance);
+          final SelectBuilder sel = SelectBuilder.get().linkto(CISales.ProductDocumentType.CounterpartLink).instance();
           print.addSelect(sel);
           print.executeWithoutAccessCheck();
-          Instance counterpartInstance = print.getSelect(sel);
+          final Instance counterpartInstance = print.getSelect(sel);
           if (counterpartInstance.isValid()) {
               final List<Map<String, Object>> list = new ArrayList<>();
               final Map<String, Object> map = new HashMap<>();
@@ -1368,7 +1364,6 @@ public abstract class AbstractProductDocument_Base
         return new Return();
     }
 
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
@@ -1378,7 +1373,7 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         new StatusValue().setStatus(_parameter);
-        inverseTransaction(_parameter);
+        inverseTransaction(_parameter.getInstance());
         return new Return();
     }
 
@@ -1390,13 +1385,24 @@ public abstract class AbstractProductDocument_Base
     public Return inverseTransaction(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance instance = _parameter.getInstance();
-        if (instance.isValid()) {
+        inverseTransaction(_parameter.getInstance());
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    protected void inverseTransaction(final Instance _instance)
+        throws EFapsException
+    {
+        if (_instance.isValid()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInbound);
             queryBldr.addType(CIProducts.TransactionOutbound, CIProducts.TransactionIndividualInbound,
                             CIProducts.TransactionIndividualOutbound, CIProducts.TransactionReservationInbound,
                             CIProducts.TransactionReservationOutbound);
-            queryBldr.addWhereAttrEqValue(CIProducts.TransactionAbstract.Document, instance);
+            queryBldr.addWhereAttrEqValue(CIProducts.TransactionAbstract.Document, _instance);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.TransactionAbstract.Quantity,
                             CIProducts.TransactionAbstract.Storage,
@@ -1434,13 +1440,12 @@ public abstract class AbstractProductDocument_Base
                                 multi.<String>getAttribute(CIProducts.TransactionAbstract.Description));
                 insert.add(CIProducts.TransactionAbstract.Date,
                                 multi.<DateTime>getAttribute(CIProducts.TransactionAbstract.Date));
-                insert.add(CIProducts.TransactionAbstract.Document, instance);
+                insert.add(CIProducts.TransactionAbstract.Document, _instance);
                 insert.add(CIProducts.TransactionAbstract.UoM,
                                 multi.<Long>getAttribute(CIProducts.TransactionAbstract.UoM));
                 insert.execute();
             }
         }
-        return new Return();
     }
 
     /**
@@ -1470,7 +1475,7 @@ public abstract class AbstractProductDocument_Base
                         pactivt.add(pDAct);
                     }
                     _queryBldr.addWhereAttrEqValue(CISales.ProductDocumentType.Activation, pactivt.toArray());
-                };
+                }
             };
             ret = field.getOptionListFieldValue(_parameter);
         }
@@ -1740,7 +1745,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position(final Instance _instance)
         {
-            this.instance = _instance;
+            instance = _instance;
         }
 
         /**
@@ -1784,7 +1789,7 @@ public abstract class AbstractProductDocument_Base
          */
         public String getTransactionDescr()
         {
-            return this.transactionDescr;
+            return transactionDescr;
         }
 
         /**
@@ -1794,7 +1799,7 @@ public abstract class AbstractProductDocument_Base
          */
         public String getProdName()
         {
-            return this.prodName;
+            return prodName;
         }
 
         /**
@@ -1805,7 +1810,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setProdName(final String _prodName)
         {
-            this.prodName = _prodName;
+            prodName = _prodName;
             return this;
         }
 
@@ -1816,7 +1821,7 @@ public abstract class AbstractProductDocument_Base
          */
         public BigDecimal getQuantity()
         {
-            return this.quantity;
+            return quantity;
         }
 
         /**
@@ -1827,7 +1832,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setQuantity(final BigDecimal _quantity)
         {
-            this.quantity = _quantity;
+            quantity = _quantity;
             return this;
         }
 
@@ -1838,7 +1843,7 @@ public abstract class AbstractProductDocument_Base
          */
         public String getDescr()
         {
-            return this.descr;
+            return descr;
         }
 
         /**
@@ -1849,7 +1854,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setDescr(final String _descr)
         {
-            this.descr = _descr;
+            descr = _descr;
             return this;
         }
 
@@ -1860,7 +1865,7 @@ public abstract class AbstractProductDocument_Base
          */
         public UoM getUoM()
         {
-            return this.uoM;
+            return uoM;
         }
 
         /**
@@ -1871,7 +1876,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setUoM(final UoM _uoM)
         {
-            this.uoM = _uoM;
+            uoM = _uoM;
             return this;
         }
 
@@ -1882,7 +1887,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
 
         /**
@@ -1892,7 +1897,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Instance getProdInstance()
         {
-            return this.prodInstance;
+            return prodInstance;
         }
 
         /**
@@ -1903,7 +1908,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setProdInstance(final Instance _prodInstance)
         {
-            this.prodInstance = _prodInstance;
+            prodInstance = _prodInstance;
             return this;
         }
 
@@ -1914,7 +1919,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Instance getStorageInst()
         {
-            return this.storageInst;
+            return storageInst;
         }
 
         /**
@@ -1925,7 +1930,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setStorageInst(final Instance _storageInst)
         {
-            this.storageInst = _storageInst;
+            storageInst = _storageInst;
             return this;
         }
 
@@ -1936,7 +1941,7 @@ public abstract class AbstractProductDocument_Base
          */
         public DateTime getDate()
         {
-            return this.date;
+            return date;
         }
 
         /**
@@ -1947,7 +1952,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setDate(final DateTime _date)
         {
-            this.date = _date;
+            date = _date;
             return this;
         }
 
@@ -1958,7 +1963,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Instance getDocInst()
         {
-            return this.docInst;
+            return docInst;
         }
 
         /**
@@ -1969,7 +1974,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setDocInst(final Instance _docInst)
         {
-            this.docInst = _docInst;
+            docInst = _docInst;
             return this;
         }
 
@@ -1981,7 +1986,7 @@ public abstract class AbstractProductDocument_Base
          */
         public Position setTransactionDescr(final String _transactionDescr)
         {
-            this.transactionDescr = _transactionDescr;
+            transactionDescr = _transactionDescr;
             return this;
         }
     }
