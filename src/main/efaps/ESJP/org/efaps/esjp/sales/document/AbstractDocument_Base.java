@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,8 +123,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("b3b70ce7-16d0-4425-8ddd-b667cfd3329a")
@@ -351,7 +349,7 @@ public abstract class AbstractDocument_Base
             public String getFieldValue4Contact(final Instance _instance)
                 throws EFapsException
             {
-                return AbstractDocument_Base.this.getFieldValue4Contact(_instance);
+                return AbstractDocument_Base.this.getFieldValue4Contact(_instance, true);
             }
 
             @Override
@@ -621,14 +619,15 @@ public abstract class AbstractDocument_Base
      * Method to get the value for the field directly under the Contact.
      *
      * @param _instance Instacne of the contact
+     * @param _escape
      * @return String for the field
      * @throws EFapsException on error
      */
-    protected String getFieldValue4Contact(final Instance _instance)
+    protected String getFieldValue4Contact(final Instance _instance,  final boolean _escape)
         throws EFapsException
     {
         final Contacts contacts = new Contacts();
-        return contacts.getFieldValue4Contact(_instance);
+        return contacts.getFieldValue4Contact(_instance, _escape);
     }
 
     /**
@@ -891,7 +890,7 @@ public abstract class AbstractDocument_Base
             print.addAttribute(CIContacts.ContactAbstract.Name);
             print.execute();
             final String contactName = print.getAttribute(CIContacts.ContactAbstract.Name);
-            final String contactData = getFieldValue4Contact(_contactInstance);
+            final String contactData = getFieldValue4Contact(_contactInstance, false);
             ret.append(getSetFieldValue(0, "contact", _contactInstance.getOid(), contactName)).append("\n")
                             .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
                             .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
@@ -2873,8 +2872,8 @@ public abstract class AbstractDocument_Base
         public AbstractUIPosition(final Parameter _parameter,
                                   final AbstractDocument_Base _doc)
         {
-            this.parameter = _parameter;
-            this.doc = _doc;
+            parameter = _parameter;
+            doc = _doc;
         }
 
         /**
@@ -2884,7 +2883,7 @@ public abstract class AbstractDocument_Base
          */
         public Instance getStorageInst()
         {
-            return this.storageInst;
+            return storageInst;
         }
 
         /**
@@ -2895,7 +2894,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setStorageInst(final Instance _storageInst)
         {
-            this.storageInst = _storageInst;
+            storageInst = _storageInst;
             return this;
         }
 
@@ -2906,7 +2905,7 @@ public abstract class AbstractDocument_Base
          */
         public Instance getProdInstance()
         {
-            return this.prodInstance;
+            return prodInstance;
         }
 
         /**
@@ -2918,7 +2917,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setProdInstance(final Instance _prodInstance)
         {
-            this.prodInstance = _prodInstance;
+            prodInstance = _prodInstance;
             return this;
         }
 
@@ -2929,7 +2928,7 @@ public abstract class AbstractDocument_Base
          */
         public BigDecimal getQuantity()
         {
-            return this.quantity;
+            return quantity;
         }
 
         /**
@@ -2940,7 +2939,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setQuantity(final BigDecimal _quantity)
         {
-            this.quantity = _quantity;
+            quantity = _quantity;
             return this;
         }
 
@@ -2951,7 +2950,7 @@ public abstract class AbstractDocument_Base
          */
         public BigDecimal getNetUnitPrice()
         {
-            return this.netUnitPrice;
+            return netUnitPrice;
         }
 
         /**
@@ -2962,7 +2961,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setNetUnitPrice(final BigDecimal _netUnitPrice)
         {
-            this.netUnitPrice = _netUnitPrice;
+            netUnitPrice = _netUnitPrice;
             return this;
         }
 
@@ -2974,7 +2973,7 @@ public abstract class AbstractDocument_Base
          */
         public BigDecimal getDiscountNetUnitPrice()
         {
-            return this.discountNetUnitPrice;
+            return discountNetUnitPrice;
         }
 
         /**
@@ -2986,7 +2985,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setDiscountNetUnitPrice(final BigDecimal _discountNetUnitPrice)
         {
-            this.discountNetUnitPrice = _discountNetUnitPrice;
+            discountNetUnitPrice = _discountNetUnitPrice;
             return this;
         }
 
@@ -2997,7 +2996,7 @@ public abstract class AbstractDocument_Base
          */
         public BigDecimal getNetPrice()
         {
-            return this.netPrice;
+            return netPrice;
         }
 
         /**
@@ -3008,7 +3007,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setNetPrice(final BigDecimal _netPrice)
         {
-            this.netPrice = _netPrice;
+            netPrice = _netPrice;
             return this;
         }
 
@@ -3019,7 +3018,7 @@ public abstract class AbstractDocument_Base
          */
         public BigDecimal getCrossPrice()
         {
-            return this.crossPrice;
+            return crossPrice;
         }
 
         /**
@@ -3030,7 +3029,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setCrossPrice(final BigDecimal _crossPrice)
         {
-            this.crossPrice = _crossPrice;
+            crossPrice = _crossPrice;
             return this;
         }
 
@@ -3041,7 +3040,7 @@ public abstract class AbstractDocument_Base
          */
         public BigDecimal getDiscount()
         {
-            return this.discount;
+            return discount;
         }
 
         /**
@@ -3052,7 +3051,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setDiscount(final BigDecimal _discount)
         {
-            this.discount = _discount;
+            discount = _discount;
             return this;
         }
 
@@ -3063,7 +3062,7 @@ public abstract class AbstractDocument_Base
          */
         public Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
 
         /**
@@ -3074,7 +3073,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setInstance(final Instance _instance)
         {
-            this.instance = _instance;
+            instance = _instance;
             return this;
         }
 
@@ -3095,8 +3094,8 @@ public abstract class AbstractDocument_Base
             final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(typeName);
             final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(typeName);
 
-            ret.put("oid", InstanceUtils.isKindOf(this.instance, CISales.PositionAbstract)
-                            ? this.instance.getOid() : "");
+            ret.put("oid", InstanceUtils.isKindOf(instance, CISales.PositionAbstract)
+                            ? instance.getOid() : "");
             ret.put("quantity", qtyFrmt.format(getQuantity()));
             ret.put("product", new String[] { getProdInstance().getOid(), getProdName() });
             ret.put("productDesc", getProdDescr());
@@ -3128,7 +3127,7 @@ public abstract class AbstractDocument_Base
          */
         public String getProdName()
         {
-            return this.prodName;
+            return prodName;
         }
 
         /**
@@ -3139,7 +3138,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setProdName(final String _prodName)
         {
-            this.prodName = _prodName;
+            prodName = _prodName;
             return this;
         }
 
@@ -3150,7 +3149,7 @@ public abstract class AbstractDocument_Base
          */
         public String getProdDescr()
         {
-            return this.prodDescr;
+            return prodDescr;
         }
 
         /**
@@ -3161,7 +3160,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setProdDescr(final String _prodDescr)
         {
-            this.prodDescr = _prodDescr;
+            prodDescr = _prodDescr;
             return this;
         }
 
@@ -3172,7 +3171,7 @@ public abstract class AbstractDocument_Base
          */
         public Long getUoM()
         {
-            return this.uoMID;
+            return uoMID;
         }
 
         /**
@@ -3183,7 +3182,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setUoM(final Long _long)
         {
-            this.uoMID = _long;
+            uoMID = _long;
             return this;
         }
 
@@ -3194,7 +3193,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractDocument_Base getDoc()
         {
-            return this.doc;
+            return doc;
         }
 
         /**
@@ -3205,7 +3204,7 @@ public abstract class AbstractDocument_Base
          */
         public AbstractUIPosition setDoc(final AbstractDocument_Base _doc)
         {
-            this.doc = _doc;
+            doc = _doc;
             return this;
         }
 
@@ -3216,7 +3215,7 @@ public abstract class AbstractDocument_Base
          */
         public Parameter getParameter()
         {
-            return this.parameter;
+            return parameter;
         }
 
         /**
@@ -3226,7 +3225,7 @@ public abstract class AbstractDocument_Base
          */
         public void setParameter(final Parameter _parameter)
         {
-            this.parameter = _parameter;
+            parameter = _parameter;
         }
     }
 }
