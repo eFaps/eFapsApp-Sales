@@ -2663,6 +2663,15 @@ public final class Sales
                     .key(Sales.BASE + "extend.ProductDocumentType4MoveIn")
                     .description("Default Product Document type for move - Incoming.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute MIG_TRANSACT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "migration.TransactionDocument")
+                    .description("Mapping of DocumentType OID to new OID. IN -> incoming movements, OUT -> outgoing movements")
+                    .addDefaultValue("IN.1526.13", "1526.16")
+                    .addDefaultValue("OUT.1526.13", "1526.17");
+
     /**
      * Singelton.
      */
