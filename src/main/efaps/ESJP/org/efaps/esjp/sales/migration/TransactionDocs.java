@@ -150,10 +150,14 @@ public class TransactionDocs
                                   final Instance _docTypeInst)
         throws EFapsException
     {
-        final Insert insert = new Insert(CISales.Document2ProductDocumentType);
-        insert.add(CISales.Document2ProductDocumentType.DocumentLink, _docInst);
-        insert.add(CISales.Document2ProductDocumentType.DocumentTypeLink, _docTypeInst);
-        insert.executeWithoutAccessCheck();
+        if (InstanceUtils.isValid(_docInst) && InstanceUtils.isValid(_docTypeInst)) {
+            final Insert insert = new Insert(CISales.Document2ProductDocumentType);
+            insert.add(CISales.Document2ProductDocumentType.DocumentLink, _docInst);
+            insert.add(CISales.Document2ProductDocumentType.DocumentTypeLink, _docTypeInst);
+            insert.executeWithoutAccessCheck();
+        } else {
+            LOG.error("Cannot connect Do with DocType for {}", _docInst);
+        }
     }
 
 
