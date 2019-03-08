@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
+
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -55,9 +58,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
 
 /**
  * TODO comment!
@@ -104,7 +104,7 @@ public abstract class SalesKardexReport_Base
          */
         Field(final String _key)
         {
-            this.key = _key;
+            key = _key;
         }
 
         /**
@@ -114,7 +114,7 @@ public abstract class SalesKardexReport_Base
          */
         public String getKey()
         {
-            return this.key;
+            return key;
         }
     }
 
@@ -134,6 +134,8 @@ public abstract class SalesKardexReport_Base
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.UsageReport.getType().getId(), "00");
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.ReturnUsageReport.getType().getId(), "00");
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.TransactionDocument.getType().getId(), "00");
+        SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.TransactionDocumentIn.getType().getId(), "00");
+        SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.TransactionDocumentOut.getType().getId(), "00");
     }
 
     /**
@@ -706,16 +708,16 @@ public abstract class SalesKardexReport_Base
         public ProductKardex(final Instance _prodInst)
             throws EFapsException
         {
-            this.product = _prodInst;
+            product = _prodInst;
             if (getInstance().isValid()) {
                 final PrintQuery print = CachedPrintQuery.get4Request(_prodInst);
                 print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
                                 CIProducts.ProductAbstract.Dimension);
                 print.execute();
 
-                this.name = print.<String>getAttribute(CIProducts.ProductAbstract.Name);
-                this.description = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
-                this.uoM = Dimension.get(print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension)).getBaseUoM()
+                name = print.<String>getAttribute(CIProducts.ProductAbstract.Name);
+                description = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
+                uoM = Dimension.get(print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension)).getBaseUoM()
                                 .getName();
             }
         }
@@ -727,7 +729,7 @@ public abstract class SalesKardexReport_Base
          */
         protected Instance getInstance()
         {
-            return this.product;
+            return product;
         }
 
         /**
@@ -737,7 +739,7 @@ public abstract class SalesKardexReport_Base
          */
         protected String getProductName()
         {
-            return this.name;
+            return name;
         }
 
         /**
@@ -747,7 +749,7 @@ public abstract class SalesKardexReport_Base
          */
         protected String getProductDesc()
         {
-            return this.description;
+            return description;
         }
 
         /**
@@ -757,7 +759,7 @@ public abstract class SalesKardexReport_Base
          */
         protected String getProductUoM()
         {
-            return this.uoM;
+            return uoM;
         }
 
         /**
@@ -770,8 +772,8 @@ public abstract class SalesKardexReport_Base
             throws EFapsException
         {
             final StringBuilder ret = new StringBuilder();
-            if (SalesKardexReport_Base.EXISTTYPE_MAP.containsKey(this.product.getType().getId())) {
-                ret.append(SalesKardexReport_Base.EXISTTYPE_MAP.get(this.product.getType().getId()));
+            if (SalesKardexReport_Base.EXISTTYPE_MAP.containsKey(product.getType().getId())) {
+                ret.append(SalesKardexReport_Base.EXISTTYPE_MAP.get(product.getType().getId()));
             }
 
             return ret.toString();
@@ -819,9 +821,9 @@ public abstract class SalesKardexReport_Base
                         final Instance _product)
                         throws EFapsException
         {
-            this.date = _date;
-            this.instance = _transDocInst;
-            this.product = new ProductKardex(_product);
+            date = _date;
+            instance = _transDocInst;
+            product = new ProductKardex(_product);
         }
 
         /**
@@ -833,7 +835,7 @@ public abstract class SalesKardexReport_Base
         public String getProdDocType()
             throws EFapsException
         {
-            if (this.prodDocType == null && InstanceUtils.isValid(getInstance())) {
+            if (prodDocType == null && InstanceUtils.isValid(getInstance())) {
                 final PrintQuery print = CachedPrintQuery.get4Request(getInstance());
                 final SelectBuilder sel = SelectBuilder.get()
                                 .linkfrom(CISales.Document2ProductDocumentType.DocumentLink)
@@ -841,9 +843,9 @@ public abstract class SalesKardexReport_Base
                                 .attribute(CISales.ProductDocumentType.Name);
                 print.addSelect(sel);
                 print.execute();
-                this.prodDocType = print.getSelect(sel);
+                prodDocType = print.getSelect(sel);
             }
-            return this.prodDocType;
+            return prodDocType;
         }
 
         /**
@@ -855,7 +857,7 @@ public abstract class SalesKardexReport_Base
         public String getDocType()
             throws EFapsException
         {
-            if (this.docType == null && getCostDoc().getCostDocInst() != null && getCostDoc().getCostDocInst()
+            if (docType == null && getCostDoc().getCostDocInst() != null && getCostDoc().getCostDocInst()
                             .isValid()) {
                 final PrintQuery print = CachedPrintQuery.get4Request(getCostDoc().getCostDocInst());
                 final SelectBuilder sel = SelectBuilder.get()
@@ -864,12 +866,12 @@ public abstract class SalesKardexReport_Base
                                 .attribute(CIERP.DocumentType.Name);
                 print.addSelect(sel);
                 print.execute();
-                this.docType = print.getSelect(sel);
+                docType = print.getSelect(sel);
             }
-            if (this.docType == null && InstanceUtils.isValid(getInstance())) {
-                this.docType = DOCTYPE_MAP.get(getInstance().getType().getId());
+            if (docType == null && InstanceUtils.isValid(getInstance())) {
+                docType = DOCTYPE_MAP.get(getInstance().getType().getId());
             }
-            return this.docType;
+            return docType;
         }
 
         /**
@@ -879,7 +881,7 @@ public abstract class SalesKardexReport_Base
          */
         protected Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
 
         /**
@@ -891,10 +893,10 @@ public abstract class SalesKardexReport_Base
         protected CostDoc getCostDoc()
             throws EFapsException
         {
-            if (this.costDoc == null) {
-                this.costDoc = new CostDoc(getInstance(), this.product.getInstance());
+            if (costDoc == null) {
+                costDoc = new CostDoc(getInstance(), product.getInstance());
             }
-            return this.costDoc;
+            return costDoc;
         }
 
         /**
@@ -906,14 +908,14 @@ public abstract class SalesKardexReport_Base
         protected String getCostDocName()
             throws EFapsException
         {
-            if (this.costDocName == null && getCostDoc().getCostDocInst() != null && getCostDoc().getCostDocInst()
+            if (costDocName == null && getCostDoc().getCostDocInst() != null && getCostDoc().getCostDocInst()
                             .isValid()) {
                 final PrintQuery print = new PrintQuery(getCostDoc().getCostDocInst());
                 print.addAttribute(CIERP.DocumentAbstract.Name);
                 print.execute();
-                this.costDocName = print.getAttribute(CIERP.DocumentAbstract.Name);
+                costDocName = print.getAttribute(CIERP.DocumentAbstract.Name);
             }
-            return this.costDocName;
+            return costDocName;
         }
 
         /**
@@ -923,7 +925,7 @@ public abstract class SalesKardexReport_Base
          */
         public DateTime getDate()
         {
-            return this.date;
+            return date;
         }
 
         /**
@@ -934,7 +936,7 @@ public abstract class SalesKardexReport_Base
          */
         public TransDoc setDate(final DateTime _date)
         {
-            this.date = _date;
+            date = _date;
             return this;
         }
     }
