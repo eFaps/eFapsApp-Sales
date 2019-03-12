@@ -21,7 +21,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +28,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
@@ -59,18 +70,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * Report for CashFlow.
@@ -153,7 +152,7 @@ public abstract class CashFlowReport_Base
          */
         public DynamicCashFlowReport(final CashFlowReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
         @Override
@@ -210,65 +209,31 @@ public abstract class CashFlowReport_Base
                 addProjection4Documents(_parameter, beans);
 
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-                chain.addComparator(new Comparator<DataBean>() {
-                        @Override
-                        public int compare(final DataBean _o1,
-                                           final DataBean _o2)
-                        {
-                            return _o1.getGroup().getWeight().compareTo(_o2.getGroup().getWeight());
-                        }
-                    }
+                chain.addComparator((_o1,
+                 _o2) -> _o1.getGroup().getWeight().compareTo(_o2.getGroup().getWeight())
                 );
-                chain.addComparator(new Comparator<DataBean>()
-                {
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-                        int w1 = 0;
-                        int w2 = 0;
-                        try {
-                            w1 = _o1.getCategory().getWeight();
-                            w2 = _o2.getCategory().getWeight();
-                        } catch (final EFapsException e) {
-                            LOG.error("Catched", e);
-                        }
-                        return Integer.compare(w1, w2);
+                chain.addComparator((_o1,
+                 _o2) -> {
+                    int w1 = 0;
+                    int w2 = 0;
+                    try {
+                        w1 = _o1.getCategory().getWeight();
+                        w2 = _o2.getCategory().getWeight();
+                    } catch (final EFapsException e) {
+                        LOG.error("Catched", e);
                     }
+                    return Integer.compare(w1, w2);
                 });
                 if (isShowContact(_parameter)) {
-                    chain.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _o1,
-                                           final DataBean _o2)
-                        {
-                            return _o1.getContact().compareTo(_o2.getContact());
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> _o1.getContact().compareTo(_o2.getContact()));
                 }
                 if (isShowDocTypes(_parameter)) {
-                    chain.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _o1,
-                                           final DataBean _o2)
-                        {
-                            return _o1.getDocType().compareTo(_o2.getDocType());
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> _o1.getDocType().compareTo(_o2.getDocType()));
                 }
-                chain.addComparator(new Comparator<DataBean>()
-                {
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-                        return _o1.getDateGroup().compareTo(_o2.getDateGroup());
-                    }
-                });
+                chain.addComparator((_o1,
+                 _o2) -> _o1.getDateGroup().compareTo(_o2.getDateGroup()));
                 Collections.sort(beans, chain);
                 ret = new JRBeanCollectionDataSource(beans);
                 getFilteredReport().cache(_parameter, ret);
@@ -326,12 +291,19 @@ public abstract class CashFlowReport_Base
                 final DateTimeFormatter dateTimeFormatter = groupedByDate.getDateTimeFormatter(DateGroup.MONTH);
                 for (final Entry<String, Set<String>> entry : attr2types.entrySet()) {
                     final Properties propsTmp = new Properties(props);
+                    inProps.stringPropertyNames().forEach(key -> {
+                        if (key.startsWith("Status")) {
+                            propsTmp.put(key, inProps.get(key));
+                        }
+                    });
+
                     final String formatStr = "%02d";
                     final int i = 1;
                     for (final String type : entry.getValue()) {
                         propsTmp.put("Type" + String.format(formatStr, i), type);
                     }
                     final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, propsTmp);
+
                     queryBldr.addWhereAttrGreaterValue(entry.getKey(), start.withTimeAtStartOfDay().minusMinutes(1));
                     queryBldr.addWhereAttrLessValue(entry.getKey(), end.withTimeAtStartOfDay().plusDays(1));
                     final MultiPrintQuery multi = queryBldr.getPrint();
@@ -530,7 +502,7 @@ public abstract class CashFlowReport_Base
          */
         public CashFlowReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 
@@ -566,7 +538,7 @@ public abstract class CashFlowReport_Base
          */
         public Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
 
         /**
@@ -577,7 +549,7 @@ public abstract class CashFlowReport_Base
          */
         public DataBean setInstance(final Instance _instance)
         {
-            this.instance = _instance;
+            instance = _instance;
             return this;
         }
 
@@ -598,7 +570,7 @@ public abstract class CashFlowReport_Base
          */
         public ICashFlowGroup getGroup()
         {
-            return this.group;
+            return group;
         }
 
         /**
@@ -609,7 +581,7 @@ public abstract class CashFlowReport_Base
          */
         public DataBean setGroup(final ICashFlowGroup _group)
         {
-            this.group = _group;
+            group = _group;
             return this;
         }
 
@@ -622,13 +594,13 @@ public abstract class CashFlowReport_Base
         public CashFlowCategory getCategory()
             throws EFapsException
         {
-            if (this.category == null) {
+            if (category == null) {
                 final Properties props = Sales.CASHFLOWREPORT_CONFIG.get();
                 final String catStr = props.getProperty(getInstance().getType().getName() + ".Category",
                                 CashFlowCategory.NONE.name());
-                this.category = EnumUtils.getEnum(CashFlowCategory.class, catStr);
+                category = EnumUtils.getEnum(CashFlowCategory.class, catStr);
             }
-            return this.category;
+            return category;
         }
 
         /**
@@ -661,7 +633,7 @@ public abstract class CashFlowReport_Base
          */
         public String getDateGroup()
         {
-            return this.dateGroup;
+            return dateGroup;
         }
 
         /**
@@ -672,7 +644,7 @@ public abstract class CashFlowReport_Base
          */
         public DataBean setDateGroup(final String _dateGroup)
         {
-            this.dateGroup = _dateGroup;
+            dateGroup = _dateGroup;
             return this;
         }
 
@@ -683,7 +655,7 @@ public abstract class CashFlowReport_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount;
+            return amount;
         }
 
         /**
@@ -694,7 +666,7 @@ public abstract class CashFlowReport_Base
          */
         public DataBean setAmount(final BigDecimal _amount)
         {
-            this.amount = _amount;
+            amount = _amount;
             return this;
         }
 
@@ -705,7 +677,7 @@ public abstract class CashFlowReport_Base
          */
         public String getContact()
         {
-            return this.contact;
+            return contact;
         }
 
         /**
@@ -716,7 +688,7 @@ public abstract class CashFlowReport_Base
          */
         public DataBean setContact(final String _contact)
         {
-            this.contact = _contact;
+            contact = _contact;
             return this;
         }
     }

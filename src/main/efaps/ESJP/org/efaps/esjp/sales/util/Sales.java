@@ -138,7 +138,11 @@ public final class Sales
                     .key(Sales.BASE + "report.CashFlowReport")
                     .description("Properties for the  CashFlowReport.")
                     .addDefaultValue("Projection.IN.Type01", CISales.Installment.getType().getName())
+                    .addDefaultValue("Projection.IN.StatusGroup01", CISales.InstallmentStatus.getType().getName())
+                    .addDefaultValue("Projection.IN.Status01", "!" + CISales.InstallmentStatus.Canceled.key)
                     .addDefaultValue("Projection.IN.Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("Projection.IN.StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Projection.IN.Status02", "!" + CISales.ReceiptStatus.Replaced.key)
                     .addDefaultValue(CISales.Installment.getType().getName() + ".FilterDate",
                                     CISales.Installment.DueDate.name)
                     .addDefaultValue(CISales.Installment.getType().getName() + ".Category",
