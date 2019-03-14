@@ -78,5 +78,10 @@
                 <property name="Type">Products_StorageGroupAbstract</property>
             </trigger>
         </field>
+        <field name="includeCanceled">
+            <property name="Label">Sales_Products_Kardex_OfficialReportForm.includeCanceled.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+        </field>
     </definition>
 </ui-form>

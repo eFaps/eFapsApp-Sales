@@ -2406,6 +2406,15 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_SALESKARDEX = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.SalesKardexReport")
+                    .addDefaultValue("StatusGroup01", CISales.DeliveryNoteStatus.getType().getName())
+                    .addDefaultValue("Status01", "!" + CISales.DeliveryNoteStatus.Canceled.key)
+                    .description("Properties 4 SalesKardexReport. prodDoc");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "SerialNumbers")

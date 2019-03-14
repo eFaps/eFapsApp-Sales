@@ -22,13 +22,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -49,10 +52,12 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.Costing_Base.CostDoc;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -433,10 +438,18 @@ public abstract class SalesKardexReport_Base
      * @throws EFapsException on error
      */
     protected void add2QueryBldr4InitKardex(final Parameter _parameter,
-                                               final QueryBuilder _queryBldr)
+                                            final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        // to be implemented
+        final Properties baseProperties = Sales.REPORT_SALESKARDEX.get();
+        final Properties properties = PropertiesUtil.getProperties4Prefix(baseProperties, "prodDoc");
+        final List<Status> statusList = getStatusListFromProperties(_parameter, properties);
+        if (CollectionUtils.isNotEmpty(statusList)) {
+            final QueryBuilder prodDocQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+            prodDocQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, statusList.toArray());
+            prodDocQueryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Document, prodDocQueryBldr
+                            .getAttributeQuery(CIERP.DocumentAbstract.ID));
+        }
     }
 
     /**
