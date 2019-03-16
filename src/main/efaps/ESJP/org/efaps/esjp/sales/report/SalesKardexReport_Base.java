@@ -441,14 +441,16 @@ public abstract class SalesKardexReport_Base
                                             final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        final Properties baseProperties = Sales.REPORT_SALESKARDEX.get();
-        final Properties properties = PropertiesUtil.getProperties4Prefix(baseProperties, "prodDoc");
-        final List<Status> statusList = getStatusListFromProperties(_parameter, properties);
-        if (CollectionUtils.isNotEmpty(statusList)) {
-            final QueryBuilder prodDocQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
-            prodDocQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, statusList.toArray());
-            prodDocQueryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Document, prodDocQueryBldr
-                            .getAttributeQuery(CIERP.DocumentAbstract.ID));
+        if (!"true".equalsIgnoreCase(_parameter.getParameterValue("deactivateProdDocFilter"))) {
+            final Properties baseProperties = Sales.REPORT_SALESKARDEX.get();
+            final Properties properties = PropertiesUtil.getProperties4Prefix(baseProperties, "prodDoc");
+            final List<Status> statusList = getStatusListFromProperties(_parameter, properties);
+            if (CollectionUtils.isNotEmpty(statusList)) {
+                final QueryBuilder prodDocQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                prodDocQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, statusList.toArray());
+                prodDocQueryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Document, prodDocQueryBldr
+                                .getAttributeQuery(CIERP.DocumentAbstract.ID));
+            }
         }
     }
 
