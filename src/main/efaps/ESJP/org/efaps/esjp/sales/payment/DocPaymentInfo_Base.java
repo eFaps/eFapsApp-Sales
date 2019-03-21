@@ -146,7 +146,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo_Base(final Instance _docInst)
     {
-        this.instance = _docInst;
+        instance = _docInst;
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class DocPaymentInfo_Base
     protected void initialize()
         throws EFapsException
     {
-        if (!this.initialized) {
+        if (!initialized) {
             DocPaymentInfo.initialize(getParameter(), this);
         }
     }
@@ -182,7 +182,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setParameter(final Parameter _parameter)
     {
-        this.parameter = _parameter;
+        parameter = _parameter;
         return (DocPaymentInfo) this;
     }
 
@@ -193,7 +193,7 @@ public abstract class DocPaymentInfo_Base
      */
     public Instance getInstance()
     {
-        return this.instance;
+        return instance;
     }
 
     /**
@@ -206,7 +206,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.crossTotal;
+        return crossTotal;
     }
 
     /**
@@ -219,7 +219,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.rateCrossTotal;
+        return rateCrossTotal;
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class DocPaymentInfo_Base
             ret = ret.add(getRateCrossTotal());
         } else {
             final BigDecimal rate = RateInfo.getRate(getParameter(), getRateInfo4Target(),
-                            this.instance.getType().getName());
+                            instance.getType().getName());
             ret = ret.add(getRateCrossTotal().divide(rate, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
@@ -250,13 +250,13 @@ public abstract class DocPaymentInfo_Base
     {
         initialize();
         BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : this.payPos) {
+        for (final PayPos pos : payPos) {
             // the currency of the PaymentDocument is the same as the ratcurrency
             if (getTargetInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
                 final BigDecimal rate = RateInfo.getRate(getParameter(), getRateInfo4Target(),
-                                this.instance.getType().getName());
+                                instance.getType().getName());
                 ret = ret.add(pos.getAmount().divide(rate, BigDecimal.ROUND_HALF_UP));
             }
         }
@@ -272,11 +272,11 @@ public abstract class DocPaymentInfo_Base
     public RateInfo getRateInfo4Target()
         throws EFapsException
     {
-        if (this.rateInfo4Target == null) {
-            this.rateInfo4Target = new Currency().evaluateRateInfos(getParameter(),
+        if (rateInfo4Target == null) {
+            rateInfo4Target = new Currency().evaluateRateInfos(getParameter(),
                         getDate(), getRateCurrencyInstance(), getTargetInfo().getCurrencyInstance())[2];
         }
-        return this.rateInfo4Target;
+        return rateInfo4Target;
     }
 
     /**
@@ -286,7 +286,7 @@ public abstract class DocPaymentInfo_Base
      */
     public void setRateInfo4Target(final RateInfo _rateInfo4Account)
     {
-        this.rateInfo4Target = _rateInfo4Account;
+        rateInfo4Target = _rateInfo4Account;
     }
 
     /**
@@ -312,7 +312,7 @@ public abstract class DocPaymentInfo_Base
      */
     public boolean isInitialized()
     {
-        return this.initialized;
+        return initialized;
     }
 
     /**
@@ -325,7 +325,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.payPos;
+        return payPos;
     }
 
     /**
@@ -338,7 +338,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.currencyInstance;
+        return currencyInstance;
     }
 
     /**
@@ -351,7 +351,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.rateCurrencyInstance;
+        return rateCurrencyInstance;
     }
 
     /**
@@ -364,7 +364,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final Properties props = Sales.PAYMENT_RULES.get();
-        return BooleanUtils.toBoolean(props.getProperty(this.instance.getType().getName() + ".PerPayment"));
+        return BooleanUtils.toBoolean(props.getProperty(instance.getType().getName() + ".PerPayment"));
     }
 
     /**
@@ -381,7 +381,7 @@ public abstract class DocPaymentInfo_Base
             final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
             format.setParseBigDecimal(true);
             threshold = (BigDecimal) format.parse(props.getProperty(
-                            this.instance.getType().getName() + ".Threshold", "0"));
+                            instance.getType().getName() + ".Threshold", "0"));
         } catch (final ParseException e) {
             throw new EFapsException("catched ParseException", e);
         }
@@ -401,7 +401,7 @@ public abstract class DocPaymentInfo_Base
     {
         initialize();
         BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : this.payPos) {
+        for (final PayPos pos : payPos) {
             // the currency of the PaymentDocument is the same as the base
             // currency
             if (getCurrencyInstance().equals(pos.getCurrencyInstance())) {
@@ -430,7 +430,7 @@ public abstract class DocPaymentInfo_Base
     {
         initialize();
         BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : this.payPos) {
+        for (final PayPos pos : payPos) {
             // the currency of the PaymentDocument is the same as the ratcurrency
             if (getRateCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
@@ -494,7 +494,7 @@ public abstract class DocPaymentInfo_Base
     public DocPaymentInfo setTargetDocInst(final Instance _accInst)
         throws EFapsException
     {
-        this.targetInfo = new TargetDocInfo(_accInst);
+        targetInfo = new TargetDocInfo(_accInst);
         return (DocPaymentInfo) this;
     }
 
@@ -508,7 +508,7 @@ public abstract class DocPaymentInfo_Base
     public DocPaymentInfo setAccountInst(final Instance _accInst)
         throws EFapsException
     {
-        this.targetInfo = new AccountInfo(_accInst);
+        targetInfo = new AccountInfo(_accInst);
         return (DocPaymentInfo) this;
     }
 
@@ -522,7 +522,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.name;
+        return name;
     }
 
     /**
@@ -533,7 +533,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setName(final String _name)
     {
-        this.name = _name;
+        name = _name;
         return (DocPaymentInfo) this;
     }
 
@@ -547,7 +547,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.contactName;
+        return contactName;
     }
 
     /**
@@ -560,7 +560,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.targetInfo;
+        return targetInfo;
     }
 
     /**
@@ -571,7 +571,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setAccountInfo(final AccountInfo _accountInfo)
     {
-        this.targetInfo = _accountInfo;
+        targetInfo = _accountInfo;
         return (DocPaymentInfo) this;
     }
 
@@ -627,7 +627,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setContactName(final String _contactName)
     {
-        this.contactName = _contactName;
+        contactName = _contactName;
         return (DocPaymentInfo) this;
     }
 
@@ -638,7 +638,7 @@ public abstract class DocPaymentInfo_Base
      */
     public Parameter getParameter()
     {
-        return this.parameter;
+        return parameter;
     }
 
     /**
@@ -651,7 +651,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.rateInfo;
+        return rateInfo;
     }
 
     /**
@@ -662,7 +662,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setRateInfo(final RateInfo _rateInfo)
     {
-        this.rateInfo = _rateInfo;
+        rateInfo = _rateInfo;
         return (DocPaymentInfo) this;
     }
 
@@ -676,7 +676,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.date;
+        return date;
     }
 
     /**
@@ -687,7 +687,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setDate(final DateTime _date)
     {
-        this.date = _date;
+        date = _date;
         return (DocPaymentInfo) this;
     }
 
@@ -699,7 +699,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setCrossTotal(final BigDecimal _crossTotal)
     {
-        this.crossTotal = _crossTotal;
+        crossTotal = _crossTotal;
         return (DocPaymentInfo) this;
     }
 
@@ -711,7 +711,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setRateCrossTotal(final BigDecimal _rateCrossTotal)
     {
-        this.rateCrossTotal = _rateCrossTotal;
+        rateCrossTotal = _rateCrossTotal;
         return (DocPaymentInfo) this;
     }
 
@@ -734,7 +734,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setCurrencyInstance(final Instance _currencyInstance)
     {
-        this.currencyInstance = _currencyInstance;
+        currencyInstance = _currencyInstance;
         return (DocPaymentInfo) this;
     }
 
@@ -746,7 +746,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setRateCurrencyInstance(final Instance _rateCurrencyInstance)
     {
-        this.rateCurrencyInstance = _rateCurrencyInstance;
+        rateCurrencyInstance = _rateCurrencyInstance;
         return (DocPaymentInfo) this;
     }
 
@@ -758,7 +758,7 @@ public abstract class DocPaymentInfo_Base
      */
     public DocPaymentInfo setInitialized(final boolean _initialized)
     {
-        this.initialized = _initialized;
+        initialized = _initialized;
         return (DocPaymentInfo) this;
     }
 
@@ -1060,12 +1060,12 @@ public abstract class DocPaymentInfo_Base
         swapMulti.addAttribute(CISales.Document2Document4Swap.Amount, CISales.Document2Document4Swap.Date);
         final SelectBuilder selCurInst = new SelectBuilder()
                         .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
-        final SelectBuilder selDocFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromAbstractLink);
+        final SelectBuilder selDocFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
         final SelectBuilder selDocFromInst = new SelectBuilder(selDocFrom).instance();
         final SelectBuilder selDocFromStatus = new SelectBuilder(selDocFrom).status().key();
         final SelectBuilder selDocFromRate = new SelectBuilder(selDocFrom).attribute(CISales.DocumentSumAbstract.Rate);
 
-        final SelectBuilder selDocTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToAbstractLink);
+        final SelectBuilder selDocTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
         final SelectBuilder selDocToInst = new SelectBuilder(selDocTo).instance();
         final SelectBuilder selDocToName = new SelectBuilder(selDocTo).attribute(CIERP.DocumentAbstract.Name);
         final SelectBuilder selDocToStatus = new SelectBuilder(selDocTo).status().key();
@@ -1389,9 +1389,9 @@ public abstract class DocPaymentInfo_Base
                       final BigDecimal _amount,
                       final Instance _curInst)
         {
-            this.date = _date;
-            this.amount = _amount;
-            this.currencyInstance = _curInst;
+            date = _date;
+            amount = _amount;
+            currencyInstance = _curInst;
         }
 
         /**
@@ -1401,7 +1401,7 @@ public abstract class DocPaymentInfo_Base
          */
         public DateTime getDate()
         {
-            return this.date;
+            return date;
         }
 
         /**
@@ -1411,7 +1411,7 @@ public abstract class DocPaymentInfo_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount;
+            return amount;
         }
 
         /**
@@ -1421,7 +1421,7 @@ public abstract class DocPaymentInfo_Base
          */
         public Instance getCurrencyInstance()
         {
-            return this.currencyInstance;
+            return currencyInstance;
         }
 
         /**
@@ -1431,7 +1431,7 @@ public abstract class DocPaymentInfo_Base
          */
         public String getTypeLabel()
         {
-            return this.typeLabel;
+            return typeLabel;
         }
 
         /**
@@ -1442,7 +1442,7 @@ public abstract class DocPaymentInfo_Base
          */
         public PayPos setTypeLabel(final String _label)
         {
-            this.typeLabel = _label;
+            typeLabel = _label;
             return this;
         }
 
@@ -1453,7 +1453,7 @@ public abstract class DocPaymentInfo_Base
          */
         public String getName()
         {
-            return this.name;
+            return name;
         }
 
         /**
@@ -1464,7 +1464,7 @@ public abstract class DocPaymentInfo_Base
          */
         public PayPos setName(final String _name)
         {
-            this.name = _name;
+            name = _name;
             return this;
         }
 
@@ -1511,7 +1511,7 @@ public abstract class DocPaymentInfo_Base
          */
         public RateInfo getRateInfo()
         {
-            return this.rateInfo;
+            return rateInfo;
         }
 
         /**
@@ -1522,7 +1522,7 @@ public abstract class DocPaymentInfo_Base
          */
         public PayPos setRateInfo(final RateInfo _rateInfo)
         {
-            this.rateInfo = _rateInfo;
+            rateInfo = _rateInfo;
             return this;
         }
 
@@ -1563,7 +1563,7 @@ public abstract class DocPaymentInfo_Base
         public AbstractTargetInfo(final Instance _instance)
             throws EFapsException
         {
-            this.instance = _instance;
+            instance = _instance;
         }
 
         /**
@@ -1575,10 +1575,10 @@ public abstract class DocPaymentInfo_Base
         public Instance getCurrencyInstance()
             throws EFapsException
         {
-            if (this.currencyInstance == null) {
-                this.currencyInstance = Currency.getBaseCurrency();
+            if (currencyInstance == null) {
+                currencyInstance = Currency.getBaseCurrency();
             }
-            return this.currencyInstance;
+            return currencyInstance;
         }
 
         /**
@@ -1590,10 +1590,10 @@ public abstract class DocPaymentInfo_Base
         public CurrencyInst getCurrencyInst()
             throws EFapsException
         {
-            if (this.currencyInst == null) {
-                this.currencyInst = CurrencyInst.get(getCurrencyInstance());
+            if (currencyInst == null) {
+                currencyInst = CurrencyInst.get(getCurrencyInstance());
             }
-            return this.currencyInst;
+            return currencyInst;
         }
 
         /**
@@ -1603,7 +1603,7 @@ public abstract class DocPaymentInfo_Base
          */
         public Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
 
         /**
@@ -1613,7 +1613,7 @@ public abstract class DocPaymentInfo_Base
          */
         public void setCurrencyInstance(final Instance _currencyInstance)
         {
-            this.currencyInstance = _currencyInstance;
+            currencyInstance = _currencyInstance;
         }
 
         /**
@@ -1623,7 +1623,7 @@ public abstract class DocPaymentInfo_Base
          */
         public void setCurrencyInst(final CurrencyInst _currencyInst)
         {
-            this.currencyInst = _currencyInst;
+            currencyInst = _currencyInst;
         }
     }
 
