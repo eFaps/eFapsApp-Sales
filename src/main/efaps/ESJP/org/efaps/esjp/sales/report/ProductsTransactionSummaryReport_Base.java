@@ -31,6 +31,15 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -61,15 +70,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  * TODO comment!.
@@ -195,7 +195,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DynProductsTransactionSummaryReport(final ProductsTransactionSummaryReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
         /**
@@ -205,14 +205,14 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         protected ProductsTransactionSummaryReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            return this.dataSource;
+            return dataSource;
         }
 
         /**
@@ -225,10 +225,10 @@ public abstract class ProductsTransactionSummaryReport_Base
             throws EFapsException
         {
             if (getFilteredReport().isCached(_parameter)) {
-                this.dataSource = (DataSource) getFilteredReport().getDataSourceFromCache(_parameter);
+                dataSource = (DataSource) getFilteredReport().getDataSourceFromCache(_parameter);
                 ProductsTransactionSummaryReport_Base.LOG.debug("Got datasource for report from cache: {}",
-                                this.dataSource);
-                this.dataSource.moveFirst();
+                                dataSource);
+                dataSource.moveFirst();
             } else {
                 final ProdDocDisplay prodDocDisplay = evaluateProdDocDisplay(_parameter);
                 final Map<Instance, DataBean> beans = new HashMap<>();
@@ -339,14 +339,14 @@ public abstract class ProductsTransactionSummaryReport_Base
                         throws EFapsException
                     {
                         return CIProducts.Inventory.getType();
-                    };
+                    }
 
                     @Override
                     protected org.efaps.admin.datamodel.Type getTransactionType(final Parameter _parameter)
                         throws EFapsException
                     {
                         return CIProducts.TransactionInOutAbstract.getType();
-                    };
+                    }
 
                     @Override
                     protected void addCost(final Parameter _parameter,
@@ -401,8 +401,8 @@ public abstract class ProductsTransactionSummaryReport_Base
                 for (final DataBean bean : data) {
                     mapCol.add(bean.getMap());
                 }
-                this.dataSource = new DataSource(mapCol, incomingProdDocTypes, outgoingProdDocTypes);
-                getFilteredReport().cache(_parameter, this.dataSource);
+                dataSource = new DataSource(mapCol, incomingProdDocTypes, outgoingProdDocTypes);
+                getFilteredReport().cache(_parameter, dataSource);
             }
         }
 
@@ -510,7 +510,7 @@ public abstract class ProductsTransactionSummaryReport_Base
             throws EFapsException
         {
             final ProdDocDisplay ret;
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             final EnumFilterValue value = (EnumFilterValue) filter.get("prodDocDisplay");
             if (value != null) {
                 ret = (ProdDocDisplay) value.getObject();
@@ -528,17 +528,17 @@ public abstract class ProductsTransactionSummaryReport_Base
             evalDataSource(_parameter);
             final ProdDocDisplay prodDocDisplay = evaluateProdDocDisplay(_parameter);
 
-            final TextColumnBuilder<String> prodNameColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> prodNameColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("ProdName"), "prodName", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> prodDescrColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> prodDescrColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("ProdDescr"), "prodDescr", DynamicReports.type.stringType())
                             .setFixedWidth(150);
 
-            final TextColumnBuilder<BigDecimal> startQtyColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> startQtyColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("StartQty"), "startQty", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> startValueColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> startValueColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("StartValue"), "startValue", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> startUnitPriceColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> startUnitPriceColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("StartUnitPrice"), "startUnitPrice", DynamicReports.type.bigDecimalType());
 
             final List<ColumnBuilder<?, ?>> incomingColumns = new ArrayList<>();
@@ -547,24 +547,24 @@ public abstract class ProductsTransactionSummaryReport_Base
                             -> DynProductsTransactionSummaryReport.this.dataSource.getIncomingProdDocTypes().get(_key0)
                             .compareTo(
                           DynProductsTransactionSummaryReport.this.dataSource.getIncomingProdDocTypes().get(_key1)));
-                sorted.putAll(this.dataSource.getIncomingProdDocTypes());
+                sorted.putAll(dataSource.getIncomingProdDocTypes());
                 for (final Entry<String, String> entry : sorted.entrySet()) {
                     final String qtyKey = "INCOMING-Qty" + entry.getKey();
                     final String valueKey = "INCOMING-Value" + entry.getKey();
                     incomingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
-                                    + this.filteredReport.getDBProperty("IncomingQty"), qtyKey, DynamicReports.type
+                                    + filteredReport.getDBProperty("IncomingQty"), qtyKey, DynamicReports.type
                                     .bigDecimalType()));
                     incomingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
-                                    + this.filteredReport.getDBProperty("IncomingValue"), valueKey, DynamicReports.type
+                                    + filteredReport.getDBProperty("IncomingValue"), valueKey, DynamicReports.type
                                     .bigDecimalType()));
                 }
             }
-            incomingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("IncomingQty"),
+            incomingColumns.add(DynamicReports.col.column(filteredReport.getDBProperty("IncomingQty"),
                             "incomingQty", DynamicReports.type.bigDecimalType()));
-            incomingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("IncomingValue"),
-                            "incomingValue", DynamicReports.type.bigDecimalType()));
-            incomingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("IncomingUnitPrice"),
+            incomingColumns.add(DynamicReports.col.column(filteredReport.getDBProperty("IncomingUnitPrice"),
                             "incomingUnitPrice", DynamicReports.type.bigDecimalType()));
+            incomingColumns.add(DynamicReports.col.column(filteredReport.getDBProperty("IncomingValue"),
+                            "incomingValue", DynamicReports.type.bigDecimalType()));
 
             final List<ColumnBuilder<?, ?>> outgoingColumns = new ArrayList<>();
             if (ProdDocDisplay.BOTH.equals(prodDocDisplay) || ProdDocDisplay.OUTGOOING.equals(prodDocDisplay)) {
@@ -572,43 +572,43 @@ public abstract class ProductsTransactionSummaryReport_Base
                                 -> DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocTypes()
                                 .get(_key0).compareTo(
                           DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocTypes().get(_key1)));
-                sorted.putAll(this.dataSource.getOutgoingProdDocTypes());
+                sorted.putAll(dataSource.getOutgoingProdDocTypes());
                 for (final Entry<String, String> entry : sorted.entrySet()) {
                     final String qtyKey = "OUTGOOING-Qty" + entry.getKey();
                     final String valueKey = "OUTGOOING-Value" + entry.getKey();
                     outgoingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
-                                    + this.filteredReport.getDBProperty("OutgoingQty"), qtyKey, DynamicReports.type
+                                    + filteredReport.getDBProperty("OutgoingQty"), qtyKey, DynamicReports.type
                                     .bigDecimalType()));
                     outgoingColumns.add(DynamicReports.col.column(entry.getValue() + " - "
-                                    + this.filteredReport.getDBProperty("OutgoingValue"), valueKey, DynamicReports.type
+                                    + filteredReport.getDBProperty("OutgoingValue"), valueKey, DynamicReports.type
                                     .bigDecimalType()));
                 }
             }
 
-            outgoingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("OutgoingQty"),
+            outgoingColumns.add(DynamicReports.col.column(filteredReport.getDBProperty("OutgoingQty"),
                             "outgoingQty", DynamicReports.type.bigDecimalType()));
-            outgoingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("OutgoingValue"),
-                            "outgoingValue", DynamicReports.type.bigDecimalType()));
-            outgoingColumns.add(DynamicReports.col.column(this.filteredReport.getDBProperty("OutgoingUnitPrice"),
+            outgoingColumns.add(DynamicReports.col.column(filteredReport.getDBProperty("OutgoingUnitPrice"),
                             "outgoingUnitPrice", DynamicReports.type.bigDecimalType()));
+            outgoingColumns.add(DynamicReports.col.column(filteredReport.getDBProperty("OutgoingValue"),
+                            "outgoingValue", DynamicReports.type.bigDecimalType()));
 
-            final TextColumnBuilder<BigDecimal> endQtyColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> endQtyColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("EndQty"), "endQty", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> endValueColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> endValueColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("EndValue"), "endValue", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> endUnitPriceColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> endUnitPriceColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("EndUnitPrice"), "endUnitPrice", DynamicReports.type.bigDecimalType());
 
-            final ColumnTitleGroupBuilder startGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
+            final ColumnTitleGroupBuilder startGrp = DynamicReports.grid.titleGroup(filteredReport.getDBProperty(
                             "StartTitleGrp"), startQtyColumn,  startUnitPriceColumn, startValueColumn);
-            final ColumnTitleGroupBuilder inGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
+            final ColumnTitleGroupBuilder inGrp = DynamicReports.grid.titleGroup(filteredReport.getDBProperty(
                             "IncomingTitleGrp"),
                             incomingColumns.toArray(new ColumnGridComponentBuilder[incomingColumns.size()]));
-            final ColumnTitleGroupBuilder outGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
+            final ColumnTitleGroupBuilder outGrp = DynamicReports.grid.titleGroup(filteredReport.getDBProperty(
                             "OutgoingTitleGrp"),
                             outgoingColumns.toArray(new ColumnGridComponentBuilder[outgoingColumns.size()]));
 
-            final ColumnTitleGroupBuilder endGrp = DynamicReports.grid.titleGroup(this.filteredReport.getDBProperty(
+            final ColumnTitleGroupBuilder endGrp = DynamicReports.grid.titleGroup(filteredReport.getDBProperty(
                             "EndTitleGrp"), endQtyColumn, endUnitPriceColumn, endValueColumn);
 
             _builder.columnGrid(prodNameColumn, prodDescrColumn, startGrp, inGrp, outGrp, endGrp)
@@ -668,7 +668,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public Instance getProdInst()
         {
-            return this.prodInst;
+            return prodInst;
         }
 
         /**
@@ -679,7 +679,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setProdInst(final Instance _prodInst)
         {
-            this.prodInst = _prodInst;
+            prodInst = _prodInst;
             return this;
         }
 
@@ -690,7 +690,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getIncomingQty()
         {
-            return this.incomingQty;
+            return incomingQty;
         }
 
         /**
@@ -704,25 +704,25 @@ public abstract class ProductsTransactionSummaryReport_Base
         public DataBean addIncoming(final ProdDocDisplay _prodDocDisplay, final BigDecimal _qty,
                                     final BigDecimal _cost)
         {
-            if (this.incomingQty == null) {
-                this.incomingQty = BigDecimal.ZERO;
+            if (incomingQty == null) {
+                incomingQty = BigDecimal.ZERO;
             }
-            if (this.incomingValue == null) {
-                this.incomingValue = BigDecimal.ZERO;
+            if (incomingValue == null) {
+                incomingValue = BigDecimal.ZERO;
             }
-            this.incomingQty = this.incomingQty.add(_qty);
-            this.incomingValue = this.incomingValue.add(_qty.multiply(_cost));
+            incomingQty = incomingQty.add(_qty);
+            incomingValue = incomingValue.add(_qty.multiply(_cost));
             if (ProdDocDisplay.INCOMING.equals(_prodDocDisplay) || ProdDocDisplay.BOTH.equals(_prodDocDisplay)) {
                 final String qtyKey = "INCOMING-Qty" + getProdDocTypeOid();
                 final String valueKey = "INCOMING-Value" + getProdDocTypeOid();
-                if (!this.prodDocTypeMap.containsKey(qtyKey)) {
-                    this.prodDocTypeMap.put(qtyKey, BigDecimal.ZERO);
+                if (!prodDocTypeMap.containsKey(qtyKey)) {
+                    prodDocTypeMap.put(qtyKey, BigDecimal.ZERO);
                 }
-                if (!this.prodDocTypeMap.containsKey(valueKey)) {
-                    this.prodDocTypeMap.put(valueKey, BigDecimal.ZERO);
+                if (!prodDocTypeMap.containsKey(valueKey)) {
+                    prodDocTypeMap.put(valueKey, BigDecimal.ZERO);
                 }
-                this.prodDocTypeMap.put(qtyKey, this.prodDocTypeMap.get(qtyKey).add(_qty));
-                this.prodDocTypeMap.put(valueKey, this.prodDocTypeMap.get(valueKey).add(_qty.multiply(_cost)));
+                prodDocTypeMap.put(qtyKey, prodDocTypeMap.get(qtyKey).add(_qty));
+                prodDocTypeMap.put(valueKey, prodDocTypeMap.get(valueKey).add(_qty.multiply(_cost)));
             }
             return this;
         }
@@ -734,7 +734,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getOutgoing()
         {
-            return this.outgoingQty;
+            return outgoingQty;
         }
 
         /**
@@ -749,25 +749,25 @@ public abstract class ProductsTransactionSummaryReport_Base
                                     final BigDecimal _qty,
                                     final BigDecimal _cost)
         {
-            if (this.outgoingQty == null) {
-                this.outgoingQty = BigDecimal.ZERO;
+            if (outgoingQty == null) {
+                outgoingQty = BigDecimal.ZERO;
             }
-            if (this.outgoingValue == null) {
-                this.outgoingValue = BigDecimal.ZERO;
+            if (outgoingValue == null) {
+                outgoingValue = BigDecimal.ZERO;
             }
-            this.outgoingQty = this.outgoingQty.add(_qty);
-            this.outgoingValue = this.outgoingValue.add(_qty.multiply(_cost));
+            outgoingQty = outgoingQty.add(_qty);
+            outgoingValue = outgoingValue.add(_qty.multiply(_cost));
             if (ProdDocDisplay.OUTGOOING.equals(_prodDocDisplay) || ProdDocDisplay.BOTH.equals(_prodDocDisplay)) {
                 final String qtyKey = "OUTGOOING-Qty" + getProdDocTypeOid();
                 final String valueKey = "OUTGOOING-Value" + getProdDocTypeOid();
-                if (!this.prodDocTypeMap.containsKey(qtyKey)) {
-                    this.prodDocTypeMap.put(qtyKey, BigDecimal.ZERO);
+                if (!prodDocTypeMap.containsKey(qtyKey)) {
+                    prodDocTypeMap.put(qtyKey, BigDecimal.ZERO);
                 }
-                if (!this.prodDocTypeMap.containsKey(valueKey)) {
-                    this.prodDocTypeMap.put(valueKey, BigDecimal.ZERO);
+                if (!prodDocTypeMap.containsKey(valueKey)) {
+                    prodDocTypeMap.put(valueKey, BigDecimal.ZERO);
                 }
-                this.prodDocTypeMap.put(qtyKey, this.prodDocTypeMap.get(qtyKey).add(_qty));
-                this.prodDocTypeMap.put(valueKey, this.prodDocTypeMap.get(valueKey).add(_qty.multiply(_cost)));
+                prodDocTypeMap.put(qtyKey, prodDocTypeMap.get(qtyKey).add(_qty));
+                prodDocTypeMap.put(valueKey, prodDocTypeMap.get(valueKey).add(_qty.multiply(_cost)));
             }
             return this;
         }
@@ -779,7 +779,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public String getProdName()
         {
-            return this.prodName;
+            return prodName;
         }
 
         /**
@@ -790,7 +790,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setProdName(final String _prodName)
         {
-            this.prodName = _prodName;
+            prodName = _prodName;
             return this;
         }
 
@@ -801,7 +801,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getQty()
         {
-            return this.endQty;
+            return endQty;
         }
 
         /**
@@ -812,7 +812,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setEndQty(final BigDecimal _endQty)
         {
-            this.endQty = _endQty;
+            endQty = _endQty;
             return this;
         }
 
@@ -823,7 +823,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getIncomingValue()
         {
-            return this.incomingValue;
+            return incomingValue;
         }
 
         /**
@@ -833,7 +833,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getOutgoingQty()
         {
-            return this.outgoingQty;
+            return outgoingQty;
         }
 
         /**
@@ -843,7 +843,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public void setOutgoingQty(final BigDecimal _outgoingQty)
         {
-            this.outgoingQty = _outgoingQty;
+            outgoingQty = _outgoingQty;
         }
 
         /**
@@ -853,7 +853,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getOutgoingValue()
         {
-            return this.outgoingValue;
+            return outgoingValue;
         }
 
         /**
@@ -864,7 +864,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public void setOutgoingValue(final BigDecimal _outgoingValue)
         {
-            this.outgoingValue = _outgoingValue;
+            outgoingValue = _outgoingValue;
         }
 
         /**
@@ -874,7 +874,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getEndValue()
         {
-            return this.endValue;
+            return endValue;
         }
 
         /**
@@ -885,7 +885,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setEndValue(final BigDecimal _endValue)
         {
-            this.endValue = _endValue;
+            endValue = _endValue;
             return this;
         }
 
@@ -896,7 +896,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getEndQty()
         {
-            return this.endQty;
+            return endQty;
         }
 
         /**
@@ -906,7 +906,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public void setIncomingQty(final BigDecimal _incomingQty)
         {
-            this.incomingQty = _incomingQty;
+            incomingQty = _incomingQty;
         }
 
         /**
@@ -917,8 +917,8 @@ public abstract class ProductsTransactionSummaryReport_Base
         public BigDecimal getIncomingUnitPrice()
         {
             BigDecimal ret = null;
-            if (this.incomingQty != null && this.incomingValue != null) {
-                ret = this.incomingValue.divide(this.incomingQty, 4, RoundingMode.HALF_UP);
+            if (incomingQty != null && incomingValue != null) {
+                ret = incomingValue.divide(incomingQty, 4, RoundingMode.HALF_UP);
             }
             return ret;
         }
@@ -931,8 +931,8 @@ public abstract class ProductsTransactionSummaryReport_Base
         public BigDecimal getOutgoingUnitPrice()
         {
             BigDecimal ret = null;
-            if (this.outgoingQty != null && this.outgoingValue != null) {
-                ret = this.outgoingValue.divide(this.outgoingQty, 4, RoundingMode.HALF_UP);
+            if (outgoingQty != null && outgoingValue != null) {
+                ret = outgoingValue.divide(outgoingQty, 4, RoundingMode.HALF_UP);
             }
             return ret;
         }
@@ -945,8 +945,8 @@ public abstract class ProductsTransactionSummaryReport_Base
         public BigDecimal getEndUnitPrice()
         {
             BigDecimal ret = null;
-            if (this.endQty != null && this.endValue != null) {
-                ret = this.endValue.divide(this.endQty, 4, RoundingMode.HALF_UP);
+            if (endQty != null && endValue != null) {
+                ret = endValue.divide(endQty, 4, RoundingMode.HALF_UP);
             }
             return ret;
         }
@@ -958,9 +958,9 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getStartValue()
         {
-            final BigDecimal end = this.endValue == null ? BigDecimal.ZERO : this.endValue;
-            final BigDecimal out = this.outgoingValue == null ? BigDecimal.ZERO : this.outgoingValue;
-            final BigDecimal in = this.incomingValue == null ? BigDecimal.ZERO : this.incomingValue;
+            final BigDecimal end = endValue == null ? BigDecimal.ZERO : endValue;
+            final BigDecimal out = outgoingValue == null ? BigDecimal.ZERO : outgoingValue;
+            final BigDecimal in = incomingValue == null ? BigDecimal.ZERO : incomingValue;
             return end.subtract(in).add(out);
         }
 
@@ -971,9 +971,9 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public BigDecimal getStartQty()
         {
-            final BigDecimal end = this.endQty == null ? BigDecimal.ZERO : this.endQty;
-            final BigDecimal out = this.outgoingQty == null ? BigDecimal.ZERO : this.outgoingQty;
-            final BigDecimal in = this.incomingQty == null ? BigDecimal.ZERO : this.incomingQty;
+            final BigDecimal end = endQty == null ? BigDecimal.ZERO : endQty;
+            final BigDecimal out = outgoingQty == null ? BigDecimal.ZERO : outgoingQty;
+            final BigDecimal in = incomingQty == null ? BigDecimal.ZERO : incomingQty;
             return end.subtract(in).add(out);
         }
 
@@ -998,7 +998,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public String getProdDescr()
         {
-            return this.prodDescr;
+            return prodDescr;
         }
 
         /**
@@ -1009,7 +1009,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setProdDescr(final String _prodDescr)
         {
-            this.prodDescr = _prodDescr;
+            prodDescr = _prodDescr;
             return this;
         }
 
@@ -1020,7 +1020,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public String getProdDocType()
         {
-            return this.prodDocType;
+            return prodDocType;
         }
 
         /**
@@ -1031,7 +1031,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setProdDocType(final String _prodDocType)
         {
-            this.prodDocType = _prodDocType;
+            prodDocType = _prodDocType;
             return this;
         }
 
@@ -1042,7 +1042,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public String getProdDocTypeOid()
         {
-            return this.prodDocTypeOid;
+            return prodDocTypeOid;
         }
 
         /**
@@ -1053,7 +1053,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public DataBean setProdDocTypeOid(final String _prodDocTypeOid)
         {
-            this.prodDocTypeOid = _prodDocTypeOid;
+            prodDocTypeOid = _prodDocTypeOid;
             return this;
         }
 
@@ -1078,7 +1078,7 @@ public abstract class ProductsTransactionSummaryReport_Base
             ret.put("endQty", getEndQty());
             ret.put("endValue", getEndValue());
             ret.put("endUnitPrice", getEndUnitPrice());
-            ret.putAll(this.prodDocTypeMap);
+            ret.putAll(prodDocTypeMap);
             return ret;
         }
 
@@ -1111,8 +1111,8 @@ public abstract class ProductsTransactionSummaryReport_Base
                           final Map<String, String> _outgoingProdDocTypes)
         {
             super(_col);
-            this.incomingProdDocTypes = _incomingProdDocTypes;
-            this.outgoingProdDocTypes = _outgoingProdDocTypes;
+            incomingProdDocTypes = _incomingProdDocTypes;
+            outgoingProdDocTypes = _outgoingProdDocTypes;
         }
 
         /**
@@ -1122,7 +1122,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public Map<String, String> getIncomingProdDocTypes()
         {
-            return this.incomingProdDocTypes;
+            return incomingProdDocTypes;
         }
 
         /**
@@ -1132,7 +1132,7 @@ public abstract class ProductsTransactionSummaryReport_Base
          */
         public Map<String, String> getOutgoingProdDocTypes()
         {
-            return this.outgoingProdDocTypes;
+            return outgoingProdDocTypes;
         }
     }
 }
