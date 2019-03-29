@@ -14,6 +14,7 @@
  linkto[CreateDocument].attribute[Date] as dateDoc,
  linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol] as symbolDoc,
  linkto[CreateDocument].attribute[Rate].label as rateDoc,
+ attribute[Rate] as rate,
  linkto[CreateDocument].linkto[Contact].attribute[Name] as contactNameDoc,
  attribute[Amount] as amountPay
 ]]>
@@ -22,6 +23,7 @@
     <field name="dateDoc" class="org.joda.time.DateTime"/>
     <field name="symbolDoc" class="java.lang.String"/>
     <field name="rateDoc" class="java.math.BigDecimal"/>
+    <field name="rate" class="java.math.BigDecimal"/>
     <field name="contactNameDoc" class="java.lang.String"/>
     <field name="amountPay" class="java.math.BigDecimal"/>
     <columnHeader>
@@ -150,7 +152,7 @@
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{rateDoc}.setScale(4, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{rate}.setScale(4, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true" isBlankWhenNull="true">
                 <reportElement uuid="1741a8d9-3ac4-44be-9526-11cea683589a" stretchType="RelativeToTallestObject" x="255" y="0" width="200" height="15"/>
