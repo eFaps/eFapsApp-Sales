@@ -14,7 +14,7 @@
  linkto[CreateDocument].attribute[Date] as dateDoc,
  linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol] as symbolDoc,
  linkto[CreateDocument].attribute[Rate].label as rateDoc,
- attribute[Rate] as rate,
+ attribute[Rate].label as rate,
  linkto[CreateDocument].linkto[Contact].attribute[Name] as contactNameDoc,
  attribute[Amount] as amountPay
 ]]>
