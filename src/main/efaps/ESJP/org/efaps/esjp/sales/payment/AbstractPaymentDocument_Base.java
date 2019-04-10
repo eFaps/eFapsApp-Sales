@@ -711,7 +711,7 @@ public abstract class AbstractPaymentDocument_Base
         ret.put("paymentAmountDesc", frmt.format(paymentAmountDesc));
         ret.put("paymentDiscount", frmt.format(paymentDiscount));
         ret.put("paymentRate", RateInfo.getRateUIFrmt(_parameter, _docInfo.getRateInfo4Target(),
-                        _docInfo.getInstance().getType().getName()));
+                        getCIType() == null ? null : getCIType().getType().getName()));
         ret.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Target().isInvert());
         return ret;
     }
@@ -1241,7 +1241,7 @@ public abstract class AbstractPaymentDocument_Base
                 if (!pactivt.isEmpty()) {
                     _queryBldr.addWhereAttrEqValue(CISales.AccountCashDesk.Activation, pactivt.toArray());
                 }
-            };
+            }
 
             @Override
             protected void updatePositionList(final Parameter _parameter,
@@ -1671,7 +1671,7 @@ public abstract class AbstractPaymentDocument_Base
     {
         BigDecimal rate = BigDecimal.ONE;
         try {
-            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate().parse(_parameter.getParameterValues(_field)[_index]);
+            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(null).parse(_parameter.getParameterValues(_field)[_index]);
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
@@ -2423,7 +2423,7 @@ public abstract class AbstractPaymentDocument_Base
                         }
                         _queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name,
                                         input + "*").setIgnoreCase(true);
-                    };
+                    }
                 }.getInstances(_parameter);
 
                 if (!lstDocs.isEmpty()) {

@@ -36,6 +36,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -480,4 +481,10 @@ public abstract class PaymentDetractionOut_Base
         return retVal;
     }
 
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.PaymentDetractionOut;
+    }
 }

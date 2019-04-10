@@ -28,6 +28,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
@@ -92,5 +93,12 @@ public abstract class PaymentDebitCard_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.PaymentDebitCardAbstract;
     }
 }

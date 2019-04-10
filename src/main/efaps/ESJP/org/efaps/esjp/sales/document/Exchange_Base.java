@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,8 +67,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("237aaa91-4c18-413c-9718-268deb312702")
@@ -234,7 +232,7 @@ public abstract class Exchange_Base
                 for (int i = 0; i < crossAr.length; i++) {
                     final Instance rateCurInst = Instance.get(CIERP.Currency.getType(), currAr[i]);
                     final String rate = new Currency().evaluateRateInfo(_parameter, new DateTime(), rateCurInst)
-                                    .getRateFrmt();
+                                    .getRateFrmt(null);
                     final Parameter parameter = ParameterUtil.clone(_parameter);
                     if (!ArrayUtils.isEmpty(nameAr) && nameAr.length > i) {
                         ParameterUtil.setParameterValues(parameter, "name4create", nameAr[i]);

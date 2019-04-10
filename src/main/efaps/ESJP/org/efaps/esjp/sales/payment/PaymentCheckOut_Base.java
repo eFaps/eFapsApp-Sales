@@ -34,6 +34,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -436,5 +437,12 @@ public abstract class PaymentCheckOut_Base
         }
         ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
         return ret;
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.PaymentCheckOut;
     }
 }

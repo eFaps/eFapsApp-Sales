@@ -34,6 +34,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -223,5 +224,11 @@ public abstract class PaymentRetentionOut_Base
         return ret;
     }
 
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.PaymentRetentionOut;
+    }
 
 }

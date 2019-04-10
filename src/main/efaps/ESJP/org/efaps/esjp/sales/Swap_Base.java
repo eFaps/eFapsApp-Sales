@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,8 +85,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("310e13ba-6fdb-49a7-8612-5c0f3802e550")
@@ -649,7 +647,7 @@ public abstract class Swap_Base
     {
         BigDecimal rate = BigDecimal.ONE;
         try {
-            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate().parse(_parameter.getParameterValues(_field)[_index]);
+            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(null).parse(_parameter.getParameterValues(_field)[_index]);
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
@@ -1174,7 +1172,7 @@ public abstract class Swap_Base
          */
         public String getDirection()
         {
-            return DBProperties.getProperty(Swap.class.getName() + ".Direction." + (this.from ? "from" : "to"));
+            return DBProperties.getProperty(Swap.class.getName() + ".Direction." + (from ? "from" : "to"));
         }
 
         /**
@@ -1182,7 +1180,7 @@ public abstract class Swap_Base
          */
         public String getDocument()
         {
-            return this.docInst.getType().getLabel() + " " + this.docName;
+            return docInst.getType().getLabel() + " " + docName;
         }
 
         /**
@@ -1193,7 +1191,7 @@ public abstract class Swap_Base
          */
         public SwapInfo setDocInstance(final Instance _docInst)
         {
-            this.docInst = _docInst;
+            docInst = _docInst;
             return this;
         }
 
@@ -1205,7 +1203,7 @@ public abstract class Swap_Base
          */
         public SwapInfo setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             return this;
         }
 
@@ -1217,7 +1215,7 @@ public abstract class Swap_Base
          */
         public SwapInfo setFrom(final boolean _from)
         {
-            this.from = _from;
+            from = _from;
             return this;
         }
 
@@ -1228,7 +1226,7 @@ public abstract class Swap_Base
          */
         public Instance getDocInst()
         {
-            return this.docInst;
+            return docInst;
         }
 
         /**
@@ -1238,7 +1236,7 @@ public abstract class Swap_Base
          */
         public boolean isFrom()
         {
-            return this.from;
+            return from;
         }
 
         /**
@@ -1248,7 +1246,7 @@ public abstract class Swap_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount;
+            return amount;
         }
 
         /**
@@ -1259,7 +1257,7 @@ public abstract class Swap_Base
          */
         public SwapInfo setAmount(final BigDecimal _amount)
         {
-            this.amount = _amount;
+            amount = _amount;
             return this;
         }
 
@@ -1270,7 +1268,7 @@ public abstract class Swap_Base
          */
         public Instance getCurrencyInstance()
         {
-            return this.currencyInstance;
+            return currencyInstance;
         }
 
         /**
@@ -1281,7 +1279,7 @@ public abstract class Swap_Base
          */
         public SwapInfo setCurrencyInstance(final Instance _currencyInstance)
         {
-            this.currencyInstance = _currencyInstance;
+            currencyInstance = _currencyInstance;
             return this;
         }
 
@@ -1292,7 +1290,7 @@ public abstract class Swap_Base
          */
         public DateTime getSwapDate()
         {
-            return this.swapDate;
+            return swapDate;
         }
 
         /**
@@ -1303,7 +1301,7 @@ public abstract class Swap_Base
          */
         public SwapInfo setSwapDate(final DateTime _swapDate)
         {
-            this.swapDate = _swapDate;
+            swapDate = _swapDate;
             return this;
         }
 
@@ -1314,7 +1312,7 @@ public abstract class Swap_Base
          */
         public String getDocName()
         {
-            return this.docName;
+            return docName;
         }
     }
 

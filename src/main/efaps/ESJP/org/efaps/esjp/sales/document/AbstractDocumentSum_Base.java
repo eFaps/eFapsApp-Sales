@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -916,8 +916,8 @@ public abstract class AbstractDocumentSum_Base
                 js.append(getSetFieldValue(0, "openAmount", getBaseCrossTotalFmtStr(_parameter, calculators)));
             }
         }
-        js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
-                        .append(getSetFieldValue(0, "rate", rateInfo.getRateUIFrmt()))
+        js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt(null)))
+                        .append(getSetFieldValue(0, "rate", rateInfo.getRateUIFrmt(null)))
             .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
                         Boolean.toString(rateInfo.isInvert())))
                         .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
@@ -1734,7 +1734,7 @@ public abstract class AbstractDocumentSum_Base
                     if (!configs.isEmpty()) {
                         _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration, configs.toArray());
                     }
-                };
+                }
             };
             ret = field.getOptionListFieldValue(_parameter);
         }
