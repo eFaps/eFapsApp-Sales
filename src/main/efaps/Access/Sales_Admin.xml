@@ -375,6 +375,7 @@
         </status>
 
         <status group="Sales_ContractStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
