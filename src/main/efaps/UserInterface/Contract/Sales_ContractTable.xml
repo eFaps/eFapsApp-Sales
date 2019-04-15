@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright 2003 - 2018 The eFaps Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>350a2470-1297-4332-8ac8-a2c6b110a8fb</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ContractTable</name>
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Sales_Contract/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_Contract/Name.Label</property>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="Label">Sales_Contract/Description.Label</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[ContactLink].oid</property>
+            <property name="Select">linkto[ContactLink].attribute[Name]</property>
+            <property name="Label">Sales_Contract/Contact.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_Contract/Date.Label</property>
+        </field>
+        <field name="dueDate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_Contract/DueDate.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Open</property>
+            <property name="Label">Sales_Contract/Status.Label</property>
+        </field>
+    </definition>
+</ui-table>

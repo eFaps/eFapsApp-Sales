@@ -42,6 +42,7 @@
             <child>Sales_ReportMyDesk</child>
             <child>Sales_CashFlowMyDesk</child>
             <child>Sales_CreditMgmtMyDesk</child>
+            <child>Sales_ContractMgmtMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

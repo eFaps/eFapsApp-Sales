@@ -50,6 +50,7 @@
         <type>Sales_Conciliation</type>
         <type>Sales_ConsignmentNote</type>
         <type>Sales_CostSheet</type>
+        <type>Sales_Contract</type>
         <type>Sales_Credit</type>
         <type>Sales_CreditNote</type>
         <type>Sales_DeliveryNote</type>
@@ -371,6 +372,12 @@
             <key>Closed</key>
             <key>Canceled</key>
             <key>Booked</key>
+        </status>
+
+        <status group="Sales_ContractStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
         </status>
 
         <status group="Sales_CreditStatus">

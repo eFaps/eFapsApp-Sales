@@ -234,6 +234,29 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CONTRACT_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Contract.Activate")
+                    .description("Main switch to activate Contracts.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute CONTRACT_NUMGEN = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Contract.NumberGenerator")
+                    .defaultValue(CINumGenSales.ContractSequence.uuid.toString())
+                    .description("NumberGenerator for Contract.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute CONTRACT_STATUS4CREATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Contract.Status4Create")
+                    .defaultValue(CISales.ContractStatus.Draft.key)
+                    .description("Key of the Status for create.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute CREDIT_ASSEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Credit.AssignEmployee")
