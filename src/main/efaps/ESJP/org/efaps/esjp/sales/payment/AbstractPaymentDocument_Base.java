@@ -766,7 +766,7 @@ public abstract class AbstractPaymentDocument_Base
                         _parameter.getParameterValue("account"));
         if (docInstance.isValid() && accInstance.isValid()) {
             try {
-                final Object[] rateObj = getRateObject(_parameter, "paymentRate", selected);
+                final Object[] rateObj = getRateObject(_parameter, "paymentRate", selected, true);
                 final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                                 BigDecimal.ROUND_HALF_UP);
                 final BigDecimal rateUI = (BigDecimal) NumberFormatter.get().getFormatter()
@@ -900,7 +900,7 @@ public abstract class AbstractPaymentDocument_Base
                             _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
             payInsert.add(CISales.Payment.Date,
                             _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
-            payInsert.add(CISales.Payment.Rate, getRateObject(_parameter, "paymentRate", i));
+            payInsert.add(CISales.Payment.Rate, getRateObject(_parameter, "paymentRate", i, true));
             add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
             payInsert.execute();
 
@@ -1001,7 +1001,7 @@ public abstract class AbstractPaymentDocument_Base
                         _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
         payInsert.add(CISales.Payment.Date,
                         _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
-        payInsert.add(CISales.Payment.Rate, getRateObject(_parameter, "rate", 0));
+        payInsert.add(CISales.Payment.Rate, getRateObject(_parameter, "rate", 0, false));
         add2PaymentCreate(_parameter, payInsert, _createdDoc, 0);
         payInsert.execute();
 
@@ -1107,7 +1107,7 @@ public abstract class AbstractPaymentDocument_Base
                             _editedDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
             update.add(CISales.Payment.Date,
                             _editedDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
-            update.add(CISales.Payment.Rate, getRateObject(_parameter, "paymentRate", i));
+            update.add(CISales.Payment.Rate, getRateObject(_parameter, "paymentRate", i, true));
             update.add(CISales.Payment.AccountLink, _parameter.getParameterValue("account"));
             update.execute();
         }
@@ -1654,7 +1654,7 @@ public abstract class AbstractPaymentDocument_Base
     protected Object[] getRateObject(final Parameter _parameter)
         throws EFapsException
     {
-        return getRateObject(_parameter, "rate", 0);
+        return getRateObject(_parameter, "rate", 0, false);
     }
 
     /**
@@ -1666,12 +1666,15 @@ public abstract class AbstractPaymentDocument_Base
      */
     protected Object[] getRateObject(final Parameter _parameter,
                                      final String _field,
-                                     final int _index)
+                                     final int _index,
+                                     final boolean _useTypeKey)
         throws EFapsException
     {
         BigDecimal rate = BigDecimal.ONE;
         try {
-            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(null).parse(_parameter.getParameterValues(_field)[_index]);
+            final String key = _useTypeKey ? getCIType() == null ? null : getCIType().getType().getName() : null;
+            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(key)
+                            .parse(_parameter.getParameterValues(_field)[_index]);
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
