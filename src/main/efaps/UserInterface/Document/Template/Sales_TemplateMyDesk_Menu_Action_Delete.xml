@@ -16,24 +16,17 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0c7317d4-8167-4759-b2f1-df6befc0c59c</uuid>
+    <uuid>bb292e31-cbb3-41a8-a3a8-43c731cbd97a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ContractMgmtMyDesk</name>
+        <name>Sales_TemplateMyDesk_Menu_Action_Delete</name>
         <target>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Sales_ContractMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Contract.Activate</property>
-            </trigger>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <childs>
-            <child>Sales_ContractMyDesk</child>
-            <child>Sales_TemplateMyDesk</child>
-        </childs>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright 2003 - 2019 The eFaps Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>17ed80a3-acb3-45c0-9355-941620778fea</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application exclude="true" name="eFapsApp-HumanResource" />
+        </application-dependencies>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
+        <name>Sales_TemplateMyDesk_Menu_Action_CreateInvoice</name>
+        <access>
+            <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_InvoiceForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.document.Invoice">
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <!-- Sales_ChannelCondition2Invoice -->
+                <property name="ConnectType01">74552bef-1282-4be2-af52-2fa914ddaa17</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Invoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" />
+        </application-dependencies>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
+        <name>Sales_InvoiceMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_InvoiceForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.document.Invoice">
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <!-- Sales_ChannelCondition2Invoice -->
+                <property name="ConnectType02">74552bef-1282-4be2-af52-2fa914ddaa17</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">condition</property>
+
+                <!-- Sales_Employee2Invoice -->
+                <property name="ConnectType03">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">employee</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_InvoiceTemplate</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
+    </definition>
+</ui-command>
