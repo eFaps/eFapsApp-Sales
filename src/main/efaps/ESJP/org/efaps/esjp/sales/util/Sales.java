@@ -2569,6 +2569,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TEMPLATE_NUMGEN = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Template.NumberGenerator")
+                    .defaultValue(CINumGenSales.TemplateSequence.uuid.toString())
+                    .description("NumberGenerator for Templates.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute TRANSDOCJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "TransactionDocument.JasperReport")

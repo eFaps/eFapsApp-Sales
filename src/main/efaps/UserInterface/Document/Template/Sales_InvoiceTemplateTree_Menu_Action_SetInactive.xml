@@ -18,26 +18,23 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>78cac8ea-a5f5-4490-9f34-f5a5433d27ec</uuid>
+    <uuid>ae450c71-2285-4f58-a57b-e6cc290741b1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TemplateMyDesk</name>
+        <name>Sales_InvoiceTemplateTree_Menu_Action_SetInactive</name>
         <target>
-            <menu>Sales_TemplateMyDesk_Menu</menu>
-            <table>Sales_TemplateTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_InvoiceTemplate</property>
-            </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Sales_TemplateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Contract.Activate</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Inactive</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_InvoiceTemplateTree_Menu_Action_SetInactive.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Active</property>
             </trigger>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
-        <property name="TargetMode">view</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

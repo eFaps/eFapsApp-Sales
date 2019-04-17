@@ -34,11 +34,10 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_InvoiceForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.Invoice">
-                <property name="PositionType">Sales_InvoicePosition</property>
-                <!-- Sales_ChannelCondition2Invoice -->
-                <property name="ConnectType01">74552bef-1282-4be2-af52-2fa914ddaa17</property>
+            <form>Sales_InvoiceTemplateForm</form>
+            <execute method="createInvoice" program="org.efaps.esjp.sales.document.Template">
+                <!-- Sales_ChannelSalesCondition2InvoiceTemplate -->
+                <property name="ConnectType01">7c21203f-75c6-477d-8690-b3884d43aa71</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
@@ -59,23 +58,23 @@
         <profiles>
             <profile name="eFaps" />
         </profiles>
-        <name>Sales_InvoiceMyDesk_Menu_Action_Create</name>
+        <name>Sales_TemplateMyDesk_Menu_Action_CreateInvoice</name>
         <access>
             <role>Sales_Teller</role>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_InvoiceForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.Invoice">
+            <form>Sales_InvoiceTemplateForm</form>
+            <execute method="createInvoice" program="org.efaps.esjp.sales.document.Template">
                 <property name="PositionType">Sales_InvoicePosition</property>
-                <!-- Sales_ChannelCondition2Invoice -->
-                <property name="ConnectType02">74552bef-1282-4be2-af52-2fa914ddaa17</property>
+                <!-- Sales_ChannelSalesCondition2InvoiceTemplate -->
+                <property name="ConnectType01">7c21203f-75c6-477d-8690-b3884d43aa71</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">condition</property>
 
-                <!-- Sales_Employee2Invoice -->
-                <property name="ConnectType03">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
+                <!-- Sales_Employee2InvoiceTemplate -->
+                <property name="ConnectType03">d3b46c53-0d0d-461f-b1f4-29d1d2fca7c0</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">employee</property>

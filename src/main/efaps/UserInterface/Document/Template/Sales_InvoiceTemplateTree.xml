@@ -16,28 +16,19 @@
     limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>78cac8ea-a5f5-4490-9f34-f5a5433d27ec</uuid>
+    <uuid>2d298ed0-9f3b-40b2-824b-2ac9d5b0f80a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TemplateMyDesk</name>
+        <name>Sales_InvoiceTemplateTree</name>
         <target>
-            <menu>Sales_TemplateMyDesk_Menu</menu>
-            <table>Sales_TemplateTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_InvoiceTemplate</property>
-            </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Sales_TemplateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Contract.Activate</property>
-            </trigger>
+            <menu>Sales_InvoiceTemplateTree_Menu</menu>
+            <form>Sales_InvoiceTemplateForm</form>
         </target>
+        <type>Sales_InvoiceTemplate</type>
         <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetMode">view</property>
     </definition>
-</ui-command>
+</ui-menu>
