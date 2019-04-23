@@ -18,19 +18,16 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b26d800e-7e98-41e6-a829-f84558d93c0d</uuid>
+    <uuid>99f83aa9-afa2-4ff1-b885-9260dd15cf5d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ContractTree</name>
+        <name>Sales_Contract2TemplateTree</name>
         <target>
-            <menu>Sales_ContractTree_Menu</menu>
-            <form>Sales_ContractForm</form>
+            <menu>Sales_Contract2TemplateTree_Menu</menu>
+            <form>Sales_Contract2TemplateForm</form>
         </target>
-        <type>Sales_Contract</type>
-        <childs>
-            <child>Sales_ContractTree_Template</child>
-        </childs>
+        <type>Sales_Contract2TemplateAbstract</type>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

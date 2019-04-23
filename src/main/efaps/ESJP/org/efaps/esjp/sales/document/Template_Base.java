@@ -2,6 +2,9 @@ package org.efaps.esjp.sales.document;
 
 import java.util.UUID;
 
+import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.Recur.Frequency;
+
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -34,6 +37,14 @@ public abstract class Template_Base
         final InvoiceTemplate template = new InvoiceTemplate();
         return template.edit(_parameter);
     }
+
+
+    public void run() {
+        final Recur recur = new Recur.Builder()
+                        .frequency(Frequency.MONTHLY)
+                        .build();
+    }
+
 
     public static class InvoiceTemplate
         extends AbstractDocumentSum

@@ -16,22 +16,23 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b26d800e-7e98-41e6-a829-f84558d93c0d</uuid>
+    <uuid>c527aafa-20a0-487f-874a-860b18100194</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ContractTree</name>
+        <name>Sales_Contract2TemplateTree_Menu_Action_Edit</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
-            <menu>Sales_ContractTree_Menu</menu>
-            <form>Sales_ContractForm</form>
+            <form>Sales_Contract2TemplateForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
         </target>
-        <type>Sales_Contract</type>
-        <childs>
-            <child>Sales_ContractTree_Template</child>
-        </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
-</ui-menu>
+</ui-command>
