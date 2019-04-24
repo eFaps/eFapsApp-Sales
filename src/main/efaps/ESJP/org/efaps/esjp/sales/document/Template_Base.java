@@ -1,5 +1,7 @@
 package org.efaps.esjp.sales.document;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import net.fortuna.ical4j.model.Recur;
@@ -14,7 +16,15 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.stmt.StmtFlag;
+import org.efaps.db.stmt.selection.Evaluator;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -38,13 +48,102 @@ public abstract class Template_Base
         return template.edit(_parameter);
     }
 
-
-    public void run() {
+    public void run()
+    {
         final Recur recur = new Recur.Builder()
                         .frequency(Frequency.MONTHLY)
                         .build();
     }
 
+    public Return createDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance templateInst = _parameter.getInstance();
+
+        final Parameter parameter = ParameterUtil.clone(_parameter);
+
+        final Evaluator eval = EQL.print(templateInst)
+                .linkto(CISales.InvoiceTemplate.Contact).oid()
+                .attribute(CISales.InvoiceTemplate.Note)
+                .stmt().evaluate();
+        final String contactOid = eval.get(1);
+        final String note = eval.get(2);
+
+        ParameterUtil.setParameterValues(parameter, "date", DateTime.now().toString());
+        ParameterUtil.setParameterValues(parameter, "contact", contactOid);
+        ParameterUtil.setParameterValues(parameter, "note", note);
+
+        final Evaluator posEval = EQL.print(EQL.query(CISales.InvoiceTemplatePosition)
+                    .where(EQL.where()
+                        .attribute(CISales.InvoiceTemplatePosition.InvoiceTemplateLink).eq(templateInst)))
+            .linkto(CISales.InvoiceTemplatePosition.Product).oid()
+            .attribute(CISales.InvoiceTemplatePosition.ProductDesc)
+            .attribute(CISales.InvoiceTemplatePosition.UoM)
+            .orderBy(CISales.InvoiceTemplatePosition.PositionNumber)
+            .stmt()
+            .evaluate();
+
+        while (posEval.next()) {
+            final String productoOid = posEval.get(1);
+            final String productDesc = posEval.get(2);
+            final Long uoMId = posEval.get(3);
+            ParameterUtil.addParameterValues(parameter, "product", productoOid);
+            ParameterUtil.addParameterValues(parameter, "productDesc", productDesc);
+            ParameterUtil.addParameterValues(parameter, "uoM", uoMId.toString());
+        }
+
+        final Invoice invoice = new Invoice() {
+            @Override
+            protected Instance getRateCurrencyInstance(final Parameter _parameter,
+                                                       final CreatedDoc _createdDoc)
+                throws EFapsException
+            {
+                final Evaluator eval = EQL.print(templateInst)
+                    .linkto(CISales.InvoiceTemplate.RateCurrencyId).instance()
+                    .with(StmtFlag.REQCACHED)
+                    .stmt().evaluate();
+                return eval.get(1);
+            }
+
+            @Override
+            protected Object[] getRateObject(final Parameter _parameter)
+                throws EFapsException
+            {
+                final Evaluator eval = EQL.print(templateInst)
+                                .linkto(CISales.InvoiceTemplate.RateCurrencyId).instance()
+                                .with(StmtFlag.REQCACHED)
+                                .stmt().evaluate();
+                final Instance rateCurrencyInst = eval.get(1);
+
+                final Currency currency = new Currency();
+                final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, DateTime.now(), rateCurrencyInst);
+                return RateInfo.getRateObject(_parameter, rateInfo, CISales.Invoice.getType().getName());
+            }
+
+            @Override
+            protected Type getType4DocCreate(final Parameter _parameter)
+                throws EFapsException
+            {
+                return CISales.Invoice.getType();
+            }
+
+            @Override
+            protected String getDocName4Create(final Parameter _parameter)
+                throws EFapsException
+            {
+                return "How to do that";
+            }
+
+            @Override
+            public List<Calculator> analyseTable(final Parameter _parameter,
+                                                 final Integer _row4priceFromDB)
+                throws EFapsException
+            {
+                return getCalculators4Doc(_parameter, templateInst, Collections.emptyList());
+            }
+        };
+        return invoice.create(parameter);
+    }
 
     public static class InvoiceTemplate
         extends AbstractDocumentSum
