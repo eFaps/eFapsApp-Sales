@@ -951,17 +951,19 @@ public abstract class AbstractPaymentDocument_Base
                                       final List<Instance> _paymentInstances)
         throws EFapsException
     {
-        // flag collection and payment order
-        final MultiPrintQuery multi = new MultiPrintQuery(_paymentInstances);
-        final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
-        multi.addSelect(selDocInst);
-        multi.executeWithoutAccessCheck();
-        while (multi.next()) {
-            final Instance docInst = multi.getSelect(selDocInst);
-            if (InstanceUtils.isType(docInst, CISales.CollectionOrder)) {
-                Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4CollectionOrder.getType());
-            } else if (InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
-                Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4PaymentOrder.getType());
+        if (!"true".equalsIgnoreCase(_parameter.getParameterValue("accountability"))) {
+            // flag collection and payment order
+            final MultiPrintQuery multi = new MultiPrintQuery(_paymentInstances);
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+            multi.addSelect(selDocInst);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                if (InstanceUtils.isType(docInst, CISales.CollectionOrder)) {
+                    Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4CollectionOrder.getType());
+                } else if (InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
+                    Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4PaymentOrder.getType());
+                }
             }
         }
     }
