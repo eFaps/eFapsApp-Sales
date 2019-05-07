@@ -93,6 +93,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Width">80</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
                 method="autoComplete4Contact"
                 name="Sales_PaymentOrderForm.contact.UI_FIELD_AUTOCOMPLETE"
