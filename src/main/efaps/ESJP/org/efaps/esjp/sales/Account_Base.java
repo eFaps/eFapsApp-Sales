@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,8 +77,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("70868417-752b-45e8-8ada-67d0b15ad35b")
@@ -238,8 +236,6 @@ public abstract class Account_Base
         return ret;
     }
 
-
-
     /**
      * @param _parameter Parametes as passed by the eFaps API
      * @return file
@@ -255,26 +251,26 @@ public abstract class Account_Base
             final Parameter parameter = ParameterUtil.clone(_parameter, (Object) null);
             ParameterUtil.setParameterValues(parameter, "startAmount", "0");
             final Instance balanceInst = ftbs.createBalanceDoc(parameter);
-            final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
-            ftbs.createDoc4Account(parameter, balanceInst);
+            if (InstanceUtils.isValid(balanceInst)) {
+                final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
+                ftbs.createDoc4Account(parameter, balanceInst);
 
-            final File file = ftbs.createReport(parameter, createdDoc);
-            if (file != null) {
-                ret.put(ReturnValues.VALUES, file);
-                ret.put(ReturnValues.TRUE, true);
+                final File file = ftbs.createReport(parameter, createdDoc);
+                if (file != null) {
+                    ret.put(ReturnValues.VALUES, file);
+                    ret.put(ReturnValues.TRUE, true);
+                }
             }
             final Update update = new Update(instance);
             update.add(CISales.AccountFundsToBeSettled.Status,
                             Status.find(CISales.AccountFundsToBeSettledStatus.Closed));
             update.execute();
         }
-
         if (instance != null && CISales.AccountPettyCash.getType().equals(instance.getType())) {
             final Update update = new Update(instance);
             update.add(CISales.AccountPettyCash.Status, Status.find(CISales.AccountPettyCashStatus.Inactive));
             update.execute();
         }
-
         return ret;
     }
 
