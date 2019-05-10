@@ -202,7 +202,7 @@ public abstract class IncomingCreditNote_Base
         queryBldr.addType(CISales.FundsToBeSettledReceipt);
         queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract,
                         Status.find(CISales.PettyCashReceiptStatus.Canceled),
-                        Status.find(CISales.FundsToBeSettledReceiptStatus.Booked));
+                        Status.find(CISales.FundsToBeSettledReceiptStatus.Canceled));
         return new IncomingCreditNote()
         {
 
@@ -248,7 +248,7 @@ public abstract class IncomingCreditNote_Base
                 } else {
                     super.add2QueryBldr(_parameter, _queryBldr);
                 }
-            };
+            }
 
         }.autoComplete4Doc(_parameter, queryBldr);
     }

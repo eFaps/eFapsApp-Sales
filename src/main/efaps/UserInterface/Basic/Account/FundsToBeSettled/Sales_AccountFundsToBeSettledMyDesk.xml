@@ -33,6 +33,14 @@
                 <property name="Type">Sales_AccountFundsToBeSettled</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_AccountFundsToBeSettledMyDesk.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.FundsToBeSettled.Activate</property>
+             </trigger>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>

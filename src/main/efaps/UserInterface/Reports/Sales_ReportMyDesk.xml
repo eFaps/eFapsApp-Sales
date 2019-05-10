@@ -31,6 +31,7 @@
             <child>Sales_RetentionBookReportMyDesk</child>
             <child>Sales_AccountPettyCashReportMyDesk</child>
             <child>Sales_AccountPettyCashSummaryReportMyDesk</child>
+            <child>Sales_AccountFundsToBeSettledReportMyDesk</child>
             <child>Sales_DocumentSumReportMyDesk</child>
             <child>Sales_DocPositionReportMyDesk</child>
             <child>Sales_DocSituationReportMyDesk</child>

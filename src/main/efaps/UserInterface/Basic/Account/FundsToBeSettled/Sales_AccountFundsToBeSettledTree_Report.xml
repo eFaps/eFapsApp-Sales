@@ -15,25 +15,18 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-
 -->
-<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>bef34a30-c575-4278-bd5c-fb842c5b3029</uuid>
+    <uuid>e08b4dd9-9701-4ce9-a824-b52ca853da6a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_FundsToBeSettledReceiptStatus</name>
-        <parent>Sales_DocumentStatus</parent>
-        <status key="Open">
-            <description>Invoice was printed, but needs to be payed for.</description>
-        </status>
-        <status key="Closed">
-            <description>Closed.</description>
-        </status>
-        <status key="Canceled">
-            <description>Invoice was booked.</description>
-        </status>
+        <name>Sales_AccountFundsToBeSettledTree_Report</name>
+        <target>
+            <menu>Sales_AccountFundsToBeSettledTree_Report_Menu</menu>
+            <form>Sales_AccountFundsToBeSettledTreeReportForm</form>
+        </target>
+        <property name="TargetMode">view</property>
     </definition>
-</datamodel-statusgroup>
+</ui-command>

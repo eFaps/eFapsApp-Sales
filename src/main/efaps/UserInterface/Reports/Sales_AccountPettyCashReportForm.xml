@@ -36,7 +36,7 @@
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Boolean</property>
-                <property name="FilterDefault01">MONTH:-1</property>
+                <property name="FilterDefault01">MONTHS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.report.AccountPettyCashReport"

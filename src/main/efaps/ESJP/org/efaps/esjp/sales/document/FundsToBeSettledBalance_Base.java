@@ -205,8 +205,8 @@ public abstract class FundsToBeSettledBalance_Base
             if (withDateConf) {
                 final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
                 if (oids != null) {
-                    for (int i = 0; i < oids.length; i++) {
-                        final Instance instPay = Instance.get(oids[i]);
+                    for (final String oid : oids) {
+                        final Instance instPay = Instance.get(oid);
                         lstInst.add(instPay);
                     }
                 } else {
@@ -356,7 +356,7 @@ public abstract class FundsToBeSettledBalance_Base
             actionRelType = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
-            Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+            final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
             final Insert insert = new Insert(type);
             insert.add(CISales.DocumentSumAbstract.Name, name);
             insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
@@ -435,7 +435,7 @@ public abstract class FundsToBeSettledBalance_Base
                 recUpdate.add(CISales.FundsToBeSettledReceipt.Status,
                                 Status.find(CISales.FundsToBeSettledReceiptStatus.Closed));
                 if (contactObj != null) {
-                    final String seqKey = Sales.FUNDSTOBESETTLEDRECEIPTREVSEQ.get();
+                    final String seqKey = Sales.FUNDSTOBESETTLEDRECEIPT_REVSEQ.get();
                     final NumberGenerator numgen = isUUID(seqKey)
                                     ? NumberGenerator.get(UUID.fromString(seqKey))
                                     : NumberGenerator.get(seqKey);

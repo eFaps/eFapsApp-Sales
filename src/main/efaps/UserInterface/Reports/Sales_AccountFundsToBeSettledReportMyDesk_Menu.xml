@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
     Copyright 2003 - 2019 The eFaps Team
 
@@ -15,25 +14,18 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-
 -->
-<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>bef34a30-c575-4278-bd5c-fb842c5b3029</uuid>
+    <uuid>e9e54896-0d40-4876-a50a-6a387f3278c7</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_FundsToBeSettledReceiptStatus</name>
-        <parent>Sales_DocumentStatus</parent>
-        <status key="Open">
-            <description>Invoice was printed, but needs to be payed for.</description>
-        </status>
-        <status key="Closed">
-            <description>Closed.</description>
-        </status>
-        <status key="Canceled">
-            <description>Invoice was booked.</description>
-        </status>
+        <name>Sales_AccountFundsToBeSettledReportMyDesk_Menu</name>
+        <childs>
+            <child>Sales_AccountFundsToBeSettledReportMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_AccountFundsToBeSettledReportMyDesk_Menu_DownloadPDF</child>
+            <child>Sales_AccountFundsToBeSettledReportMyDesk_Menu_Filter</child>
+        </childs>
     </definition>
-</datamodel-statusgroup>
+</ui-menu>

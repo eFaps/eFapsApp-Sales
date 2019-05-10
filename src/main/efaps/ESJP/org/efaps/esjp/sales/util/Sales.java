@@ -578,11 +578,25 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPTREVSEQ = new StringSysConfAttribute()
+    public static final BooleanSysConfAttribute FUNDSTOBESETTLED_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "FundsToBeSettled.Activate")
+                    .description("Activate FundsToBeSettled mechanism");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPT_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "FundsToBeSettledReceipt.RevisionSequence")
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute FUNDSTOBESETTLEDRECEIPT_ASSEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "FundsToBeSettledReceipt.AssignEmployee")
+                    .description("Activate the mechanism to assign an employee to FundsToBeSettledReceipt.");
 
     /** See description. */
     @EFapsSysConfAttribute
