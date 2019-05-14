@@ -12,20 +12,22 @@
     <property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
     <property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
     <import value="org.efaps.number2words.Converter"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="Instance" value="true"/>
-        <property name="hasSubReport" value="true"/>
-    </parameter>
-    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
-    <parameter name="AccName" class="java.lang.String"/>
-    <parameter name="AmountPettyCash" class="java.math.BigDecimal"/>
+    <parameter name="INSTANCE" class="org.efaps.db.Instance"/>
     <parameter name="CompanyName" class="java.lang.String"/>
-    <field name="name" class="java.lang.String">
-        <property name="Select" value="attribute[Name]"/>
-    </field>
-    <field name="date" class="org.joda.time.DateTime">
-        <property name="Select" value="attribute[Date]"/>
-    </field>
+    <queryString language="eFaps">
+        <![CDATA[print obj $P!{INSTANCE}
+ select
+ linkfrom[Sales_AccountFundsToBeSettled2FundsToBeSettledBalance#ToLink].linkto[FromLink].attribute[Name] as accName,
+ linkfrom[Sales_AccountFundsToBeSettled2FundsToBeSettledBalance#ToLink].linkto[FromLink].attribute[AmountAbstract] as amountAccount,
+ attribute[CrossTotal] as amount,
+ attribute[Name] as name,
+ attribute[Date] as date]]>
+    </queryString>
+    <field name="accName" class="java.lang.String"/>
+    <field name="amountAccount" class="java.math.BigDecimal"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="name" class="java.lang.String"/>
+    <field name="date" class="org.joda.time.DateTime"/>
     <pageHeader>
         <band height="81" splitType="Stretch">
             <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
@@ -42,7 +44,7 @@
                 </textElement>
                 <text><![CDATA[Fecha:]]></text>
             </staticText>
-            <staticText>
+            <textField>
                 <reportElement x="275" y="30" width="260" height="27" uuid="d283214b-9348-4e6f-ba65-b161ca1791b2">
                     <property name="local_mesure_unitx" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -50,14 +52,14 @@
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font size="16" isBold="true"/>
                 </textElement>
-                <text><![CDATA[LIQUIDACIÓN]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA["LIQUIDACIÓN " + $F{name}]]></textFieldExpression>
+            </textField>
             <textField>
                 <reportElement x="120" y="14" width="226" height="14" uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{AccName}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
             </textField>
             <staticText>
                 <reportElement x="0" y="0" width="120" height="14" uuid="a167b8a1-e5f2-41d0-a8f3-c1e4a7070ac0">
@@ -73,7 +75,7 @@
                 <textElement>
                     <font size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[FONDOS A RENDIR:]]></text>
+                <text><![CDATA[ENTREGAS A RENDIR:]]></text>
             </staticText>
             <textField isStretchWithOverflow="true" isBlankWhenNull="true">
                 <reportElement x="120" y="0" width="711" height="14" uuid="95de231f-f359-4b91-b319-8334960ede77"/>
@@ -88,12 +90,16 @@
         <band height="60">
             <subreport>
                 <reportElement positionType="Float" x="0" y="0" width="802" height="60" uuid="0233034d-b54b-49d5-adaa-67e303dbd4d4"/>
-                <subreportParameter name="EFAPS_DEFINITION"/>
-                <subreportParameter name="AmountParameter">
-                    <subreportParameterExpression><![CDATA[$P{AmountPettyCash}]]></subreportParameterExpression>
+                <subreportParameter name="AmountAccount">
+                    <subreportParameterExpression><![CDATA[$F{amountAccount}]]></subreportParameterExpression>
                 </subreportParameter>
-                <dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_FundsToBeSettledBalancePayments")]]></dataSourceExpression>
-                <subreportExpression><![CDATA["JasperReport.Sales_FundsToBeSettledBalancePayments"]]></subreportExpression>
+                <subreportParameter name="Amount">
+                    <subreportParameterExpression><![CDATA[$F{amount}]]></subreportParameterExpression>
+                </subreportParameter>
+                <subreportParameter name="INSTANCE">
+                    <subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+                </subreportParameter>
+                <subreportExpression><![CDATA["Sales_FundsToBeSettledBalancePayments.jrxml"]]></subreportExpression>
             </subreport>
         </band>
         <band height="89">
