@@ -122,12 +122,17 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_Invoice/Status.Label</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="condition">
+            <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <property name="Select">linkfrom[Sales_ChannelPurchaseCondition2OrderOutbound#ToLink].linkto[FromLink].attribute[Name]</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundTable.condition.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateCondition</property>
+           </trigger>
         </field>
     </definition>
     <definition>
@@ -232,6 +237,18 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_Invoice/Status.Label</property>
         </field>
+        <field name="condition">
+            <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <property name="Select">linkfrom[Sales_ChannelPurchaseCondition2OrderOutbound#ToLink].linkto[FromLink].attribute[Name]</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundTable.condition.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateCondition</property>
+           </trigger>
+        </field>
         <field name="project">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2OrderOutbound#ToLink].linkto[FromLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2OrderOutbound#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2OrderOutbound#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
@@ -239,13 +256,6 @@
             <property name="FilterType">PICKLIST</property>
             <property name="Label">Projects_ProjectService.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>
