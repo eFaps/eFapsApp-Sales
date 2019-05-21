@@ -1784,6 +1784,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASH_CONNECT_INVOICE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "AccountPettyCash.ConnectIncomingInvoice")
+                    .description("Enable the connection of Incoming Invoice.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASH_CONNECT_RECEIPT = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "AccountPettyCash.ConnectIncomingInvoice")
+                    .description("Enable the connection of Incoming Invoice.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASHBAL_REQUIREBOOKED4PAY = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.RequireBooked4Payment")

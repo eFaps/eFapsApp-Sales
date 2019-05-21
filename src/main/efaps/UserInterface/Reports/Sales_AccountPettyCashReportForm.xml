@@ -66,6 +66,12 @@
                 <property name="Type02">Sales_PettyCashReceipt</property>
                 <property name="StatusGroup02">Sales_PettyCashReceiptStatus</property>
                 <property name="Status02">!Canceled</property>
+                <property name="Type03">Sales_IncomingInvoice</property>
+                <property name="StatusGroup03">Sales_IncomingInvoiceStatus</property>
+                <property name="Status03">!Replaced</property>
+                <property name="Type04">Sales_IncomingReceipt</property>
+                <property name="StatusGroup04">Sales_IncomingReceiptStatus</property>
+                <property name="Status04">!Replaced</property>
             </trigger>
         </field>
     </definition>

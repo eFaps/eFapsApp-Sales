@@ -231,7 +231,7 @@ public abstract class PettyCashBalance_Base
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(sel);
                 if (docInst != null && docInst.isValid()) {
-                    if (docInst.getType().equals(CISales.PettyCashReceipt.getType())) {
+                    if (InstanceUtils.isType(docInst, CISales.PettyCashReceipt)) {
                         final Insert rel2Insert = new Insert(CISales.PettyCashBalance2PettyCashReceipt);
                         rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.FromLink, balanceInst);
                         rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.ToLink, docInst);
@@ -240,7 +240,7 @@ public abstract class PettyCashBalance_Base
                         final Update update = new Update(docInst);
                         update.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                         update.execute();
-                    } else if (docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
+                    } else if (InstanceUtils.isType(docInst, CISales.IncomingCreditNote)) {
                         final Insert rel2Insert = new Insert(CISales.PettyCashBalance2IncomingCreditNote);
                         rel2Insert.add(CISales.PettyCashBalance2IncomingCreditNote.FromLink, balanceInst);
                         rel2Insert.add(CISales.PettyCashBalance2IncomingCreditNote.ToLink, docInst);
@@ -248,6 +248,22 @@ public abstract class PettyCashBalance_Base
                         final Update update = new Update(docInst);
                         update.add(CISales.IncomingCreditNote.Status,
                                         Status.find(CISales.IncomingCreditNoteStatus.Paid));
+                        update.execute();
+                    }  else if (InstanceUtils.isType(docInst, CISales.IncomingInvoice)) {
+                        final Insert rel2Insert = new Insert(CISales.PettyCashBalance2IncomingInvoice);
+                        rel2Insert.add(CISales.PettyCashBalance2IncomingInvoice.FromLink, balanceInst);
+                        rel2Insert.add(CISales.PettyCashBalance2IncomingInvoice.ToLink, docInst);
+                        rel2Insert.execute();
+                        final Update update = new Update(docInst);
+                        update.add(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Paid));
+                        update.execute();
+                    } else if (InstanceUtils.isType(docInst, CISales.IncomingReceipt)) {
+                        final Insert rel2Insert = new Insert(CISales.PettyCashBalance2IncomingReceipt);
+                        rel2Insert.add(CISales.PettyCashBalance2IncomingReceipt.FromLink, balanceInst);
+                        rel2Insert.add(CISales.PettyCashBalance2IncomingReceipt.ToLink, docInst);
+                        rel2Insert.execute();
+                        final Update update = new Update(docInst);
+                        update.add(CISales.IncomingReceipt.Status, Status.find(CISales.IncomingReceiptStatus.Paid));
                         update.execute();
                     }
                 }
