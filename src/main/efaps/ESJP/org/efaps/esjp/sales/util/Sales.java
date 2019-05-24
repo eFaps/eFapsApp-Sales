@@ -1182,6 +1182,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_ACTIVATEDELIVERYDATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderOutbound.ActivateDeliveryDate")
+                    .description("Activate DeliveryDate for Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute ORDEROUTBOUND_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderOutbound.JasperReport")
@@ -2579,7 +2586,14 @@ public final class Sales
     public static final BooleanSysConfAttribute SERVICEORDEROUTBOUND_ACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ServiceOrderOutbound.ActivateCondition")
-                    .description("Activate the mechanism to assign a condition in Order Outbound");
+                    .description("Activate the mechanism to assign a condition in Service Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUND_ACTIVATEDELIVERYDATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ServiceOrderOutbound.ActivateDeliveryDate")
+                    .description("Activate DeliveryDate for Service Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute

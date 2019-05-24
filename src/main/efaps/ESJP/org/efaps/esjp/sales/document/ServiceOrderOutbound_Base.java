@@ -31,6 +31,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -81,6 +82,19 @@ public abstract class ServiceOrderOutbound_Base
         return ret;
     }
 
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+        final String deliveryDate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.ServiceOrderOutbound.DeliveryDate.name));
+        _insert.add(CISales.ServiceOrderOutbound.DeliveryDate, deliveryDate);
+        _createdDoc.getValues().put(CISales.ServiceOrderOutbound.DeliveryDate.name, deliveryDate);
+    }
+
     /**
      * Executed from a Command execute event to create a new OrderOutbound.
      *
@@ -102,6 +116,19 @@ public abstract class ServiceOrderOutbound_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        final String deliveryDate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.ServiceOrderOutbound.DeliveryDate.name));
+        _update.add(CISales.ServiceOrderOutbound.DeliveryDate, deliveryDate);
+        _editDoc.getValues().put(CISales.ServiceOrderOutbound.DeliveryDate.name, deliveryDate);
     }
 
     /**

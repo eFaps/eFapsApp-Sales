@@ -40,7 +40,28 @@
         </field>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+                <property name="Inverse">true</property>
+           </trigger>
+        </field>
+         <field name="dategroupWithDeliveryDate" character="Group">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+           </trigger>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -57,6 +78,21 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
+        </field>
+        <field name="deliveryDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DeliveryDate</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+           </trigger>
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
@@ -460,7 +496,28 @@
         </field>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+                <property name="Inverse">true</property>
+           </trigger>
+        </field>
+         <field name="dategroupWithDeliveryDate" character="Group">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+           </trigger>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -477,6 +534,21 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
+        </field>
+        <field name="deliveryDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DeliveryDate</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+           </trigger>
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>

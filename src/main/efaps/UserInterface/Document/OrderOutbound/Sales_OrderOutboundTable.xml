@@ -49,6 +49,17 @@
             <property name="Attribute">DueDate</property>
             <property name="Label">Sales_Invoice/DueDate.Label</property>
         </field>
+        <field name="deliveryDate">
+            <property name="Attribute">DeliveryDate</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundTable.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+           </trigger>
+        </field>
         <field name="rateCrosstotal">
             <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -163,6 +174,17 @@
         <field name="dueDate">
             <property name="Attribute">DueDate</property>
             <property name="Label">Sales_Invoice/DueDate.Label</property>
+        </field>
+        <field name="deliveryDate">
+            <property name="Attribute">DeliveryDate</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundTable.deliveryDate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
+           </trigger>
         </field>
         <field name="rateCrosstotal">
             <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>

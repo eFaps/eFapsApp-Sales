@@ -35,6 +35,7 @@
             <column name="STRING3"    type="STRING_SHORT" length="256"/>
             <column name="STRING4"    type="STRING_SHORT" length="256"/>
             <column name="STRING5"    type="STRING_SHORT" length="256"/>
+            <column name="DATE1"      type="DATETIME" />
         </database>
     </definition>
 </datamodel-sqltable>
