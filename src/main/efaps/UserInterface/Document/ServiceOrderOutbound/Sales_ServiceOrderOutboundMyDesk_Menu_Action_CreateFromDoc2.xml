@@ -43,6 +43,12 @@
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
 
+                <!-- Sales_Employee2ServiceOrderOutbound -->
+                <property name="ConnectType02">69824cd6-c903-4c17-a1d0-7cd0031fd3e3</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
+
                 <!-- Sales_ServiceRequest -->
                 <!-- Sales_ServiceRequest2ServiceOrderOutbound -->
                 <property name="DerivedRulesType">f713769d-5c1b-4bac-9264-5ab813566685</property>

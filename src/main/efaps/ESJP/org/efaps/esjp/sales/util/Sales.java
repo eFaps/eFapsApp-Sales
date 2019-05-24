@@ -1189,6 +1189,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderOutbound.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to an Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute ORDEROUTBOUND_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderOutbound.JasperReport")
@@ -2594,6 +2601,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ServiceOrderOutbound.ActivateDeliveryDate")
                     .description("Activate DeliveryDate for Service Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUND_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ServiceOrderOutbound.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to a Service Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -48,6 +48,11 @@
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
 
+                <!-- Sales_Employee2OrderOutbound -->
+                <property name="ConnectType02">dfe94d47-2813-4070-8e77-512128e2c2fd</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
                 <property name="Validation">POSITION</property>
