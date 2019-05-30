@@ -41,6 +41,12 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">department</property>
+
+                <!-- Sales_Employee2ServiceRequest -->
+                <property name="ConnectType02">b51be6a5-6e7c-451b-903b-41bfb873b69d</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
             </execute>
         </target>
         <property name="Target">modal</property>

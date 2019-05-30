@@ -21,7 +21,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -38,6 +40,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
@@ -288,6 +291,34 @@ public abstract class OrderOutbound_Base
         boolean ret = true;
         if (!_instances.isEmpty() && _instances.get(0).isValid()) {
             ret = !_instances.get(0).getType().isKindOf(CISales.ProductRequest.getType());
+        }
+        return ret;
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4Document(_parameter, _instances);
+        // if we create from a ProductRequest and for ProductRequest and OrderOutbOund AssignEmployee is activated
+        if (!_instances.isEmpty() && InstanceUtils.isKindOf(_instances.get(0), CISales.ProductRequest)
+                        && Sales.PRODUCTREQUEST_ASSIGNEMPLOYEE.get() && Sales.ORDEROUTBOUND_ASSIGNEMPLOYEE.get()) {
+           final QueryBuilder queryBldr = new QueryBuilder(CISales.Employee2ProductRequest);
+           queryBldr.addWhereAttrEqValue(CISales.Employee2ProductRequest.ToLink, _instances.get(0));
+           final MultiPrintQuery multi = queryBldr.getPrint();
+           final SelectBuilder selEmployee = SelectBuilder.get().linkto(CISales.Employee2ProductRequest.FromLink);
+           final SelectBuilder selEmployeeOid = new SelectBuilder(selEmployee).oid();
+           multi.addSelect(selEmployeeOid);
+           //HumanResource_EmployeeWithNumberMsgPhrase
+           final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString("c6686d34-f9d7-4bf4-b9f1-80dad440eac4"));
+           multi.addMsgPhrase(selEmployee, msgPhrase);
+           multi.executeWithoutAccessCheck();
+           if (multi.next()) {
+               final String label = multi.getMsgPhrase(selEmployee, msgPhrase);
+               final String employeeOid = multi.getSelect(selEmployeeOid);
+               ret.append(getSetFieldValue(0, "employee", employeeOid, label)).append("\n");
+           }
         }
         return ret;
     }

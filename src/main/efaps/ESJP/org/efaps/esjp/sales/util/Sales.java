@@ -257,7 +257,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute CREDIT_ASSEMPLOYEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute CREDIT_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Credit.AssignEmployee")
                     .description("Allows to assign to an Employee.");
@@ -593,7 +593,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute FUNDSTOBESETTLEDRECEIPT_ASSEMPLOYEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute FUNDSTOBESETTLEDRECEIPT_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "FundsToBeSettledReceipt.AssignEmployee")
                     .description("Activate the mechanism to assign an employee to FundsToBeSettledReceipt.");
@@ -614,7 +614,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute GOODSISSUESLIPASSEMPLOYEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute GOODSISSUESLIPASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "GoodsIssueSlip.AssignEmployee")
                     .description("Activate GoodsIssueSlip mechnism");
@@ -1856,7 +1856,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PETTYCASHRECEIPT_ASSEMPLOYEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PETTYCASHRECEIPT_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashReceipt.AssignEmployee")
                     .description("Activate the mechanism to assign an employee to PettyCashReceipt.");
@@ -1867,6 +1867,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ProductRequest.AssignDepartment")
                     .description("Activate the mechanism to assign a department to ProductRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PRODUCTREQUEST_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ProductRequest.AssignEmployee")
+                    .description("Activate the mechanism to assign an employee to ProductRequest.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1966,7 +1973,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute QUOTATION_ASSEMPLOYEE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute QUOTATION_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Quotation.AssignEmployee")
                     .description("Allows to assign to an Employee.");
@@ -2536,6 +2543,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ServiceRequest.AssignDepartment")
                     .description("Activate the mechanism to assign a department to ServiceRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEREQUEST_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "ServiceRequest.AssignEmployee")
+                    .description("Activate the mechanism to assign an employee to ServiceRequest.");
 
     /** See description. */
     @EFapsSysConfAttribute

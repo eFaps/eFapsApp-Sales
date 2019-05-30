@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -41,6 +42,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
@@ -236,7 +238,33 @@ public abstract class ServiceOrderOutbound_Base
         return ret;
     }
 
-
+    @Override
+    protected StringBuilder add2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4Document(_parameter, _instances);
+        // if we create from a ServiceRequest and for ServiceRequest and OrderOutbOund AssignEmployee is activated
+        if (!_instances.isEmpty() && InstanceUtils.isKindOf(_instances.get(0), CISales.ServiceRequest)
+                        && Sales.SERVICEREQUEST_ASSIGNEMPLOYEE.get() && Sales.SERVICEORDEROUTBOUND_ASSIGNEMPLOYEE.get()) {
+           final QueryBuilder queryBldr = new QueryBuilder(CISales.Employee2ServiceRequest);
+           queryBldr.addWhereAttrEqValue(CISales.Employee2ServiceRequest.ToLink, _instances.get(0));
+           final MultiPrintQuery multi = queryBldr.getPrint();
+           final SelectBuilder selEmployee = SelectBuilder.get().linkto(CISales.Employee2ServiceRequest.FromLink);
+           final SelectBuilder selEmployeeOid = new SelectBuilder(selEmployee).oid();
+           multi.addSelect(selEmployeeOid);
+           //HumanResource_EmployeeWithNumberMsgPhrase
+           final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString("c6686d34-f9d7-4bf4-b9f1-80dad440eac4"));
+           multi.addMsgPhrase(selEmployee, msgPhrase);
+           multi.executeWithoutAccessCheck();
+           if (multi.next()) {
+               final String label = multi.getMsgPhrase(selEmployee, msgPhrase);
+               final String employeeOid = multi.getSelect(selEmployeeOid);
+               ret.append(getSetFieldValue(0, "employee", employeeOid, label)).append("\n");
+           }
+        }
+        return ret;
+    }
 
     @Override
     protected boolean isContact2JavaScript4Document(final Parameter _parameter,

@@ -27,6 +27,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.collections4.map.LazyMap;
@@ -61,18 +73,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  * Report used to analyze Petty Cash.
@@ -157,7 +157,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DynAccountPettyCashReport(final AccountPettyCashReport_Base _report)
         {
-            this.filteredReport = _report;
+            filteredReport = _report;
         }
 
         /**
@@ -212,7 +212,7 @@ public abstract class AccountPettyCashReport_Base
                 add2QueryBldr(_parameter, queryBldr);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addSelect(selAccInst, selAccName, selDocTypeName, selActionName, selCurInst, selContactName);
-                if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                if (Sales.PETTYCASHRECEIPT_ASSIGNEMPLOYEE.get()) {
                     multi.addMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase);
                 }
                 multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
@@ -247,7 +247,7 @@ public abstract class AccountPettyCashReport_Base
                                     .setSwitch(isGroup(_parameter))
                                     .setBaseNet(basenet)
                                     .setBaseCross(basecross);
-                    if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                    if (Sales.PETTYCASHRECEIPT_ASSIGNEMPLOYEE.get()) {
                         bean.setEmployee(multi.getMsgPhrase(selEmployee,
                                         CIMsgHumanResource.EmployeeWithNumberMsgPhrase));
                     }
@@ -289,7 +289,7 @@ public abstract class AccountPettyCashReport_Base
                                      final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("dateFrom")) {
                 final DateTime date = (DateTime) filter.get("dateFrom");
                 _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date,
@@ -369,7 +369,7 @@ public abstract class AccountPettyCashReport_Base
                     _builder.addColumn(FilteredReport.getLinkColumn(_parameter, "oid"));
                 }
                 _builder.addColumn(docNameColumn, dateColumn, contactNameColumn);
-                if (Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()) {
+                if (Sales.PETTYCASHRECEIPT_ASSIGNEMPLOYEE.get()) {
                     _builder.addColumn(employeeColumn);
                 }
             }
@@ -404,7 +404,7 @@ public abstract class AccountPettyCashReport_Base
             final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(baseAmountColumn);
             final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(baseAmountColumn);
 
-            final TextColumnBuilder<String> subTotalTtextColumn = Sales.PETTYCASHRECEIPT_ASSEMPLOYEE.get()
+            final TextColumnBuilder<String> subTotalTtextColumn = Sales.PETTYCASHRECEIPT_ASSIGNEMPLOYEE.get()
                             ? employeeColumn : contactNameColumn;
             _builder.addSubtotalAtGroupFooter(pettyCashGroup, FilteredReport.getCustomTextSubtotalBuilder(
                             _parameter, "pettyCash", subTotalTtextColumn), amountSum);
@@ -430,7 +430,7 @@ public abstract class AccountPettyCashReport_Base
         protected boolean isGroup(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             return BooleanUtils.isTrue((Boolean) filter.get("switch"));
         }
 
@@ -452,7 +452,7 @@ public abstract class AccountPettyCashReport_Base
          */
         protected AccountPettyCashReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 
@@ -532,7 +532,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getPettyCash()
         {
-            return this.pettyCash;
+            return pettyCash;
         }
 
         /**
@@ -584,7 +584,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setSwitch(final boolean _isGroup)
         {
-            this.isGroup = _isGroup;
+            isGroup = _isGroup;
             return this;
         }
 
@@ -595,7 +595,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public Boolean getSwitch()
         {
-            return this.isGroup;
+            return isGroup;
         }
 
         /**
@@ -670,7 +670,7 @@ public abstract class AccountPettyCashReport_Base
          */
         private BigDecimal getBaseAmount()
         {
-            return this.baseCross;
+            return baseCross;
         }
 
         /**
@@ -681,7 +681,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setPettyCashInstance(final Instance _pettyCashInstance)
         {
-            this.pettyCashInstance = _pettyCashInstance;
+            pettyCashInstance = _pettyCashInstance;
             return this;
         }
 
@@ -693,7 +693,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setDocTypeName(final String _docTypeName)
         {
-            this.docTypeName = _docTypeName;
+            docTypeName = _docTypeName;
             return this;
         }
 
@@ -705,7 +705,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setPettyCash(final String _name)
         {
-            this.pettyCash = _name;
+            pettyCash = _name;
             return this;
         }
 
@@ -716,7 +716,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getTypeLabel()
         {
-            return this.typeLabel;
+            return typeLabel;
         }
 
         /**
@@ -727,7 +727,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setTypeLabel(final String _typeLabel)
         {
-            this.typeLabel = _typeLabel;
+            typeLabel = _typeLabel;
             return this;
         }
 
@@ -738,7 +738,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getAction()
         {
-            return this.action == null ? "-" : this.action;
+            return action == null ? "-" : action;
         }
 
         /**
@@ -749,7 +749,7 @@ public abstract class AccountPettyCashReport_Base
         public String getOfficial()
         {
             final String ret;
-            if (this.docTypeName == null) {
+            if (docTypeName == null) {
                 ret = DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".NotWithDocument");
             } else {
                 ret = DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".WithDocument");
@@ -765,7 +765,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setAction(final String _action)
         {
-            this.action = _action;
+            action = _action;
             return this;
         }
 
@@ -776,7 +776,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getOid()
         {
-            return this.instance.getOid();
+            return instance.getOid();
         }
 
         /**
@@ -787,7 +787,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setInstance(final Instance _instance)
         {
-            this.instance = _instance;
+            instance = _instance;
             return this;
         }
 
@@ -798,7 +798,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getDocName()
         {
-            return this.docName;
+            return docName;
         }
 
         /**
@@ -809,7 +809,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             return this;
         }
 
@@ -820,7 +820,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public Instance getPettyCashInstance()
         {
-            return this.pettyCashInstance;
+            return pettyCashInstance;
         }
 
         /**
@@ -830,7 +830,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getContactName()
         {
-            return this.contactName;
+            return contactName;
         }
 
         /**
@@ -841,7 +841,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setContactName(final String _contactName)
         {
-            this.contactName = _contactName;
+            contactName = _contactName;
             return this;
         }
 
@@ -852,7 +852,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public BigDecimal getCross()
         {
-            return this.cross;
+            return cross;
         }
 
         /**
@@ -863,7 +863,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setCross(final BigDecimal _cross)
         {
-            this.cross = _cross;
+            cross = _cross;
             return this;
         }
 
@@ -874,7 +874,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public BigDecimal getNet()
         {
-            return this.net;
+            return net;
         }
 
         /**
@@ -885,7 +885,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setNet(final BigDecimal _net)
         {
-            this.net = _net;
+            net = _net;
             return this;
         }
 
@@ -896,7 +896,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public Instance getCurrencyInstance()
         {
-            return this.currencyInstance;
+            return currencyInstance;
         }
 
         /**
@@ -908,7 +908,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setCurrencyInstance(final Instance _currencyInstance)
         {
-            this.currencyInstance = _currencyInstance;
+            currencyInstance = _currencyInstance;
             return this;
         }
 
@@ -919,7 +919,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DateTime getDate()
         {
-            return this.date;
+            return date;
         }
 
         /**
@@ -930,7 +930,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setDate(final DateTime _date)
         {
-            this.date = _date;
+            date = _date;
             return this;
         }
 
@@ -943,10 +943,10 @@ public abstract class AccountPettyCashReport_Base
         public String getLiquidation()
             throws EFapsException
         {
-            if (this.liquidation == null && this.instance != null && this.instance.isValid()) {
+            if (liquidation == null && instance != null && instance.isValid()) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
                 attrQueryBldr.addType(CISales.PettyCashBalance2IncomingCreditNote);
-                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, this.instance);
+                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, instance);
                 final AttributeQuery attrQuery =
                                 attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink);
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
@@ -955,12 +955,12 @@ public abstract class AccountPettyCashReport_Base
                 multi.addAttribute(CISales.PettyCashBalance.Name);
                 multi.execute();
                 if (multi.next()) {
-                    this.liquidation = multi.<String>getAttribute(CISales.PettyCashBalance.Name);
+                    liquidation = multi.<String>getAttribute(CISales.PettyCashBalance.Name);
                 }
             }
-            return this.liquidation == null
+            return liquidation == null
                             ? DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".WithoutLiquidation")
-                                            : this.liquidation;
+                                            : liquidation;
         }
 
         /**
@@ -971,7 +971,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setBaseNet(final BigDecimal _baseNet)
         {
-            this.baseNet = _baseNet;
+            baseNet = _baseNet;
             return this;
         }
 
@@ -983,7 +983,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setBaseCross(final BigDecimal _baseCross)
         {
-            this.baseCross = _baseCross;
+            baseCross = _baseCross;
             return this;
         }
 
@@ -994,7 +994,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public BigDecimal getBaseNet()
         {
-            return this.baseNet;
+            return baseNet;
         }
 
         /**
@@ -1004,7 +1004,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public BigDecimal getBaseCross()
         {
-            return this.baseCross;
+            return baseCross;
         }
 
         /**
@@ -1014,7 +1014,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getEmployee()
         {
-            return this.employee;
+            return employee;
         }
 
         /**
@@ -1025,7 +1025,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public DocumentBean setEmployee(final String _employee)
         {
-            this.employee = _employee;
+            employee = _employee;
             return this;
         }
 

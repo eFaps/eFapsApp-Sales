@@ -18,14 +18,14 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8a5a4efe-1d2f-4774-9e7b-3d7ff7ef92e2</uuid>
+    <uuid>b51be6a5-6e7c-451b-903b-41bfb873b69d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
             <application name="eFapsApp-HumanResource" />
         </application-dependencies>
-        <name>Sales_Employee2ProductRequest</name>
+        <name>Sales_Employee2ServiceRequest</name>
         <parent>HumanResource_Employee2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
@@ -37,7 +37,7 @@
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_ProductRequest</typelink>
+            <typelink>Sales_ServiceRequest</typelink>
             <sqltable>HumanResource_Employee2DocumentSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

@@ -26,7 +26,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_OrderOutboundForm</form>
+            <form>Sales_ServiceOrderOutboundForm</form>
             <evaluate method="validateStatus" program="org.efaps.esjp.common.uiform.Evaluate">
                 <property name="StatusGroup">Sales_ServiceRequestStatus</property>
                 <property name="Status">Open</property>
@@ -45,6 +45,12 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
+
+                 <!-- Sales_Employee2ServiceOrderOutbound -->
+                <property name="ConnectType02">69824cd6-c903-4c17-a1d0-7cd0031fd3e3</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
 
                 <!-- Sales_ServiceRequest -->
                 <!-- Sales_ServiceRequest2ServiceOrderOutbound -->

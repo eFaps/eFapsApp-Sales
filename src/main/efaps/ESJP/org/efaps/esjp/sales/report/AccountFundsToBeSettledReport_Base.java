@@ -211,7 +211,7 @@ public abstract class AccountFundsToBeSettledReport_Base
                 add2QueryBldr(_parameter, queryBldr);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addSelect(selAccInst, selAccName, selDocTypeName, selActionName, selCurInst, selContactName);
-                if (Sales.FUNDSTOBESETTLEDRECEIPT_ASSEMPLOYEE.get()) {
+                if (Sales.FUNDSTOBESETTLEDRECEIPT_ASSIGNEMPLOYEE.get()) {
                     multi.addMsgPhrase(selEmployee, CIMsgHumanResource.EmployeeWithNumberMsgPhrase);
                 }
                 multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
@@ -245,7 +245,7 @@ public abstract class AccountFundsToBeSettledReport_Base
                                     .setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
                                     .setBaseNet(basenet)
                                     .setBaseCross(basecross);
-                    if (Sales.FUNDSTOBESETTLEDRECEIPT_ASSEMPLOYEE.get()) {
+                    if (Sales.FUNDSTOBESETTLEDRECEIPT_ASSIGNEMPLOYEE.get()) {
                         bean.setEmployee(multi.getMsgPhrase(selEmployee,
                                         CIMsgHumanResource.EmployeeWithNumberMsgPhrase));
                     }
@@ -350,7 +350,7 @@ public abstract class AccountFundsToBeSettledReport_Base
                     _builder.addColumn(FilteredReport.getLinkColumn(_parameter, "oid"));
                 }
                 _builder.addColumn(docNameColumn, dateColumn, contactNameColumn);
-                if (Sales.FUNDSTOBESETTLEDRECEIPT_ASSEMPLOYEE.get()) {
+                if (Sales.FUNDSTOBESETTLEDRECEIPT_ASSIGNEMPLOYEE.get()) {
                     _builder.addColumn(employeeColumn);
                 }
             }
@@ -378,7 +378,7 @@ public abstract class AccountFundsToBeSettledReport_Base
             final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(baseAmountColumn);
             final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(baseAmountColumn);
 
-            final TextColumnBuilder<String> subTotalTtextColumn = Sales.FUNDSTOBESETTLEDRECEIPT_ASSEMPLOYEE.get()
+            final TextColumnBuilder<String> subTotalTtextColumn = Sales.FUNDSTOBESETTLEDRECEIPT_ASSIGNEMPLOYEE.get()
                             ? employeeColumn : contactNameColumn;
             _builder.addSubtotalAtGroupFooter(FundsToBeSettledGroup, FilteredReport.getCustomTextSubtotalBuilder(
                             _parameter, "FundsToBeSettled", subTotalTtextColumn), amountSum);
