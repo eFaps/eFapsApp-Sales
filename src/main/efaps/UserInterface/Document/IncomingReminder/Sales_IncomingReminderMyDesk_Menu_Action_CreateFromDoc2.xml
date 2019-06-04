@@ -1,50 +1,46 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2013 The eFaps Team
+    Copyright 2003 - 2019 The eFaps Team
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>38ba6ccf-9c69-4046-9cf7-0dde3cccca6a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="eFaps" />
         </profiles>
         <name>Sales_IncomingReminderMyDesk_Menu_Action_CreateFromDoc2</name>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_IncomingReminderForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingReminder">
                 <property name="PositionType">Sales_IncomingReminderPosition</property>
+                <!-- Sales_ChannelPurchaseCondition2IncomingReminder -->
+                <property name="ConnectType01">51d970ec-02e0-4412-9875-9045cf3e70a8</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingReminder" method="validate">
                 <property name="Validation">NAME</property>
                 <property name="NAME_ValidateContact">true</property>
             </validate>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingReminder</property>
         <property name="TargetMode">create</property>
@@ -56,7 +52,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="projects"/>
+            <profile name="projects" />
         </profiles>
         <name>Sales_IncomingReminderMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
@@ -74,6 +70,12 @@
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
+
+                <!-- Sales_ChannelPurchaseCondition2IncomingReminder -->
+                <property name="ConnectType01">51d970ec-02e0-4412-9875-9045cf3e70a8</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingReminder" method="validate">
                 <property name="Validation">NAME</property>

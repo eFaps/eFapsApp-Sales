@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import org.efaps.util.EFapsException;
 
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("a126d27b-105b-4751-bc88-22d320f5b177")
@@ -76,6 +74,7 @@ public abstract class IncomingReminder_Base
     {
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
+        updateConnection2Object(_parameter, editDoc);
         return new Return();
     }
 

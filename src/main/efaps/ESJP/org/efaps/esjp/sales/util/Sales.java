@@ -1016,6 +1016,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGREMINDER_ACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingReminder.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Incoming Reminder");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INCOMINGRETENTIONCERTIFICATE_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingRetentionCertificate.Activate")
