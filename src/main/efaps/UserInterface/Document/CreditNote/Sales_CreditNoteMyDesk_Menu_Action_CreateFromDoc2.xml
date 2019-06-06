@@ -46,6 +46,11 @@
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">invoices</property>
+                <!-- Sales_CreditNote2Receipt -->
+                <property name="ConnectType01">1549a387-2c28-4880-804d-61694f2df6e0</property>
+                <property name="ConnectCurrentLink01">FromLink</property>
+                <property name="ConnectForeignLink01">ToLink</property>
+                <property name="ConnectForeignField01">receipts</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.CreditNote" method="validate">
                 <property name="Validation">NAME</property>
@@ -89,11 +94,17 @@
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">invoices</property>
 
+                <!-- Sales_CreditNote2Receipt -->
+                <property name="ConnectType01">1549a387-2c28-4880-804d-61694f2df6e0</property>
+                <property name="ConnectCurrentLink01">FromLink</property>
+                <property name="ConnectForeignLink01">ToLink</property>
+                <property name="ConnectForeignField01">receipts</property>
+
                 <!-- Projects_ProjectService2CreditNote -->
-                <property name="ConnectType01">d9d8ce4c-03ff-467f-9863-9976033ff1a9</property>
-                <property name="ConnectCurrentLink01">ToLink</property>
-                <property name="ConnectForeignLink01">FromLink</property>
-                <property name="ConnectForeignField01">project</property>
+                <property name="ConnectType02">d9d8ce4c-03ff-467f-9863-9976033ff1a9</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.CreditNote" method="validate">
                 <property name="Validation">NAME</property>

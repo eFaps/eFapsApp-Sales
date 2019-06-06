@@ -304,7 +304,17 @@ public final class Sales
     public static final PropertiesSysConfAttribute CREDITNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "CreditNote.CreateFromInvoiceAutoComplete")
-                    .description("Possibiloity to overwrite the configuraiton for the Autocomplete for Invoice.");
+                    .description("AutoComplete and Activation for Create from Receipt for DeliveryNote.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREDITNOTE_FROMRECEIPTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.CreateFromReceiptAutoComplete")
+                    .description("AutoComplete and Activation for Create from Receipt for DeliveryNote.")
+                    .addDefaultValue("Type", "Sales_Receipt")
+                    .addDefaultValue("StatusGroup01", "Sales_ReceiptStatus")
+                    .addDefaultValue("Status01", "*");
 
     /** See description. */
     @EFapsSysConfAttribute

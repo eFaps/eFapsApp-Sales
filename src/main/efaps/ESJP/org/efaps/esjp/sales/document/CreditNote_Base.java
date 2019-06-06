@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.document;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.efaps.admin.datamodel.Status;
@@ -38,6 +39,7 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
@@ -86,7 +88,21 @@ public abstract class CreditNote_Base
         final List<Instance> ret = super.connect2Derived(_parameter, _createdDoc);
         final String[] deriveds = _parameter.getParameterValues("derived");
 
-        ParameterUtil.setParameterValues(_parameter, "invoices", deriveds);
+        final List<String> invoices = new ArrayList<>();
+        final List<String> receipts = new ArrayList<>();
+        for (final String derivedOid : deriveds) {
+            if (InstanceUtils.isKindOf(Instance.get(derivedOid), CISales.Invoice)) {
+                invoices.add(derivedOid);
+            } else if (InstanceUtils.isKindOf(Instance.get(derivedOid), CISales.Receipt)) {
+                receipts.add(derivedOid);
+            }
+        }
+        if (!invoices.isEmpty()) {
+            ParameterUtil.setParameterValues(_parameter, "invoices", invoices.toArray(new String[invoices.size()]));
+        }
+        if (!receipts.isEmpty()) {
+            ParameterUtil.setParameterValues(_parameter, "receipts", receipts.toArray(new String[receipts.size()]));
+        }
         return ret;
     }
 
