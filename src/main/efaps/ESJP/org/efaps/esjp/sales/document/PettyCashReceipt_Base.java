@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.document;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +57,6 @@ import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.IWarning;
-import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
@@ -207,7 +207,7 @@ public abstract class PettyCashReceipt_Base
      * @return amount
      * @throws EFapsException on error
      */
-    protected Object evaluateAmount4Transaction(final Parameter _parameter,
+    protected BigDecimal evaluateAmount4Transaction(final Parameter _parameter,
                                                 final CreatedDoc _createdDoc,
                                                 final CurrencyInst _accCurrencyInst,
                                                 final DateTime _date)
@@ -215,27 +215,11 @@ public abstract class PettyCashReceipt_Base
     {
         final CurrencyInst rateCurrencyInst = CurrencyInst.get(_createdDoc
                         .getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
-        final CurrencyInst currencyInst = CurrencyInst.get(_createdDoc
-                        .getValue(CISales.DocumentSumAbstract.CurrencyId.name));
-
         // evaluate if the amount must be changed to the currency of the account
-        final Object ret;
-        if (_accCurrencyInst.getInstance().equals(rateCurrencyInst.getInstance())) {
-            ret = _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
-        } else if (_accCurrencyInst.getInstance().equals(currencyInst.getInstance())) {
-            ret = _createdDoc.getValue(CISales.DocumentSumAbstract.CrossTotal.name);
-        } else {
-            final Currency currency = new Currency();
-            final RateInfo[] rateInfos = currency.evaluateRateInfos(_parameter, _date, _accCurrencyInst.getInstance(),
-                            rateCurrencyInst.getInstance());
-            final BigDecimal rate = rateInfos[2].getRate();
-            final BigDecimal rateAmount = (BigDecimal) _createdDoc
-                            .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
-            ret = rateAmount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP);
-        }
-        return ret;
+        final BigDecimal rateAmount = (BigDecimal) _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
+        return Currency.convert(_parameter, rateAmount, rateCurrencyInst.getInstance(), _accCurrencyInst.getInstance(),
+                        getCIType().getType().getName(), LocalDate.of(_date.getYear(), _date.getMonthOfYear(), _date.getDayOfMonth()));
     }
-
 
     /**
      * Update the transaction for the PettyCash.
@@ -267,7 +251,7 @@ public abstract class PettyCashReceipt_Base
                 final DateTime date = new DateTime(_editedDoc.getValue(CISales.DocumentSumAbstract.Date.name));
                 final String description = multi.<String>getAttribute(CISales.TransactionAbstract.Description);
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                final BigDecimal newAmount = (BigDecimal) evaluateAmount4Transaction(_parameter, _editedDoc,
+                final BigDecimal newAmount = evaluateAmount4Transaction(_parameter, _editedDoc,
                                 accCurrencyInst, date);
                 if (newAmount.compareTo(amount) != 0
                                 || !description.equals(_editedDoc.getValue(CISales.DocumentSumAbstract.Note.name))) {
@@ -716,7 +700,7 @@ public abstract class PettyCashReceipt_Base
                 final DropDownPosition ddPos = new DropDownPosition("NONE",
                                 DBProperties.getProperty(PettyCashReceipt.class.getName() + ".NONEPosition.Label"));
                 _values.add(0, ddPos);
-            };
+            }
         } .getOptionListFieldValue(_parameter);
     }
 
