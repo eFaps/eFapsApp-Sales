@@ -50,6 +50,8 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -121,6 +123,12 @@ public abstract class Calculator_Base
          */
         INCLUDEMINPRICE
     }
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Calculator.class);
+
 
     /**
      * Needed for serialization.
@@ -225,10 +233,10 @@ public abstract class Calculator_Base
     public Calculator_Base()
         throws EFapsException
     {
-        this.taxCatId = 0;
-        this.empty = true;
-        this.docKey = CISales.DocumentAbstract.getType().getName();
-        this.posKey = CISales.PositionAbstract.getType().getName();
+        taxCatId = 0;
+        empty = true;
+        docKey = CISales.DocumentAbstract.getType().getName();
+        posKey = CISales.PositionAbstract.getType().getName();
         setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
@@ -244,10 +252,10 @@ public abstract class Calculator_Base
                            final ICalculatorConfig _config)
         throws EFapsException
     {
-        this.taxCatId = 0;
-        this.empty = true;
-        this.docKey = _config.getSysConfKey4Doc(_parameter);
-        this.posKey = _config.getSysConfKey4Pos(_parameter);
+        taxCatId = 0;
+        empty = true;
+        docKey = _config.getSysConfKey4Doc(_parameter);
+        posKey = _config.getSysConfKey4Pos(_parameter);
         setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
@@ -263,10 +271,10 @@ public abstract class Calculator_Base
         throws EFapsException
     // CHECKSTYLE:ON
     {
-        this.parameter = _parameter;
-        this.empty = false;
-        this.docKey = _config.getSysConfKey4Doc(_parameter);
-        this.posKey = _config.getSysConfKey4Pos(_parameter);
+        parameter = _parameter;
+        empty = false;
+        docKey = _config.getSysConfKey4Doc(_parameter);
+        posKey = _config.getSysConfKey4Pos(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setDate(DateUtil.getDateFromParameter(dateStr));
@@ -274,47 +282,47 @@ public abstract class Calculator_Base
             setDate(new DateTime());
         }
         if (_calc != null && _calc.getProductInstance().equals(_prodInstance)) {
-            this.taxCatId = _calc.getTaxCatId();
-            this.oid = _calc.getOid();
-            this.productPrice = _calc.getProductPrice();
-            this.minProductPrice = _calc.getMinProductPrice();
+            taxCatId = _calc.getTaxCatId();
+            oid = _calc.getOid();
+            productPrice = _calc.getProductPrice();
+            minProductPrice = _calc.getMinProductPrice();
 
             // check if unitprice is set from UI
             if (!_priceFromDB && _unitPrice != null) {
                 setPriceFromUI(_parameter, _unitPrice);
-                this.priceIsNet = _config.priceFromUIisNet(_parameter);
+                priceIsNet = _config.priceFromUIisNet(_parameter);
             } else {
-                this.priceIsNet = priceIsNet(_parameter);
+                priceIsNet = priceIsNet(_parameter);
                 if (_priceFromDB) {
-                    this.productPrice = evalPriceFromDB(_parameter);
+                    productPrice = evalPriceFromDB(_parameter);
                     if (_config != null && isIncludeMinRetail(_parameter)) {
-                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                        minProductPrice = new PriceUtil().getPrice(_parameter, oid, getMinPriceListUUID(),
                                         getPosKey());
                     }
                 }
             }
         } else {
-            this.oid = _prodInstance != null && _prodInstance.isValid() ? _prodInstance.getOid() : null;
-            if (this.oid != null && this.oid.length() > 0) {
+            oid = _prodInstance != null && _prodInstance.isValid() ? _prodInstance.getOid() : null;
+            if (oid != null && oid.length() > 0) {
                 // check if unitprice is set from UI
                 if (!_priceFromDB && _unitPrice != null) {
                     setPriceFromUI(_parameter, _unitPrice);
-                    this.priceIsNet = _config.priceFromUIisNet(_parameter);
+                    priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
-                    this.priceIsNet = priceIsNet(_parameter);
-                    this.productPrice = evalPriceFromDB(_parameter);
+                    priceIsNet = priceIsNet(_parameter);
+                    productPrice = evalPriceFromDB(_parameter);
 
                 }
-                final PrintQuery print = new PrintQuery(this.oid);
+                final PrintQuery print = new PrintQuery(oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.executeWithoutAccessCheck();
-                this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
+                taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && isIncludeMinRetail(_parameter)) {
-                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                    minProductPrice = new PriceUtil().getPrice(_parameter, oid, getMinPriceListUUID(),
                                     getPosKey());
                 }
             } else {
-                this.taxCatId = 0;
+                taxCatId = 0;
             }
         }
         setDiscount(_discount);
@@ -327,7 +335,7 @@ public abstract class Calculator_Base
             }
         }
         setQuantity(_quantity);
-        this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
+        perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(oid));
     }
 
     /**
@@ -353,10 +361,10 @@ public abstract class Calculator_Base
         throws EFapsException
     // CHECKSTYLE:ON
     {
-        this.parameter = _parameter;
-        this.empty = false;
-        this.docKey = _config.getSysConfKey4Doc(_parameter);
-        this.posKey = _config.getSysConfKey4Pos(_parameter);
+        parameter = _parameter;
+        empty = false;
+        docKey = _config.getSysConfKey4Doc(_parameter);
+        posKey = _config.getSysConfKey4Pos(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setDate(DateUtil.getDateFromParameter(dateStr));
@@ -364,46 +372,46 @@ public abstract class Calculator_Base
             setDate(new DateTime());
         }
         if (_calc != null && _oid.equals(_calc.getOid())) {
-            this.taxCatId = _calc.getTaxCatId();
-            this.oid = _calc.getOid();
-            this.productPrice = _calc.getProductPrice();
-            this.minProductPrice = _calc.getMinProductPrice();
+            taxCatId = _calc.getTaxCatId();
+            oid = _calc.getOid();
+            productPrice = _calc.getProductPrice();
+            minProductPrice = _calc.getMinProductPrice();
 
             // check if unitprice is set from UI
             if (!_priceFromDB && _unitPrice != null && _unitPrice.length() > 0) {
                 setPriceFromUI(_parameter, _unitPrice);
-                this.priceIsNet = _config.priceFromUIisNet(_parameter);
+                priceIsNet = _config.priceFromUIisNet(_parameter);
             } else {
-                this.priceIsNet = priceIsNet(_parameter);
+                priceIsNet = priceIsNet(_parameter);
                 if (_priceFromDB) {
-                    this.productPrice = evalPriceFromDB(_parameter);
+                    productPrice = evalPriceFromDB(_parameter);
                     if (_config != null && isIncludeMinRetail(_parameter)) {
-                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                        minProductPrice = new PriceUtil().getPrice(_parameter, oid, getMinPriceListUUID(),
                                         getPosKey());
                     }
                 }
             }
         } else {
-            this.oid = _oid;
-            if (this.oid != null && this.oid.length() > 0) {
+            oid = _oid;
+            if (oid != null && oid.length() > 0) {
                 // check if unitprice is set from UI
                 if (!_priceFromDB && _unitPrice != null && _unitPrice.length() > 0) {
                     setPriceFromUI(_parameter, _unitPrice);
-                    this.priceIsNet = _config.priceFromUIisNet(_parameter);
+                    priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
-                    this.priceIsNet = priceIsNet(_parameter);
-                    this.productPrice = evalPriceFromDB(_parameter);
+                    priceIsNet = priceIsNet(_parameter);
+                    productPrice = evalPriceFromDB(_parameter);
                 }
-                final PrintQuery print = new PrintQuery(this.oid);
+                final PrintQuery print = new PrintQuery(oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
-                this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
+                taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && isIncludeMinRetail(_parameter)) {
-                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID(),
+                    minProductPrice = new PriceUtil().getPrice(_parameter, oid, getMinPriceListUUID(),
                                     getPosKey());
                 }
             } else {
-                this.taxCatId = 0;
+                taxCatId = 0;
             }
         }
         setDiscount(_discount);
@@ -416,7 +424,7 @@ public abstract class Calculator_Base
             }
         }
         setQuantity(_quantity);
-        this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
+        perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(oid));
     }
 
     /**
@@ -434,11 +442,11 @@ public abstract class Calculator_Base
         switch (config) {
             case "Latest":
                 ret = new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
-                                this.priceIsNet, false);
+                                priceIsNet, false);
                 break;
             case "Latest4Contact":
                 ret = new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
-                                this.priceIsNet, true);
+                                priceIsNet, true);
                 break;
             case "PriceList":
             default:
@@ -501,7 +509,7 @@ public abstract class Calculator_Base
      */
     protected String getDocKey()
     {
-        return this.docKey;
+        return docKey;
     }
 
     /**
@@ -511,7 +519,7 @@ public abstract class Calculator_Base
      */
     protected String getPosKey()
     {
-        return this.posKey;
+        return posKey;
     }
 
     /**
@@ -578,18 +586,18 @@ public abstract class Calculator_Base
         if (currInst == null) {
             currInst = baseInst;
         }
-        if (this.productPrice == null) {
-            this.productPrice = getNewPrice();
+        if (productPrice == null) {
+            productPrice = getNewPrice();
         }
-        this.productPrice.setCurrentPrice(_unitPrice);
+        productPrice.setCurrentPrice(_unitPrice);
         if (currInst.equals(baseInst)) {
-            this.productPrice.setBasePrice(_unitPrice);
+            productPrice.setBasePrice(_unitPrice);
         } else {
             final PriceUtil priceutil = new PriceUtil();
             final BigDecimal rate = priceutil.getExchangeRate(_parameter, currInst);
             final BigDecimal newprice = _unitPrice.divide(rate, 8, BigDecimal.ROUND_HALF_UP);
-            this.productPrice.setBasePrice(newprice);
-            this.productPrice.setOrigPrice(newprice);
+            productPrice.setBasePrice(newprice);
+            productPrice.setOrigPrice(newprice);
         }
     }
 
@@ -656,7 +664,7 @@ public abstract class Calculator_Base
      */
     public String getOid()
     {
-        return this.oid;
+        return oid;
     }
 
     /**
@@ -674,7 +682,7 @@ public abstract class Calculator_Base
      */
     public boolean isWithoutTax()
     {
-        return this.withoutTax;
+        return withoutTax;
     }
 
     /**
@@ -684,7 +692,7 @@ public abstract class Calculator_Base
      */
     public void setWithoutTax(final boolean _withoutTax)
     {
-        this.withoutTax = _withoutTax;
+        withoutTax = _withoutTax;
     }
 
     /**
@@ -694,7 +702,7 @@ public abstract class Calculator_Base
      */
     public boolean isPerceptionProduct()
     {
-        return this.perceptionProduct;
+        return perceptionProduct;
     }
 
     /**
@@ -705,7 +713,7 @@ public abstract class Calculator_Base
      */
     public void setPerceptionProduct(final boolean _perceptionProduct)
     {
-        this.perceptionProduct = _perceptionProduct;
+        perceptionProduct = _perceptionProduct;
     }
 
     /**
@@ -715,7 +723,7 @@ public abstract class Calculator_Base
      */
     public void setQuantity(final BigDecimal _quantity)
     {
-        this.quantity = _quantity;
+        quantity = _quantity;
     }
 
     /**
@@ -727,7 +735,7 @@ public abstract class Calculator_Base
     public void setQuantity(final String _quantity)
         throws EFapsException
     {
-        this.quantity = _quantity != null && _quantity.length() > 0 ? parse(_quantity) : BigDecimal.ONE;
+        quantity = _quantity != null && _quantity.length() > 0 ? parse(_quantity) : BigDecimal.ONE;
     }
 
     /**
@@ -754,13 +762,13 @@ public abstract class Calculator_Base
     public void setNetUnitPrice(final BigDecimal _netUnitPrice)
         throws EFapsException
     {
-        if (this.productNetUnitPrice == null) {
-            this.productNetUnitPrice = getNewPrice();
+        if (productNetUnitPrice == null) {
+            productNetUnitPrice = getNewPrice();
         }
-        this.productNetUnitPrice.setCurrentPrice(_netUnitPrice);
-        this.productNetUnitPrice.setOrigPrice(_netUnitPrice);
-        this.productNetUnitPrice.setBasePrice(_netUnitPrice.multiply(getProductPrice().getBaseRate()));
-        if (this.taxCatId > 0) {
+        productNetUnitPrice.setCurrentPrice(_netUnitPrice);
+        productNetUnitPrice.setOrigPrice(_netUnitPrice);
+        productNetUnitPrice.setBasePrice(_netUnitPrice.multiply(getProductPrice().getBaseRate()));
+        if (taxCatId > 0) {
             final List<Tax> taxesTmp = getTaxes();
             BigDecimal targetPrice = _netUnitPrice;
             for (final Tax tax : taxesTmp) {
@@ -769,12 +777,12 @@ public abstract class Calculator_Base
                     targetPrice = targetPrice.add(_netUnitPrice.multiply(factor));
                 }
             }
-            if (this.productCrossUnitPrice == null) {
-                this.productCrossUnitPrice = getNewPrice();
+            if (productCrossUnitPrice == null) {
+                productCrossUnitPrice = getNewPrice();
             }
-            this.productCrossUnitPrice.setCurrentPrice(targetPrice);
-            this.productCrossUnitPrice.setOrigPrice(targetPrice);
-            this.productCrossUnitPrice.setBasePrice(targetPrice.multiply(getProductPrice().getBaseRate()));
+            productCrossUnitPrice.setCurrentPrice(targetPrice);
+            productCrossUnitPrice.setOrigPrice(targetPrice);
+            productCrossUnitPrice.setBasePrice(targetPrice.multiply(getProductPrice().getBaseRate()));
         }
     }
 
@@ -839,11 +847,11 @@ public abstract class Calculator_Base
     {
         final Instance baseInst = Currency.getBaseCurrency();
         final ProductPrice ret = new PriceUtil().getProductPrice(getParameter());
-        ret.setBaseRate(this.productPrice == null ? BigDecimal.ONE : this.productPrice.getBaseRate());
-        ret.setCurrentCurrencyInstance(this.productPrice == null
-                        ? baseInst : this.productPrice.getCurrentCurrencyInstance());
-        ret.setOrigCurrencyInstance(this.productPrice == null
-                        ? baseInst : this.productPrice.getOrigCurrencyInstance());
+        ret.setBaseRate(productPrice == null ? BigDecimal.ONE : productPrice.getBaseRate());
+        ret.setCurrentCurrencyInstance(productPrice == null
+                        ? baseInst : productPrice.getCurrentCurrencyInstance());
+        ret.setOrigCurrencyInstance(productPrice == null
+                        ? baseInst : productPrice.getOrigCurrencyInstance());
         return ret;
     }
 
@@ -854,7 +862,7 @@ public abstract class Calculator_Base
      */
     protected Parameter getParameter()
     {
-        return this.parameter;
+        return parameter;
     }
 
     /**
@@ -887,10 +895,10 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         final BigDecimal ret;
-        if (this.productNetUnitPrice == null) {
+        if (productNetUnitPrice == null) {
             ret = getProductNetUnitPrice().getCurrentPrice();
         } else {
-            ret = this.productNetUnitPrice.getCurrentPrice();
+            ret = productNetUnitPrice.getCurrentPrice();
         }
         return ret;
     }
@@ -917,14 +925,14 @@ public abstract class Calculator_Base
     public void setCrossUnitPrice(final BigDecimal _crossUnitPrice)
         throws EFapsException
     {
-        if (this.productCrossUnitPrice == null) {
-            this.productCrossUnitPrice = getNewPrice();
+        if (productCrossUnitPrice == null) {
+            productCrossUnitPrice = getNewPrice();
         }
-        this.productCrossUnitPrice.setCurrentPrice(_crossUnitPrice);
-        this.productCrossUnitPrice.setOrigPrice(_crossUnitPrice);
-        this.productCrossUnitPrice.setBasePrice(_crossUnitPrice.multiply(this.productCrossUnitPrice.getBaseRate()));
+        productCrossUnitPrice.setCurrentPrice(_crossUnitPrice);
+        productCrossUnitPrice.setOrigPrice(_crossUnitPrice);
+        productCrossUnitPrice.setBasePrice(_crossUnitPrice.multiply(productCrossUnitPrice.getBaseRate()));
 
-        if (this.taxCatId > 0) {
+        if (taxCatId > 0) {
             final List<Tax> taxesTmp = getTaxes();
             BigDecimal targetPrice = _crossUnitPrice;
             for (final Tax tax : taxesTmp) {
@@ -934,12 +942,12 @@ public abstract class Calculator_Base
                                     .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
                 }
             }
-            if (this.productNetUnitPrice == null) {
-                this.productNetUnitPrice = getNewPrice();
+            if (productNetUnitPrice == null) {
+                productNetUnitPrice = getNewPrice();
             }
-            this.productNetUnitPrice.setCurrentPrice(targetPrice);
-            this.productNetUnitPrice.setOrigPrice(targetPrice);
-            this.productNetUnitPrice.setBasePrice(targetPrice.multiply(this.productNetUnitPrice.getBaseRate()));
+            productNetUnitPrice.setCurrentPrice(targetPrice);
+            productNetUnitPrice.setOrigPrice(targetPrice);
+            productNetUnitPrice.setBasePrice(targetPrice.multiply(productNetUnitPrice.getBaseRate()));
         }
     }
 
@@ -975,13 +983,13 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         final BigDecimal ret;
-        if (this.withoutTax) {
+        if (withoutTax) {
             ret = getNetUnitPrice();
         } else {
-            if (this.productCrossUnitPrice == null) {
+            if (productCrossUnitPrice == null) {
                 ret = getProductCrossUnitPrice().getCurrentPrice();
             } else {
-                ret = this.productCrossUnitPrice.getCurrentPrice();
+                ret = productCrossUnitPrice.getCurrentPrice();
             }
         }
         return ret;
@@ -1016,7 +1024,7 @@ public abstract class Calculator_Base
      */
     public BigDecimal getDiscount()
     {
-        return this.discount;
+        return discount;
     }
 
     /**
@@ -1028,7 +1036,7 @@ public abstract class Calculator_Base
     public void setDiscount(final String _discount)
         throws EFapsException
     {
-        this.discount = _discount != null && _discount.length() > 0 ? parse(_discount) : BigDecimal.ZERO;
+        discount = _discount != null && _discount.length() > 0 ? parse(_discount) : BigDecimal.ZERO;
     }
 
     /**
@@ -1038,7 +1046,7 @@ public abstract class Calculator_Base
      */
     public void setDiscount(final BigDecimal _discount)
     {
-        this.discount = _discount;
+        discount = _discount;
     }
 
     /**
@@ -1114,11 +1122,11 @@ public abstract class Calculator_Base
     public void setUnitPrice(final BigDecimal _unitprice)
         throws EFapsException
     {
-        this.productPrice.setCurrentPrice(_unitprice);
-        this.productPrice.setOrigPrice(_unitprice);
-        this.productPrice.setBasePrice(_unitprice.multiply(getProductPrice().getBaseRate()));
-        this.productNetUnitPrice = null;
-        this.productCrossUnitPrice = null;
+        productPrice.setCurrentPrice(_unitprice);
+        productPrice.setOrigPrice(_unitprice);
+        productPrice.setBasePrice(_unitprice.multiply(getProductPrice().getBaseRate()));
+        productNetUnitPrice = null;
+        productCrossUnitPrice = null;
     }
 
     /**
@@ -1130,14 +1138,14 @@ public abstract class Calculator_Base
     public ProductPrice getProductPrice()
         throws EFapsException
     {
-        if (this.productPrice == null) {
-            this.productPrice = new PriceUtil().new ProductPrice();
-            this.productPrice.setBasePrice(BigDecimal.ZERO);
-            this.productPrice.setCurrentPrice(BigDecimal.ZERO);
-            this.productPrice.setOrigPrice(BigDecimal.ZERO);
-            this.productPrice.setBaseRate(BigDecimal.ONE);
+        if (productPrice == null) {
+            productPrice = new PriceUtil().new ProductPrice();
+            productPrice.setBasePrice(BigDecimal.ZERO);
+            productPrice.setCurrentPrice(BigDecimal.ZERO);
+            productPrice.setOrigPrice(BigDecimal.ZERO);
+            productPrice.setBaseRate(BigDecimal.ONE);
         }
-        return this.productPrice;
+        return productPrice;
     }
 
     /**
@@ -1147,7 +1155,7 @@ public abstract class Calculator_Base
      */
     public BigDecimal getQuantity()
     {
-        return this.quantity;
+        return quantity;
     }
 
     /**
@@ -1229,7 +1237,7 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         final BigDecimal ret;
-        if (this.withoutTax) {
+        if (withoutTax) {
             ret = getNetPrice();
         } else {
             ret = getProductCrossPrice().getCurrentPrice();
@@ -1297,14 +1305,14 @@ public abstract class Calculator_Base
     public ProductPrice getMinProductPrice()
         throws EFapsException
     {
-        if (this.minProductPrice == null) {
-            this.minProductPrice = new PriceUtil().new ProductPrice();
-            this.minProductPrice.setBasePrice(BigDecimal.ZERO);
-            this.minProductPrice.setCurrentPrice(BigDecimal.ZERO);
-            this.minProductPrice.setOrigPrice(BigDecimal.ZERO);
-            this.minProductPrice.setBaseRate(BigDecimal.ONE);
+        if (minProductPrice == null) {
+            minProductPrice = new PriceUtil().new ProductPrice();
+            minProductPrice.setBasePrice(BigDecimal.ZERO);
+            minProductPrice.setCurrentPrice(BigDecimal.ZERO);
+            minProductPrice.setOrigPrice(BigDecimal.ZERO);
+            minProductPrice.setBaseRate(BigDecimal.ONE);
         }
-        return this.minProductPrice;
+        return minProductPrice;
     }
 
     /**
@@ -1316,7 +1324,7 @@ public abstract class Calculator_Base
 
     public void setMinProductPrice(final ProductPrice _minProductPrice)
     {
-        this.minProductPrice = _minProductPrice;
+        minProductPrice = _minProductPrice;
     }
 
     /**
@@ -1348,10 +1356,10 @@ public abstract class Calculator_Base
     public ProductPrice getProductCrossUnitPrice()
         throws EFapsException
     {
-        if (this.productCrossUnitPrice == null) {
-            this.productCrossUnitPrice = evalProductCrossUnitPrice(this.productPrice);
+        if (productCrossUnitPrice == null) {
+            productCrossUnitPrice = evalProductCrossUnitPrice(productPrice);
         }
-        return this.productCrossUnitPrice;
+        return productCrossUnitPrice;
     }
 
     /**
@@ -1369,7 +1377,7 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            if (this.priceIsNet && this.taxCatId > 0) {
+            if (priceIsNet && taxCatId > 0) {
                 final List<Tax> taxesTmp = getTaxes();
                 final BigDecimal currentPrice = _price.getCurrentPrice() == null
                                 ? BigDecimal.ZERO : _price.getCurrentPrice();
@@ -1421,29 +1429,29 @@ public abstract class Calculator_Base
     {
         final ProductPrice ret = getNewPrice();
 
-        if (this.productPrice == null) {
+        if (productPrice == null) {
             ret.setBasePrice(BigDecimal.ZERO);
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            if (this.priceIsNet && this.taxCatId > 0) {
-                ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
+            if (priceIsNet && taxCatId > 0) {
+                ret.setCurrentPrice(productPrice.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
-                                : this.productPrice.getCurrentPrice());
-                ret.setBasePrice(this.productPrice.getBasePrice() == null
+                                : productPrice.getCurrentPrice());
+                ret.setBasePrice(productPrice.getBasePrice() == null
                                 ? BigDecimal.ZERO
-                                : this.productPrice.getBasePrice());
-                ret.setOrigPrice(this.productPrice.getOrigPrice() == null
+                                : productPrice.getBasePrice());
+                ret.setOrigPrice(productPrice.getOrigPrice() == null
                                 ? BigDecimal.ZERO
-                                : this.productPrice.getOrigPrice());
+                                : productPrice.getOrigPrice());
             } else {
                 final List<Tax> taxesTmp = getTaxes();
-                final BigDecimal currentPrice = this.productPrice.getCurrentPrice() == null ? BigDecimal.ZERO
-                                : this.productPrice.getCurrentPrice();
-                final BigDecimal basePrice = this.productPrice.getBasePrice() == null
-                                ? BigDecimal.ZERO : this.productPrice.getBasePrice();
-                final BigDecimal origPrice = this.productPrice.getOrigPrice() == null
-                                ? BigDecimal.ZERO : this.productPrice.getOrigPrice();
+                final BigDecimal currentPrice = productPrice.getCurrentPrice() == null ? BigDecimal.ZERO
+                                : productPrice.getCurrentPrice();
+                final BigDecimal basePrice = productPrice.getBasePrice() == null
+                                ? BigDecimal.ZERO : productPrice.getBasePrice();
+                final BigDecimal origPrice = productPrice.getOrigPrice() == null
+                                ? BigDecimal.ZERO : productPrice.getOrigPrice();
                 BigDecimal tCurrentPrice = currentPrice;
                 BigDecimal tBasePrice = basePrice;
                 BigDecimal tOrigPrice = origPrice;
@@ -1480,10 +1488,10 @@ public abstract class Calculator_Base
     public ProductPrice getProductNetUnitPrice()
         throws EFapsException
     {
-        if (this.productNetUnitPrice == null) {
-            this.productNetUnitPrice = evalProductNetUnitPrice();
+        if (productNetUnitPrice == null) {
+            productNetUnitPrice = evalProductNetUnitPrice();
         }
-        return this.productNetUnitPrice;
+        return productNetUnitPrice;
     }
 
     /**
@@ -1531,10 +1539,10 @@ public abstract class Calculator_Base
     public List<Tax> getTaxes()
         throws EFapsException
     {
-        if (this.taxes.isEmpty() && getTaxCatId() > 0) {
-            this.taxes.addAll(getTaxCat().getTaxes(getDate()));
+        if (taxes.isEmpty() && getTaxCatId() > 0) {
+            taxes.addAll(getTaxCat().getTaxes(getDate()));
         }
-        return this.taxes;
+        return taxes;
     }
 
     /**
@@ -1583,7 +1591,7 @@ public abstract class Calculator_Base
      */
     public long getTaxCatId()
     {
-        return this.taxCatId;
+        return taxCatId;
     }
 
     /**
@@ -1593,7 +1601,7 @@ public abstract class Calculator_Base
      */
     public void setTaxCatId(final long _taxCatId)
     {
-        this.taxCatId = _taxCatId;
+        taxCatId = _taxCatId;
     }
 
     /**
@@ -1603,11 +1611,11 @@ public abstract class Calculator_Base
     public void applyRate(final Instance _currencyInstance,
                           final BigDecimal _rate)
     {
-        this.productPrice.setCurrentPrice(this.productPrice.getCurrentPrice()
+        productPrice.setCurrentPrice(productPrice.getCurrentPrice()
                         .divide(_rate, 8, BigDecimal.ROUND_HALF_UP));
-        this.productPrice.setCurrentCurrencyInstance(_currencyInstance);
-        this.productNetUnitPrice = null;
-        this.productCrossUnitPrice = null;
+        productPrice.setCurrentCurrencyInstance(_currencyInstance);
+        productNetUnitPrice = null;
+        productCrossUnitPrice = null;
     }
 
     /**
@@ -1618,11 +1626,12 @@ public abstract class Calculator_Base
     public BigDecimal parse(final String _value)
         throws EFapsException
     {
-        final BigDecimal ret;
+        BigDecimal ret;
         try {
             ret = (BigDecimal) NumberFormatter.get().getFormatter().parse(_value);
         } catch (final ParseException e) {
-            throw new EFapsException(Calculator.class, "ParseException", e);
+            LOG.warn("Parsing Exception", e);
+            ret = BigDecimal.ZERO;
         }
         return ret;
     }
@@ -1634,7 +1643,7 @@ public abstract class Calculator_Base
      */
     public boolean isEmpty()
     {
-        return this.empty;
+        return empty;
     }
 
     /**
@@ -1645,7 +1654,7 @@ public abstract class Calculator_Base
 
     public void setDate(final DateTime _date)
     {
-        this.date = _date;
+        date = _date;
     }
 
     /**
@@ -1655,7 +1664,7 @@ public abstract class Calculator_Base
      */
     public DateTime getDate()
     {
-        return this.date;
+        return date;
     }
 
     /**
@@ -1665,7 +1674,7 @@ public abstract class Calculator_Base
      */
     public void setOid(final String _oid)
     {
-        this.oid = _oid;
+        oid = _oid;
     }
 
     /**
@@ -1675,7 +1684,7 @@ public abstract class Calculator_Base
      */
     public void setEmpty(final boolean _empty)
     {
-        this.empty = _empty;
+        empty = _empty;
     }
 
     /**
@@ -1685,7 +1694,7 @@ public abstract class Calculator_Base
      */
     public boolean isBackground()
     {
-        return this.background;
+        return background;
     }
 
     /**
@@ -1695,7 +1704,7 @@ public abstract class Calculator_Base
      */
     public void setBackground(final boolean _background)
     {
-        this.background = _background;
+        background = _background;
     }
 
     /**
