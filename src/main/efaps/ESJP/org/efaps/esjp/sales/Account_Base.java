@@ -75,6 +75,8 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author The eFaps Team
@@ -84,6 +86,8 @@ import org.joda.time.DateTime;
 public abstract class Account_Base
     extends CommonDocument
 {
+    private static final Logger LOG = LoggerFactory.getLogger(Account.class);
+
     /**
      * Key used for Caching.
      */
@@ -1375,4 +1379,68 @@ public abstract class Account_Base
         final Return ret = rev.revise(_parameter);
         return ret;
     }
+
+    public void lateTransaction4PettyCashBalance(final Parameter _parameter,
+                                                 final List<Instance> _paymentInstances)
+        throws EFapsException
+    {
+        final MultiPrintQuery multi = new MultiPrintQuery(_paymentInstances);
+        final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+        final SelectBuilder selDocDate = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
+                        .attribute(CIERP.DocumentAbstract.Date);
+        multi.addSelect(selDocInst, selDocDate);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
+            if (InstanceUtils.isType(docInst, CISales.CollectionOrder) || InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
+                final PrintQuery print = new PrintQuery(docInst);
+                final SelectBuilder selBalanceInst = InstanceUtils.isType(docInst, CISales.CollectionOrder)
+                            ? SelectBuilder.get()
+                                .linkfrom(CISales.PettyCashBalance2CollectionOrder.ToLink)
+                                .linkto(CISales.PettyCashBalance2CollectionOrder.FromLink)
+                                .instance()
+                            : SelectBuilder.get()
+                                .linkfrom(CISales.PettyCashBalance2PaymentOrder.ToLink)
+                                .linkto(CISales.PettyCashBalance2PaymentOrder.FromLink)
+                                .instance();
+
+                print.addSelect(selBalanceInst);
+                print.executeWithoutAccessCheck();
+                final Object balance = print.getSelect(selBalanceInst);
+                if (balance != null) {
+                    if (balance instanceof List) {
+                        LOG.error("Why the ..... is this a List???");
+                    } else {
+                        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, balance);
+                        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, balance);
+                        queryBldr.addWhereAttrEqValue(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+                        final MultiPrintQuery paymentMulti = queryBldr.getPrint();
+                        paymentMulti.addAttribute(CISales.Payment.AccountLink, CISales.Payment.Amount, CISales.Payment.CurrencyLink);
+                        paymentMulti.executeWithoutAccessCheck();
+                        while (paymentMulti.next()) {
+                            final Insert transIns;
+                            if (InstanceUtils.isType(docInst, CISales.CollectionOrder)) {
+                                transIns = new Insert(CISales.TransactionOutbound);
+                            } else {
+                                transIns = new Insert(CISales.TransactionInbound);
+                            }
+                            transIns.add(CISales.TransactionAbstract.CurrencyId,
+                                            paymentMulti.<Long>getAttribute(CISales.Payment.CurrencyLink));
+                            transIns.add(CISales.TransactionAbstract.Payment, paymentMulti.getCurrentInstance());
+                            transIns.add(CISales.TransactionAbstract.Amount, paymentMulti.<BigDecimal>getAttribute(CISales.Payment.Amount));
+                            transIns.add(CISales.TransactionAbstract.Account, paymentMulti.<Long>getAttribute(CISales.Payment.AccountLink));
+                            transIns.add(CISales.TransactionAbstract.Date, multi.<DateTime>getSelect(selDocDate));
+                            transIns.execute();
+
+                            final Update update = new Update( paymentMulti.getCurrentInstance());
+                            update.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Executed));
+                            update.executeWithoutTrigger();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

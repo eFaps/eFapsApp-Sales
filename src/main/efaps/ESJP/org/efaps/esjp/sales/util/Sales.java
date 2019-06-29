@@ -1809,10 +1809,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PETTYCASHERMITPARTIAL = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PETTYCASH_PERMITPARTIAL = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "AccountPettyCash.PermitPartialBalance")
                     .description("Permit the partial Balance of a AccountPettyCash.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASH_LATEBALANCETRANS = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "AccountPettyCash.LateBalanceTransaction")
+                    .description("If set to true the transaction for the balance is done with the PaymentDoc.");
 
     /** See description. */
     @EFapsSysConfAttribute
