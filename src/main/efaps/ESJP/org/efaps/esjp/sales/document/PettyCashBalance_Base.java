@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,6 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("d93f298b-f0bf-4278-a18e-b065cc330e50")
@@ -345,6 +343,7 @@ public abstract class PettyCashBalance_Base
         final Instance accountInst = print.<Instance>getSelect(selAccInst);
         CurrencyInst.get(print.<Long>getAttribute(
                         CISales.DocumentSumAbstract.RateCurrencyId));
+        Instance contactInst = null;
         if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
             type = CISales.CollectionOrder.getType();
             name = new Naming().fromNumberGenerator(_parameter, type.getName());
@@ -353,6 +352,7 @@ public abstract class PettyCashBalance_Base
             bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
             actDefInst = Sales.PETTYCASHBAL_ACTDEF4COLORD.get();
             actDef2doc = CISales.ActionDefinitionCollectionOrder2Document;
+            contactInst = Sales.PETTYCASHBAL_CONTACT4COLORD.get();
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
             name = new Naming().fromNumberGenerator(_parameter, type.getName());
@@ -361,9 +361,13 @@ public abstract class PettyCashBalance_Base
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
             actDefInst = Sales.PETTYCASHBAL_ACTDEF4PAYORD.get();
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
+            contactInst = Sales.PETTYCASHBAL_CONTACT4PAYORD.get();
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
             final Insert insert = new Insert(type);
+            if (InstanceUtils.isValid(contactInst)) {
+                insert.add(CISales.DocumentSumAbstract.Contact, contactInst);
+            }
             insert.add(CISales.DocumentSumAbstract.Name, name);
             insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
             insert.add(CISales.DocumentSumAbstract.DueDate, new DateTime());

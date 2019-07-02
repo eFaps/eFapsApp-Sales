@@ -1854,7 +1854,21 @@ public final class Sales
     public static final SysConfLink PETTYCASHBAL_ACTDEF4PAYORD = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.ActionDefinition4PaymentOrder")
-                    .description("Default ActionDefinition for the creation of a Payment Order..");
+                    .description("Default ActionDefinition for the creation of a Payment Order.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink PETTYCASHBAL_CONTACT4PAYORD = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashBalance.Contact4PaymentOrder")
+                    .description("Set a Contact for the Payment Order");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink PETTYCASHBAL_CONTACT4COLORD = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashBalance.Contact4CollectionOrder")
+                    .description("Set a Contact for the Collection Order");
 
     /** See description. */
     @EFapsSysConfAttribute
