@@ -39,6 +39,7 @@
             <child>Sales_AccountPettyCashTree_Transaction</child>
             <child>Sales_AccountPettyCashTree_DocumentsWithTrans</child>
             <child>Sales_AccountPettyCashTree_Documents</child>
+            <child>Sales_AccountPettyCashTree_PettyCashBalances</child>
             <child>Sales_AccountPettyCashTree_Report</child>
             <child>Admin_Access_Access4Object</child>
         </childs>
