@@ -1908,7 +1908,47 @@ public abstract class AbstractPaymentDocument_Base
     {
         inverseTransactions(_parameter, _parameter.getInstance(), true);
         reverseStatus4CreateDocument(_parameter, _parameter.getInstance());
+        inverseTransaction4PettyCashBalance(_parameter);
         return new StatusValue().setStatus(_parameter);
+    }
+
+    protected void inverseTransaction4PettyCashBalance(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (Sales.PETTYCASH_LATEBALANCETRANS.get()) {
+            final QueryBuilder queryBldr1 = new QueryBuilder(CISales.Payment);
+            queryBldr1.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance());
+            final MultiPrintQuery multi = queryBldr1.getPrint();
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+            multi.addSelect(selDocInst);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                if (InstanceUtils.isType(docInst, CISales.CollectionOrder) || InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
+                    final PrintQuery print = new PrintQuery(docInst);
+                    final SelectBuilder selBalanceInst = InstanceUtils.isType(docInst, CISales.CollectionOrder)
+                                ? SelectBuilder.get()
+                                    .linkfrom(CISales.PettyCashBalance2CollectionOrder.ToLink)
+                                    .linkto(CISales.PettyCashBalance2CollectionOrder.FromLink)
+                                    .instance()
+                                : SelectBuilder.get()
+                                    .linkfrom(CISales.PettyCashBalance2PaymentOrder.ToLink)
+                                    .linkto(CISales.PettyCashBalance2PaymentOrder.FromLink)
+                                    .instance();
+
+                    print.addSelect(selBalanceInst);
+                    print.executeWithoutAccessCheck();
+                    final Object balance = print.getSelect(selBalanceInst);
+                    if (balance != null) {
+                        if (balance instanceof List) {
+                            LOG.error("Why the ..... is this a List???");
+                        } else {
+                            inverseTransactions(_parameter, (Instance) balance, true);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
