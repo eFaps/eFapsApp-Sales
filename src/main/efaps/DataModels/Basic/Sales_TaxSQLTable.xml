@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,11 +15,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
@@ -28,19 +22,19 @@
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
   <uuid>94b0c417-1b7b-48c9-94de-934cf1e3e36f</uuid>
   <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Sales_TaxSQLTable</name>
     <database>
       <table-name>T_SALESTAX</table-name>
-      <!-- columns -->
       <column name="TAXCATID"      type="INTEGER"      not-null="true"/>
       <column name="NAME"          type="STRING_SHORT" not-null="true" length="155"/>
       <column name="UUID"          type="STRING_SHORT"                 length="64"/>
-      <column name="NUMERATOR"     type="INTEGER"      not-null="true"/>
-      <column name="DENOMINATOR"   type="INTEGER"      not-null="true"/>
+      <column name="TAXTYPE"       type="INTEGER"/>
+      <column name="NUMERATOR"     type="INTEGER"/>
+      <column name="DENOMINATOR"   type="INTEGER"/>
+      <column name="AMOUNT"        type="DECIMAL"  length="12" scale="4"/>
+      <column name="CURRENCYID"    type="INTEGER"/>
       <column name="VALIDFROM"     type="DATETIME"     not-null="true"/>
       <column name="CREATOR"       type="INTEGER"      not-null="true"/>
       <column name="CREATED"       type="DATETIME"     not-null="true"/>
@@ -50,5 +44,4 @@
       <foreign name="T_SALESTAX_FK_MDFR"       key="MODIFIER"      reference="T_USERPERSON(ID)"/>
     </database>
   </definition>
-
 </datamodel-sqltable>

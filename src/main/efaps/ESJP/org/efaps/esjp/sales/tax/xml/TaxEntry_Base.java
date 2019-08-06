@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.joda.time.DateTime;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
-
 @EFapsUUID("eec76d1d-b62b-42db-beb3-d94905a1fcf6")
 @EFapsApplication("eFapsApp-Sales")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -93,7 +90,7 @@ public abstract class TaxEntry_Base
      */
     public BigDecimal getAmount()
     {
-        return this.amount;
+        return amount;
     }
 
     /**
@@ -103,7 +100,7 @@ public abstract class TaxEntry_Base
      */
     public void setAmount(final BigDecimal _amount)
     {
-        this.amount = _amount;
+        amount = _amount;
     }
 
     /**
@@ -113,7 +110,7 @@ public abstract class TaxEntry_Base
      */
     public BigDecimal getBase()
     {
-        return this.base;
+        return base;
     }
 
     /**
@@ -123,7 +120,7 @@ public abstract class TaxEntry_Base
      */
     public void setBase(final BigDecimal _base)
     {
-        this.base = _base;
+        base = _base;
     }
 
     /**
@@ -133,7 +130,7 @@ public abstract class TaxEntry_Base
      */
     public UUID getUUID()
     {
-        return UUID.fromString(this.uuid);
+        return UUID.fromString(uuid);
     }
 
     /**
@@ -143,7 +140,7 @@ public abstract class TaxEntry_Base
      */
     public void setUUID(final UUID _uuid)
     {
-        this.uuid = _uuid.toString();
+        uuid = _uuid.toString();
     }
 
     /**
@@ -153,7 +150,7 @@ public abstract class TaxEntry_Base
      */
     public UUID getCatUUID()
     {
-        return UUID.fromString(this.catUuid);
+        return UUID.fromString(catUuid);
     }
 
     /**
@@ -163,7 +160,7 @@ public abstract class TaxEntry_Base
      */
     public void setCatUUID(final UUID _uuid)
     {
-        this.catUuid = _uuid.toString();
+        catUuid = _uuid.toString();
     }
 
     /**
@@ -173,7 +170,7 @@ public abstract class TaxEntry_Base
      */
     public UUID getCurrencyUUID()
     {
-        return this.currencyUuid == null ? null : UUID.fromString(this.currencyUuid);
+        return currencyUuid == null ? null : UUID.fromString(currencyUuid);
     }
 
     /**
@@ -183,7 +180,7 @@ public abstract class TaxEntry_Base
      */
     public void setCurrencyUUID(final UUID _currencyUuid)
     {
-        this.currencyUuid = _currencyUuid == null ? null : _currencyUuid.toString();
+        currencyUuid = _currencyUuid == null ? null : _currencyUuid.toString();
     }
     /**
      * Getter method for the instance variable {@link #date}.
@@ -192,7 +189,7 @@ public abstract class TaxEntry_Base
      */
     public DateTime getDateTime()
     {
-        return new DateTime(this.date);
+        return new DateTime(date);
     }
 
     /**
@@ -202,7 +199,7 @@ public abstract class TaxEntry_Base
      */
     public void setDate(final DateTime _dateTime)
     {
-        this.date = _dateTime.toDate();
+        date = _dateTime.toDate();
     }
 
     @Override
@@ -210,7 +207,7 @@ public abstract class TaxEntry_Base
     {
         final boolean ret;
         if (_obj instanceof TaxEntry_Base) {
-            ret = this.uuid.equals(((TaxEntry_Base) _obj).getUUID());
+            ret = uuid.equals(((TaxEntry_Base) _obj).getUUID());
         } else {
             ret = super.equals(_obj);
         }

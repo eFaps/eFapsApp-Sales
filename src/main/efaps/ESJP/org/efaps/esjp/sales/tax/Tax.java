@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 
 
 package org.efaps.esjp.sales.tax;
+
+import java.math.BigDecimal;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -50,12 +52,15 @@ public class Tax
      */
     public Tax(final TaxCat_Base _taxcat,
                final Instance _instance,
-               final String _nameTmp,
-               final String _uuidTmp,
+               final String _name,
+               final String _uuid,
+               final TaxType _taxType,
                final Integer _numerator,
-               final Integer _denominator)
+               final Integer _denominator,
+               final BigDecimal _amount,
+               final Long _currencyId)
     {
-        super(_taxcat, _instance, _nameTmp, _uuidTmp, _numerator, _denominator);
+        super(_taxcat, _instance, _name, _uuid, _taxType, _numerator, _denominator, _amount, _currencyId);
     }
 
     /**

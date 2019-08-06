@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -46,8 +46,8 @@ public abstract class Tax_Base
     /**
      * The TAXFREE Tax mining no Tax at all.
      */
-    private static final Tax ZEROTAX = new Tax(null, null, "ZERO", "fb2c7c17-7e0b-4199-a616-7c8528b1730e",
-                    Integer.valueOf(1), Integer.valueOf(1));
+    private static final Tax ZEROTAX = new Tax(null, null, "ZERO", "fb2c7c17-7e0b-4199-a616-7c8528b1730e", TaxType.ADVALOREM,
+                    Integer.valueOf(1), Integer.valueOf(1), BigDecimal.ZERO, 0L);
 
     /**
      * Instance of this tax.
@@ -63,6 +63,12 @@ public abstract class Tax_Base
      * UUID of this tax.
      */
     private UUID uuid;
+
+    private TaxType taxType;
+
+    private BigDecimal amount;
+
+    private Long currencyId;
 
     /**
      * NUmerator of this tax.
@@ -96,16 +102,22 @@ public abstract class Tax_Base
                        final Instance _instance,
                        final String _name,
                        final String _uuid,
+                       final TaxType _taxType,
                        final Integer _numerator,
-                       final Integer _denominator)
+                       final Integer _denominator,
+                       final BigDecimal _amount,
+                       final Long _currencyId)
     {
-        this.taxCat = _taxcat;
-        this.instance = _instance;
-        this.name = _name;
-        this.uuid = UUID.fromString(_uuid);
-        this.numerator = _numerator;
-        this.denominator = _denominator;
-        this.initialized = true;
+        taxCat = _taxcat;
+        instance = _instance;
+        name = _name;
+        uuid = UUID.fromString(_uuid);
+        taxType = _taxType == null ? TaxType.ADVALOREM : _taxType;
+        numerator = _numerator;
+        denominator = _denominator;
+        amount = _amount;
+        currencyId = _currencyId;
+        initialized = true;
     }
 
     /**
@@ -122,9 +134,13 @@ public abstract class Tax_Base
     public BigDecimal getFactor()
         throws EFapsException
     {
-        final BigDecimal denom = new BigDecimal(getDenominator());
-        final BigDecimal num = new BigDecimal(getNumerator());
-        return num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
+        BigDecimal ret = BigDecimal.ZERO;
+        if (TaxType.ADVALOREM.equals(taxType)) {
+            final BigDecimal denom = new BigDecimal(getDenominator());
+            final BigDecimal num = new BigDecimal(getNumerator());
+            ret = num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
+        }
+        return ret;
     }
 
     /**
@@ -135,7 +151,7 @@ public abstract class Tax_Base
         throws EFapsException
     {
         initialize();
-        return this.numerator;
+        return numerator;
     }
 
     /**
@@ -145,22 +161,27 @@ public abstract class Tax_Base
     private void initialize()
         throws EFapsException
     {
-        if (!this.initialized) {
+        if (!initialized) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
-            queryBldr.addWhereAttrEqValue(CISales.Tax.UUID, this.uuid.toString());
+            queryBldr.addWhereAttrEqValue(CISales.Tax.UUID, uuid.toString());
             queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, getTaxCat().getInstance());
             queryBldr.addOrderByAttributeDesc(CISales.Tax.ValidFrom);
             final CachedMultiPrintQuery multi = queryBldr.getCachedPrint(TaxCat.CACHEKEY);
             multi.setEnforceSorted(true);
             multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
-                            CISales.Tax.UUID);
+                            CISales.Tax.UUID, CISales.Tax.TaxType, CISales.Tax.Amount, CISales.Tax.CurrencyLink);
             multi.execute();
             if (multi.next()) {
-                this.instance = multi.getCurrentInstance();
-                this.name = multi.<String>getAttribute(CISales.Tax.Name);
-                this.numerator = multi.<Integer>getAttribute(CISales.Tax.Numerator);
-                this.denominator = multi.<Integer>getAttribute(CISales.Tax.Denominator);
-                this.initialized = true;
+                final TaxType taxTypeTmp = multi.getAttribute(CISales.Tax.TaxType);
+
+                instance = multi.getCurrentInstance();
+                taxType = taxTypeTmp == null ? TaxType.ADVALOREM : taxTypeTmp;
+                name = multi.getAttribute(CISales.Tax.Name);
+                numerator = multi.getAttribute(CISales.Tax.Numerator);
+                denominator = multi.getAttribute(CISales.Tax.Denominator);
+                amount = multi.getAttribute(CISales.Tax.Amount);
+                currencyId = multi.getAttribute(CISales.Tax.CurrencyLink);
+                initialized = true;
             }
         }
     }
@@ -173,7 +194,7 @@ public abstract class Tax_Base
         throws EFapsException
     {
         initialize();
-        return this.denominator;
+        return denominator;
     }
 
     /**
@@ -186,7 +207,7 @@ public abstract class Tax_Base
         throws EFapsException
     {
         initialize();
-        return this.uuid;
+        return uuid;
     }
 
     /**
@@ -199,7 +220,7 @@ public abstract class Tax_Base
         throws EFapsException
     {
         initialize();
-        return this.instance;
+        return instance;
     }
 
     /**
@@ -212,7 +233,28 @@ public abstract class Tax_Base
         throws EFapsException
     {
         initialize();
-        return this.name;
+        return name;
+    }
+
+    public TaxType getTaxType()
+    {
+        return taxType;
+    }
+
+    public BigDecimal getAmount()
+    {
+        return amount;
+    }
+
+    public Long getCurrencyId()
+    {
+        return currencyId;
+    }
+
+    public CurrencyInst getCurrencyInst()
+        throws EFapsException
+    {
+        return CurrencyInst.get(getCurrencyId());
     }
 
     /**
@@ -222,7 +264,7 @@ public abstract class Tax_Base
      */
     public TaxCat_Base getTaxCat()
     {
-        return this.taxCat;
+        return taxCat;
     }
 
     /**
@@ -232,7 +274,7 @@ public abstract class Tax_Base
      */
     protected void setUUID(final UUID _uuid)
     {
-        this.uuid = _uuid;
+        uuid = _uuid;
     }
 
     /**
@@ -242,7 +284,7 @@ public abstract class Tax_Base
      */
     protected void setTaxCat(final TaxCat_Base _taxCat)
     {
-        this.taxCat = _taxCat;
+        taxCat = _taxCat;
     }
 
     /**
@@ -275,7 +317,7 @@ public abstract class Tax_Base
         boolean ret = false;
         if (_obj instanceof Tax_Base) {
             try {
-                ret = this.uuid.equals(((Tax_Base) _obj).getUUID());
+                ret = uuid.equals(((Tax_Base) _obj).getUUID());
             } catch (final EFapsException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -289,6 +331,6 @@ public abstract class Tax_Base
     @Override
     public int hashCode()
     {
-        return this.uuid.hashCode();
+        return uuid.hashCode();
     }
 }

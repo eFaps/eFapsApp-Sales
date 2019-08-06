@@ -15,24 +15,23 @@
  *
  */
 
-
 package org.efaps.esjp.sales.tax;
 
+import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
-
-/**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_base</code>"
- * class.
- *
- * @author The eFasp Team
- */
-@EFapsUUID("73b17887-a9cc-4a8f-9fb3-2cfb7d73b500")
+@EFapsUUID("a2a50d6c-d018-454c-9d45-ce0c56c8ac4d")
 @EFapsApplication("eFapsApp-Sales")
-public class TaxesAttribute
-    extends TaxesAttribute_Base
+public enum TaxType
+    implements IEnum
 {
+    ADVALOREM,
+    PERUNIT;
 
+    @Override
+    public int getInt()
+    {
+        return ordinal();
+    }
 }

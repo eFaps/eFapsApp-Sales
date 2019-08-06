@@ -45,6 +45,7 @@ import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxAmount;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
+import org.efaps.esjp.sales.tax.TaxType;
 import org.efaps.esjp.sales.tax.Tax_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -1257,7 +1258,7 @@ public abstract class Calculator_Base
         switch (config) {
             case "NetPricePlusTax":
                 final ProductPrice netPrice = getProductNetPrice();
-                ret = evalProductCrossUnitPrice(netPrice);
+                ret = evalProductCrossUnitPrice(netPrice, false);
                 break;
             default:
                 ret = getNewPrice();
@@ -1283,15 +1284,30 @@ public abstract class Calculator_Base
     {
         final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
         final int decDigCant = format.getMaximumFractionDigits();
-
         final ProductPrice ret = getNewPrice();
-        final ProductPrice unit = getProductCrossUnitPrice();
-        ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
+        if (getTaxes().stream().anyMatch(tax -> TaxType.PERUNIT.equals(tax.getTaxType()))) {
+            final ProductPrice unit = evalProductCrossUnitPrice(productPrice, true);
+            ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
+                            .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+            ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
+                            .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+            ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
+                            .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+
+            final Tax[] perUnitTaxes = getTaxes().stream()
+                            .filter(tax -> TaxType.PERUNIT.equals(tax.getTaxType()))
+                            .toArray(Tax[]::new);
+
+           evalPerUnitTax(ret, perUnitTaxes);
+        } else {
+            final ProductPrice unit = getProductCrossUnitPrice();
+            ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
-        ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
+            ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
-        ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
+            ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+        }
         return ret;
 
     }
@@ -1357,7 +1373,7 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         if (productCrossUnitPrice == null) {
-            productCrossUnitPrice = evalProductCrossUnitPrice(productPrice);
+            productCrossUnitPrice = evalProductCrossUnitPrice(productPrice, false);
         }
         return productCrossUnitPrice;
     }
@@ -1367,7 +1383,7 @@ public abstract class Calculator_Base
      * @return eval new cross unit price
      * @throws EFapsException on error
      */
-    protected ProductPrice evalProductCrossUnitPrice(final ProductPrice _price)
+    protected ProductPrice evalProductCrossUnitPrice(final ProductPrice _price, final boolean _excludePerUnitTax)
         throws EFapsException
     {
         final ProductPrice ret = getNewPrice();
@@ -1386,25 +1402,31 @@ public abstract class Calculator_Base
                 BigDecimal tCurrentPrice = currentPrice;
                 BigDecimal tBasePrice = basePrice;
                 BigDecimal tOrigPrice = origPrice;
-
+                boolean hasPerUnitTax = false;
                 for (final Tax tax : taxesTmp) {
-                    final BigDecimal factor = tax.getFactor();
-                    if (factor.compareTo(BigDecimal.ONE) != 0) {
-                        if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
-                            tCurrentPrice = tCurrentPrice.add(currentPrice.multiply(factor));
+                    if (TaxType.ADVALOREM.equals(tax.getTaxType())) {
+                        final BigDecimal factor = tax.getFactor();
+                        if (factor.compareTo(BigDecimal.ONE) != 0) {
+                            if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
+                                tCurrentPrice = tCurrentPrice.add(currentPrice.multiply(factor));
+                            }
+                            if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
+                                tBasePrice = tBasePrice.add(basePrice.multiply(factor));
+                            }
+                            if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
+                                tOrigPrice = tOrigPrice.add(origPrice.multiply(factor));
+                            }
                         }
-                        if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
-                            tBasePrice = tBasePrice.add(basePrice.multiply(factor));
-                        }
-                        if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
-                            tOrigPrice = tOrigPrice.add(origPrice.multiply(factor));
-                        }
+                    } else if (TaxType.PERUNIT.equals(tax.getTaxType())) {
+                        hasPerUnitTax = true;
                     }
                 }
                 ret.setCurrentPrice(tCurrentPrice);
                 ret.setBasePrice(tBasePrice);
                 ret.setOrigPrice(tOrigPrice);
-
+                if (!_excludePerUnitTax && hasPerUnitTax) {
+                    evalPerUnitTax(ret, taxesTmp.toArray(new Tax[taxesTmp.size()]));
+                }
             } else {
                 ret.setCurrentPrice(_price.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
@@ -1457,19 +1479,21 @@ public abstract class Calculator_Base
                 BigDecimal tOrigPrice = origPrice;
 
                 for (final Tax tax : taxesTmp) {
-                    final BigDecimal factor = tax.getFactor();
-                    if (factor.compareTo(BigDecimal.ONE) != 0) {
-                        if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
-                            tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
-                                            .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
-                        }
-                        if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
-                            tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
-                                            .add(factor), BigDecimal.ROUND_HALF_UP)));
-                        }
-                        if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
-                            tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
-                                            .add(factor), BigDecimal.ROUND_HALF_UP)));
+                    if (TaxType.ADVALOREM.equals(tax.getTaxType())) {
+                        final BigDecimal factor = tax.getFactor();
+                        if (factor.compareTo(BigDecimal.ONE) != 0) {
+                            if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
+                                tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
+                                                .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
+                            }
+                            if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
+                                tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
+                                                .add(factor), BigDecimal.ROUND_HALF_UP)));
+                            }
+                            if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
+                                tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
+                                                .add(factor), BigDecimal.ROUND_HALF_UP)));
+                            }
                         }
                     }
                 }
@@ -1479,6 +1503,27 @@ public abstract class Calculator_Base
             }
         }
         return ret;
+    }
+
+    protected void evalPerUnitTax(final ProductPrice _productPrice,
+                                  final Tax... taxes)
+        throws EFapsException
+    {
+        for (final Tax tax : taxes) {
+            if (TaxType.PERUNIT.equals(tax.getTaxType())) {
+                if (tax.getCurrencyInst().getInstance().equals(_productPrice.getCurrentCurrencyInstance())) {
+                    _productPrice.setCurrentPrice(_productPrice.getCurrentPrice().add(tax.getAmount()));
+                } else {
+
+                }
+                if (tax.getCurrencyInst().getInstance().equals(Currency.getBaseCurrency())) {
+                    _productPrice.setBasePrice(_productPrice.getBasePrice().add(tax.getAmount()));
+                }
+                if (tax.getCurrencyInst().getInstance().equals(_productPrice.getOrigCurrencyInstance())) {
+                    _productPrice.setOrigPrice(_productPrice.getOrigPrice().add(tax.getAmount()));
+                }
+            }
+        }
     }
 
     /**
@@ -1565,10 +1610,17 @@ public abstract class Calculator_Base
             } else {
                 final DecimalFormat format = NumberFormatter.get().getFrmt4Tax(getPosKey());
                 final int decDigCant = format.getMaximumFractionDigits();
-                ret.add(new TaxAmount()
+                if (TaxType.PERUNIT.equals(tax.getTaxType())) {
+                    ret.add(new TaxAmount()
+                                    .setTax(tax)
+                                    .setAmount(tax.getAmount().multiply(getQuantity()))
+                                    .setBase(getQuantity()));
+                } else {
+                    ret.add(new TaxAmount()
                                 .setTax(tax)
                                 .setAmount(net.multiply(tax.getFactor()).setScale(decDigCant, BigDecimal.ROUND_HALF_UP))
                                 .setBase(net));
+                }
             }
         }
         return ret;

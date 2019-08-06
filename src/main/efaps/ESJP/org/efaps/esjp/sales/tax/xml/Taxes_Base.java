@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("dcce8bff-2832-4bc8-ac69-8b72322d5d1d ")
@@ -51,7 +49,7 @@ public abstract class Taxes_Base
      */
     @XmlElementWrapper(name = "entries")
     @XmlElement(name = "entry")
-    private final List<TaxEntry> entries = new ArrayList<TaxEntry>();
+    private final List<TaxEntry> entries = new ArrayList<>();
 
     /**
      * Getter method for the instance variable {@link #entries}.
@@ -60,6 +58,6 @@ public abstract class Taxes_Base
      */
     public List<TaxEntry> getEntries()
     {
-        return this.entries;
+        return entries;
     }
 }

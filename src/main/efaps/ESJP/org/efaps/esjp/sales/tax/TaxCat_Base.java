@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package org.efaps.esjp.sales.tax;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,7 +38,6 @@ import org.joda.time.DateTime;
 
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -79,9 +79,9 @@ public abstract class TaxCat_Base
                        final String _uuid,
                        final String _name)
     {
-        this.instance = _instance;
-        this.uuid = UUID.fromString(_uuid);
-        this.name = _name;
+        instance = _instance;
+        uuid = UUID.fromString(_uuid);
+        name = _name;
     }
 
     /**
@@ -104,24 +104,27 @@ public abstract class TaxCat_Base
     public Collection<? extends Tax> getTaxes(final DateTime _date)
         throws EFapsException
     {
-        final List<Tax> ret = new ArrayList<Tax>();
+        final List<Tax> ret = new ArrayList<>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
-        queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, this.instance);
+        queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, instance);
         queryBldr.addOrderByAttributeDesc(CISales.Tax.ValidFrom);
         final MultiPrintQuery multi = queryBldr.getCachedPrint(TaxCat.CACHEKEY);
         multi.setEnforceSorted(true);
         multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
-                        CISales.Tax.UUID);
+                        CISales.Tax.UUID, CISales.Tax.TaxType, CISales.Tax.Amount, CISales.Tax.CurrencyLink);
         multi.execute();
-        final Set<String> uuids = new HashSet<String>();
+        final Set<String> uuids = new HashSet<>();
         while (multi.next()) {
-            final String nameTmp = multi.<String>getAttribute(CISales.Tax.Name);
-            final String uuidTmp = multi.<String>getAttribute(CISales.Tax.UUID);
-            final Integer numerator = multi.<Integer>getAttribute(CISales.Tax.Numerator);
-            final Integer denominator = multi.<Integer>getAttribute(CISales.Tax.Denominator);
-            final DateTime validFrom = multi.<DateTime>getAttribute(CISales.Tax.ValidFrom);
+            final TaxType taxType = multi.getAttribute(CISales.Tax.TaxType);
+            final String nameTmp = multi.getAttribute(CISales.Tax.Name);
+            final String uuidTmp = multi.getAttribute(CISales.Tax.UUID);
+            final Integer numerator = multi.getAttribute(CISales.Tax.Numerator);
+            final Integer denominator = multi.getAttribute(CISales.Tax.Denominator);
+            final BigDecimal amount = multi.getAttribute(CISales.Tax.Amount);
+            final Long currencyId = multi.getAttribute(CISales.Tax.CurrencyLink);
+            final DateTime validFrom = multi.getAttribute(CISales.Tax.ValidFrom);
             if (!uuids.contains(uuidTmp) && validFrom.isBefore(_date)) {
-                ret.add(new Tax(this, multi.getCurrentInstance(), nameTmp, uuidTmp, numerator, denominator));
+                ret.add(new Tax(this, multi.getCurrentInstance(), nameTmp, uuidTmp, taxType, numerator, denominator, amount, currencyId));
                 uuids.add(uuidTmp);
             }
         }
@@ -135,7 +138,7 @@ public abstract class TaxCat_Base
      */
     public Instance getInstance()
     {
-        return this.instance;
+        return instance;
     }
 
     /**
@@ -145,7 +148,7 @@ public abstract class TaxCat_Base
      */
     public UUID getUuid()
     {
-        return this.uuid;
+        return uuid;
     }
 
     /**
@@ -155,7 +158,7 @@ public abstract class TaxCat_Base
      */
     public String getName()
     {
-        return this.name;
+        return name;
     }
 
     /**
