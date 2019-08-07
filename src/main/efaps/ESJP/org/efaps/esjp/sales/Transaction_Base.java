@@ -65,6 +65,7 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.payment.TransferDocument;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -193,6 +194,10 @@ public abstract class Transaction_Base
                                 _createdDoc.getValues().get(CISales.TransactionAbstract.Account.name));
                 transIns.execute();
                 ret = transIns.getInstance();
+                // if late transaction is activated -> check if a transaction for Petty Cash must be done
+                if (Sales.PETTYCASH_LATEBALANCETRANS.get()) {
+                    new Account().lateTransaction4PettyCashBalance(_parameter, _paymentInstance);
+                }
             } else {
                 final Update update = new Update(_paymentInstance);
                 update.add(CISales.Payment.AccountLink,
@@ -823,7 +828,7 @@ public abstract class Transaction_Base
          */
         public TransInfo(final Instance _inst)
         {
-            this.currencyInst = _inst;
+            currencyInst = _inst;
         }
 
         /**
@@ -834,7 +839,7 @@ public abstract class Transaction_Base
         public Object getAccountName()
         {
             String ret = "";
-            for (final String account : this.accounts) {
+            for (final String account : accounts) {
                 if (account != null) {
                     ret = ret.isEmpty() ? account : ret +  " -> " + account;
                 }
@@ -849,7 +854,7 @@ public abstract class Transaction_Base
          */
         public void addAccount(final String _select)
         {
-            this.accounts.add(_select);
+            accounts.add(_select);
         }
 
         /**
@@ -859,7 +864,7 @@ public abstract class Transaction_Base
          */
         public void addTransInstance(final Instance _inst)
         {
-            this.transInst.add(_inst);
+            transInst.add(_inst);
         }
 
         /**
@@ -869,7 +874,7 @@ public abstract class Transaction_Base
          */
         public void add(final BigDecimal _amount)
         {
-            this.amount = this.amount.add(_amount);
+            amount = amount.add(_amount);
         }
 
         /**
@@ -879,7 +884,7 @@ public abstract class Transaction_Base
          */
         public CurrencyInst getCurrencyInst()
         {
-            return new CurrencyInst(this.currencyInst);
+            return new CurrencyInst(currencyInst);
         }
 
         /**
@@ -889,7 +894,7 @@ public abstract class Transaction_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount;
+            return amount;
         }
 
         /**
@@ -899,7 +904,7 @@ public abstract class Transaction_Base
          */
         public Set<Instance> getTransInst()
         {
-            return this.transInst;
+            return transInst;
         }
     }
 }

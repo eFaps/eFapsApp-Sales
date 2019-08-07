@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1381,10 +1382,10 @@ public abstract class Account_Base
     }
 
     public void lateTransaction4PettyCashBalance(final Parameter _parameter,
-                                                 final List<Instance> _paymentInstances)
+                                                 final Instance... _paymentInstances)
         throws EFapsException
     {
-        final MultiPrintQuery multi = new MultiPrintQuery(_paymentInstances);
+        final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<>(Arrays.asList( _paymentInstances)));
         final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
         final SelectBuilder selDocDate = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
                         .attribute(CIERP.DocumentAbstract.Date);

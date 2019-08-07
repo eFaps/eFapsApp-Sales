@@ -966,9 +966,6 @@ public abstract class AbstractPaymentDocument_Base
                 }
             }
         }
-        if (Sales.PETTYCASH_LATEBALANCETRANS.get()) {
-           new Account().lateTransaction4PettyCashBalance(_parameter, _paymentInstances);
-        }
     }
 
     /**
