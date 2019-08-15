@@ -1870,6 +1870,12 @@ public final class Sales
                     .key(Sales.BASE + "PettyCashBalance.Contact4CollectionOrder")
                     .description("Set a Contact for the Collection Order");
 
+    @EFapsSysConfLink
+    public static final BooleanSysConfAttribute PETTYCASHBAL_CONTACT4ORDERCR = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashBalance.ActivateContact4OrderCreation")
+                    .description("Activate the possiblity to select the contact on creation of PaymentOrder/CollectionOrder");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute PETTYCASHRECEIPT_REVSEQ = new StringSysConfAttribute()

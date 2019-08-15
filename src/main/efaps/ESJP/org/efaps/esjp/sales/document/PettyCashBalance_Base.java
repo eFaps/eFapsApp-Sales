@@ -363,6 +363,13 @@ public abstract class PettyCashBalance_Base
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
             contactInst = Sales.PETTYCASHBAL_CONTACT4PAYORD.get();
         }
+        //if set via UI -> overwrite configurations
+        if (_parameter.getParameterValue("contact") != null) {
+            final Instance contactInstTmp = Instance.get(_parameter.getParameterValue("contact"));
+            if (InstanceUtils.isValid(contactInstTmp)) {
+                contactInst = contactInstTmp;
+            }
+        }
         if (type != null && accountInst != null && accountInst.isValid()) {
             final Insert insert = new Insert(type);
             if (InstanceUtils.isValid(contactInst)) {
