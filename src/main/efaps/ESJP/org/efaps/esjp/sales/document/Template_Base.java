@@ -79,7 +79,8 @@ public abstract class Template_Base
 
         final Parameter parameter = ParameterUtil.clone(_parameter);
 
-        final Evaluator eval = EQL.print(templateInst)
+        final Evaluator eval = EQL.builder()
+                .print(templateInst)
                 .linkto(CISales.InvoiceTemplate.Contact).oid()
                 .attribute(CISales.InvoiceTemplate.Note)
                 .stmt().evaluate();
@@ -90,9 +91,12 @@ public abstract class Template_Base
         ParameterUtil.setParameterValues(parameter, "contact", contactOid);
         ParameterUtil.setParameterValues(parameter, "note", note);
 
-        final Evaluator posEval = EQL.print(EQL.query(CISales.InvoiceTemplatePosition)
-                    .where(EQL.where()
-                        .attribute(CISales.InvoiceTemplatePosition.InvoiceTemplateLink).eq(templateInst)))
+        final Evaluator posEval = EQL.builder()
+            .print()
+                .query(CISales.InvoiceTemplatePosition)
+                .where()
+                    .attribute(CISales.InvoiceTemplatePosition.InvoiceTemplateLink).eq(templateInst)
+            .select()
             .linkto(CISales.InvoiceTemplatePosition.Product).oid()
             .attribute(CISales.InvoiceTemplatePosition.ProductDesc)
             .attribute(CISales.InvoiceTemplatePosition.UoM)
@@ -115,9 +119,10 @@ public abstract class Template_Base
                                                        final CreatedDoc _createdDoc)
                 throws EFapsException
             {
-                final Evaluator eval = EQL.print(templateInst)
-                    .linkto(CISales.InvoiceTemplate.RateCurrencyId).instance()
+                final Evaluator eval = EQL.builder()
                     .with(StmtFlag.REQCACHED)
+                    .print(templateInst)
+                    .linkto(CISales.InvoiceTemplate.RateCurrencyId).instance()
                     .stmt().evaluate();
                 return eval.get(1);
             }
@@ -126,9 +131,10 @@ public abstract class Template_Base
             protected Object[] getRateObject(final Parameter _parameter)
                 throws EFapsException
             {
-                final Evaluator eval = EQL.print(templateInst)
-                                .linkto(CISales.InvoiceTemplate.RateCurrencyId).instance()
+                final Evaluator eval = EQL.builder()
                                 .with(StmtFlag.REQCACHED)
+                                .print(templateInst)
+                                .linkto(CISales.InvoiceTemplate.RateCurrencyId).instance()
                                 .stmt().evaluate();
                 final Instance rateCurrencyInst = eval.get(1);
 
