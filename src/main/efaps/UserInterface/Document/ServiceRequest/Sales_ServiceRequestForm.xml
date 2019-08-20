@@ -225,5 +225,16 @@
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceRequest"
+              method="getJavaScriptUIValue"
+                name="Sales_ServiceRequestForm.javaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
     </definition>
 </ui-form>

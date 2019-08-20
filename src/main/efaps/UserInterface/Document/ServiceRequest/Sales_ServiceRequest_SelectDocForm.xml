@@ -31,6 +31,10 @@
                 program="org.efaps.esjp.sales.document.ServiceRequest">
                 <property name="Type">Sales_ServiceRequest</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.ServiceRequest"
+                method="updateFields4Document"
+                name="Sales_ServiceRequest_SelectDocForm.serviceRequest.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
