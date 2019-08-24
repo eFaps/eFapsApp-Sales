@@ -194,6 +194,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>
+            <property name="Required">true</property>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
