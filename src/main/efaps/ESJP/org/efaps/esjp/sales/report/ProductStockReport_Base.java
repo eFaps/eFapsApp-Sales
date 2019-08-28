@@ -30,6 +30,18 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Status;
@@ -58,18 +70,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
-import net.sf.dynamicreports.report.builder.style.StyleBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * TODO comment!
@@ -122,11 +122,13 @@ public abstract class ProductStockReport_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @param _field field teh valu eis wanted for
      * @return object
+     * @throws EFapsException
      */
     @Override
     protected Object getFilterValue(final Parameter _parameter,
                                     final Field _field,
                                     final Map<String, Object> _oldFilter)
+        throws EFapsException
     {
         final Object obj;
         final String val = _parameter.getParameterValue(_field.getName());
@@ -235,7 +237,7 @@ public abstract class ProductStockReport_Base
          */
         public ProdStockReport(final ProductStockReport_Base _report4Account)
         {
-            this.filteredReport = _report4Account;
+            filteredReport = _report4Account;
         }
 
         /**
@@ -280,7 +282,7 @@ public abstract class ProductStockReport_Base
                                      final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("project") && filter.get("project") instanceof ProjectFilterValue) {
                 final Instance projectInst = ((ProjectFilterValue) filter.get("project")).getObject();
                 if (projectInst.isValid()) {
@@ -581,7 +583,7 @@ public abstract class ProductStockReport_Base
                     LOG.error("Error on retrieving name", e);
                 }
             }
-            return this.prodName;
+            return prodName;
         }
 
         /**
@@ -599,7 +601,7 @@ public abstract class ProductStockReport_Base
          */
         public void setProdName(final String _prodName)
         {
-            this.prodName = _prodName;
+            prodName = _prodName;
             setInitProd(true);
         }
 
@@ -620,7 +622,7 @@ public abstract class ProductStockReport_Base
                     LOG.error("Error on retrieving name", e);
                 }
             }
-            return this.docName == null ? "" : this.docName;
+            return docName == null ? "" : docName;
         }
 
         /**
@@ -631,7 +633,7 @@ public abstract class ProductStockReport_Base
          */
         public DataBean setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             setInitDoc(true);
             return this;
         }
@@ -643,7 +645,7 @@ public abstract class ProductStockReport_Base
          */
         public BigDecimal getQuantity()
         {
-            return this.quantity;
+            return quantity;
         }
 
         /**
@@ -654,7 +656,7 @@ public abstract class ProductStockReport_Base
          */
         public DataBean setQuantity(final BigDecimal _quantity)
         {
-            this.quantity = _quantity;
+            quantity = _quantity;
             return this;
         }
 
@@ -675,7 +677,7 @@ public abstract class ProductStockReport_Base
          */
         public Instance getDocInst()
         {
-            return this.docInst;
+            return docInst;
         }
 
         /**
@@ -686,7 +688,7 @@ public abstract class ProductStockReport_Base
          */
         public DataBean setDocInst(final Instance _docInst)
         {
-            this.docInst = _docInst;
+            docInst = _docInst;
             return this;
         }
 
@@ -697,7 +699,7 @@ public abstract class ProductStockReport_Base
          */
         public Instance getProdInst()
         {
-            return this.prodInst;
+            return prodInst;
         }
 
         /**
@@ -708,7 +710,7 @@ public abstract class ProductStockReport_Base
          */
         public DataBean setProdInst(final Instance _prodInst)
         {
-            this.prodInst = _prodInst;
+            prodInst = _prodInst;
             return this;
         }
 
@@ -719,7 +721,7 @@ public abstract class ProductStockReport_Base
          */
         public boolean isInitDoc()
         {
-            return this.initDoc;
+            return initDoc;
         }
 
         /**
@@ -729,7 +731,7 @@ public abstract class ProductStockReport_Base
          */
         public void setInitDoc(final boolean _initDoc)
         {
-            this.initDoc = _initDoc;
+            initDoc = _initDoc;
         }
 
         /**
@@ -739,7 +741,7 @@ public abstract class ProductStockReport_Base
          */
         public boolean isInitProd()
         {
-            return this.initProd;
+            return initProd;
         }
 
         /**
@@ -749,7 +751,7 @@ public abstract class ProductStockReport_Base
          */
         public void setInitProd(final boolean _initProd)
         {
-            this.initProd = _initProd;
+            initProd = _initProd;
         }
     }
 }
