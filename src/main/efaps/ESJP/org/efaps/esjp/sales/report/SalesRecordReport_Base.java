@@ -22,16 +22,25 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.comparators.ComparatorChain;
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
+import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
@@ -50,6 +59,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.FilteredReport;
@@ -64,17 +74,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -171,7 +171,7 @@ public abstract class SalesRecordReport_Base
          */
         Column(final String _key)
         {
-            this.key = _key;
+            key = _key;
         }
 
         /**
@@ -181,7 +181,7 @@ public abstract class SalesRecordReport_Base
          */
         public String getKey()
         {
-            return this.key;
+            return key;
         }
     }
 
@@ -267,10 +267,9 @@ public abstract class SalesRecordReport_Base
          */
         public DynSalesRecordReport(final SalesRecordReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
@@ -360,42 +359,24 @@ public abstract class SalesRecordReport_Base
                     }
                 }
 
-                final ComparatorChain chain = new ComparatorChain();
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        final String val1 = (String) _o1.get(SalesRecordReport_Base.Column.DOCDOCTYPE.getKey());
-                        final String val2 = (String) _o2.get(SalesRecordReport_Base.Column.DOCDOCTYPE.getKey());
-                        return ObjectUtils.compare(val1, val2);
-                    }
+                final ComparatorChain<Map<String, ?>> chain = new ComparatorChain<>();
+                chain.addComparator((_o1,
+                 _o2) -> {
+                    final String val1 = (String) _o1.get(SalesRecordReport_Base.Column.DOCDOCTYPE.getKey());
+                    final String val2 = (String) _o2.get(SalesRecordReport_Base.Column.DOCDOCTYPE.getKey());
+                    return ObjectUtils.compare(val1, val2);
                 });
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        final DateTime date1 = (DateTime) _o1.get(SalesRecordReport_Base.Column.DOCDATE.getKey());
-                        final DateTime date2 = (DateTime) _o2.get(SalesRecordReport_Base.Column.DOCDATE.getKey());
-                        return ObjectUtils.compare(date1, date2);
-                    }
+                chain.addComparator((_o1,
+                 _o2) -> {
+                    final DateTime date1 = (DateTime) _o1.get(SalesRecordReport_Base.Column.DOCDATE.getKey());
+                    final DateTime date2 = (DateTime) _o2.get(SalesRecordReport_Base.Column.DOCDATE.getKey());
+                    return ObjectUtils.compare(date1, date2);
                 });
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        final String val1 = (String) _o1.get(SalesRecordReport_Base.Column.DOCNUMBER.getKey());
-                        final String val2 = (String) _o2.get(SalesRecordReport_Base.Column.DOCNUMBER.getKey());
-                        return ObjectUtils.compare(val1, val2);
-                    }
+                chain.addComparator((_o1,
+                 _o2) -> {
+                    final String val1 = (String) _o1.get(SalesRecordReport_Base.Column.DOCNUMBER.getKey());
+                    final String val2 = (String) _o2.get(SalesRecordReport_Base.Column.DOCNUMBER.getKey());
+                    return ObjectUtils.compare(val1, val2);
                 });
 
                 Collections.sort(values, chain);
@@ -472,10 +453,8 @@ public abstract class SalesRecordReport_Base
                             _values.add(map);
                         }
                         map.put(Column.RELDATE.getKey(), multi.getAttribute(CISales.Invoice.Date));
-                        map.put(Column.RELSN.getKey(),
-                                        getSerialNo(_parameter, multi.getAttribute(CISales.Invoice.Name)));
-                        map.put(Column.RELNUMBER.getKey(),
-                                        getNumber(_parameter, multi.getAttribute(CISales.Invoice.Name)));
+                        map.put(Column.RELSN.getKey(), getSerialNo(_parameter, multi.getAttribute(CISales.Invoice.Name)));
+                        map.put(Column.RELNUMBER.getKey(), getNumber(_parameter, multi.getAttribute(CISales.Invoice.Name)));
                         map.put(Column.RELDOCTYPE.getKey(), getDocTypeMap(_parameter).get(
                                         multi.getCurrentInstance().getType().getUUID()));
                     }
@@ -504,7 +483,7 @@ public abstract class SalesRecordReport_Base
         {
             // no taxes found
             if (_taxes == null) {
-                // but it local therfore it must be unaffected, in other case it is export
+                // but it is local, therefore it must be unaffected, in other case it is export
                 if (ERP.COMPANY_COUNTRY.get().equalsIgnoreCase(_country)) {
                     _map.put(Column.TAXABLEVAL.getKey(), _netTotal);
                     _map.put(Column.UNAFFVAL.getKey(), _netTotal);
@@ -513,15 +492,21 @@ public abstract class SalesRecordReport_Base
                 }
             } else {
                 BigDecimal igv = BigDecimal.ZERO;
-                BigDecimal unaff = BigDecimal.ZERO;
+                final BigDecimal unaff = BigDecimal.ZERO;
                 BigDecimal other = BigDecimal.ZERO;
+                final Properties taxDef = PropertiesUtil.getProperties4Prefix(Sales.REPORT_SALESRECORD.get(), "tax");
                 for (final TaxEntry entry : _taxes.getEntries()) {
-                    if (UUID.fromString("ed28d3c0-e55d-45e5-8025-e48fc989c9dd").equals(entry.getCatUUID())) {
-                        igv = igv.add(entry.getAmount());
-                    } else if (UUID.fromString("25267a7d-84a9-428f-990e-9d99b133faf4").equals(entry.getCatUUID())) {
-                        unaff = unaff.add(entry.getAmount());
-                    } else {
-                        other = other.add(entry.getAmount());
+                    final String def = taxDef.getProperty(entry.getUUID().toString(), "OTHER");
+                    switch (def) {
+                        case "IGV":
+                            igv = igv.add(entry.getAmount());
+                            break;
+                        case "UNAFF":
+                            break;
+                        case "OTHER":
+                        default:
+                            other = other.add(entry.getAmount());
+                            break;
                     }
                 }
                 if (BigDecimal.ZERO.compareTo(igv) < 0) {
@@ -546,7 +531,7 @@ public abstract class SalesRecordReport_Base
                                      final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             final DateTime dateFrom;
             if (filter.containsKey("dateFrom")) {
                 dateFrom = (DateTime) filter.get("dateFrom");
@@ -748,7 +733,7 @@ public abstract class SalesRecordReport_Base
          */
         public SalesRecordReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 }

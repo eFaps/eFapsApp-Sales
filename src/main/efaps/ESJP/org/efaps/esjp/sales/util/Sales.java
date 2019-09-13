@@ -2350,11 +2350,15 @@ public final class Sales
     public static final PropertiesSysConfAttribute REPORT_SALESRECORD = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesRecordReport")
-                    .description("Properties for SalesRecordReport.")
+                    .description("Properties for SalesRecordReport. \n"
+                                    + "QueryBuilder definitiont\n"
+                                    + "tax.UUID=IGV|OTHER|UNAFF")
                     .addDefaultValue("Type01", CISales.Invoice.getType().getName())
                     .addDefaultValue("Type02", CISales.Receipt.getType().getName())
                     .addDefaultValue("Type03", CISales.CreditNote.getType().getName())
-                    .addDefaultValue("Type04", CISales.Reminder.getType().getName());
+                    .addDefaultValue("Type04", CISales.Reminder.getType().getName())
+                    .addDefaultValue("tax.06e40be6-40d8-44f4-9d8f-585f2f97ce63", "IGV")
+                    .addDefaultValue("tax.90346a9b-f637-4dd2-8cdf-802608cf5660", "OTHER");
 
     /** See description. */
     @EFapsSysConfAttribute
