@@ -21,8 +21,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -58,6 +60,7 @@ import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
+import org.jfree.util.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -223,6 +226,33 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
+     * Get the crossTotal converted into the the given target currency.
+     * @param _parameter Parameter
+     * @param _targetCurrency currency to convert into
+     * @return converted crossTotal
+     * @throws EFapsException on error
+     */
+    public BigDecimal getCrossTotalInCurrency(final Parameter _parameter,
+                                              final Instance _targetCurrency)
+        throws EFapsException
+    {
+        BigDecimal ret;
+        if (getCurrencyInstance().equals(_targetCurrency)) {
+            // if currency is wanted
+            ret = getCrossTotal();
+        } else if (getRateCurrencyInstance().equals(_targetCurrency)) {
+            // if rate currency is wanted
+            ret = getRateCrossTotal();
+        } else {
+            // convert the amount using the date of the document
+            ret = Currency.convert(_parameter, getRateCrossTotal(), getRateCurrencyInstance(), _targetCurrency,
+                            getInstance().getType().getName(),
+                            LocalDate.of(getDate().getYear(), getDate().getMonthOfYear(), getDate().getDayOfMonth()));
+        }
+        return ret;
+    }
+
+    /**
      * @return the cross total in the currency of the account
      * @throws EFapsException on error
      */
@@ -245,6 +275,7 @@ public abstract class DocPaymentInfo_Base
      * @return the paid amount in the account currency
      * @throws EFapsException on error
      */
+    @Deprecated
     public BigDecimal getPaid4Target()
         throws EFapsException
     {
@@ -259,6 +290,18 @@ public abstract class DocPaymentInfo_Base
                                 instance.getType().getName());
                 ret = ret.add(pos.getAmount().divide(rate, BigDecimal.ROUND_HALF_UP));
             }
+        }
+        return ret;
+    }
+
+    public BigDecimal getPaidInCurrency(final Instance _targetCurrency,
+                                        final boolean _perPayment)
+        throws EFapsException
+    {
+        initialize();
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final PayPos pos : getPayPos()) {
+            ret = ret.add(pos.getAmountInCurrency(getParameter(), _targetCurrency, _perPayment));
         }
         return ret;
     }
@@ -295,6 +338,7 @@ public abstract class DocPaymentInfo_Base
      * @return the balance
      * @throws EFapsException on error
      */
+    @Deprecated
     public BigDecimal getBalance4Target()
         throws EFapsException
     {
@@ -482,6 +526,17 @@ public abstract class DocPaymentInfo_Base
             total = total.negate();
         }
         return total.subtract(getRatePaid(_perPayment));
+    }
+
+    public BigDecimal getBalanceInCurrency(final Instance _targetCurrency,
+                                           final boolean _perPayment)
+        throws EFapsException
+    {
+        BigDecimal total = getCrossTotalInCurrency(getParameter(), _targetCurrency);
+        if (isObligationDoc()) {
+            total = total.negate();
+        }
+        return total.subtract(getPaidInCurrency(_targetCurrency, _perPayment));
     }
 
     /**
@@ -1327,7 +1382,111 @@ public abstract class DocPaymentInfo_Base
                 break;
             }
         }
+
+        // new version
+        final Instance baseCurrencyInstance = Currency.getBaseCurrency();
+        final List<Instance> currencyInstances = (List<Instance>) Currency.getAvailable();
+        currencyInstances.remove(baseCurrencyInstance);
+
+        Collections.sort(currencyInstances, (i1,i2) -> {
+            try {
+                return CurrencyInst.get(i1).getName().compareTo(CurrencyInst.get(i2).getName());
+            } catch (final EFapsException e) {
+                Log.error("Catched", e);
+            }
+            return 0;
+        });
+        currencyInstances.add(0, baseCurrencyInstance);
+
+        ret.append("<div style=\"display:flex;flex-wrap:wrap;\">");
+
+        ret.append("<div>")
+            .append("<h3>").append(getLabel("PerPayment")).append("</h3>");
+        for (final Instance currencyInstance : currencyInstances) {
+            ret.append(getTable(_parameter, payInfo, CurrencyInst.get(currencyInstance), true));
+        }
+        ret.append("</div>");
+
+        ret.append("<div>")
+            .append("<h3>").append(getLabel("PerDoc")).append("</h3>");
+        for (final Instance currencyInstance : currencyInstances) {
+            ret.append(getTable(_parameter, payInfo, CurrencyInst.get(currencyInstance), false));
+        }
+        ret.append("</div>");
+        ret.append("</div>");
         return ret;
+    }
+
+    protected static CharSequence getTable(final Parameter _parameter,
+                                           final DocPaymentInfo _payInfo,
+                                           final CurrencyInst _currencyInst,
+                                           final boolean _perPayment)
+        throws EFapsException
+    {
+        final DecimalFormat formatter = NumberFormatter.get().getFrmt4Total(_parameter.getInstance().getType().getName());
+
+        final Table table = new Table()
+            .setStyle("width:100%;")
+            .addRow()
+                .addHeaderColumn(getLabel("LabelColumn"), 4)
+                .addHeaderColumn(getLabel("AmountColumn"))
+            .addRow()
+                .addColumn(_currencyInst.getName(), "font-weight:bold;font-size: 120%;")
+            .addRow()
+                .addColumn(getLabel("CrossTotal"), "font-weight:bold", 4)
+                .addColumn(getAmount(formatter,
+                        _payInfo.getCrossTotalInCurrency(_parameter, _currencyInst.getInstance()), _currencyInst), "text-align: right;");
+
+        for (final PayPos payPos  : _payInfo.getPayPos()) {
+            table.addRow()
+                .addColumn(payPos.getTypeLabel())
+                .addColumn(payPos.getName())
+                .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate().withLocale(Context.getThreadContext().getLocale())));
+
+            if (!payPos.getCurrencyInstance().equals(_currencyInst.getInstance())) {
+                // add the payment in its currency of origin
+                table
+                    .addColumn(getAmount(formatter, payPos.getAmount(), payPos.getCurrencyInstance()), "text-align: right;");
+                // add the payment in the target currency
+                table.addColumn(getAmount(formatter, payPos.getAmountInCurrency(_parameter, _currencyInst.getInstance(), _perPayment),
+                                _currencyInst), "text-align: right;");
+            } else {
+                table.getCurrentColumn().setColSpan(2)
+                    .getCurrentTable()
+                    .addColumn(getAmount(formatter, payPos.getAmount(),_currencyInst), "text-align: right;");
+            }
+        }
+        table
+            .addRow()
+                .addColumn(getLabel("Paid"), "font-weight:bold", 4)
+                .addColumn(getAmount(formatter, _payInfo.getPaidInCurrency(_currencyInst.getInstance(), _perPayment), _currencyInst),
+                                "text-align: right;")
+            .addRow()
+                .addColumn(getLabel("Balance"), "font-weight:bold;text-align:right", 4)
+                .addColumn(getAmount(formatter, _payInfo.getBalanceInCurrency(_currencyInst.getInstance(), _perPayment), _currencyInst),
+                                "text-align: right;");
+        return table.toHtml();
+    }
+
+    private static String getLabel(final String _key)
+    {
+        return DBProperties.getProperty(DocPaymentInfo.class.getName() +  "." + _key);
+    }
+
+    private static String getAmount(final DecimalFormat _formatter,
+                                    final BigDecimal _amount,
+                                    final Instance _currencyInstance)
+        throws EFapsException
+    {
+        return getAmount(_formatter, _amount, CurrencyInst.get(_currencyInstance));
+    }
+
+    private static String getAmount(final DecimalFormat _formatter,
+                                    final BigDecimal _amount,
+                                    final CurrencyInst _currencyInst)
+        throws EFapsException
+    {
+        return _formatter.format(_amount) + " " + _currencyInst.getSymbol();
     }
 
     /**
@@ -1365,7 +1524,7 @@ public abstract class DocPaymentInfo_Base
         private final BigDecimal amount;
 
         /**
-         * instance of the Currency.
+         * Instance of the Currency the amount is in
          */
         private final Instance currencyInstance;
 
@@ -1412,6 +1571,34 @@ public abstract class DocPaymentInfo_Base
         public BigDecimal getAmount()
         {
             return amount;
+        }
+
+        /**
+         * Get the amount converted into the the given target currency.
+         * PerPayment true means use the rate registered in the payment
+         * else uses the registered exchange rate.
+         * @param _parameter Parameter
+         * @param _targetCurrency currency to convert into
+         * @return converted crossTotal
+         * @throws EFapsException on error
+         */
+        public BigDecimal getAmountInCurrency(final Parameter _parameter,
+                                              final Instance _targetCurrency,
+                                              final boolean _perPayment)
+              throws EFapsException
+        {
+            BigDecimal ret;
+            if (_perPayment && getRateInfo().getCurrencyInstance().equals(_targetCurrency)) {
+                ret = getAmount().multiply(getRateInfo().getRate());
+            } else if (_perPayment && getRateInfo().getTargetCurrencyInstance().equals(_targetCurrency)) {
+                ret = getAmount();
+            } else if (getCurrencyInstance().equals(_targetCurrency)) {
+                ret = getAmount();
+            }  else {
+                    ret = Currency.convert(_parameter, getAmount(), getCurrencyInstance(), _targetCurrency, "WHAT_SHOULD_I_USED",
+                                    LocalDate.of(getDate().getYear(), getDate().getMonthOfYear(), getDate().getDayOfMonth()));
+            }
+            return ret;
         }
 
         /**
@@ -1474,6 +1661,7 @@ public abstract class DocPaymentInfo_Base
          * @return value of instance variable {@link #amount}
          * @throws EFapsException on error
          */
+        @Deprecated
         public BigDecimal getAmount4Currency(final Parameter _parameter,
                                              final Instance _currency)
             throws EFapsException
@@ -1484,12 +1672,13 @@ public abstract class DocPaymentInfo_Base
         }
 
         /**
-         * Gets the rate amount.
+         * Gets the rate amount. (uses the exchange rate registered in the payment itself)
          *
          * @param _parameter Parameter as passed by the eFaps API
          * @return the rate amount
          * @throws EFapsException on error
          */
+        @Deprecated
         public BigDecimal getRateAmount(final Parameter _parameter)
             throws EFapsException
         {
