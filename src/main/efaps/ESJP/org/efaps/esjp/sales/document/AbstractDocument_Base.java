@@ -2162,6 +2162,10 @@ public abstract class AbstractDocument_Base
         if (!props.containsKey("Select")) {
             props.put("Select", "attribute[Name]");
         }
+        if (!props.containsKey("StatusGroup") && !props.containsKey("StatusGroup01")) {
+            props.put("StatusGroup", CIERP.CurrencyStatus.getType().getName());
+            props.put("Status", CIERP.CurrencyStatus.Active.key);
+        }
 
         final Instance currInst = evaluateCurrency4JavaScript(_parameter);
 
