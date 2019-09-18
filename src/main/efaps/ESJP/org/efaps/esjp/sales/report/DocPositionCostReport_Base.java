@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
@@ -62,7 +62,12 @@ import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.FilteredReport_Base.CurrencyFilterValue;
+import org.efaps.esjp.erp.FilteredReport_Base.EnumFilterValue;
+import org.efaps.esjp.erp.FilteredReport_Base.InstanceFilterValue;
+import org.efaps.esjp.erp.FilteredReport_Base.TypeFilterValue;
 import org.efaps.esjp.products.Cost;
+import org.efaps.esjp.sales.report.DocPositionCostReport_Base.DynDocPositionCostReport;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.report.DocPositionReport_Base.ContactGroup;
 import org.efaps.esjp.sales.report.filter.CostTypeFilterValue;
@@ -174,7 +179,7 @@ public abstract class DocPositionCostReport_Base
     protected ValueList getData(final Parameter _parameter)
         throws EFapsException
     {
-        if (this.valueList == null) {
+        if (valueList == null) {
             final DocPositionGroupedByDate ds = new DocPositionGroupedByDate()
             {
                 @Override
@@ -218,13 +223,13 @@ public abstract class DocPositionCostReport_Base
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
 
-            this.valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
+            valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
 
             final ContactGroup contactGroup = evaluateContactGroup(_parameter);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
                             || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
-                for (final Map<String, Object> value  : this.valueList) {
+                for (final Map<String, Object> value  : valueList) {
                     final Instance prodInst = (Instance) value.get("productInst");
                     final CachedPrintQuery print = CachedPrintQuery.get4Request(prodInst);
                     final SelectBuilder selContactName = ContactGroup.PRODPRODUCER.equals(contactGroup)
@@ -259,7 +264,7 @@ public abstract class DocPositionCostReport_Base
             if (InstanceUtils.isNotValid(filterCurrency)) {
                 filterCurrency = Currency.getBaseCurrency();
             }
-            for (final Map<String, Object> value : this.valueList) {
+            for (final Map<String, Object> value : valueList) {
                 final DateTime docDate = (DateTime) value.get("docDate");
                 final Instance prodInst = (Instance) value.get("productInst");
                 final BigDecimal quantity = (BigDecimal) value.get("quantity");
@@ -272,7 +277,7 @@ public abstract class DocPositionCostReport_Base
                 value.put("cost", quantity == null ? BigDecimal.ZERO : cost.multiply(quantity));
             }
         }
-        return this.valueList;
+        return valueList;
     }
 
     @Override
@@ -401,7 +406,7 @@ public abstract class DocPositionCostReport_Base
          */
         public DynDocPositionCostReport(final DocPositionCostReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -422,7 +427,7 @@ public abstract class DocPositionCostReport_Base
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
                 final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
 
-                final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
+                final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
                     chain.addComparator(new Comparator<Map<String, Object>>()
                     {
@@ -582,7 +587,7 @@ public abstract class DocPositionCostReport_Base
                     }
                 }
             }
-            final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
+            final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
             if (!ContactGroup.NONE.equals(contactGrp)) {
                 final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
                                 String.class).setHeaderWidth(150);
@@ -706,7 +711,7 @@ public abstract class DocPositionCostReport_Base
          */
         public DocPositionCostReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 }

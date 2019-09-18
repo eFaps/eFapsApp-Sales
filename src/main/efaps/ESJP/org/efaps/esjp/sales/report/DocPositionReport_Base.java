@@ -23,7 +23,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +33,23 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabVariableBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
@@ -65,22 +80,6 @@ import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabVariableBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -180,7 +179,7 @@ public abstract class DocPositionReport_Base
     protected ValueList getData(final Parameter _parameter)
         throws EFapsException
     {
-        if (this.valueList == null) {
+        if (valueList == null) {
             final DocPositionGroupedByDate ds = new DocPositionGroupedByDate()
             {
                 @Override
@@ -223,7 +222,7 @@ public abstract class DocPositionReport_Base
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
 
-            this.valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
+            valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
 
             if (BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
@@ -232,7 +231,7 @@ public abstract class DocPositionReport_Base
                 while (!finisched && counter < 5) {
                     finisched = true;
                     final List<Map<String, Object>> tmpList = new ArrayList<>();
-                    for (final Map<String, Object> value  : this.valueList) {
+                    for (final Map<String, Object> value  : valueList) {
                         final Instance prodInst = (Instance) value.get("productInst");
                         final BigDecimal quantity = (BigDecimal) value.get("quantity");
                         final UoM uom  = (UoM) value.get("uoM");
@@ -257,14 +256,14 @@ public abstract class DocPositionReport_Base
                         }
                     }
                     counter++;
-                    this.valueList.clear();
-                    this.valueList.addAll(tmpList);
+                    valueList.clear();
+                    valueList.addAll(tmpList);
                 }
             }
             final ContactGroup contactGroup = evaluateContactGroup(_parameter);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
                             || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
-                for (final Map<String, Object> value  : this.valueList) {
+                for (final Map<String, Object> value  : valueList) {
                     final Instance prodInst = (Instance) value.get("productInst");
                     final CachedPrintQuery print = CachedPrintQuery.get4Request(prodInst);
                     final SelectBuilder selContactName = ContactGroup.PRODPRODUCER.equals(contactGroup)
@@ -278,7 +277,7 @@ public abstract class DocPositionReport_Base
                 }
             }
         }
-        return this.valueList;
+        return valueList;
     }
 
     @Override
@@ -421,7 +420,7 @@ public abstract class DocPositionReport_Base
          */
         public DynDocPositionReport(final DocPositionReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -441,63 +440,24 @@ public abstract class DocPositionReport_Base
                 final ValueList values = getFilteredReport().getData(_parameter);
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
 
-                final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
+                final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
-                    chain.addComparator(new Comparator<Map<String, Object>>()
-                    {
-
-                        @Override
-                        public int compare(final Map<String, Object> _o1,
-                                           final Map<String, Object> _o2)
-                        {
-                            return String.valueOf(_o1.get("contact")).compareTo(String.valueOf(_o2.get("contact")));
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> String.valueOf(_o1.get("contact")).compareTo(String.valueOf(_o2.get("contact"))));
                 }
                 final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
                 if (BooleanUtils.isTrue((Boolean) filterMap.get("typeGroup"))) {
-                    chain.addComparator(new Comparator<Map<String, Object>>()
-                    {
-
-                        @Override
-                        public int compare(final Map<String, Object> _o1,
-                                           final Map<String, Object> _o2)
-                        {
-                            return String.valueOf(_o1.get("type")).compareTo(String.valueOf(_o2.get("type")));
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> String.valueOf(_o1.get("type")).compareTo(String.valueOf(_o2.get("type"))));
                 }
                 if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
-                    chain.addComparator(new Comparator<Map<String, Object>>()
-                    {
-                        @Override
-                        public int compare(final Map<String, Object> _o1,
-                                           final Map<String, Object> _o2)
-                        {
-                            return String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName")));
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName"))));
                 }
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        return String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName")));
-                    }
-                });
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        return String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial")));
-                    }
-                });
+                chain.addComparator((_o1,
+                 _o2) -> String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName"))));
+                chain.addComparator((_o1,
+                 _o2) -> String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial"))));
 
                 Collections.sort(values, chain);
 
@@ -578,7 +538,7 @@ public abstract class DocPositionReport_Base
                     }
                 }
             }
-            final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
+            final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
             if (!ContactGroup.NONE.equals(contactGrp)) {
                 final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
                                 String.class).setHeaderWidth(150);
@@ -599,7 +559,7 @@ public abstract class DocPositionReport_Base
             }
 
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(
-                            this.filteredReport.getDBProperty("quantity"),
+                            filteredReport.getDBProperty("quantity"),
                             "quantity", BigDecimal.class, Calculation.SUM);
             measureGrpBldrs.add(quantityMeasure);
 
@@ -612,17 +572,17 @@ public abstract class DocPositionReport_Base
                                         currency.getISOCode(), BigDecimal.class, Calculation.SUM);
                             measureGrpBldrs.add(amountMeasure);
                             addUnitPrice(_parameter, currency.getSymbol()
-                                            + " " + this.filteredReport.getDBProperty("unitPriceLabel"),
+                                            + " " + filteredReport.getDBProperty("unitPriceLabel"),
                                             currency.getISOCode(),
                                             variableGrpBldrs, measureGrpBldrs);
                         }
                     }
-                    final String title = this.filteredReport.getDBProperty("BASE") + " "
+                    final String title = filteredReport.getDBProperty("BASE") + " "
                                     + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol();
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(title,
                                     "BASE", BigDecimal.class, Calculation.SUM);
                     measureGrpBldrs.add(amountMeasure);
-                    addUnitPrice(_parameter, title + " " + this.filteredReport.getDBProperty("unitPriceLabel"),
+                    addUnitPrice(_parameter, title + " " + filteredReport.getDBProperty("unitPriceLabel"),
                                     "BASE", variableGrpBldrs, measureGrpBldrs);
                 } else {
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
@@ -630,7 +590,7 @@ public abstract class DocPositionReport_Base
                                     selected.getISOCode(), BigDecimal.class, Calculation.SUM);
                     measureGrpBldrs.add(amountMeasure);
                     addUnitPrice(_parameter, selected.getSymbol() + " "
-                                    + this.filteredReport.getDBProperty("unitPriceLabel"),
+                                    + filteredReport.getDBProperty("unitPriceLabel"),
                                     selected.getISOCode(), variableGrpBldrs, measureGrpBldrs);
                 }
             }
@@ -725,7 +685,7 @@ public abstract class DocPositionReport_Base
          */
         public DocPositionReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 
@@ -751,14 +711,14 @@ public abstract class DocPositionReport_Base
          */
         public UnitPriceExpression(final String _amountField)
         {
-            this.amountField = _amountField;
+            amountField = _amountField;
         }
 
         @Override
         public BigDecimal evaluate(final ReportParameters _reportParameters)
         {
             final BigDecimal quantity = _reportParameters.getValue("quantity");
-            final BigDecimal amount = _reportParameters.getValue(this.amountField);
+            final BigDecimal amount = _reportParameters.getValue(amountField);
             return amount.divide(quantity, 2, RoundingMode.HALF_UP);
         }
     }
@@ -784,13 +744,13 @@ public abstract class DocPositionReport_Base
          */
         public UnitPriceMessuredExpression(final CrosstabVariableBuilder<BigDecimal> _unitPriceVariable)
         {
-            this.unitPriceVariable = _unitPriceVariable;
+            unitPriceVariable = _unitPriceVariable;
         }
 
         @Override
         public BigDecimal evaluate(final ReportParameters _reportParameters)
         {
-            return _reportParameters.getValue(this.unitPriceVariable);
+            return _reportParameters.getValue(unitPriceVariable);
         }
 
     }

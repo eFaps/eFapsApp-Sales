@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,20 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.collections.comparators.ComparatorChain;
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
+import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -46,15 +54,6 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * TODO comment!
@@ -141,10 +140,9 @@ public abstract class RateValidationReport_Base
          */
         public DynRateValidationReport(final RateValidationReport_Base _rateValidationReport)
         {
-            this.filteredReport = _rateValidationReport;
+            filteredReport = _rateValidationReport;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
@@ -198,29 +196,11 @@ public abstract class RateValidationReport_Base
                         }
                     }
                 }
-                final ComparatorChain chain = new ComparatorChain();
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-
-                        return _o1.getDocDate().compareTo(_o2.getDocDate());
-                    }
-                });
-                chain.addComparator(new Comparator<DataBean>()
-                {
-
-                    @Override
-                    public int compare(final DataBean _o1,
-                                       final DataBean _o2)
-                    {
-
-                        return _o1.getDocName().compareTo(_o2.getDocName());
-                    }
-                });
+                final ComparatorChain<DataBean> chain = new ComparatorChain<>();
+                chain.addComparator((_o1,
+                 _o2) -> _o1.getDocDate().compareTo(_o2.getDocDate()));
+                chain.addComparator((_o1,
+                 _o2) -> _o1.getDocName().compareTo(_o2.getDocName()));
                 Collections.sort(values, chain);
                 ret = new JRBeanCollectionDataSource(values);
                 getFilteredReport().cache(_parameter, ret);
@@ -237,7 +217,7 @@ public abstract class RateValidationReport_Base
                                      final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             final DateTime dateFrom;
             if (filter.containsKey("dateFrom")) {
                 dateFrom = (DateTime) filter.get("dateFrom");
@@ -295,7 +275,7 @@ public abstract class RateValidationReport_Base
          */
         protected RateValidationReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
 
         /**
@@ -306,7 +286,7 @@ public abstract class RateValidationReport_Base
          */
         protected void setFilteredReport(final RateValidationReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
         /**
@@ -352,7 +332,7 @@ public abstract class RateValidationReport_Base
          */
         public String getDocName()
         {
-            return this.docName;
+            return docName;
         }
 
         /**
@@ -363,7 +343,7 @@ public abstract class RateValidationReport_Base
          */
         public DataBean setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             return this;
         }
 
@@ -374,7 +354,7 @@ public abstract class RateValidationReport_Base
          */
         public BigDecimal getCurrentRate()
         {
-            return this.currentRate;
+            return currentRate;
         }
 
         /**
@@ -385,7 +365,7 @@ public abstract class RateValidationReport_Base
          */
         public DataBean setCurrentRate(final BigDecimal _currentRate)
         {
-            this.currentRate = _currentRate;
+            currentRate = _currentRate;
             return this;
         }
 
@@ -396,7 +376,7 @@ public abstract class RateValidationReport_Base
          */
         public BigDecimal getRegisteredRate()
         {
-            return this.registeredRate;
+            return registeredRate;
         }
 
         /**
@@ -408,7 +388,7 @@ public abstract class RateValidationReport_Base
          */
         public DataBean setRegisteredRate(final BigDecimal _registeredRate)
         {
-            this.registeredRate = _registeredRate;
+            registeredRate = _registeredRate;
             return this;
         }
 
@@ -420,7 +400,7 @@ public abstract class RateValidationReport_Base
          */
         public String getDocType()
         {
-            return this.docType;
+            return docType;
         }
 
 
@@ -432,7 +412,7 @@ public abstract class RateValidationReport_Base
          */
         public DataBean setDocType(final String _docType)
         {
-            this.docType = _docType;
+            docType = _docType;
             return this;
         }
 
@@ -443,7 +423,7 @@ public abstract class RateValidationReport_Base
          */
         public DateTime getDocDate()
         {
-            return this.docdate;
+            return docdate;
         }
 
         /**
@@ -454,7 +434,7 @@ public abstract class RateValidationReport_Base
          */
         public DataBean setDocDate(final DateTime _docdate)
         {
-            this.docdate = _docdate;
+            docdate = _docdate;
             return this;
         }
 
@@ -465,7 +445,7 @@ public abstract class RateValidationReport_Base
          */
         public String getDocOID()
         {
-            return this.docOID;
+            return docOID;
         }
 
         /**
@@ -476,7 +456,7 @@ public abstract class RateValidationReport_Base
          */
         public DataBean setDocOID(final String _docOID)
         {
-            this.docOID = _docOID;
+            docOID = _docOID;
             return this;
         }
     }
