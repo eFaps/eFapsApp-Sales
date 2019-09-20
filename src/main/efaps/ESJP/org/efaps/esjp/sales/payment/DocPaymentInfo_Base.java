@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -65,8 +64,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("1f2a247a-717a-4285-a43a-d41e47200b0c")
@@ -252,56 +249,15 @@ public abstract class DocPaymentInfo_Base
         return ret;
     }
 
-    /**
-     * @return the cross total in the currency of the account
-     * @throws EFapsException on error
-     */
-    public BigDecimal getCrossTotal4Target()
-        throws EFapsException
-    {
-        initialize();
-        BigDecimal ret = BigDecimal.ZERO;
-        if (getTargetInfo().getCurrencyInstance().equals(getRateCurrencyInstance())) {
-            ret = ret.add(getRateCrossTotal());
-        } else {
-            final BigDecimal rate = RateInfo.getRate(getParameter(), getRateInfo4Target(),
-                            instance.getType().getName());
-            ret = ret.add(getRateCrossTotal().divide(rate, BigDecimal.ROUND_HALF_UP));
-        }
-        return ret;
-    }
-
-    /**
-     * @return the paid amount in the account currency
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    public BigDecimal getPaid4Target()
-        throws EFapsException
-    {
-        initialize();
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : payPos) {
-            // the currency of the PaymentDocument is the same as the ratcurrency
-            if (getTargetInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
-                ret = ret.add(pos.getAmount());
-            } else {
-                final BigDecimal rate = RateInfo.getRate(getParameter(), getRateInfo4Target(),
-                                instance.getType().getName());
-                ret = ret.add(pos.getAmount().divide(rate, BigDecimal.ROUND_HALF_UP));
-            }
-        }
-        return ret;
-    }
-
     public BigDecimal getPaidInCurrency(final Instance _targetCurrency,
-                                        final boolean _perPayment)
+                                        final Boolean _perPayment)
         throws EFapsException
     {
         initialize();
+        final boolean perPayment = _perPayment == null ? isPerPayment() : _perPayment;
         BigDecimal ret = BigDecimal.ZERO;
         for (final PayPos pos : getPayPos()) {
-            ret = ret.add(pos.getAmountInCurrency(getParameter(), _targetCurrency, _perPayment));
+            ret = ret.add(pos.getAmountInCurrency(getParameter(), _targetCurrency, perPayment));
         }
         return ret;
     }
@@ -330,23 +286,6 @@ public abstract class DocPaymentInfo_Base
     public void setRateInfo4Target(final RateInfo _rateInfo4Account)
     {
         rateInfo4Target = _rateInfo4Account;
-    }
-
-    /**
-     * Gets the balance.
-     *
-     * @return the balance
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    public BigDecimal getBalance4Target()
-        throws EFapsException
-    {
-        BigDecimal total = getCrossTotal4Target();
-        if (isObligationDoc()) {
-            total = total.negate();
-        }
-        return total.subtract(getPaid4Target());
     }
 
     /**
@@ -429,107 +368,12 @@ public abstract class DocPaymentInfo_Base
         } catch (final ParseException e) {
             throw new EFapsException("catched ParseException", e);
         }
-        return getBalance(null).abs().compareTo(threshold) <= 0
-                        || getRateBalance(null).abs().compareTo(threshold) <= 0;
-    }
-
-    /**
-     * Gets the paid.
-     *
-     * @param _perPayment the perpayment, if null the configured default is used
-     * @return the paid amount in the base currency of the document.
-     * @throws EFapsException on error
-     */
-    public BigDecimal getPaid(final Boolean _perPayment)
-        throws EFapsException
-    {
-        initialize();
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : payPos) {
-            // the currency of the PaymentDocument is the same as the base
-            // currency
-            if (getCurrencyInstance().equals(pos.getCurrencyInstance())) {
-                ret = ret.add(pos.getAmount());
-            } else {
-                final boolean pp = _perPayment == null ? isPerPayment() : _perPayment;
-                if (pp) {
-                    ret = ret.add(pos.getRateAmount(getParameter()));
-                } else {
-                    ret = ret.add(pos.getAmount4Currency(getParameter(), getCurrencyInstance()));
-                }
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * Gets the rate paid.
-     *
-     * @param _perPayment the per payment, if null the configured default is used
-     * @return the paid amount in the rate currency of the document.
-     * @throws EFapsException on error
-     */
-    public BigDecimal getRatePaid(final Boolean _perPayment)
-        throws EFapsException
-    {
-        initialize();
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : payPos) {
-            // the currency of the PaymentDocument is the same as the ratcurrency
-            if (getRateCurrencyInstance().equals(pos.getCurrencyInstance())) {
-                ret = ret.add(pos.getAmount());
-            } else {
-                final boolean pp = _perPayment == null ? isPerPayment() : _perPayment;
-                if (pp) {
-                    ret = ret.add(pos.getRateAmount(getParameter()));
-                } else {
-                    if (Currency.getBaseCurrency().equals(getCurrencyInstance())) {
-                        ret = ret.add(pos.getAmount4Currency(getParameter(), getRateCurrencyInstance()));
-                    } else {
-                        ret = ret.add(pos.getAmount4Currency(getParameter(), getCurrencyInstance()));
-                    }
-                }
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * Gets the balance.
-     *
-     * @param _perPayment the per payment,  if null the configured default is used
-     * @return the balance
-     * @throws EFapsException on error
-     */
-    public BigDecimal getBalance(final Boolean _perPayment)
-        throws EFapsException
-    {
-        BigDecimal total = getCrossTotal();
-        if (isObligationDoc()) {
-            total = total.negate();
-        }
-        return total.subtract(getPaid(_perPayment));
-    }
-
-    /**
-     * Gets the rate balance.
-     *
-     * @param _perPayment the per payment, if null the configured default is used
-     * @return the rate balance
-     * @throws EFapsException on error
-     */
-    public BigDecimal getRateBalance(final Boolean _perPayment)
-        throws EFapsException
-    {
-        BigDecimal total = getRateCrossTotal();
-        if (isObligationDoc()) {
-            total = total.negate();
-        }
-        return total.subtract(getRatePaid(_perPayment));
+        return getBalanceInCurrency(getCurrencyInstance(), isPerPayment()).abs().compareTo(threshold) <= 0
+                        || getBalanceInCurrency(getRateCurrencyInstance(), isPerPayment()).abs().compareTo(threshold) <= 0;
     }
 
     public BigDecimal getBalanceInCurrency(final Instance _targetCurrency,
-                                           final boolean _perPayment)
+                                           final Boolean _perPayment)
         throws EFapsException
     {
         BigDecimal total = getCrossTotalInCurrency(getParameter(), _targetCurrency);
@@ -639,8 +483,8 @@ public abstract class DocPaymentInfo_Base
     {
         final List<Object> objects = new ArrayList<>();
         objects.add(getRateCrossTotal());
-        objects.add(getRatePaid(false).abs());
-        objects.add(getRateBalance(null).abs());
+        objects.add(getPaidInCurrency(getRateCurrencyInstance(), false).abs());
+        objects.add(getBalanceInCurrency(getRateCurrencyInstance(), isPerPayment()).abs());
         objects.add(BigDecimal.ZERO);
         final CurrencyInst currInst = CurrencyInst.get(getRateCurrencyInstance());
         objects.add(currInst.getSymbol());
@@ -654,8 +498,8 @@ public abstract class DocPaymentInfo_Base
             key = ".InfoField";
         } else {
             key = ".InfoField4Account";
-            objects.add(getCrossTotal4Target());
-            objects.add(getPaid4Target().abs());
+            objects.add(getCrossTotalInCurrency(getParameter(), getTargetInfo().getCurrencyInstance()));
+            objects.add(getPaidInCurrency(getTargetInfo().getCurrencyInstance(), true).abs());
             objects.add(BigDecimal.ZERO);
             objects.add(BigDecimal.ZERO);
             objects.add(getTargetInfo().getCurrencyInst().getSymbol());
@@ -1245,145 +1089,8 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        final DocPaymentInfo payInfo = new DocPaymentInfo(_docInst)
-                        .setTargetDocInst(_docInst);
+        final DocPaymentInfo payInfo = new DocPaymentInfo(_docInst).setTargetDocInst(_docInst);
 
-        final DecimalFormat formatter = NumberFormatter.get().getFrmt4Total(
-                        _parameter.getInstance().getType().getName());
-
-        final Set<Instance> currencies = new LinkedHashSet<>();
-        if (!payInfo.getRateCurrencyInstance().equals(Currency.getBaseCurrency())) {
-            currencies.add(payInfo.getRateCurrencyInstance());
-        }
-
-        for (int i = 0; i < 2; i++) {
-            final Table table = new Table()
-                .setStyle("min-width: 350px;")
-                .addRow()
-                    .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".LabelColumn"), 5)
-                    .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".AmountColumn"))
-                    .addHeaderColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CurrencyColumn"))
-                .addRow()
-                    .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getName(),
-                                    "font-weight:bold;font-size: 120%;")
-                .addRow()
-                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"),
-                                    "font-weight:bold", 5)
-                    .addColumn(formatter.format(payInfo.getCrossTotal()), "text-align: right;")
-                    .addColumn(CurrencyInst.get(payInfo.getCurrencyInstance()).getSymbol());
-
-            for (final PayPos payPos  : payInfo.getPayPos()) {
-                table.addRow()
-                    .addColumn(payPos.getTypeLabel())
-                    .addColumn(payPos.getName())
-                    .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate().withLocale(
-                                    Context.getThreadContext().getLocale())));
-                if (!payPos.getCurrencyInstance().equals(Currency.getBaseCurrency())) {
-                    if (!currencies .contains(payPos.getCurrencyInstance())
-                                    && !Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
-                        currencies.add(payPos.getCurrencyInstance());
-                    }
-                    table.addColumn(formatter.format(payPos.getAmount()))
-                        .addColumn(CurrencyInst.get(payPos.getCurrencyInstance()).getSymbol())
-                        .addColumn(formatter.format(i > 0
-                                        ? payPos.getAmount4Currency(_parameter, Currency.getBaseCurrency())
-                                        : payPos.getRateAmount(_parameter)), "text-align: right;")
-                        .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
-                } else {
-                    table.getCurrentColumn().setColSpan(3)
-                        .getCurrentTable()
-                        .addColumn(formatter.format(payPos.getAmount()), "text-align: right;")
-                        .addColumn(CurrencyInst.get(payPos.getCurrencyInstance()).getSymbol());
-                }
-            }
-
-            table
-                .addRow()
-                    .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Paid"),
-                                    "font-weight:bold", 5)
-                    .addColumn(formatter.format(payInfo.getPaid(i < 1)), "text-align: right;")
-                    .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol())
-                .addRow()
-                        .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"),
-                                        "font-weight:bold;text-align:right", 5)
-                        .addColumn(formatter.format(payInfo.getBalance(i < 1)),
-                                        "text-align: right;")
-                        .addColumn(CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
-
-            for (final Instance currencyInst : currencies) {
-                table
-                    .addRow()
-                        .addColumn("&nbsp;")
-                    .addRow()
-                        .addColumn(CurrencyInst.get(currencyInst).getName(), "font-weight:bold;font-size: 120%;")
-                    .addRow()
-                        .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".CrossTotal"),
-                                        "font-weight:bold", 5)
-                        .addColumn(formatter.format(payInfo.getRateCrossTotal()), "text-align: right;")
-                        .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol());
-                for (final PayPos payPos : payInfo.getPayPos()) {
-                    table.addRow()
-                        .addColumn(payPos.getTypeLabel())
-                        .addColumn(payPos.getName())
-                        .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate().withLocale(
-                                    Context.getThreadContext().getLocale())));
-                    if (!payPos.getCurrencyInstance().equals(currencyInst)) {
-                        if (!currencies .contains(payPos.getCurrencyInstance())
-                                        && !Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
-                            currencies.add(payPos.getCurrencyInstance());
-                        }
-                        final BigDecimal rateAmount;
-                        if (i > 0) {
-                            if (Currency.getBaseCurrency().equals(payPos.getCurrencyInstance())) {
-                                rateAmount = payPos.getAmount4Currency(_parameter, payInfo.getRateCurrencyInstance());
-                            } else {
-                                rateAmount = payPos.getAmount4Currency(_parameter, Currency.getBaseCurrency());
-                            }
-                        } else {
-                            // in case that the payment position is base currency alter the currency rate info
-                            rateAmount = payPos.getRateAmount(_parameter);
-                        }
-
-                        table.addColumn(formatter.format(payPos.getAmount()), "text-align: right;")
-                            .addColumn(CurrencyInst.get(payPos.getCurrencyInstance()).getSymbol())
-                            .addColumn(formatter.format(rateAmount), "text-align: right;")
-                            .addColumn(CurrencyInst.get(currencyInst).getSymbol());
-                    } else {
-                        table.getCurrentColumn().setColSpan(3)
-                            .getCurrentTable()
-                            .addColumn(formatter.format(payPos.getAmount()), "text-align: right;")
-                            .addColumn(CurrencyInst.get(currencyInst).getSymbol());
-                    }
-                }
-                table.addRow()
-                        .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Paid"),
-                                        "font-weight:bold", 5)
-                        .addColumn(formatter.format(payInfo.getRatePaid(i < 1)), "text-align: right;")
-                        .addColumn(CurrencyInst.get(payInfo.getRateCurrencyInstance()).getSymbol())
-                    .addRow()
-                        .addColumn(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".Balance"),
-                                        "font-weight:bold;text-align:right", 5)
-                        .addColumn(formatter.format(payInfo.getRateBalance(i < 1)),
-                                        "text-align: right;")
-                        .addColumn(CurrencyInst.get(currencyInst).getSymbol());
-            }
-            ret.append("<div style=\"float: left; margin: 20px;\">");
-            if (!currencies.isEmpty()) {
-                if (i < 1) {
-                    ret.append("<h3>").append(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".PerPayment"))
-                        .append("</h3>");
-                } else {
-                    ret.append("<h3>").append(DBProperties.getProperty(DocPaymentInfo.class.getName() +  ".PerDoc"))
-                        .append("</h3>");
-                }
-            }
-            ret.append(table.toHtml()).append("</div>");
-            if (currencies.isEmpty()) {
-                break;
-            }
-        }
-
-        // new version
         final Instance baseCurrencyInstance = Currency.getBaseCurrency();
         final List<Instance> currencyInstances = (List<Instance>) Currency.getAvailable();
         currencyInstances.remove(baseCurrencyInstance);
@@ -1400,7 +1107,7 @@ public abstract class DocPaymentInfo_Base
 
         ret.append("<div style=\"display:flex;flex-wrap:wrap;\">");
 
-        ret.append("<div>")
+        ret.append("<div style=\"margin:10px;\">")
             .append("<h3>").append(getLabel("PerPayment")).append("</h3>");
         for (final Instance currencyInstance : currencyInstances) {
             ret.append(getTable(_parameter, payInfo, CurrencyInst.get(currencyInstance), true));
@@ -1653,44 +1360,6 @@ public abstract class DocPaymentInfo_Base
         {
             name = _name;
             return this;
-        }
-
-        /**
-         * @param _parameter Parameter as passed by the eFaps API
-         * @param _currency the currency
-         * @return value of instance variable {@link #amount}
-         * @throws EFapsException on error
-         */
-        @Deprecated
-        public BigDecimal getAmount4Currency(final Parameter _parameter,
-                                             final Instance _currency)
-            throws EFapsException
-        {
-            final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, getDate(), getCurrencyInstance(),
-                            _currency);
-            return getAmount().divide(rateInfos[2].getRate(), BigDecimal.ROUND_HALF_UP);
-        }
-
-        /**
-         * Gets the rate amount. (uses the exchange rate registered in the payment itself)
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return the rate amount
-         * @throws EFapsException on error
-         */
-        @Deprecated
-        public BigDecimal getRateAmount(final Parameter _parameter)
-            throws EFapsException
-        {
-            final BigDecimal ret;
-            if (Currency.getBaseCurrency().equals(getCurrencyInstance())) {
-                ret = getAmount().divide(getRateInfo().isInvert() ? getRateInfo().getRateUI()
-                                : getRateInfo().getRate(), BigDecimal.ROUND_HALF_UP);
-            } else {
-                ret = getAmount().multiply(getRateInfo().isInvert() ? getRateInfo().getRateUI()
-                                : getRateInfo().getRate());
-            }
-            return ret;
         }
 
         /**

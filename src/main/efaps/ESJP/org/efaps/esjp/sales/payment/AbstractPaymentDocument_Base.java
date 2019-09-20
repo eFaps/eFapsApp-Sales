@@ -118,8 +118,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("c7281e33-540f-4db1-bcc6-38e89528883f")
@@ -659,23 +657,13 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         final Map<String, Object> ret = new HashMap<>();
-
         final DecimalFormat frmt = _docInfo.getFormatter();
-        final BigDecimal total4Doc;
-        final BigDecimal payments4Doc;
-        BigDecimal amount4PayDoc = BigDecimal.ZERO;
-        if (_docInfo.getRateCurrencyInstance().equals(_docInfo.getTargetInfo().getCurrencyInstance())) {
-            total4Doc = _docInfo.getRateCrossTotal();
-            final Properties props = Sales.PAYMENT_RULES.get();
-            final boolean pp = BooleanUtils.toBoolean(
-                            props.getProperty(_docInfo.getInstance().getType().getName() + ".PerPayment"));
-            payments4Doc = _docInfo.getRatePaid(pp).abs();
-            amount4PayDoc = _docInfo.getRateBalance(pp).abs();
-        } else {
-            total4Doc = _docInfo.getCrossTotal4Target();
-            payments4Doc = _docInfo.getPaid4Target().abs();
-            amount4PayDoc = _docInfo.getBalance4Target().abs();
-        }
+        final Properties props = Sales.PAYMENT_RULES.get();
+        final boolean pp = BooleanUtils.toBoolean(
+                        props.getProperty(_docInfo.getInstance().getType().getName() + ".PerPayment"));
+        final BigDecimal total4Doc = _docInfo.getCrossTotalInCurrency(_parameter, _docInfo.getTargetInfo().getCurrencyInstance());
+        final BigDecimal payments4Doc = _docInfo.getPaidInCurrency(_docInfo.getTargetInfo().getCurrencyInstance(), pp).abs();
+        BigDecimal amount4PayDoc = _docInfo.getBalanceInCurrency(_docInfo.getTargetInfo().getCurrencyInstance(), pp).abs();
 
         final BigDecimal paymentDiscount;
         final BigDecimal paymentAmountDesc;

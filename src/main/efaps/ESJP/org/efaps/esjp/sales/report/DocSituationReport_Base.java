@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,9 +68,7 @@ import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
- * TODO comment!
- *
- * @author The eFaps Team
+  * @author The eFaps Team
  */
 @EFapsUUID("086c53e8-bb2a-4235-b234-8b9c38cadc7c")
 @EFapsApplication("eFapsApp-Sales")
@@ -194,7 +191,7 @@ public abstract class DocSituationReport_Base
                         final DocPaymentInfo info = infos.get(docInstance);
                         final boolean perpay = BooleanUtils.toBoolean(props.getProperty(
                                         docInstance.getType().getName() + ".PaymentPerPayment"));
-                        BigDecimal paid = info.getPaid(perpay);
+                        BigDecimal paid = info.getPaidInCurrency(info.getCurrencyInstance(), perpay);
                         if ("true".equals(props.getProperty(docInstance.getType().getName() + ".Negate"))) {
                             paid = paid.negate();
                         }
@@ -245,7 +242,6 @@ public abstract class DocSituationReport_Base
     {
         return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
     }
-
 
     @Override
     protected Properties getProperties4TypeList(final Parameter _parameter,
@@ -318,15 +314,7 @@ public abstract class DocSituationReport_Base
             } else {
                 final ValueList values = getFilteredReport().getData(_parameter);
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        return 0;
-                    }
-                });
+                chain.addComparator((_o1, _o2) -> 0);
                 Collections.sort(values, chain);
                 ret = new JRMapCollectionDataSource((Collection) values);
                 getFilteredReport().cache(_parameter, ret);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("ba14f903-9522-4a10-b847-db50fdb360a3")
@@ -450,7 +448,7 @@ public abstract class PaymentDetractionOut_Base
             docInfo.setAccountInst(accInstance);
 
             final BigDecimal total4Doc = docInfo.getCrossTotal();
-            final BigDecimal payments4Doc = docInfo.getPaid(false);
+            final BigDecimal payments4Doc = docInfo.getPaidInCurrency(docInfo.getCurrencyInstance(), false);
             final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
 
             map.put("createDocument", docInfo.getInstance().getOid());

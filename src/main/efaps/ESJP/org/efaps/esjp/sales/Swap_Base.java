@@ -373,12 +373,11 @@ public abstract class Swap_Base
                 percentage = (BigDecimal) NumberFormatter.get().getFormatter().parse(perStr);
             } catch (final ParseException e) {
                 Swap_Base.LOG.error("Catched ParseException", e);
-
             }
             final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInst).setTargetDocInst(docInst);
             final DecimalFormat frmt = docInfo.getFormatter();
-            final BigDecimal total4Doc = docInfo.getCrossTotal4Target();
-            final BigDecimal payments4Doc = docInfo.getPaid4Target();
+            final BigDecimal total4Doc = docInfo.getCrossTotalInCurrency(_parameter, docInfo.getRateCurrencyInstance());
+            final BigDecimal payments4Doc = docInfo.getPaidInCurrency(docInfo.getRateCurrencyInstance(), true);
             final BigDecimal partial = total4Doc.subtract(payments4Doc)
                             .multiply(percentage.setScale(8, RoundingMode.HALF_UP)
                                             .divide(new BigDecimal(100), RoundingMode.HALF_UP))
@@ -593,8 +592,8 @@ public abstract class Swap_Base
     {
         final Map<String, Object> ret = new HashMap<>();
         final DecimalFormat frmt = _docInfo.getFormatter();
-        final BigDecimal total4Doc = _docInfo.getCrossTotal4Target();
-        final BigDecimal payments4Doc = _docInfo.getPaid4Target();
+        final BigDecimal total4Doc = _docInfo.getCrossTotalInCurrency(_parameter, _docInfo.getRateCurrencyInstance());
+        final BigDecimal payments4Doc = _docInfo.getPaidInCurrency(_docInfo.getRateCurrencyInstance(), true);
         ret.put("partial", frmt.format(_setFromUI ? total4Doc : total4Doc.subtract(payments4Doc)));
         ret.put("rate", RateInfo.getRateUIFrmt(_parameter, _docInfo.getRateInfo4Target(),
                         _docInfo.getInstance().getType().getName()));
