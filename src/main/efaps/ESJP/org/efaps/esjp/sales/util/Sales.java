@@ -1870,7 +1870,7 @@ public final class Sales
                     .key(Sales.BASE + "PettyCashBalance.Contact4CollectionOrder")
                     .description("Set a Contact for the Collection Order");
 
-    @EFapsSysConfLink
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASHBAL_CONTACT4ORDERCR = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.ActivateContact4OrderCreation")
