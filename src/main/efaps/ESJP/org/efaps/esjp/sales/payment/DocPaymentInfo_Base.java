@@ -483,8 +483,8 @@ public abstract class DocPaymentInfo_Base
     {
         final List<Object> objects = new ArrayList<>();
         objects.add(getRateCrossTotal());
-        objects.add(getPaidInCurrency(getRateCurrencyInstance(), false).abs());
-        objects.add(getBalanceInCurrency(getRateCurrencyInstance(), isPerPayment()).abs());
+        objects.add(getPaidInCurrency(getRateCurrencyInstance(), null).abs());
+        objects.add(getBalanceInCurrency(getRateCurrencyInstance(), null).abs());
         objects.add(BigDecimal.ZERO);
         final CurrencyInst currInst = CurrencyInst.get(getRateCurrencyInstance());
         objects.add(currInst.getSymbol());
@@ -499,7 +499,7 @@ public abstract class DocPaymentInfo_Base
         } else {
             key = ".InfoField4Account";
             objects.add(getCrossTotalInCurrency(getParameter(), getTargetInfo().getCurrencyInstance()));
-            objects.add(getPaidInCurrency(getTargetInfo().getCurrencyInstance(), true).abs());
+            objects.add(getPaidInCurrency(getTargetInfo().getCurrencyInstance(), null).abs());
             objects.add(BigDecimal.ZERO);
             objects.add(BigDecimal.ZERO);
             objects.add(getTargetInfo().getCurrencyInst().getSymbol());
