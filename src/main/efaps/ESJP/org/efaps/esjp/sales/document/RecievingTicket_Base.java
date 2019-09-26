@@ -19,6 +19,7 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -46,6 +48,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.products.Product_Base;
@@ -239,13 +242,25 @@ public abstract class RecievingTicket_Base
     }
 
     @Override
+    protected boolean isUpdateBean4Individual(final Parameter _parameter,
+                                              final AbstractUIPosition _bean)
+    {
+        final List<Instance> docInsts = getInstances4Derived(_parameter);
+        if (!docInsts.isEmpty() && docInsts.get(0).isValid()
+                        && docInsts.get(0).getType().isCIType(CISales.OrderOutbound)) {
+            return false;
+        }
+        return super.isUpdateBean4Individual(_parameter, _bean);
+    }
+
+    @Override
     protected List<AbstractUIPosition> updateBean4Indiviual(final Parameter _parameter,
                                                             final AbstractUIPosition _bean)
         throws EFapsException
     {
         final List<AbstractUIPosition> ret = new ArrayList<>();
         final List<Instance> docInsts = getInstances4Derived(_parameter);
-        // if the values are copied from a Deliverynote the batches must use
+        // if the values are copied from a DeliveryNote the batches must use
         // the same batch again
         // (it means that it is just a movement between distinct storages)
         if (!docInsts.isEmpty() && docInsts.get(0).isValid()
@@ -283,7 +298,7 @@ public abstract class RecievingTicket_Base
                             multi.addAttribute(CIProducts.TransactionIndividualOutbound.Quantity);
                             multi.execute();
                             while (multi.next()) {
-                                if (!this.transInsts.contains(multi.getCurrentInstance())) {
+                                if (!transInsts.contains(multi.getCurrentInstance())) {
                                     final Instance prodInst = multi.getSelect(selProdInst);
                                     final String prodDescr = multi.getSelect(selProdDescr);
                                     if (prodInst.equals(_bean.getProdInstance())) {
@@ -297,7 +312,7 @@ public abstract class RecievingTicket_Base
                                                                 CIProducts.TransactionIndividualOutbound.Quantity));
                                         bean.setDoc(this);
                                         ret.add(bean);
-                                        this.transInsts.add(multi.getCurrentInstance());
+                                        transInsts.add(multi.getCurrentInstance());
                                     }
                                 }
                             }
@@ -316,5 +331,41 @@ public abstract class RecievingTicket_Base
             ret.addAll(super.updateBean4Indiviual(_parameter, _bean));
         }
         return ret;
+    }
+
+    @Override
+    protected StringBuilder getOnCompleteScript(final Parameter _parameter,
+                                                final Collection<AbstractUIPosition> _values,
+                                                final Instance... _docInsts)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.getOnCompleteScript(_parameter, _values, _docInsts);
+        // if the values are copied from an OrderOutbound and we have products with Serial/Batch
+        if (CollectionUtils.isNotEmpty(_values) && _docInsts[0].isValid() && Products.ACTIVATEINDIVIDUAL.get()
+                        && _docInsts[0].getType().isCIType(CISales.OrderOutbound)) {
+            for (final AbstractUIPosition position: _values) {
+                ret.append(getScript4Individual(_parameter, position));
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * If Individuals is activated and the values are copied from another
+     * document the fields to register new SerialNumber or Batch must be added.
+     * @throws EFapsException
+     *
+     */
+    protected StringBuilder getScript4Individual(final Parameter _parameter, final AbstractUIPosition _position)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_position.getProdInstance());
+        print.addAttribute(CIProducts.ProductAbstract.Individual);
+        print.execute();
+        final Parameter parameter = ParameterUtil.clone(_parameter);
+        ParameterUtil.setParameterValues(parameter, "quantity", _position.getQuantity().toString());
+        final ProductIndividual individual = print.getAttribute(CIProducts.ProductAbstract.Individual);
+        return add4Individual(parameter, _position.getProdInstance(), individual, null,
+                    _position.getProdInstance().getOid(), _position.getProdName() +  "-" + _position.getProdDescr());
     }
 }

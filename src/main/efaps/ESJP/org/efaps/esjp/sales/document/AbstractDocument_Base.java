@@ -708,7 +708,8 @@ public abstract class AbstractDocument_Base
                     .append(getJavaScript4Positions(_parameter, instCall));
             }
         }
-        return InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMCONSTRUCT).toString();
+        return InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOM,
+                        DojoLibs.DOMCONSTRUCT, DojoLibs.NUMBER).toString();
     }
 
     /**
@@ -1008,7 +1009,7 @@ public abstract class AbstractDocument_Base
                             .setProdName(multi.<String>getSelect(selProdName))
                             .setProdDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc));
 
-            // set the sorage Instance
+            // set the storage Instance
             if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionProdDocAbstract)) {
                 final QueryBuilder storageQueryBldr = new QueryBuilder(CIProducts.DynamicStorage);
                 storageQueryBldr.addWhereAttrEqValue(CIProducts.DynamicStorage.ID,
@@ -1591,8 +1592,10 @@ public abstract class AbstractDocument_Base
                 }
             }
             js.append("}");
-            InterfaceUtils.appendScript4FieldUpdate(_map, InterfaceUtils.wrapInDojoRequire(_parameter, js,
+            if (_map != null) {
+                InterfaceUtils.appendScript4FieldUpdate(_map, InterfaceUtils.wrapInDojoRequire(_parameter, js,
                             DojoLibs.QUERY, DojoLibs.DOM, DojoLibs.DOMCONSTRUCT, DojoLibs.NUMBER));
+            }
         }
         return js;
     }

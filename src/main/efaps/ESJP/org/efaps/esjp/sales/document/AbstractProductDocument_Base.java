@@ -875,7 +875,8 @@ public abstract class AbstractProductDocument_Base
 
     /**
      * Gets the alternate individual.
-     *
+     * Normally just the first individual is selected but if there are more,
+     * add a possibility to alter them in the UI.
      * @param _parameter Parameter as passed by the eFaps API
      * @param _selected the selected
      * @param _productinst the productinst
