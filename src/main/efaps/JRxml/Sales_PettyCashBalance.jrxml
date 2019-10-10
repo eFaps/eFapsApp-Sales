@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<!-- 2019-06-21T01:51:46 -->
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="00995562-c85a-4f67-b9d5-d202baf41a60">
 	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
 	<import value="org.efaps.number2words.Converter"/>
@@ -105,7 +104,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[FIRMA ENCARGADO]]></text>
+				<text><![CDATA[FIRMA OPERADOR]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="554" y="69" width="137" height="20" uuid="5cb363cd-e820-4529-83a7-a4c8d6e807f5"/>
@@ -115,7 +114,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[FIRMA RESPONSABLE]]></text>
+				<text><![CDATA[FIRMA SUPERVISOR]]></text>
 			</staticText>
 		</band>
 	</detail>
