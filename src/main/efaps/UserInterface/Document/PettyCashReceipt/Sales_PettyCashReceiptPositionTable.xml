@@ -51,6 +51,7 @@
                 program="org.efaps.esjp.sales.document.PettyCashReceipt" >
                 <property name="Type">Products_ProductCostTextPosition</property>
                 <property name="Type01">Products_ProductService</property>
+                <property name="Type02">Products_ProductTextPosition</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Product"
                 name="Sales_PettyCashReceiptPositionTable.product.UI_FIELD_UPDATE"
