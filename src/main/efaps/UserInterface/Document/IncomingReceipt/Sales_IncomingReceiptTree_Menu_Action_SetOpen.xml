@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2019 The eFaps Team
 
@@ -19,11 +18,11 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5e391760-4903-4a39-a82a-b81a27782dba</uuid>
+    <uuid>c963bb70-ba9e-4771-80c9-599496b86e55</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingReceiptTree_Menu_Action_SetPaid</name>
+        <name>Sales_IncomingReceiptTree_Menu_Action_SetOpen</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
@@ -32,14 +31,13 @@
         <target>
             <execute method="setStatus"
                 program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Paid</property>
-            </execute>
-            <trigger
-                program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Sales_IncomingReceiptTree_Menu_Action_SetPaid.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK"
+                method="check4Status"
+                name="Sales_IncomingReceiptTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Digitized</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>
