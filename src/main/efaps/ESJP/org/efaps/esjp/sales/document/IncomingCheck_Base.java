@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -76,6 +77,16 @@ public abstract class IncomingCheck_Base
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return new Return();
+    }
+
+    @Override
+    protected void addStatus2DocCreate(final Parameter _parameter,
+                                       final Insert _insert,
+                                       final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        _insert.add(CISales.IncomingCheck.Status,
+                        Status.find(CISales.IncomingCheckStatus, Sales.INCOMINGCHECK_STATUS4CREATE.get()));
     }
 
     /**

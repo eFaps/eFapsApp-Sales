@@ -132,7 +132,11 @@ public abstract class PaymentCheck_Base
             insert.execute();
 
             final Update update = new Update(_parameter.getInstance());
-            update.add(CISales.IncomingCheck.Status, Status.find(CISales.IncomingCheckStatus.Closed));
+            if (Sales.INCOMINGCHECK_STATUS4CREATE.get().equals(CISales.IncomingCheckStatus.Open.key)) {
+                update.add(CISales.IncomingCheck.Status, Status.find(CISales.IncomingCheckStatus.Closed));
+            } else {
+                update.add(CISales.IncomingCheck.Status, Status.find(CISales.IncomingCheckStatus.Open));
+            }
             update.execute();
         }
     }

@@ -24,8 +24,11 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingCheckStatus</name>
         <parent>Sales_DocumentStatus</parent>
+        <status key="Digitized">
+            <description>IncomingCheck is open. (Registrado)</description>
+        </status>
         <status key="Open">
-            <description>IncomingCheck is open. (Pendiente)</description>
+            <description>IncomingCheck is open. (Por Cobrar)</description>
         </status>
         <status key="Closed">
             <description>IncomingCheck is closed. (Cobrado) </description>
