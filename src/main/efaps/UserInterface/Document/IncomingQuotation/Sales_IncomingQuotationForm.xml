@@ -34,7 +34,7 @@
                 program="org.efaps.esjp.sales.document.IncomingQuotation" />
         </field>
         <field character="Group" name="dategroup">
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="date">
@@ -211,7 +211,7 @@
             <evaluate
                 program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingQuotationPosition</property>
-                <property name="LinkFrom">IncomingQuotation</property>
+                <property name="LinkFrom">IncomingQuotationLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -369,7 +369,7 @@
             <evaluate
                 program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingQuotationPosition</property>
-                <property name="LinkFrom">IncomingQuotation</property>
+                <property name="LinkFrom">IncomingQuotationLink</property>
             </evaluate>
         </field>
         <field name="rateNetTotal4Read">

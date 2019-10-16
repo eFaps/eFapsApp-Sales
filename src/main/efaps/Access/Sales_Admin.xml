@@ -65,6 +65,7 @@
         <type>Sales_IncomingInstallment</type>
         <type>Sales_IncomingInvoice</type>
         <type>Sales_IncomingProfServReceipt</type>
+        <type>Sales_IncomingQuotation</type>
         <type>Sales_IncomingReceipt</type>
         <type>Sales_IncomingReminder</type>
         <type>Sales_Installment</type>
@@ -172,6 +173,13 @@
             <key>Paid</key>
             <key>Booked</key>
             <key>Replaced</key>
+        </status>
+
+        <status group="Sales_IncomingQuotationStatus">
+            <key>Digitized</key>
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
         </status>
 
         <status group="Sales_ReturnSlipStatus">

@@ -989,6 +989,19 @@ public final class Sales
                     .defaultValue(CINumGenSales.IncomingQuotationRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGQUOTATION_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGQUOTATION_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -24,7 +24,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingQuotationRevisionSequence</name>
-        <format>PR-%05d</format>
+        <format>CP-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>

@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2013 - 2019 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,26 +18,28 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>49210e7d-22c4-4287-9eed-f939873e327b</uuid>
+    <uuid>9e9a5372-987d-4f98-a6b3-3cad670944fc</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingQuotationMyDesk_Menu_Action_Create</name>
+        <name>Sales_IncomingQuotationTree_Menu_Action_SetCanceled</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_IncomingQuotationForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.IncomingQuotation">
-                <property name="PositionType">Sales_IncomingQuotationPosition</property>
+            <execute method="setStatus"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Canceled</property>
             </execute>
-            <command>Sales_IncomingQuotation_ShowRevision</command>
+            <trigger event="UI_ACCESSCHECK"
+                method="check4Status"
+                name="Sales_IncomingReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                 <property name="Status">!Canceled</property>
+            </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_IncomingQuotation</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

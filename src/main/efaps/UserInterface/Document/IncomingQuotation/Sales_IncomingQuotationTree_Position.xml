@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2013 - 2019 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,26 +19,26 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>49210e7d-22c4-4287-9eed-f939873e327b</uuid>
+    <uuid>02c530df-d129-4f5c-98a9-ca99bec47c70</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingQuotationMyDesk_Menu_Action_Create</name>
+        <name>Sales_IncomingQuotationTree_Position</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_IncomingQuotationForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.IncomingQuotation">
-                <property name="PositionType">Sales_IncomingQuotationPosition</property>
-            </execute>
-            <command>Sales_IncomingQuotation_ShowRevision</command>
+            <menu>Sales_IncomingQuotationTree_Position_Menu</menu>
+            <table>Sales_IncomingQuotationPositionTable</table>
+            <evaluate
+                program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_IncomingQuotationPosition</property>
+                <property name="LinkFrom">IncomingQuotationLink</property>
+            </evaluate>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_IncomingQuotation</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>

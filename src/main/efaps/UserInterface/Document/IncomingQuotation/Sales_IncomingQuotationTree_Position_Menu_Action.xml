@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,28 +15,16 @@
  limitations under the License.
 
 -->
-<datamodel-statusgroup
-    xmlns="http://www.efaps.org/xsd"
+<ui-menu xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fef543e8-2b1c-4197-bee7-925e2f264acd</uuid>
+    <uuid>4f97466c-29ae-4791-aa1d-90c303792a72</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingQuotationStatus</name>
-        <parent>Sales_DocumentStatus</parent>
-        <status key="Digitized">
-            <description>Quotation is in draft. Borrador</description>
-        </status>
-        <status key="Open">
-            <description>Send to a costumer or client.</description>
-        </status>
-        <status key="Closed">
-            <description>Send to a costumer or client.</description>
-        </status>
-        <status key="Canceled">
-            <description>Quotation was aborted and no sell was done.
-            </description>
-        </status>
+        <name>Sales_IncomingQuotationTree_Position_Menu_Action</name>
+        <childs>
+            <child>Sales_IncomingQuotationTree_Position_Menu_Action_Delete</child>
+        </childs>
     </definition>
-</datamodel-statusgroup>
+</ui-menu>
