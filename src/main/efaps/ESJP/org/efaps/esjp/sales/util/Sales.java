@@ -976,6 +976,22 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGQUOTATION_ACTIVATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.Activate")
+                    .description("Activate the possiblity to register Incoming Quotations");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGQUOTATION_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingQuotationRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGRECEIPTREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingReceipt.RevisionSequence")

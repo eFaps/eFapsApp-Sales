@@ -38,6 +38,7 @@
             <child>Sales_IncomingPerceptionCertificateMyDesk</child>
             <child>Sales_IncomingRetentionCertificateMyDesk</child>
             <child>Sales_IncomingCheckMyDesk</child>
+            <child>Sales_IncomingQuotationMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
