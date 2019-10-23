@@ -31,7 +31,10 @@
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_IncomingCheckTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Check4CreateStatus">true</property>
+                <!-- Sales-Config -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingCheck.Status4Create</property>
             </trigger>
             <command>Sales_IncomingCheckTree_Menu_Action_CreatePaymentCheck2</command>
         </target>
