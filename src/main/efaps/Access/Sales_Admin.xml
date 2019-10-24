@@ -37,8 +37,8 @@
         <access-type>grant</access-type>
 
         <type>Contacts_Contact</type>
-        <type>Sales_AccountFundsToBeSettled</type>
         <type>Sales_AccountCashDesk</type>
+        <type>Sales_AccountFundsToBeSettled</type>
         <type>Sales_AccountPettyCash</type>
         <type>Sales_AcquisitionCosting</type>
         <type>Sales_BulkPayment</type>
@@ -49,8 +49,8 @@
         <type>Sales_ComparativeDocProvider</type>
         <type>Sales_Conciliation</type>
         <type>Sales_ConsignmentNote</type>
-        <type>Sales_CostSheet</type>
         <type>Sales_Contract</type>
+        <type>Sales_CostSheet</type>
         <type>Sales_Credit</type>
         <type>Sales_CreditNote</type>
         <type>Sales_DeliveryNote</type>
@@ -335,6 +335,7 @@
         </status>
 
         <status group="Sales_IncomingCheckStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
