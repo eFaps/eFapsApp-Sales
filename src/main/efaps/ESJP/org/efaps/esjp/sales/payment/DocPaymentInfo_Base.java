@@ -18,6 +18,7 @@
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -359,17 +360,33 @@ public abstract class DocPaymentInfo_Base
     {
         initialize();
         final Properties props = Sales.PAYMENT_RULES.get();
-        BigDecimal threshold = BigDecimal.ZERO;
-        try {
-            final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
-            format.setParseBigDecimal(true);
-            threshold = (BigDecimal) format.parse(props.getProperty(
-                            instance.getType().getName() + ".Threshold", "0"));
-        } catch (final ParseException e) {
-            throw new EFapsException("catched ParseException", e);
+        boolean ret = false;
+        for (final Instance curInst : getCurrencies()) {
+            BigDecimal threshold = BigDecimal.ZERO;
+            try {
+                final CurrencyInst currencyInst = CurrencyInst.get(curInst);
+                String val = null;
+                if (props.containsKey(instance.getType().getName() + "." + currencyInst.getISOCode() + ".Threshold")) {
+                    val = props.getProperty(instance.getType().getName()
+                                    + "." + currencyInst.getISOCode() + ".Threshold");
+                } else if (props.containsKey(instance.getType().getName() + ".Threshold")) {
+                    val = props.getProperty(instance.getType().getName() + ".Threshold");
+                }
+                if (val != null) {
+                    final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
+                    format.setParseBigDecimal(true);
+                    threshold = (BigDecimal) format.parse(val);
+                }
+            } catch (final ParseException e) {
+                throw new EFapsException("catched ParseException", e);
+            }
+            ret = getBalanceInCurrency(curInst, isPerPayment()).abs().setScale(1, RoundingMode.HALF_UP)
+                            .compareTo(threshold) <= 0;
+            if (ret) {
+                break;
+            }
         }
-        return getBalanceInCurrency(getCurrencyInstance(), isPerPayment()).abs().compareTo(threshold) <= 0
-                        || getBalanceInCurrency(getRateCurrencyInstance(), isPerPayment()).abs().compareTo(threshold) <= 0;
+        return ret;
     }
 
     public BigDecimal getBalanceInCurrency(final Instance _targetCurrency,
@@ -997,10 +1014,9 @@ public abstract class DocPaymentInfo_Base
                         if (!rateInfo.getTargetCurrencyInstance().equals(docRateInfo.getCurrencyInstance())) {
                             rateInfo.setTargetCurrencyInstance(docRateInfo.getCurrencyInstance());
 
-                            rateInfo.setRate(rateInfo.getRate().divide(docRateInfo.getRate(),
-                                            BigDecimal.ROUND_HALF_UP));
+                            rateInfo.setRate(rateInfo.getRate().divide(docRateInfo.getRate(), RoundingMode.HALF_UP));
                             rateInfo.setSaleRate(rateInfo.getSaleRate().divide(docRateInfo.getSaleRate(),
-                                            BigDecimal.ROUND_HALF_UP));
+                                            RoundingMode.HALF_UP));
 
                             if (rateInfo.isInvert()) {
                                 rateInfo.setRateUI(rateInfo.getRateUI().multiply(docRateInfo.getRateUI()));
@@ -1091,19 +1107,7 @@ public abstract class DocPaymentInfo_Base
         final StringBuilder ret = new StringBuilder();
         final DocPaymentInfo payInfo = new DocPaymentInfo(_docInst).setTargetDocInst(_docInst);
 
-        final Instance baseCurrencyInstance = Currency.getBaseCurrency();
-        final List<Instance> currencyInstances = (List<Instance>) Currency.getAvailable();
-        currencyInstances.remove(baseCurrencyInstance);
-
-        Collections.sort(currencyInstances, (i1,i2) -> {
-            try {
-                return CurrencyInst.get(i1).getName().compareTo(CurrencyInst.get(i2).getName());
-            } catch (final EFapsException e) {
-                Log.error("Catched", e);
-            }
-            return 0;
-        });
-        currencyInstances.add(0, baseCurrencyInstance);
+        final List<Instance> currencyInstances = getCurrencies();
 
         ret.append("<div style=\"display:flex;flex-wrap:wrap;\">");
 
@@ -1122,6 +1126,23 @@ public abstract class DocPaymentInfo_Base
         ret.append("</div>");
         ret.append("</div>");
         return ret;
+    }
+
+    protected static List<Instance> getCurrencies() throws EFapsException {
+        final Instance baseCurrencyInstance = Currency.getBaseCurrency();
+        final List<Instance> currencyInstances = (List<Instance>) Currency.getAvailable();
+        currencyInstances.remove(baseCurrencyInstance);
+
+        Collections.sort(currencyInstances, (i1,i2) -> {
+            try {
+                return CurrencyInst.get(i1).getName().compareTo(CurrencyInst.get(i2).getName());
+            } catch (final EFapsException e) {
+                Log.error("Catched", e);
+            }
+            return 0;
+        });
+        currencyInstances.add(0, baseCurrencyInstance);
+        return currencyInstances;
     }
 
     protected static CharSequence getTable(final Parameter _parameter,
