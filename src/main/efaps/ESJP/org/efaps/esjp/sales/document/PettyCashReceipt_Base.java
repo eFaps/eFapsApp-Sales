@@ -19,8 +19,6 @@ package org.efaps.esjp.sales.document;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +46,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -59,7 +58,6 @@ import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.IWarning;
-import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
@@ -398,17 +396,19 @@ public abstract class PettyCashReceipt_Base
                 multi.addAttribute(CISales.Balance.Amount, CISales.Balance.Currency);
                 multi.execute();
                 BigDecimal amountBal = BigDecimal.ZERO;
+                Instance balanceCurrencyInstance = null;
                 while (multi.next()) {
                     amountBal = amountBal.add(multi.<BigDecimal>getAttribute(CISales.Balance.Amount));
+                    balanceCurrencyInstance = Instance.get(CIERP.Currency.getType(),
+                                    multi.<Long>getAttribute(CISales.Balance.Currency));
                 }
-                final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
-                final int scale = frmt.getMaximumFractionDigits();
-                final Object[] rateObj = getRateObject(_parameter);
-                final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                                RoundingMode.HALF_UP);
-                final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
-                                .setScale(scale, RoundingMode.HALF_UP);
-                if (netTotal.compareTo(amountBal) == 1) {
+                final Instance rateCurrencyInstance =  new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId");
+                final BigDecimal netTotal = getNetTotal(_parameter, calcList);
+                final DateTime dateTime = DateTime.parse( _parameter.getParameterValue("date"));
+                final BigDecimal amount = Currency.convert(_parameter, netTotal, rateCurrencyInstance,
+                                balanceCurrencyInstance, CISales.PettyCashReceipt.getType().getName(),
+                                LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
+                if (amount.compareTo(amountBal) == 1) {
                     ret.add(new EvaluateBalanceAccountDocWarning());
                 }
             }
