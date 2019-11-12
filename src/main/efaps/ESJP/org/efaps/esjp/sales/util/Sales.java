@@ -1286,6 +1286,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDERINBOUND_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to an Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDERINBOUND_ACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute ORDERINBOUND_ACTIVATEREMARK = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderInbound.ActivateRemark")

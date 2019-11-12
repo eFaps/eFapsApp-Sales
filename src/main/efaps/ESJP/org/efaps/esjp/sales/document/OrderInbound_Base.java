@@ -105,8 +105,9 @@ public abstract class OrderInbound_Base
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
-        final EditedDoc editDoc = editDoc(_parameter);
-        updatePositions(_parameter, editDoc);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
         return new Return();
     }
 
