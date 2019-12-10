@@ -84,6 +84,8 @@ public abstract class SalesKardexBatchReport_Base
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
                         CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateTo.name));
 
+        final boolean printable = "true".equalsIgnoreCase(_parameter.getParameterValue("printable"));
+
         final KardexReport baseResport = new KardexReport();
         final List<Instance> storageInst = baseResport.getStorageInstList(_parameter);
         final QueryBuilder attrQueryBuilder = new QueryBuilder(CIProducts.TransactionInOutAbstract);
@@ -124,15 +126,27 @@ public abstract class SalesKardexBatchReport_Base
 
         final Return ret = new Return();
         try (final Workbook targetWb = new XSSFWorkbook()) {
-            final Sheet baseSheet = targetWb.createSheet("Inventario");
+            final Sheet baseSheet = printable ? null : targetWb.createSheet("Inventario");
             for (final Entry<Instance, String> entry : product2Path.entrySet()) {
                 LOG.debug("Reading to Workbook file {}", entry.getValue());
                 final Workbook workbook = WorkbookFactory.create(new File(entry.getValue()));
                 final Sheet sheet = workbook.getSheetAt(0);
+                if (printable) {
+                    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+                }
                 final Sheet newSheet = targetWb.createSheet(product2Name.get(entry.getKey()));
-                copySheet(sheet, newSheet, true);
-                workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
-                appendSheet(sheet, baseSheet, true, 2);
+                copySheet(sheet, newSheet, true, printable);
+                if (printable) {
+                    newSheet.getRow(13).getCell(5).setCellValue(0);
+                    newSheet.getRow(13).getCell(6).setCellValue(0);
+                    newSheet.getRow(13).getCell(7).setCellValue(0);
+                    newSheet.getRow(13).getCell(8).setCellValue(0);
+                    newSheet.getRow(13).getCell(9).setCellValue(0);
+                    newSheet.getRow(13).getCell(10).setCellValue(0);
+                } else {
+                    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+                    appendSheet(sheet, baseSheet, true, 2);
+                }
             }
             final File temp = fileUtil.getFile(baseResport.getReportName(_parameter, dateFrom, dateTo), "xlsx");
             final FileOutputStream fileOut = new FileOutputStream(temp);
@@ -190,7 +204,8 @@ public abstract class SalesKardexBatchReport_Base
      * @param _targetSheet the target sheet
      * @param _copyStyle the copy style
      */
-    protected void copySheet(final Sheet _sourceSheet, final Sheet _targetSheet, final boolean _copyStyle)
+    protected void copySheet(final Sheet _sourceSheet, final Sheet _targetSheet, final boolean _copyStyle,
+                             final boolean _evalFormulas)
     {
         int maxColumnNum = 0;
         final Map<Integer, CellStyle> styleMap = _copyStyle ? new HashMap<>() : null;
@@ -199,7 +214,8 @@ public abstract class SalesKardexBatchReport_Base
             final Row srcRow = _sourceSheet.getRow(i);
             final Row destRow = _targetSheet.createRow(i);
             if (srcRow != null) {
-                copyRow(_sourceSheet, _targetSheet, srcRow, destRow, styleMap, mergedRegions, true);
+                copyRow(_sourceSheet, _targetSheet, srcRow, destRow, styleMap, mergedRegions,
+                                _evalFormulas ? false : true);
                 if (srcRow.getLastCellNum() > maxColumnNum) {
                     maxColumnNum = srcRow.getLastCellNum();
                 }

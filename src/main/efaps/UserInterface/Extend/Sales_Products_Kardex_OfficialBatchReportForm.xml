@@ -66,5 +66,15 @@
                 <property name="DefaultValue">false</property>
             </trigger>
         </field>
+        <field name="printable">
+            <property name="Label">Sales_Products_Kardex_OfficialReportForm.printable.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getDefault4BooleanValue"
+                name="Sales_Products_Kardex_OfficialBatchReportForm.printable.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DefaultValue">false</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
