@@ -1688,12 +1688,16 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENTDOCUMENTOUT_TOBESETTLED = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Config4ToBeSetteled")
-                    .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
-                    .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
-                    .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
-                    .addDefaultValue("Tag.Type", CISales.AccountabilityTag4PaymentOrder.getType().getName())
+                    .addDefaultValue("Type01", CISales.OrderOutbound.uuid.toString())
+                    .addDefaultValue("Type02", CISales.ServiceOrderOutbound.uuid.toString())
+                    .addDefaultValue("StatusGroup01", CISales.OrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status01", "!" + CISales.OrderOutboundStatus.Canceled.key)
+                    .addDefaultValue("StatusGroup02", CISales.ServiceOrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status02", "!" + CISales.ServiceOrderOutboundStatus.Canceled.key)
+                    .addDefaultValue("Tag.Type01", CISales.AccountabilityTag4PaymentOrder.getType().getName())
                     .addDefaultValue("Electable.Type01", CISales.OrderOutbound.getType().getName())
                     .addDefaultValue("Electable.Type02", CISales.PaymentOrder.getType().getName())
+                    .addDefaultValue("Electable.Type03", CISales.ServiceOrderOutbound.getType().getName())
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */
