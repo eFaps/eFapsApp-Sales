@@ -19,23 +19,21 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3885e736-70d9-44bf-bfeb-3519f44ffeb2</uuid>
+    <uuid>e1076d82-961a-4bb1-b4fc-474504a6535b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocument4ToBeSettledMyDesk</name>
+        <name>Sales_PaymentDocument4ToBeSettledMyDesk_Menu_Action_RemoveAccountabilityTag</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_PaymentDocument4ToBeSettledMyDesk_Menu</menu>
-            <table>Sales_PaymentDocumentAbstractUnfilteredTable</table>
-            <!-- use any of the docs to access the method -->
-            <evaluate method="getPaymentDocuments4ToBeSettled"
-                program="org.efaps.esjp.sales.payment.PaymentCheck">
-            </evaluate>
+            <!-- use any of the Out docs to access the method -->
+            <execute method="removeAccountabilityTags"
+                program="org.efaps.esjp.sales.payment.PaymentCheckOut" />
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

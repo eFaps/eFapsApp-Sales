@@ -16,26 +16,16 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd"
+<ui-menu xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3885e736-70d9-44bf-bfeb-3519f44ffeb2</uuid>
+    <uuid>9d4e6415-3e5f-4745-93a6-f6f81ef0d9e9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocument4ToBeSettledMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_PaymentDocument4ToBeSettledMyDesk_Menu</menu>
-            <table>Sales_PaymentDocumentAbstractUnfilteredTable</table>
-            <!-- use any of the docs to access the method -->
-            <evaluate method="getPaymentDocuments4ToBeSettled"
-                program="org.efaps.esjp.sales.payment.PaymentCheck">
-            </evaluate>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_PaymentDocument4ToBeSettledMyDesk_Menu_Action</name>
+        <childs>
+            <child>Sales_PaymentDocument4ToBeSettledMyDesk_Menu_Action_RemoveAccountabilityTag</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>
