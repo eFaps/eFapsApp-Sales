@@ -48,6 +48,12 @@
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">employee</property>
+
+                 <!-- Projects_ProjectService2ProductRequest -->
+                <property name="ConnectType03">50be3a47-d1aa-4b4d-b3dd-7d50d44c6e66</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">project</property>
             </execute>
         </target>
         <property name="Target">modal</property>
