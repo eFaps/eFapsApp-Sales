@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -25,6 +24,12 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoicePositionTable</name>
+        <field name="positionNumber">
+            <property name="Attribute">PositionNumber</property>
+            <property name="Label">Sales_InvoicePosition/PositionNumber.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_InvoicePosition/Quantity.Label</property>

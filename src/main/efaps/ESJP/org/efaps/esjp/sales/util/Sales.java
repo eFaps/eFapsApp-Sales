@@ -662,6 +662,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGCHECK_STATUS4CREATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingCheck.Status4Create")
+                    .defaultValue("Open")
+                    .description("Key of the Status for create.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGCREDITNOTE_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingCreditNote.RevisionSequence")
@@ -968,6 +976,35 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGQUOTATION_ACTIVATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.Activate")
+                    .description("Activate the possiblity to register Incoming Quotations");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGQUOTATION_REVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingQuotationRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGQUOTATION_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGQUOTATION_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingQuotation.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGRECEIPTREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingReceipt.RevisionSequence")
@@ -1006,6 +1043,20 @@ public final class Sales
                     .key(Sales.BASE + "IncomingReceipt.CreateFromServiceOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
                                     + "to create Incoming Receipt from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  INCOMINGRECEIPT_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingReceipt.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  INCOMINGRECEIPT_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingReceipt.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1232,6 +1283,20 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderInbound.Activate")
                     .description("Deactivate Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDERINBOUND_ASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to an Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDERINBOUND_ACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderInbound.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Inbound");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1623,12 +1688,16 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENTDOCUMENTOUT_TOBESETTLED = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Config4ToBeSetteled")
-                    .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
-                    .addDefaultValue("StatusGroup", CISales.OrderOutboundStatus.getType().getName())
-                    .addDefaultValue("Status", "!" + CISales.OrderOutboundStatus.Canceled.key)
-                    .addDefaultValue("Tag.Type", CISales.AccountabilityTag4PaymentOrder.getType().getName())
+                    .addDefaultValue("Type01", CISales.OrderOutbound.uuid.toString())
+                    .addDefaultValue("Type02", CISales.ServiceOrderOutbound.uuid.toString())
+                    .addDefaultValue("StatusGroup01", CISales.OrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status01", "!" + CISales.OrderOutboundStatus.Canceled.key)
+                    .addDefaultValue("StatusGroup02", CISales.ServiceOrderOutboundStatus.getType().getName())
+                    .addDefaultValue("Status02", "!" + CISales.ServiceOrderOutboundStatus.Canceled.key)
+                    .addDefaultValue("Tag.Type01", CISales.AccountabilityTag4PaymentOrder.getType().getName())
                     .addDefaultValue("Electable.Type01", CISales.OrderOutbound.getType().getName())
                     .addDefaultValue("Electable.Type02", CISales.PaymentOrder.getType().getName())
+                    .addDefaultValue("Electable.Type03", CISales.ServiceOrderOutbound.getType().getName())
                     .description("QueryBuilder config for the Documents that must be settled.");
 
     /** See description. */

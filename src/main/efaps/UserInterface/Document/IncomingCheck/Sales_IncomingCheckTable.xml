@@ -80,7 +80,7 @@
             <property name="FilterType">STATUS</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">Open</property>
+            <property name="FilterDefault">Digitized;Open</property>
             <property name="Attribute">Status</property>
             <property name="Label">Sales_IncomingCheck/Status.Label</property>
         </field>

@@ -46,6 +46,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -392,13 +393,22 @@ public abstract class PettyCashReceipt_Base
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
                 queryBldr.addWhereAttrEqValue(CISales.Balance.Account, instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.Balance.Amount);
+                multi.addAttribute(CISales.Balance.Amount, CISales.Balance.Currency);
                 multi.execute();
                 BigDecimal amountBal = BigDecimal.ZERO;
+                Instance balanceCurrencyInstance = null;
                 while (multi.next()) {
                     amountBal = amountBal.add(multi.<BigDecimal>getAttribute(CISales.Balance.Amount));
+                    balanceCurrencyInstance = Instance.get(CIERP.Currency.getType(),
+                                    multi.<Long>getAttribute(CISales.Balance.Currency));
                 }
-                if (getNetTotal(_parameter, calcList).compareTo(amountBal) == 1) {
+                final Instance rateCurrencyInstance =  new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId");
+                final BigDecimal netTotal = getNetTotal(_parameter, calcList);
+                final DateTime dateTime = DateTime.parse( _parameter.getParameterValue("date"));
+                final BigDecimal amount = Currency.convert(_parameter, netTotal, rateCurrencyInstance,
+                                balanceCurrencyInstance, CISales.PettyCashReceipt.getType().getName(),
+                                LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
+                if (amount.compareTo(amountBal) == 1) {
                     ret.add(new EvaluateBalanceAccountDocWarning());
                 }
             }
@@ -580,7 +590,6 @@ public abstract class PettyCashReceipt_Base
         ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 1500).toString());
         return ret;
     }
-
 
     @Override
     public CIType getCIType()

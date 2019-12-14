@@ -41,6 +41,18 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">quotation</property>
+
+                                <!-- Sales_ChannelSalesCondition2OrderInbound -->
+                <property name="ConnectType02">ddd84903-41ec-4de4-897c-364a6ebb4bb9</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">condition</property>
+
+                <!-- Sales_Employee2OrderInbound -->
+                <property name="ConnectType03">f9296c9e-20ce-4545-8d7f-41ca33cdf8d4</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">employee</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.OrderInbound" method="validate">
                 <property name="Validation">POSITION</property>

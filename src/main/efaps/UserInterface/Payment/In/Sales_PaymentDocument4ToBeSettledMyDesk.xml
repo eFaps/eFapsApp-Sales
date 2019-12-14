@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,7 +16,8 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3885e736-70d9-44bf-bfeb-3519f44ffeb2</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -26,9 +28,11 @@
             <role>Sales_Admin</role>
         </access>
         <target>
+            <menu>Sales_PaymentDocument4ToBeSettledMyDesk_Menu</menu>
             <table>Sales_PaymentDocumentAbstractUnfilteredTable</table>
             <!-- use any of the docs to access the method -->
-            <evaluate method="getPaymentDocuments4ToBeSettled" program="org.efaps.esjp.sales.payment.PaymentCheck">
+            <evaluate method="getPaymentDocuments4ToBeSettled"
+                program="org.efaps.esjp.sales.payment.PaymentCheck">
             </evaluate>
         </target>
         <property name="Target">content</property>
