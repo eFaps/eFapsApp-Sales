@@ -355,14 +355,6 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<reportElement x="80" y="110" width="1220" height="15" uuid="2f31ab8d-19fa-4b9f-ba47-4f3191b40051"/>
 				<textFieldExpression><![CDATA[$P{ProductDesc}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="1300" y="0" width="100" height="20" uuid="2e2fa9ff-36cd-412e-8841-1bd9d89c4906">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<text><![CDATA[<>16]]></text>
-			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
