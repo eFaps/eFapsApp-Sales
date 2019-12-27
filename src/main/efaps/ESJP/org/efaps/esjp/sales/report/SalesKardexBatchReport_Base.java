@@ -126,7 +126,7 @@ public abstract class SalesKardexBatchReport_Base
 
         final Return ret = new Return();
         try (final Workbook targetWb = new XSSFWorkbook()) {
-            final Sheet baseSheet = printable ? null : targetWb.createSheet("Inventario");
+            final Sheet baseSheet = targetWb.createSheet("Inventario");
             for (final Entry<Instance, String> entry : product2Path.entrySet()) {
                 LOG.debug("Reading to Workbook file {}", entry.getValue());
                 final Workbook workbook = WorkbookFactory.create(new File(entry.getValue()));
@@ -143,10 +143,10 @@ public abstract class SalesKardexBatchReport_Base
                     newSheet.getRow(13).getCell(8).setCellValue(0);
                     newSheet.getRow(13).getCell(9).setCellValue(0);
                     newSheet.getRow(13).getCell(10).setCellValue(0);
-                } else {
-                    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
-                    appendSheet(sheet, baseSheet, true, 2);
                 }
+                workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+                appendSheet(newSheet, baseSheet, true, 2);
+
             }
             final File temp = fileUtil.getFile(baseResport.getReportName(_parameter, dateFrom, dateTo), "xlsx");
             final FileOutputStream fileOut = new FileOutputStream(temp);
