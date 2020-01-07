@@ -48,6 +48,12 @@
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">employee</property>
+
+                <!-- Projects_ProjectService2ServiceOrderOutbound -->
+                <property name="ConnectType03">bc0d6928-714c-4008-aa27-a2ee2d8723f3</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2017 The eFaps Team
+  Copyright 2003 - 2020 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -173,6 +173,70 @@
             <property name="Attribute">Name</property>
             <property name="Width">15</property>
             <property name="Required">true</property>
+        </field>
+        <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_InvoiceForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="project">
+            <property name="Label">Sales_OrderOutboundForm.project.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Width">100</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="autoComplete4Project"
+                name="Sales_ServiceOrderOutboundForm.project.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="StatusGroup">Projects_ProjectServiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="MaxChoiceLength">155</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="updateField4Project"
+                name="SSales_ServiceOrderOutboundForm.project.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ServiceOrderOutboundForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="projectData">
+            <property name="Label">Sales_OrderOutboundForm.projectData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ServiceOrderOutboundForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ServiceOrderOutbound#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2ServiceOrderOutbound#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2ServiceOrderOutbound#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ProductRequest.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Width">50</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ServiceOrderOutboundForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
         </field>
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>

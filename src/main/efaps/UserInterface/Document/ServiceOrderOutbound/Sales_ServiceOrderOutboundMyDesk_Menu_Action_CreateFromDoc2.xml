@@ -49,6 +49,12 @@
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">employee</property>
 
+                <!-- Projects_ProjectService2ServiceOrderOutbound -->
+                <property name="ConnectType03">bc0d6928-714c-4008-aa27-a2ee2d8723f3</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">project</property>
+
                 <!-- Sales_ServiceRequest -->
                 <!-- Sales_ServiceRequest2ServiceOrderOutbound -->
                 <property name="DerivedRulesType">f713769d-5c1b-4bac-9264-5ab813566685</property>
