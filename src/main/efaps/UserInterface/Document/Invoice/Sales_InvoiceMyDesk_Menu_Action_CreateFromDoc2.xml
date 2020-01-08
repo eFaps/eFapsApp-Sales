@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2020 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,12 +24,6 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-HumanResource" exclude="true"/>
-        </application-dependencies>
-        <profiles>
-            <profile name="eFaps"/>
-        </profiles>
         <name>Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
             <role>Sales_Teller</role>
@@ -44,11 +38,13 @@
                 <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
+
                 <!-- Sales_Invoice2DeliveryNote -->
                 <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
                 <property name="ConnectCurrentLink01">FromLink</property>
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">deliveryNotes</property>
+
                 <!-- Sales_ChannelCondition2Invoice -->
                 <property name="ConnectType02">74552bef-1282-4be2-af52-2fa914ddaa17</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
@@ -60,67 +56,18 @@
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">orderInbound</property>
-            </execute>
-            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
-                <property name="Validation01">AMOUNTGREATERZERO</property>
-                <property name="Validation02">DUPLICATEDPOSITION</property>
-                <property name="Validation03">SERIAL</property>
-            </validate>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_Invoice</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
-        <property name="TargetShowFile">true</property>
-    </definition>
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-HumanResource"/>
-        </application-dependencies>
-        <profiles>
-            <profile name="eFaps"/>
-        </profiles>
-        <name>Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
-        <access>
-            <role>Sales_Teller</role>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <form>Sales_InvoiceForm</form>
-            <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
-                <!-- Sales-Configuration -->
-                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
-                <property name="NoDataSource">true</property>
-                <property name="PositionType">Sales_InvoicePosition</property>
-                <!-- Sales_Invoice2DeliveryNote -->
-                <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
-                <property name="ConnectCurrentLink01">FromLink</property>
-                <property name="ConnectForeignLink01">ToLink</property>
-                <property name="ConnectForeignField01">deliveryNotes</property>
 
                 <!-- Sales_Employee2Invoice -->
-                <property name="ConnectType02">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
-                <property name="ConnectCurrentLink02">ToLink</property>
-                <property name="ConnectForeignLink02">FromLink</property>
-                <property name="ConnectForeignField02">employee</property>
-
-                <!-- Sales_ChannelCondition2Invoice -->
-                <property name="ConnectType03">74552bef-1282-4be2-af52-2fa914ddaa17</property>
-                <property name="ConnectCurrentLink03">ToLink</property>
-                <property name="ConnectForeignLink03">FromLink</property>
-                <property name="ConnectForeignField03">condition</property>
-
-                 <!-- Sales_OrderInbound2Invoice -->
-                <property name="ConnectType04">14e0b68c-2a1d-4c22-81f0-d9539e8e21be</property>
+                <property name="ConnectType04">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
                 <property name="ConnectCurrentLink04">ToLink</property>
                 <property name="ConnectForeignLink04">FromLink</property>
-                <property name="ConnectForeignField04">orderInbound</property>
+                <property name="ConnectForeignField04">employee</property>
+
+                <!-- Projects_ProjectService2Invoice -->
+                <property name="ConnectType05">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
+                <property name="ConnectCurrentLink05">ToLink</property>
+                <property name="ConnectForeignLink05">FromLink</property>
+                <property name="ConnectForeignField05">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -136,60 +83,5 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
         <property name="TargetShowFile">true</property>
-    </definition>
-
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="projects"/>
-        </profiles>
-        <name>Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
-        <access>
-            <role>Sales_Teller</role>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <form>Sales_InvoiceForm</form>
-            <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
-                <!-- Sales-Configuration -->
-                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
-                <property name="NoDataSource">true</property>
-                <property name="PositionType">Sales_InvoicePosition</property>
-                <!-- Sales_Invoice2DeliveryNote -->
-                <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
-                <property name="ConnectCurrentLink01">FromLink</property>
-                <property name="ConnectForeignLink01">ToLink</property>
-                <property name="ConnectForeignField01">deliveryNotes</property>
-                <!-- Projects_ProjectService2Invoice -->
-                <property name="ConnectType02">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
-                <property name="ConnectCurrentLink02">ToLink</property>
-                <property name="ConnectForeignLink02">FromLink</property>
-                <property name="ConnectForeignField02">project</property>
-                <!-- Sales_ChannelCondition2Invoice -->
-                <property name="ConnectType03">74552bef-1282-4be2-af52-2fa914ddaa17</property>
-                <property name="ConnectCurrentLink03">ToLink</property>
-                <property name="ConnectForeignLink03">FromLink</property>
-                <property name="ConnectForeignField03">condition</property>
-                 <!-- Sales_OrderInbound2Invoice -->
-                <property name="ConnectType04">14e0b68c-2a1d-4c22-81f0-d9539e8e21be</property>
-                <property name="ConnectCurrentLink04">ToLink</property>
-                <property name="ConnectForeignLink04">FromLink</property>
-                <property name="ConnectForeignField04">orderInbound</property>
-            </execute>
-            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
-                <property name="Validation01">AMOUNTGREATERZERO</property>
-                <property name="Validation02">DUPLICATEDPOSITION</property>
-                <property name="Validation03">SERIAL</property>
-            </validate>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_Invoice</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
     </definition>
 </ui-command>

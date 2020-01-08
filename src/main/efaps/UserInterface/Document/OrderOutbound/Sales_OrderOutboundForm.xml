@@ -183,6 +183,13 @@
             <property name="Level">2</property>
             <property name="Label">Sales_InvoiceForm.headingProject.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
         </field>
         <field name="project">
             <property name="Label">Sales_OrderOutboundForm.project.Label</property>
