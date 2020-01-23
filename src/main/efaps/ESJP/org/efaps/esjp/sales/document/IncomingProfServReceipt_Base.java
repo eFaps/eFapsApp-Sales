@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -394,8 +395,8 @@ public abstract class IncomingProfServReceipt_Base
                 final BigDecimal insurancePercent = (BigDecimal) formatter.parse(insurancePercentStr);
                 final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
                 final BigDecimal detraction = crossTotal.multiply(insurancePercent
-                                .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                                .setScale(8, RoundingMode.HALF_UP)
+                                .divide(new BigDecimal(100), RoundingMode.HALF_UP));
                 final String insuranceStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
                                 .format(detraction);
                 _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.insuranceValue.name, insuranceStr);
@@ -411,8 +412,8 @@ public abstract class IncomingProfServReceipt_Base
                 final BigDecimal retentionPercent = (BigDecimal) formatter.parse(retentionPercentStr);
                 final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
                 final BigDecimal retention = crossTotal.multiply(retentionPercent
-                                .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                                .setScale(8, RoundingMode.HALF_UP)
+                                .divide(new BigDecimal(100), RoundingMode.HALF_UP));
                 final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
                                 .format(retention);
                 _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.retentionValue.name, retentionStr);

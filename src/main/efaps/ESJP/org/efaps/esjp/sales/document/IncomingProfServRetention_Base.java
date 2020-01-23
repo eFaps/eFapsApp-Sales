@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -50,8 +47,6 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: IncomingRetention_Base.java 13286 2014-07-10 00:56:02Z
- *          jan@moxter.net $
  */
 @EFapsUUID("7b8de4b0-eba3-4eb5-b98b-9546393d9334")
 @EFapsApplication("eFapsApp-Sales")
