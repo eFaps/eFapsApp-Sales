@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,8 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Naming;
@@ -415,6 +417,17 @@ public abstract class PettyCashBalance_Base
             } else {
                 PettyCashBalance_Base.LOG.error("Missing or wrong Configuration Links for ActionDefinition: '{}', '{}'",
                                 Sales.PETTYCASHBAL_ACTDEF4COLORD.getKey(), Sales.PETTYCASHBAL_ACTDEF4PAYORD.getKey());
+            }
+
+            if (CISales.PaymentOrder.getType().equals(type)
+                            && Sales.PAYMENTORDER_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+                final CreatedDoc createdDoc = new CreatedDoc();
+                createdDoc.setInstance(insert.getInstance());
+                final Parameter parameter = ParameterUtil.clone(_parameter);
+                ParameterUtil.setProperty(parameter, "JasperConfig", Sales.SYSCONFUUID.toString());
+                ParameterUtil.setProperty(parameter, "JasperConfigReport", Sales.PAYMENTORDER_JASPERREPORT.getKey());
+                ParameterUtil.setProperty(parameter, "JasperConfigMime", Sales.PAYMENTORDER_MIME.getKey());
+                createReport(parameter, createdDoc);
             }
         }
         return new Return();

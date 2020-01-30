@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -71,7 +70,7 @@ public abstract class PaymentOrder_Base
         final Return ret = new Return();
         final EditedDoc editedDoc = editDoc(_parameter);
         updateConnection2Object(_parameter, editedDoc);
-        if (Sales.PAYMENTORDER_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+        if (Sales.PAYMENTORDER_JASPERACTIVATION.get().contains(JasperActivation.ONEDIT)) {
             final File file = createReport(_parameter, editedDoc);
             if (file != null) {
                 ret.put(ReturnValues.VALUES, file);
