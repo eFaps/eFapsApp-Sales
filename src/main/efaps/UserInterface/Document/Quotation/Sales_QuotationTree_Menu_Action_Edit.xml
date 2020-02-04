@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2020 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
         <target>
             <form>Sales_QuotationForm</form>
             <execute method="edit" program="org.efaps.esjp.sales.document.Quotation">
-                <property name="PositionType">Sales_ReceiptPosition</property>
+                <property name="PositionType">Sales_QuotationPosition</property>
                  <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Quotation.JasperReport</property>
@@ -53,7 +53,7 @@
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">660</property>
-       <property name="WindowWidth">1200</property>
+        <property name="WindowWidth">1200</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
