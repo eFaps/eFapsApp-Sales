@@ -132,7 +132,7 @@ public abstract class TaxesAttribute_Base
         }
         final DecimalFormat formatter;
         if (_attribute != null) {
-            formatter = NumberFormatter.get().getFrmt4Total(_attribute.getParent().getName());
+            formatter = NumberFormatter.get().getFrmt4Total(_attribute.getParent());
         } else {
             formatter = NumberFormatter.get().getTwoDigitsFormatter();
         }

@@ -19,6 +19,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -292,16 +293,16 @@ public abstract class IncomingRetention_Base
                     final BigDecimal retentionPercent = (BigDecimal) formatter.parse(retentionPercentStr);
                     final BigDecimal crossTotal = getCrossTotal(_parameter, calcList);
                     final BigDecimal retention = crossTotal.multiply(retentionPercent
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                    final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                    final String retentionStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(retention);
                     BigDecimal totalAmount = retention;
                     if (!rate[2].equals(rate[3])) {
                         totalAmount = totalAmount.multiply((BigDecimal) rate[1])
-                                        .setScale(8, BigDecimal.ROUND_HALF_UP);
+                                        .setScale(8, RoundingMode.HALF_UP);
                     }
-                    final String totalAmountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                    final String totalAmountStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(totalAmount);
                     map.put(CIFormSales.Sales_IncomingRetentionCreateForm.retentionValue.name, retentionStr);
                     map.put(CIFormSales.Sales_IncomingRetentionCreateForm.totalAmount.name, totalAmountStr);

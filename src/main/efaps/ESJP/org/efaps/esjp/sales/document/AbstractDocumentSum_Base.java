@@ -183,8 +183,7 @@ public abstract class AbstractDocumentSum_Base
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12, RoundingMode.HALF_UP);
 
         final Update update = new Update(_editDoc.getInstance());
         final String name = getDocName4Edit(_parameter);
@@ -250,14 +249,13 @@ public abstract class AbstractDocumentSum_Base
         }
 
         if (_editDoc.getInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-            final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+            final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter));
             final int scale = frmt.getMaximumFractionDigits();
-            final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList).setScale(scale, RoundingMode.HALF_UP);
             update.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
             _editDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
 
-            final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, RoundingMode.HALF_UP);
             update.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
             _editDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
@@ -265,13 +263,13 @@ public abstract class AbstractDocumentSum_Base
             update.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList, rateCurrInst));
             update.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
 
-            final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
+                            .setScale(scale, RoundingMode.HALF_UP);
             update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
             _editDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
 
-            final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
+                            .setScale(scale, RoundingMode.HALF_UP);
             update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
             _editDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
 
@@ -325,7 +323,7 @@ public abstract class AbstractDocumentSum_Base
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+                        RoundingMode.HALF_UP);
 
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         final String name = getDocName4Create(_parameter);
@@ -387,14 +385,14 @@ public abstract class AbstractDocumentSum_Base
         }
 
         if (getType4DocCreate(_parameter).isKindOf(CISales.DocumentSumAbstract.getType())) {
-            final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+            final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter));
             final int scale = frmt.getMaximumFractionDigits();
             final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+                            .setScale(scale, RoundingMode.HALF_UP);
             insert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
 
-            final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, RoundingMode.HALF_UP);
             insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
@@ -402,13 +400,13 @@ public abstract class AbstractDocumentSum_Base
             insert.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList, rateCurrInst));
             insert.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
 
-            final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
+                            .setScale(scale, RoundingMode.HALF_UP);
             insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
 
-            final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
+                            .setScale(scale, RoundingMode.HALF_UP);
             insert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, netTotal);
 
@@ -946,16 +944,16 @@ public abstract class AbstractDocumentSum_Base
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _createdDoc);
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+                        RoundingMode.HALF_UP);
 
         @SuppressWarnings("unchecked")
         final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
                         AbstractDocument_Base.CALCULATORS_VALUE);
 
-        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
 
-        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getType4SysConf(_parameter));
         final int uScale = unitFrmt.getMaximumFractionDigits();
 
         Integer idx = 0;
@@ -994,30 +992,30 @@ public abstract class AbstractDocumentSum_Base
 
                 posIns.add(CISales.PositionSumAbstract.Quantity, calc.getQuantity());
                 posIns.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
                 posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
                 posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst);
                 posIns.add(CISales.PositionSumAbstract.Rate, rateObj);
                 posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst);
                 posIns.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
-                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .setScale(uScale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
-                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .setScale(uScale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .setScale(uScale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateNetPrice,
-                                calc.getNetPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetPrice().setScale(scale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossPrice,
-                                calc.getCrossPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossPrice().setScale(scale, RoundingMode.HALF_UP));
                 add2PositionInsert(_parameter, calc, posIns, idx);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());
@@ -1057,7 +1055,7 @@ public abstract class AbstractDocumentSum_Base
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+                        RoundingMode.HALF_UP);
 
         @SuppressWarnings("unchecked")
         final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(AbstractDocument_Base.CALCULATORS_VALUE);
@@ -1065,10 +1063,10 @@ public abstract class AbstractDocumentSum_Base
         final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
         final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());
 
-        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
 
-        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getType4SysConf(_parameter));
         final int uScale = unitFrmt.getMaximumFractionDigits();
 
         final Iterator<Calculator> iter = calcList.iterator();
@@ -1113,30 +1111,30 @@ public abstract class AbstractDocumentSum_Base
 
                 update.add(CISales.PositionSumAbstract.Quantity, calc.getQuantity());
                 update.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
                 update.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
                 update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst);
                 update.add(CISales.PositionSumAbstract.Rate, rateObj);
                 update.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst);
                 update.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
-                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
-                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                .setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.RateNetPrice,
-                                calc.getNetPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetPrice().setScale(scale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.RateCrossPrice,
-                                calc.getCrossPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossPrice().setScale(scale, RoundingMode.HALF_UP));
                 add2PositionUpdate(_parameter, calc, update, i);
                 update.execute();
                 _editDoc.addPosition(update.getInstance());
@@ -1242,11 +1240,11 @@ public abstract class AbstractDocumentSum_Base
 
                         final DecimalFormat frmt = NumberFormatter.get().getFormatter();
 
-                        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(
+                        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(
                                         _parameter));
                         final int scale = totalFrmt.getMaximumFractionDigits();
 
-                        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(
+                        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getType4SysConf(
                                         _parameter));
                         final int uScale = unitFrmt.getMaximumFractionDigits();
 
@@ -1277,18 +1275,18 @@ public abstract class AbstractDocumentSum_Base
                             // update the base values for the position
                             final Update update = new Update(multi.getCurrentInstance());
                             update.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice().divide(rate,
-                                            BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                            RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                             update.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice().divide(rate,
-                                            BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                                            RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                             update.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice().divide(rate,
-                                            BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                            RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                             update.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice().divide(rate,
-                                            BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                                            RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                             update.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
                             update.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
                             update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                            .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale,
-                                                            BigDecimal.ROUND_HALF_UP));
+                                            .divide(rate, RoundingMode.HALF_UP).setScale(uScale,
+                                                            RoundingMode.HALF_UP));
                             update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
                             update.add(CISales.PositionSumAbstract.Rate, rateObj);
                             update.execute();
@@ -1296,14 +1294,14 @@ public abstract class AbstractDocumentSum_Base
                         // update the base values for the document
                         final Update update = new Update(docInst);
                         final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate,
-                                        BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP);
+                                        RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP);
                         update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
 
                         update.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate,
                                         baseCurrInst));
 
                         final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate,
-                                        BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP);
+                                        RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP);
                         update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
                         update.add(CISales.DocumentSumAbstract.Rate, rateObj);
                         update.execute();
@@ -1367,8 +1365,8 @@ public abstract class AbstractDocumentSum_Base
     {
         BigDecimal ret = BigDecimal.ZERO;
         if (_rateValue.compareTo(BigDecimal.ZERO) != 0) {
-            ret = _rateValue.divide(_newRate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(isDecimal4Doc(_docInst), BigDecimal.ROUND_HALF_UP);
+            ret = _rateValue.divide(_newRate, RoundingMode.HALF_UP)
+                            .setScale(isDecimal4Doc(_docInst), RoundingMode.HALF_UP);
         }
         return ret;
     }
@@ -1458,8 +1456,8 @@ public abstract class AbstractDocumentSum_Base
     {
         final Taxes ret = getRateTaxes(_parameter, _calcList, _baseCurrInst);
         for (final TaxEntry entry  : ret.getEntries()) {
-            entry.setAmount(entry.getAmount().divide(_rate, BigDecimal.ROUND_HALF_UP));
-            entry.setBase(entry.getBase().divide(_rate, BigDecimal.ROUND_HALF_UP));
+            entry.setAmount(entry.getAmount().divide(_rate, RoundingMode.HALF_UP));
+            entry.setBase(entry.getBase().divide(_rate, RoundingMode.HALF_UP));
         }
         return ret;
     }
@@ -1522,7 +1520,7 @@ public abstract class AbstractDocumentSum_Base
                                          final List<Calculator> _calcList)
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+        return NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                         .format(getCrossTotal(_parameter, _calcList));
     }
 
@@ -1567,7 +1565,7 @@ public abstract class AbstractDocumentSum_Base
                                        final List<Calculator> _calcList)
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+        return NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                         .format(getNetTotal(_parameter, _calcList));
     }
 
@@ -1628,7 +1626,7 @@ public abstract class AbstractDocumentSum_Base
                                              final List<Calculator> _calcList)
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+        return NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                         .format(getBaseCrossTotal(_parameter, _calcList));
     }
 
@@ -1661,7 +1659,7 @@ public abstract class AbstractDocumentSum_Base
                                               final List<Calculator> _calcList)
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+        return NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                         .format(getPerceptionTotal(_parameter, _calcList));
     }
 

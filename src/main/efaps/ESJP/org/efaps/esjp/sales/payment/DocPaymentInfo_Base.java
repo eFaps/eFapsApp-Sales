@@ -532,7 +532,7 @@ public abstract class DocPaymentInfo_Base
     public DecimalFormat getFormatter()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Total(getInstance().getType().getName());
+        return NumberFormatter.get().getFrmt4Total(getInstance().getType());
     }
 
     /**
@@ -1151,8 +1151,7 @@ public abstract class DocPaymentInfo_Base
                                            final boolean _perPayment)
         throws EFapsException
     {
-        final DecimalFormat formatter = NumberFormatter.get().getFrmt4Total(
-                        _parameter.getInstance().getType().getName());
+        final DecimalFormat formatter = NumberFormatter.get().getFrmt4Total(_parameter.getInstance().getType());
 
         final Table table = new Table()
             .setStyle("width:100%;")

@@ -19,6 +19,7 @@ package org.efaps.esjp.sales;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.NumberFormatter_Base.FrmtKey;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxAmount;
@@ -596,7 +598,7 @@ public abstract class Calculator_Base
         } else {
             final PriceUtil priceutil = new PriceUtil();
             final BigDecimal rate = priceutil.getExchangeRate(_parameter, currInst);
-            final BigDecimal newprice = _unitPrice.divide(rate, 8, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal newprice = _unitPrice.divide(rate, 8, RoundingMode.HALF_UP);
             productPrice.setBasePrice(newprice);
             productPrice.setOrigPrice(newprice);
         }
@@ -613,10 +615,10 @@ public abstract class Calculator_Base
                                   final String _unitPrice)
         throws EFapsException
     {
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
+        final DecimalFormat format = NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE);
 
         final BigDecimal unitPrice = parse(_unitPrice).setScale(format.getMaximumFractionDigits(),
-                        BigDecimal.ROUND_HALF_UP);
+                        RoundingMode.HALF_UP);
         setPriceFromUI(_parameter, unitPrice);
     }
 
@@ -796,8 +798,8 @@ public abstract class Calculator_Base
     public void setCrossPrice(final BigDecimal _crossPrice)
         throws EFapsException
     {
-        setCrossUnitPrice(_crossPrice.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(getQuantity(), BigDecimal.ROUND_HALF_UP));
+        setCrossUnitPrice(_crossPrice.setScale(12, RoundingMode.HALF_UP)
+                        .divide(getQuantity(), RoundingMode.HALF_UP));
     }
 
     /**
@@ -822,8 +824,8 @@ public abstract class Calculator_Base
     public void setNetPrice(final BigDecimal _netPrice)
         throws EFapsException
     {
-        setNetUnitPrice(_netPrice.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(getQuantity(), BigDecimal.ROUND_HALF_UP));
+        setNetUnitPrice(_netPrice.setScale(12, RoundingMode.HALF_UP)
+                        .divide(getQuantity(), RoundingMode.HALF_UP));
     }
 
     /**
@@ -885,7 +887,7 @@ public abstract class Calculator_Base
     public String getNetUnitPriceFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getNetUnitPrice());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE).format(getNetUnitPrice());
     }
 
     /**
@@ -940,7 +942,7 @@ public abstract class Calculator_Base
                 final BigDecimal factor = tax.getFactor();
                 if (factor.compareTo(BigDecimal.ONE) != 0) {
                     targetPrice = targetPrice.subtract(_crossUnitPrice.subtract(_crossUnitPrice
-                                    .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
+                                    .divide(BigDecimal.ONE.add(factor), RoundingMode.HALF_UP)));
                 }
             }
             if (productNetUnitPrice == null) {
@@ -971,7 +973,7 @@ public abstract class Calculator_Base
     public String getCrossUnitPriceFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getCrossUnitPrice());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE).format(getCrossUnitPrice());
     }
 
     /**
@@ -1005,7 +1007,7 @@ public abstract class Calculator_Base
     public String getDiscountFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Discount(getPosKey()).format(getDiscount());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.DISCOUNT).format(getDiscount());
     }
 
     /**
@@ -1072,15 +1074,15 @@ public abstract class Calculator_Base
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
 
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
+        final DecimalFormat format = NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE);
         final int decDigCant = format.getMaximumFractionDigits();
 
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
         ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
         ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
         return ret;
     }
 
@@ -1093,7 +1095,7 @@ public abstract class Calculator_Base
     public String getDiscountNetUnitPriceFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getDiscountNetUnitPrice());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE).format(getDiscountNetUnitPrice());
     }
 
     /**
@@ -1178,7 +1180,7 @@ public abstract class Calculator_Base
     public String getQuantityFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4Quantity(getPosKey()).format(getQuantity());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.QUANTITY).format(getQuantity());
     }
 
     /**
@@ -1217,7 +1219,7 @@ public abstract class Calculator_Base
     public String getNetPriceFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getNetPrice());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE).format(getNetPrice());
     }
 
     /**
@@ -1282,17 +1284,17 @@ public abstract class Calculator_Base
     public ProductPrice getProductDiscountCrossUnitPrice()
         throws EFapsException
     {
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
+        final DecimalFormat format = NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE);
         final int decDigCant = format.getMaximumFractionDigits();
         final ProductPrice ret = getNewPrice();
         if (getTaxes().stream().anyMatch(tax -> TaxType.PERUNIT.equals(tax.getTaxType()))) {
             final ProductPrice unit = evalProductCrossUnitPrice(productPrice, true);
             ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
-                            .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                            .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
             ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
-                            .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                            .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
             ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
-                            .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                            .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
 
             final Tax[] perUnitTaxes = getTaxes().stream()
                             .filter(tax -> TaxType.PERUNIT.equals(tax.getTaxType()))
@@ -1302,11 +1304,11 @@ public abstract class Calculator_Base
         } else {
             final ProductPrice unit = getProductCrossUnitPrice();
             ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
             ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
             ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, RoundingMode.HALF_UP));
         }
         return ret;
 
@@ -1352,7 +1354,7 @@ public abstract class Calculator_Base
     public String getCrossPriceFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getCrossPrice());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE).format(getCrossPrice());
     }
 
     /**
@@ -1484,15 +1486,15 @@ public abstract class Calculator_Base
                         if (factor.compareTo(BigDecimal.ONE) != 0) {
                             if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
                                 tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
-                                                .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
+                                                .divide(BigDecimal.ONE.add(factor), RoundingMode.HALF_UP)));
                             }
                             if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
                                 tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
-                                                .add(factor), BigDecimal.ROUND_HALF_UP)));
+                                                .add(factor), RoundingMode.HALF_UP)));
                             }
                             if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
                                 tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
-                                                .add(factor), BigDecimal.ROUND_HALF_UP)));
+                                                .add(factor), RoundingMode.HALF_UP)));
                             }
                         }
                     }
@@ -1574,7 +1576,7 @@ public abstract class Calculator_Base
     public String getPerceptionFmtStr()
         throws EFapsException
     {
-        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getPerception());
+        return NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.UNITPRICE).format(getPerception());
     }
 
     /**
@@ -1608,7 +1610,7 @@ public abstract class Calculator_Base
                                 .setAmount(BigDecimal.ZERO)
                                 .setBase(net));
             } else {
-                final DecimalFormat format = NumberFormatter.get().getFrmt4Tax(getPosKey());
+                final DecimalFormat format = NumberFormatter.get().getFrmt(getPosKey(), FrmtKey.TAX);
                 final int decDigCant = format.getMaximumFractionDigits();
                 if (TaxType.PERUNIT.equals(tax.getTaxType())) {
                     ret.add(new TaxAmount()
@@ -1618,7 +1620,7 @@ public abstract class Calculator_Base
                 } else {
                     ret.add(new TaxAmount()
                                 .setTax(tax)
-                                .setAmount(net.multiply(tax.getFactor()).setScale(decDigCant, BigDecimal.ROUND_HALF_UP))
+                                .setAmount(net.multiply(tax.getFactor()).setScale(decDigCant, RoundingMode.HALF_UP))
                                 .setBase(net));
                 }
             }
@@ -1664,7 +1666,7 @@ public abstract class Calculator_Base
                           final BigDecimal _rate)
     {
         productPrice.setCurrentPrice(productPrice.getCurrentPrice()
-                        .divide(_rate, 8, BigDecimal.ROUND_HALF_UP));
+                        .divide(_rate, 8, RoundingMode.HALF_UP));
         productPrice.setCurrentCurrencyInstance(_currencyInstance);
         productNetUnitPrice = null;
         productCrossUnitPrice = null;

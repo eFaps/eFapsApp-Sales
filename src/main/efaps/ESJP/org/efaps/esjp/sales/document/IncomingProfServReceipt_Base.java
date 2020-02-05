@@ -397,7 +397,7 @@ public abstract class IncomingProfServReceipt_Base
                 final BigDecimal detraction = crossTotal.multiply(insurancePercent
                                 .setScale(8, RoundingMode.HALF_UP)
                                 .divide(new BigDecimal(100), RoundingMode.HALF_UP));
-                final String insuranceStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                final String insuranceStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                 .format(detraction);
                 _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.insuranceValue.name, insuranceStr);
             } catch (final ParseException e) {
@@ -414,7 +414,7 @@ public abstract class IncomingProfServReceipt_Base
                 final BigDecimal retention = crossTotal.multiply(retentionPercent
                                 .setScale(8, RoundingMode.HALF_UP)
                                 .divide(new BigDecimal(100), RoundingMode.HALF_UP));
-                final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                final String retentionStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                 .format(retention);
                 _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.retentionValue.name, retentionStr);
             } catch (final ParseException e) {

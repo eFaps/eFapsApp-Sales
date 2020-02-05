@@ -18,6 +18,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -248,8 +249,8 @@ public abstract class IncomingInvoice_Base
                 }
                 final Object[] rateObj = getRateObject(_parameter);
                 final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                                BigDecimal.ROUND_HALF_UP);
-                final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+                                RoundingMode.HALF_UP);
+                final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getType4SysConf(_parameter));
                 final int uScale = unitFrmt.getMaximumFractionDigits();
                 for (final Calculator calc : calcList) {
 
@@ -258,11 +259,11 @@ public abstract class IncomingInvoice_Base
                     final BigDecimal basePrice = prodPrice.getBasePrice();
                     final BigDecimal price;
                     if (Calculator.priceIsNet(_parameter, this)) {
-                        price = calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
-                                        .setScale(uScale, BigDecimal.ROUND_HALF_UP);
+                        price = calc.getNetUnitPrice().divide(rate, RoundingMode.HALF_UP)
+                                        .setScale(uScale, RoundingMode.HALF_UP);
                     } else {
-                        price = calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
-                                        .setScale(uScale, BigDecimal.ROUND_HALF_UP);
+                        price = calc.getCrossUnitPrice().divide(rate, RoundingMode.HALF_UP)
+                                        .setScale(uScale, RoundingMode.HALF_UP);
                     }
                     if (price.compareTo(basePrice) != 0) {
                         final Insert insert = new Insert(CIProducts.ProductPricelistPurchase);
@@ -316,9 +317,9 @@ public abstract class IncomingInvoice_Base
                 final BigDecimal perceptionPercent = (BigDecimal) formatter.parse(perceptionPercentStr);
                 final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
                 final BigDecimal perception = crossTotal.multiply(perceptionPercent
-                                .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                final String perceptionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                .setScale(8, RoundingMode.HALF_UP)
+                                .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                final String perceptionStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                 .format(perception);
                 _map.put(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name, perceptionStr);
             } catch (final ParseException e) {
@@ -333,9 +334,9 @@ public abstract class IncomingInvoice_Base
                 final BigDecimal detractionPercent = (BigDecimal) formatter.parse(detractionPercentStr);
                 final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
                 final BigDecimal detraction = crossTotal.multiply(detractionPercent
-                                .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                final String detractionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                .setScale(8, RoundingMode.HALF_UP)
+                                .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                final String detractionStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                 .format(detraction);
                 _map.put(CIFormSales.Sales_IncomingInvoiceForm.detractionValue.name, detractionStr);
             } catch (final ParseException e) {
@@ -350,9 +351,9 @@ public abstract class IncomingInvoice_Base
                 final BigDecimal retentionPercent = (BigDecimal) formatter.parse(retentionPercentStr);
                 final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
                 final BigDecimal retention = crossTotal.multiply(retentionPercent
-                                .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                .setScale(8, RoundingMode.HALF_UP)
+                                .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                final String retentionStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                 .format(retention);
                 _map.put(CIFormSales.Sales_IncomingInvoiceForm.retentionValue.name, retentionStr);
             } catch (final ParseException e) {

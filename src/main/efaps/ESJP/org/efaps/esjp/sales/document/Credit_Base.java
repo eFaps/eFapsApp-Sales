@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,7 +162,7 @@ public abstract class Credit_Base
 
         final BigDecimal installAmount = rateCrossTotal.setScale(8, RoundingMode.HALF_UP)
                         .divide(new BigDecimal(quantity), RoundingMode.HALF_UP);
-        final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType().getName());
+        final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType());
         final String installAmountStr = fomatter.format(installAmount);
 
         final Parameter parameter = ParameterUtil.clone(_parameter);
@@ -181,7 +181,7 @@ public abstract class Credit_Base
                     throws EFapsException
                 {
                     return rateObject;
-                };
+                }
             }.create(parameter);
         }
         return new Return();
@@ -209,7 +209,7 @@ public abstract class Credit_Base
 
         final BigDecimal installAmmount = rateCrossTotal.setScale(8, RoundingMode.HALF_UP)
                         .divide(new BigDecimal(quantity), RoundingMode.HALF_UP);
-        final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType().getName());
+        final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType());
         final String installAmountStr = fomatter.format(installAmmount);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();

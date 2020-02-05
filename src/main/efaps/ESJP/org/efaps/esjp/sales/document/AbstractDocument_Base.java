@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1813,7 +1813,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      * @return new Calculator
      */
-    @SuppressWarnings("checkstyle:parameternumber")
+
     public Calculator getCalculator(final Parameter _parameter,
                                     final Calculator _oldCalc,
                                     final String _oid,
@@ -1839,7 +1839,6 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      * @return new Calculator
      */
-    @SuppressWarnings("checkstyle:parameternumber")
     public Calculator getCalculator(final Parameter _parameter,
                                     final Calculator _oldCalc,
                                     final Instance _prodInstance,
@@ -3095,11 +3094,11 @@ public abstract class AbstractDocument_Base
             throws EFapsException
         {
             final Map<String, Object> ret = new HashMap<>();
-            final String typeName = getDoc().getTypeName4SysConf(_parameter);
-            final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(typeName);
-            final DecimalFormat upFrmt = NumberFormatter.get().getFrmt4UnitPrice(typeName);
-            final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(typeName);
-            final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(typeName);
+            final Type type = getDoc().getType4SysConf(_parameter);
+            final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(type);
+            final DecimalFormat upFrmt = NumberFormatter.get().getFrmt4UnitPrice(type);
+            final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(type);
+            final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(type);
 
             ret.put("oid", InstanceUtils.isKindOf(instance, CISales.PositionAbstract)
                             ? instance.getOid() : "");

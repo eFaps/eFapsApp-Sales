@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -769,7 +769,7 @@ public abstract class AbstractProductDocument_Base
 
                 multi.execute();
 
-                NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+                NumberFormatter.get().getFrmt4Quantity(getType4SysConf(_parameter));
 
                 while (multi.next()) {
                     final Instance prodInst = multi.<Instance>getSelect(selProdInst);
@@ -831,7 +831,7 @@ public abstract class AbstractProductDocument_Base
         if (_productinst.getType().isCIType(CIProducts.ProductInfinite)) {
             ret.append("\u221e");
         } else {
-            final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+            final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getType4SysConf(_parameter));
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
             queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, _storageInst);
             queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, _productinst);

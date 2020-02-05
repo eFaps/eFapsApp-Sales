@@ -19,6 +19,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -314,16 +315,16 @@ public abstract class IncomingDetraction_Base
                     final BigDecimal detractionPercent = (BigDecimal) formatter.parse(detractionPercentStr);
                     final BigDecimal crossTotal = super.getCrossTotal(_parameter, calcList);
                     final BigDecimal detraction = crossTotal.multiply(detractionPercent
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                    final String detractionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                    final String detractionStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(detraction);
                     BigDecimal totalAmount = detraction;
                     if (!rate[2].equals(rate[3])) {
                         totalAmount = totalAmount.multiply((BigDecimal) rate[1])
-                                        .setScale(8, BigDecimal.ROUND_HALF_UP);
+                                        .setScale(8, RoundingMode.HALF_UP);
                     }
-                    final String totalAmountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                    final String totalAmountStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(totalAmount);
                     map.put(CIFormSales.Sales_IncomingDetractionCreateForm.detractionValue.name, detractionStr);
                     map.put(CIFormSales.Sales_IncomingDetractionCreateForm.totalAmount.name, totalAmountStr);
