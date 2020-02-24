@@ -215,7 +215,7 @@ public abstract class SalesReport4Account_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        this.reportKey = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
+        reportKey = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
         return new DynReport4Account(this);
     }
 
@@ -237,7 +237,7 @@ public abstract class SalesReport4Account_Base
      */
     protected ReportKey getReportKey()
     {
-        return this.reportKey;
+        return reportKey;
     }
 
     /**
@@ -247,7 +247,7 @@ public abstract class SalesReport4Account_Base
      */
     protected void setReportKey(final ReportKey _reportKey)
     {
-        this.reportKey = _reportKey;
+        reportKey = _reportKey;
     }
 
 
@@ -341,7 +341,7 @@ public abstract class SalesReport4Account_Base
          */
         public AbstractDynReport4Account(final SalesReport4Account_Base _report4Account)
         {
-            this.filteredReport = _report4Account;
+            filteredReport = _report4Account;
         }
 
         @Override
@@ -369,11 +369,11 @@ public abstract class SalesReport4Account_Base
          */
         protected SalesReport4Account_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        @SuppressWarnings({ "checkstyle:MethodLength", "unchecked" })
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
@@ -839,7 +839,6 @@ public abstract class SalesReport4Account_Base
         }
 
         @Override
-        @SuppressWarnings("checkstyle:MethodLength")
         protected void addColumnDefinition(final Parameter _parameter,
                                            final JasperReportBuilder _builder)
             throws EFapsException
@@ -1319,7 +1318,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean(final ReportKey _reportKey)
         {
-            this.reportKey = _reportKey;
+            reportKey = _reportKey;
         }
 
         /**
@@ -1329,7 +1328,7 @@ public abstract class SalesReport4Account_Base
          */
         public boolean isCurrencyBase()
         {
-            return this.currencyBase;
+            return currencyBase;
         }
 
         /**
@@ -1340,7 +1339,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setCurrencyBase(final boolean _currencyBase)
         {
-            this.currencyBase = _currencyBase;
+            currencyBase = _currencyBase;
             return this;
         }
 
@@ -1359,7 +1358,7 @@ public abstract class SalesReport4Account_Base
             throws EFapsException
         {
             final Properties props;
-            switch (this.reportKey) {
+            switch (reportKey) {
                 case CONTACT:
                     props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
                     break;
@@ -1372,7 +1371,7 @@ public abstract class SalesReport4Account_Base
                     break;
             }
 
-            if (this.payments.isEmpty()) {
+            if (payments.isEmpty()) {
                 evalPayments();
             }
             final Map<String, Object> ret = new HashMap<>();
@@ -1398,22 +1397,22 @@ public abstract class SalesReport4Account_Base
             final boolean negate = BooleanUtils.toBoolean(props.getProperty(getDocInst().getType().getName()
                             + ".Negate"));
             if (isCurrencyBase()) {
-                final BigDecimal crossTmp = this.cross.get(Currency.getBaseCurrency().getId());
+                final BigDecimal crossTmp = cross.get(Currency.getBaseCurrency().getId());
                 if (crossTmp != null) {
                     ret.put("crossTotal_BASE", negate ? crossTmp.negate() : crossTmp);
                 }
-                final BigDecimal payTmp = this.payments.get(Currency.getBaseCurrency().getId());
+                final BigDecimal payTmp = payments.get(Currency.getBaseCurrency().getId());
                 if (payTmp != null) {
                     ret.put("payed_BASE", negate ? payTmp.negate() : payTmp);
                 }
             } else {
                 for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                    if (this.cross.containsKey(currency.getInstance().getId())) {
-                        final BigDecimal crossTmp =  this.cross.get(currency.getInstance().getId());
+                    if (cross.containsKey(currency.getInstance().getId())) {
+                        final BigDecimal crossTmp =  cross.get(currency.getInstance().getId());
                         if (crossTmp != null) {
                             ret.put("crossTotal_" + currency.getISOCode(),  negate ? crossTmp.negate() : crossTmp);
                         }
-                        final BigDecimal payTmp = this.payments.get(currency.getInstance().getId());
+                        final BigDecimal payTmp = payments.get(currency.getInstance().getId());
                         if (payTmp != null) {
                             ret.put("payed_" + currency.getISOCode(), negate ? payTmp.negate() : payTmp);
                         }
@@ -1436,7 +1435,7 @@ public abstract class SalesReport4Account_Base
         public DataBean addCross(final Long _currencyId,
                                  final BigDecimal _cross)
         {
-            this.cross.put(_currencyId, _cross);
+            cross.put(_currencyId, _cross);
             return this;
         }
 
@@ -1447,7 +1446,7 @@ public abstract class SalesReport4Account_Base
          */
         public Instance getDocInst()
         {
-            return this.docInst;
+            return docInst;
         }
 
         /**
@@ -1458,7 +1457,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocInst(final Instance _docInst)
         {
-            this.docInst = _docInst;
+            docInst = _docInst;
             return this;
         }
 
@@ -1469,7 +1468,7 @@ public abstract class SalesReport4Account_Base
          */
         public DateTime getDocCreated()
         {
-            return this.docCreated;
+            return docCreated;
         }
 
         /**
@@ -1480,7 +1479,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocCreated(final DateTime _docCreated)
         {
-            this.docCreated = _docCreated;
+            docCreated = _docCreated;
             return this;
         }
 
@@ -1491,7 +1490,7 @@ public abstract class SalesReport4Account_Base
          */
         public DateTime getDocDate()
         {
-            return this.docDate;
+            return docDate;
         }
 
         /**
@@ -1502,7 +1501,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocDate(final DateTime _docDate)
         {
-            this.docDate = _docDate;
+            docDate = _docDate;
             return this;
         }
 
@@ -1513,7 +1512,7 @@ public abstract class SalesReport4Account_Base
          */
         public DateTime getDocDueDate()
         {
-            return this.docDueDate;
+            return docDueDate;
         }
 
         /**
@@ -1524,7 +1523,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocDueDate(final DateTime _docDueDate)
         {
-            this.docDueDate = _docDueDate;
+            docDueDate = _docDueDate;
             return this;
         }
 
@@ -1535,7 +1534,7 @@ public abstract class SalesReport4Account_Base
          */
         public String getDocName()
         {
-            return this.docName;
+            return docName;
         }
 
         /**
@@ -1546,7 +1545,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             return this;
         }
 
@@ -1557,7 +1556,7 @@ public abstract class SalesReport4Account_Base
          */
         public String getDocContactName()
         {
-            return this.docContactName == null ? "" : this.docContactName;
+            return docContactName == null ? "" : docContactName;
         }
 
         /**
@@ -1569,7 +1568,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocContactName(final String _docContactName)
         {
-            this.docContactName = _docContactName;
+            docContactName = _docContactName;
             return this;
         }
 
@@ -1580,7 +1579,7 @@ public abstract class SalesReport4Account_Base
          */
         public Object[] getRate()
         {
-            return this.rate;
+            return rate;
         }
 
         /**
@@ -1591,7 +1590,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setRate(final Object[] _rate)
         {
-            this.rate = _rate;
+            rate = _rate;
             return this;
         }
 
@@ -1602,7 +1601,7 @@ public abstract class SalesReport4Account_Base
          */
         public String getDocRevision()
         {
-            return this.docRevision;
+            return docRevision;
         }
 
         /**
@@ -1613,7 +1612,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocRevision(final String _docRevision)
         {
-            this.docRevision = _docRevision;
+            docRevision = _docRevision;
             return this;
         }
 
@@ -1628,7 +1627,7 @@ public abstract class SalesReport4Account_Base
             if (getDocInst().isValid()) {
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
                 final Properties props;
-                switch (this.reportKey) {
+                switch (reportKey) {
                     case CONTACT:
                         props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
                         break;
@@ -1646,9 +1645,9 @@ public abstract class SalesReport4Account_Base
                 if (getReportDate().isBefore(new DateTime().withTimeAtStartOfDay())) {
                     docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
                 }
-                this.payments.put(Currency.getBaseCurrency().getId(),
+                payments.put(Currency.getBaseCurrency().getId(),
                                 docPayInfo.getPaidInCurrency(Currency.getBaseCurrency(), perpay).abs());
-                this.payments.put(docPayInfo.getRateCurrencyInstance().getId(),
+                payments.put(docPayInfo.getRateCurrencyInstance().getId(),
                                 docPayInfo.getPaidInCurrency(docPayInfo.getRateCurrencyInstance(), perpay).abs());
             }
         }
@@ -1660,7 +1659,7 @@ public abstract class SalesReport4Account_Base
          */
         public String getDocStatus()
         {
-            return this.docStatus;
+            return docStatus;
         }
 
         /**
@@ -1671,7 +1670,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setDocStatus(final String _docStatus)
         {
-            this.docStatus = _docStatus;
+            docStatus = _docStatus;
             return this;
         }
 
@@ -1682,7 +1681,7 @@ public abstract class SalesReport4Account_Base
          */
         public String getCondition()
         {
-            if (this.condition == null) {
+            if (condition == null) {
                 try {
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
                     queryBldr.addWhereAttrEqValue(CISales.Channel2DocumentAbstract.ToAbstractLink, getDocInst());
@@ -1693,21 +1692,21 @@ public abstract class SalesReport4Account_Base
                     multi.addSelect(selName);
                     multi.execute();
                     while (multi.next()) {
-                        if (this.condition != null && !this.condition.isEmpty()) {
-                            this.condition = this.condition + ", ";
+                        if (condition != null && !condition.isEmpty()) {
+                            condition = condition + ", ";
                         } else {
-                            this.condition = "";
+                            condition = "";
                         }
-                        this.condition = this.condition + multi.getSelect(selName);
+                        condition = condition + multi.getSelect(selName);
                     }
                 } catch (final EFapsException e) {
                     SalesReport4Account_Base.LOG.error("Catched", e);
                 }
-                if (this.condition == null) {
-                    this.condition = "";
+                if (condition == null) {
+                    condition = "";
                 }
             }
-            return this.condition;
+            return condition;
         }
 
         /**
@@ -1718,7 +1717,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setCondition(final String _condition)
         {
-            this.condition = _condition;
+            condition = _condition;
             return this;
         }
 
@@ -1747,7 +1746,7 @@ public abstract class SalesReport4Account_Base
          */
         public Instance getContactInst()
         {
-            return this.contactInst;
+            return contactInst;
         }
 
         /**
@@ -1758,7 +1757,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setContactInst(final Instance _contactInst)
         {
-            this.contactInst = _contactInst;
+            contactInst = _contactInst;
             return this;
         }
 
@@ -1769,7 +1768,7 @@ public abstract class SalesReport4Account_Base
          */
         public String getSwapInfo()
         {
-            return this.swapInfo;
+            return swapInfo;
         }
 
         /**
@@ -1780,7 +1779,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setSwapInfo(final String _swapInfo)
         {
-            this.swapInfo = _swapInfo;
+            swapInfo = _swapInfo;
             return this;
         }
 
@@ -1791,7 +1790,7 @@ public abstract class SalesReport4Account_Base
          */
         public DateTime getReportDate()
         {
-            return this.reportDate;
+            return reportDate;
         }
 
         /**
@@ -1802,7 +1801,7 @@ public abstract class SalesReport4Account_Base
          */
         public DataBean setReportDate(final DateTime _reportDate)
         {
-            this.reportDate = _reportDate;
+            reportDate = _reportDate;
             return this;
         }
     }

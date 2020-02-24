@@ -2072,6 +2072,21 @@ public final class Sales
                     .description("Activate Perception Certificates");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute QUOTEREQUEST_JASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "QuoteRequest.JasperReport")
+                    .description("Name of the jasperReport for QuoteRequest.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> QUOTEREQUEST_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "QuoteRequest.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime of the jasperReport for QuoteRequest.");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink RETURNUSAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)

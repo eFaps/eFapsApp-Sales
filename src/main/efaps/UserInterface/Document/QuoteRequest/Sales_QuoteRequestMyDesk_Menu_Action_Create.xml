@@ -22,9 +22,6 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps"/>
-        </profiles>
         <name>Sales_QuoteRequestMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Admin</role>
@@ -35,35 +32,10 @@
                 <property name="PositionType">Sales_QuoteRequestPosition</property>
                 <property name="StatusGroup">Sales_QuoteRequestStatus</property>
                 <property name="Status">Open</property>
-
-            </execute>
-            <validate program="org.efaps.esjp.sales.document.QuoteRequest" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
-            </validate>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_QuoteRequest</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
-    </definition>
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-         <profiles>
-            <profile name="projects"/>
-        </profiles>
-        <name>Sales_QuoteRequestMyDesk_Menu_Action_Create</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <form>Sales_QuoteRequestForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.QuoteRequest">
-                <property name="PositionType">Sales_QuoteRequestPosition</property>
-                <property name="StatusGroup">Sales_QuoteRequestStatus</property>
-                <property name="Status">Open</property>
-
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.QuoteRequest.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.QuoteRequest.Mime</property>
                 <!-- Projects_ProjectService2QuoteRequest -->
                 <property name="ConnectType">f70db3d7-6fd7-4d4f-a718-82920edc10b6</property>
                 <property name="ConnectCurrentLink">ToLink</property>
