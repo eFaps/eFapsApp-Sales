@@ -2073,6 +2073,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute QUOTEREQUEST_ACTIVATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "QuoteRequest.Activate")
+                    .defaultValue("true")
+                    .description("Activate the possiblity to register QuoteRequest");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute QUOTEREQUEST_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "QuoteRequest.JasperReport")

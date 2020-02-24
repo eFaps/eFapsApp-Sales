@@ -147,7 +147,7 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_QuoteRequestForm.project.Label</property>
             <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Width">50</property>
@@ -197,7 +197,7 @@
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <table>Sales_QuoteRequestPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_QuoteRequestPosition</property>

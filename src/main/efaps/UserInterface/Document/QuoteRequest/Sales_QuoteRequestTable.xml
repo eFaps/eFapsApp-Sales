@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2020 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,21 +15,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>10be15e5-d734-4249-aa27-fcd78889bbd3</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuoteRequestTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -47,21 +43,27 @@
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
-        <field name="vendorLink">
-            <property name="Attribute">Salesperson</property>
-            <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
-        </field>
         <field name="status">
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2QuoteRequest#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2QuoteRequest#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2QuoteRequest#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+            <property name="Label">Sales_QuoteRequestForm.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_QuoteRequestForm.project4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>
