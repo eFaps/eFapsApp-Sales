@@ -33,6 +33,9 @@
                 method="autoComplete4Doc"
                 name="Sales_QuoteRequest_SelectDocForm.quotation.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type01">Sales_ProductRequest</property>
+                <property name="Type02">Sales_ServiceRequest</property>
+                <property name="AutoType">TOKEN</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.QuoteRequest"
                 method="updateFields4Document"
