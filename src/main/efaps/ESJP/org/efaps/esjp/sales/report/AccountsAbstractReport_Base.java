@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-
 package org.efaps.esjp.sales.report;
 
 import java.io.File;
@@ -42,7 +41,6 @@ import org.efaps.ci.CIAttribute;
 import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -60,8 +58,6 @@ import org.efaps.esjp.humanresource.Employee;
 import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
-import org.efaps.esjp.sales.report.SalesReport4Account.DynReport4Account;
-import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -83,57 +79,22 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
-/**
- * @author The eFaps Team
- */
-@EFapsUUID("d095f1fb-9286-4f93-a030-715873826dca")
+@EFapsUUID("aa4234b2-578e-11ea-82b4-0242ac130003")
 @EFapsApplication("eFapsApp-Sales")
-public abstract class SalesReport4Account_Base
+public abstract class AccountsAbstractReport_Base
     extends FilteredReport
 {
-    /**
-     * Used to define which report to be displayed.
-     */
-    public enum ReportType
-    {
-        /** The standard. */
-        STANDARD,
-        /** Outgoing. */
-        MANAGEMENT,
-        /** Contact related. */
-        MINIMAL;
-    }
 
-    /**
-     * Used to distinguish between incoming and outgoing report.
-     */
-    public enum ReportKey
-    {
-        /** Incoming. */
-        IN,
-        /** Outgoing. */
-        OUT,
-        /** Contact related. */
-        CONTACT;
-    }
-
-    /**
-     * Used to distinguish between incoming and outgoing report.
-     */
     public enum FilterDate
     {
-        /** The date. */
+        /** Filter by date. */
         DATE,
-        /** The created. */
+        /** Filter by created. */
         CREATED,
-        /** The duedate. */
+        /** Filter by due-date. */
         DUEDATE;
     }
 
-    /**
-     * The Enum Grouping.
-     *
-     */
     public enum GroupBy
     {
         /** Includes a group on yearly level. */
@@ -153,20 +114,23 @@ public abstract class SalesReport4Account_Base
     }
 
     /**
+     * Used to define which report to be displayed.
+     */
+    public enum ReportType
+    {
+        /** The standard. */
+        STANDARD,
+        /** Outgoing. */
+        MANAGEMENT,
+        /** Contact related. */
+        MINIMAL;
+    }
+
+    /**
      * Logging instance used in this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(SalesReport4Account.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AccountsAbstractReport.class);
 
-    /**
-     * ReportKey for this report.
-     */
-    private ReportKey reportKey = ReportKey.IN;
-
-    /**
-     * @param _parameter Parameter as passed by the eFasp API
-     * @return Return containing html snipplet
-     * @throws EFapsException on error
-     */
     public Return generateReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -190,7 +154,7 @@ public abstract class SalesReport4Account_Base
         final Return ret = new Return();
         final String mime = getProperty(_parameter, "Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName(getLabel(_parameter, "FileName"));
+        dyRp.setFileName( DBProperties.getProperty(this.getClass().getName() + ".FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -199,56 +163,8 @@ public abstract class SalesReport4Account_Base
         }
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
-
         return ret;
     }
-
-    /**
-     * Method to get a new Report instance-of class Report4Account.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return DynamicReport to class.
-     * @throws EFapsException on error.
-     */
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
-        throws EFapsException
-    {
-        reportKey = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
-        return new DynReport4Account(this);
-    }
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @param _key key to be searched
-     * @return new Label
-     */
-    protected String getLabel(final Parameter _parameter,
-                              final String _key)
-    {
-        return DBProperties.getProperty(SalesReport4Account.class.getName() + "." + getReportKey() + "." + _key);
-    }
-
-    /**
-     * Getter method for the instance variable {@link #reportKey}.
-     *
-     * @return value of instance variable {@link #reportKey}
-     */
-    protected ReportKey getReportKey()
-    {
-        return reportKey;
-    }
-
-    /**
-     * Setter method for instance variable {@link #reportKey}.
-     *
-     * @param _reportKey value for instance variable {@link #reportKey}
-     */
-    protected void setReportKey(final ReportKey _reportKey)
-    {
-        reportKey = _reportKey;
-    }
-
-
 
     /**
      * Gets the group by filter value.
@@ -279,12 +195,13 @@ public abstract class SalesReport4Account_Base
                     if (!isShowCondition()) {
                         ret.remove(GroupBy.CONDITION);
                     }
-                    if (ReportKey.CONTACT.equals(getReportKey())) {
-                        ret.remove(GroupBy.ASSIGNED);
-                        ret.remove(GroupBy.CONTACT);
-                    }
+                  // TODO
+                    //if (ReportKey.CONTACT.equals(getReportKey())) {
+                    //    ret.remove(GroupBy.ASSIGNED);
+                    //    ret.remove(GroupBy.CONTACT);
+                    //}
                 } catch (final EFapsException e) {
-                    SalesReport4Account_Base.LOG.error("Catched", e);
+                    LOG.error("Catched", e);
                 }
                 return ret;
             }
@@ -293,79 +210,31 @@ public abstract class SalesReport4Account_Base
         return ret;
     }
 
-    /**
-     * Checks if is show assigned.
-     *
-     * @return true, if is show assigned
-     * @throws EFapsException on error
-     */
-    protected boolean isShowAssigned()
-        throws EFapsException
+    protected String getLabel(final Parameter _parameter,
+                              final String _key)
     {
-        return Sales.REPORT_SALES4ACCOUNTIN_ASSIGENED.get() && getReportKey().equals(ReportKey.IN)
-                        || Sales.REPORT_SALES4ACCOUNTOUT_ASSIGENED.get() && getReportKey().equals(ReportKey.OUT);
+        return DBProperties.getProperty(this.getClass().getName() + "." + _key);
     }
 
-    /**
-     * Checks if is show condition.
-     *
-     * @return true, if is show condition
-     * @throws EFapsException on error
-     */
-    protected boolean isShowCondition()
-        throws EFapsException
-    {
-        return Sales.CHACTIVATESALESCOND.get() && getReportKey().equals(ReportKey.IN) || Sales.CHACTIVATEPURCHASECOND
-                        .get() && getReportKey().equals(ReportKey.OUT) || (Sales.CHACTIVATEPURCHASECOND.get()
-                                        || Sales.CHACTIVATESALESCOND.get()) && getReportKey().equals(ReportKey.CONTACT);
-    }
+    protected abstract boolean isShowAssigned()
+        throws EFapsException;
 
-    /**
-     * Report class.
-     */
-    public abstract static class AbstractDynReport4Account
+    protected abstract boolean isShowCondition()
+        throws EFapsException;
+
+    protected abstract AccountsAbstractDynReport getReport(final Parameter _parameter)
+        throws EFapsException;
+
+    protected static abstract class AccountsAbstractDynReport
         extends AbstractDynamicReport
     {
+        private final AccountsAbstractReport_Base filteredReport;
 
-        /**
-         * variable to report.
-         */
-        private final SalesReport4Account_Base filteredReport;
-
-        /**
-         * Instantiates a new report4 account.
-         *
-         * @param _report4Account class used
-         */
-        public AbstractDynReport4Account(final SalesReport4Account_Base _report4Account)
-        {
-            filteredReport = _report4Account;
+        public AccountsAbstractDynReport(final AccountsAbstractReport_Base _filteredReport) {
+            filteredReport = _filteredReport;
         }
 
-        @Override
-        protected String getTitle(final Parameter _parameter)
-        {
-            final String ret;
-            switch(getFilteredReport().getReportKey()) {
-                case IN:
-                    ret = DBProperties.getProperty("Sales_PaymentDocument_Report4AccountMyDesk.Title");
-                    break;
-                case OUT:
-                    ret = DBProperties.getProperty("Sales_PaymentDocumentOut_Report4AccountMyDesk.Title");
-                    break;
-                default:
-                    ret = super.getTitle(_parameter);
-                    break;
-            }
-            return ret;
-        }
-
-        /**
-         * Gets the filtered report.
-         *
-         * @return the filtered report
-         */
-        protected SalesReport4Account_Base getFilteredReport()
+        protected AccountsAbstractReport_Base getFilteredReport()
         {
             return filteredReport;
         }
@@ -385,16 +254,18 @@ public abstract class SalesReport4Account_Base
                 }
             } else {
                 final ReportType reportType = getReportType(_parameter);
-                final Map<Instance, DataBean> beans = new HashMap<>();
+                final Map<Instance, AbstractDataBean> beans = new HashMap<>();
                 final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
 
-                boolean offset = false;
-                if (filter.containsKey("switch")) {
-                    offset = (boolean) filter.get("switch");
-                }
+                final boolean includePaid = filter.containsKey("includePaid")
+                                ? (boolean) filter.get("includePaid")
+                                : false;
+
                 final DateTime reportDate = getReportDate(_parameter);
-                final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
+                final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, getProperties(),
+                                includePaid ? "PAID" : null);
                 add2QueryBuilder(_parameter, queryBldr);
+
                 queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
@@ -409,14 +280,14 @@ public abstract class SalesReport4Account_Base
                                 .attribute(CIContacts.Contact.Name);
                 final SelectBuilder selStatus = new SelectBuilder().status().label();
                 multi.addSelect(selStatus);
-                if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                if (!isContactReport()) {
                     multi.addSelect(selContactInst, selContactName);
                 }
                 multi.execute();
                 final Set<Instance> docInsts = new HashSet<>();
                 while (multi.next()) {
                     docInsts.add(multi.getCurrentInstance());
-                    final DataBean dataBean = getDataBean(_parameter, getFilteredReport().getReportKey())
+                    final AbstractDataBean dataBean = getDataBean(_parameter)
                                 .setDocInst(multi.getCurrentInstance())
                                 .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
                                 .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
@@ -426,7 +297,7 @@ public abstract class SalesReport4Account_Base
                                 .setDocStatus(multi.<String>getSelect(selStatus))
                                 .setReportDate(reportDate);
 
-                    if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                    if (!isContactReport()) {
                         dataBean.setContactInst(multi.<Instance>getSelect(selContactInst))
                                 .setDocContactName(multi.<String>getSelect(selContactName));
                     }
@@ -443,14 +314,12 @@ public abstract class SalesReport4Account_Base
                     beans.put(dataBean.getDocInst(), dataBean);
                 }
 
-                calculate4Date(_parameter, beans);
-
-                final List<DataBean> dataSource = new ArrayList<>();
+                final List<AbstractDataBean> dataSource = new ArrayList<>();
                 dataSource.addAll(beans.values());
                 if (isShowSwapInfo() && !ReportType.MINIMAL.equals(reportType)) {
                     final Map<Instance, Set<SwapInfo>> swapMap = Swap.getSwapInfos4Documents(_parameter, docInsts
                                     .toArray(new Instance[docInsts.size()]));
-                    for (final DataBean bean : dataSource) {
+                    for (final AbstractDataBean bean : dataSource) {
                         if (swapMap.containsKey(bean.getDocInst())) {
                             final Set<SwapInfo> swapInfos = swapMap.get(bean.getDocInst());
                             final StringBuilder fromStr = new StringBuilder();
@@ -484,96 +353,11 @@ public abstract class SalesReport4Account_Base
                         }
                     }
                 }
-                if (ReportType.MINIMAL.equals(reportType)) {
-                    Collections.sort(dataSource, (_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                    _o2.getDocContactName()));
-                } else {
-                    final FilterDate filterDate = getFilterDate(_parameter);
-                    final ComparatorChain<DataBean> chain = new ComparatorChain<>();
 
-                    final GroupByFilterValue groupBy = (GroupByFilterValue) filter.get("groupBy");
-                    if (groupBy != null) {
-                        final List<Enum<?>> selected = groupBy.getObject();
-                        for (final Enum<?> sel : selected) {
-                            switch ((GroupBy) sel) {
-                                case ASSIGNED:
-                                    chain.addComparator((_o1, _o2) -> {
-                                        int ret1 = 0;
-                                        try {
-                                            ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
-                                        } catch (final EFapsException e) {
-                                            AbstractDynamicReport_Base.LOG.error("Catched", e);
-                                        }
-                                        return ret1;
-                                    });
-                                    break;
-                                case CONTACT:
-                                    chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                                    _o2.getDocContactName()));
-                                    break;
-                                case DAILY:
-                                case MONTHLY:
-                                case YEARLY:
-                                    chain.addComparator((_o1, _o2) -> {
-                                        final int ret1;
-                                        switch (filterDate) {
-                                            case CREATED:
-                                                ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
-                                                break;
-                                            case DUEDATE:
-                                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
-                                                    ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
-                                                } else {
-                                                    ret1 = 0;
-                                                }
-                                                break;
-                                            case DATE:
-                                            default:
-                                                ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
-                                                break;
-                                        }
-                                        return ret1;
-                                    });
-                                    break;
-                                case DOCTYPE:
-                                    chain.addComparator((_o1, _o2) -> _o1.getDocInst().getType().getLabel().compareTo(
-                                                    _o2.getDocInst().getType().getLabel()));
-                                    break;
-                                case CONDITION:
-                                    chain.addComparator((_o1, _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
-                                    break;
-                                default:
-                                    chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                                    _o2.getDocContactName()));
-                                    break;
-                            }
-                        }
-                    }
-                    chain.addComparator((_o1, _o2) -> {
-                        final int ret1;
-                        switch (filterDate) {
-                            case CREATED:
-                                ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
-                                break;
-                            case DUEDATE:
-                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
-                                    ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
-                                } else {
-                                    ret1 = 0;
-                                }
-                                break;
-                            case DATE:
-                            default:
-                                ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
-                                break;
-                        }
-                        return ret1;
-                    });
-                    Collections.sort(dataSource, chain);
-                }
+                sort(_parameter, dataSource);
+
                 final Collection<Map<String, ?>> col = new ArrayList<>();
-
-                for (final DataBean bean : dataSource) {
+                for (final AbstractDataBean bean : dataSource) {
                     col.add(bean.getMap(getFilteredReport().isShowCondition(),
                                     getFilteredReport().isShowAssigned(), isShowSwapInfo()));
                 }
@@ -608,119 +392,126 @@ public abstract class SalesReport4Account_Base
             return ret;
         }
 
-        /**
-         * Calculate for date.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @param _beans the beans
-         * @throws EFapsException on error
-         */
-        protected void calculate4Date(final Parameter _parameter,
-                                      final Map<Instance, DataBean> _beans)
+        protected abstract AbstractDataBean getDataBean(final Parameter _parameter);
+
+        protected abstract Properties getProperties()
+        throws EFapsException;
+
+        protected abstract boolean isShowSwapInfo()
+        throws EFapsException;
+
+        protected void sort(final Parameter _parameter, final List<AbstractDataBean> _dataSource)
             throws EFapsException
         {
-            final DateTime reportDate = getReportDate(_parameter);
-            if (reportDate.isBefore(new DateTime().withTimeAtStartOfDay())) {
-                // check for payments
-                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, 100);
-                add2QueryBuilder(_parameter, attrQueryBldr);
-
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
-                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                queryBldr.addWhereAttrGreaterValue(CISales.Payment.Date, reportDate.minusMinutes(1).plusDays(1));
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder seDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
-                multi.addSelect(seDocInst);
-                multi.execute();
-                while (multi.next()) {
-                    final Instance docInst = multi.getSelect(seDocInst);
-                    addDataBean(_parameter, _beans, docInst);
+            final ReportType reportType = getReportType(_parameter);
+            if (ReportType.MINIMAL.equals(reportType)) {
+                Collections.sort(_dataSource, (_o1, _o2) -> _o1.getDocContactName().compareTo(
+                                _o2.getDocContactName()));
+            } else {
+                final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+                final FilterDate filterDate = getFilterDate(_parameter);
+                final ComparatorChain<AbstractDataBean> chain = new ComparatorChain<>();
+                final GroupByFilterValue groupBy = (GroupByFilterValue) filter.get("groupBy");
+                if (groupBy != null) {
+                    final List<Enum<?>> selected = groupBy.getObject();
+                    for (final Enum<?> sel : selected) {
+                        switch ((GroupBy) sel) {
+                            case ASSIGNED:
+                                chain.addComparator((_o1, _o2) -> {
+                                    int ret1 = 0;
+                                    try {
+                                        ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
+                                    } catch (final EFapsException e) {
+                                        AbstractDynamicReport_Base.LOG.error("Catched", e);
+                                    }
+                                    return ret1;
+                                });
+                                break;
+                            case CONTACT:
+                                chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
+                                                _o2.getDocContactName()));
+                                break;
+                            case DAILY:
+                            case MONTHLY:
+                            case YEARLY:
+                                chain.addComparator((_o1, _o2) -> {
+                                    final int ret1;
+                                    switch (filterDate) {
+                                        case CREATED:
+                                            ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                                            break;
+                                        case DUEDATE:
+                                            if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                                ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                                            } else {
+                                                ret1 = 0;
+                                            }
+                                            break;
+                                        case DATE:
+                                        default:
+                                            ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
+                                            break;
+                                    }
+                                    return ret1;
+                                });
+                                break;
+                            case DOCTYPE:
+                                chain.addComparator((_o1, _o2) -> _o1.getDocInst().getType().getLabel().compareTo(
+                                                _o2.getDocInst().getType().getLabel()));
+                                break;
+                            case CONDITION:
+                                chain.addComparator((_o1, _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
+                                break;
+                            default:
+                                chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
+                                                _o2.getDocContactName()));
+                                break;
+                        }
+                    }
                 }
-
-                // check for swaps
-                final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
-                swapQueryBldr.addWhereAttrInQuery(CISales.Document2Document4Swap.FromLink,
-                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                swapQueryBldr.addWhereAttrGreaterValue(CISales.Document2Document4Swap.Date,
-                                reportDate.minusMinutes(1).plusDays(1));
-                final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
-                final SelectBuilder selDocInst = SelectBuilder.get()
-                                .linkto(CISales.Document2Document4Swap.FromLink).instance();
-                swapMulti.addSelect(selDocInst);
-                swapMulti.execute();
-                while (swapMulti.next()) {
-                    final Instance docInst = swapMulti.getSelect(selDocInst);
-                    addDataBean(_parameter, _beans, docInst);
-                }
+                chain.addComparator((_o1, _o2) -> {
+                    final int ret1;
+                    switch (filterDate) {
+                        case CREATED:
+                            ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                            break;
+                        case DUEDATE:
+                            if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                            } else {
+                                ret1 = 0;
+                            }
+                            break;
+                        case DATE:
+                        default:
+                            ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
+                            break;
+                    }
+                    return ret1;
+                });
+                Collections.sort(_dataSource, chain);
             }
         }
 
-        /**
-         * Adds the data bean.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @param _beans the beans
-         * @param _docInst the doc inst
-         * @throws EFapsException on error
-         */
-        protected void addDataBean(final Parameter _parameter,
-                                   final Map<Instance, DataBean> _beans,
-                                   final Instance _docInst)
-            throws EFapsException
+        protected boolean isContactReport()
         {
-            final DataBean bean;
-            if (!_beans.containsKey(_docInst)) {
-                final PrintQuery print = new PrintQuery(_docInst);
-                print.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
-                                CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
-                                CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
-                                CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
-                                CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Revision);
-
-                final SelectBuilder selContactInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
-                                .instance();
-                final SelectBuilder selContactName = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
-                                .attribute(CIContacts.Contact.Name);
-                final SelectBuilder selStatus = new SelectBuilder().status().label();
-                print.addSelect(selStatus);
-                if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                    print.addSelect(selContactInst, selContactName);
-                }
-                print.execute();
-                bean = getDataBean(_parameter, getFilteredReport().getReportKey())
-                                .setDocInst(print.getCurrentInstance())
-                                .setDocCreated(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
-                                .setDocDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                                .setDocDueDate(print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
-                                .setDocName(print.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                                .setDocRevision(print.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                                .setDocStatus(print.<String>getSelect(selStatus))
-                                .setReportDate(getReportDate(_parameter));
-                if (!ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
-                    bean.setContactInst(print.<Instance>getSelect(selContactInst))
-                        .setDocContactName(print.<String>getSelect(selContactName));
-                }
-                if (isCurrencyBase(_parameter)) {
-                    bean.setCurrencyBase(true)
-                        .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
-                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
-                } else {
-                    bean.setRate(print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
-                        .addCross(print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
-                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
-                }
-                _beans.put(_docInst, bean);
-            }
+            return false;
         }
 
-        /**
-         * Checks if is group by assigned.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return true, if is group by assigned
-         * @throws EFapsException on error
-         */
+        protected ReportType getReportType(final Parameter _parameter)
+                        throws EFapsException
+                    {
+                        final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+                        final ReportType ret;
+                        if (filterMap.containsKey("reportType")) {
+                            final EnumFilterValue filterValue = (EnumFilterValue) filterMap.get("reportType");
+                            ret = (ReportType) filterValue.getObject();
+                        } else {
+                            ret = ReportType.STANDARD;
+                        }
+                        return ret;
+                    }
+
         protected DateTime getReportDate(final Parameter _parameter)
             throws EFapsException
         {
@@ -734,30 +525,6 @@ public abstract class SalesReport4Account_Base
             return ret;
         }
 
-        /**
-         * Checks if is show assigned.
-         *
-         * @return true, if is show assigned
-         * @throws EFapsException on error
-         */
-        protected boolean isShowSwapInfo()
-            throws EFapsException
-        {
-            return Sales.REPORT_SALES4ACCOUNTIN_SWAPINFO.get()
-                            && getFilteredReport().getReportKey().equals(ReportKey.IN)
-                            || Sales.REPORT_SALES4ACCOUNTOUT_SWAPINFO.get()
-                                            && getFilteredReport().getReportKey().equals(ReportKey.OUT)
-                            || Sales.REPORT_SALES4ACCOUNTCONTACT_SWAPINFO.get()
-                                        && getFilteredReport().getReportKey().equals(ReportKey.CONTACT);
-        }
-
-        /**
-         * Checks if is show assigned.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return true, if is show assigned
-         * @throws EFapsException on error
-         */
         protected FilterDate getFilterDate(final Parameter _parameter)
             throws EFapsException
         {
@@ -773,11 +540,6 @@ public abstract class SalesReport4Account_Base
             return ret;
         }
 
-        /**
-         * @param _parameter Parameter as passed from the eFaps API
-         * @param _queryBldr QueryBuilder the criteria will be added to
-         * @throws EFapsException on error
-         */
         protected void add2QueryBuilder(final Parameter _parameter,
                                         final QueryBuilder _queryBldr)
             throws EFapsException
@@ -836,9 +598,67 @@ public abstract class SalesReport4Account_Base
             _queryBldr.addWhereAttrLessValue(dateAttr, dateTo.plusDays(1).withTimeAtStartOfDay());
         }
 
+        /**
+         * Checks if is company depended.
+         *
+         * @param _parameter the _parameter
+         * @return true, if is company depended
+         * @throws EFapsException on error
+         */
+        protected boolean isCompanyDependent(final Parameter _parameter)
+            throws EFapsException
+        {
+            return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
+        }
+
+        protected boolean isCurrencyBase(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Collection<CurrencyInst> currencies = getCurrencyInst4Report(_parameter);
+            return currencies.size() == 1 && "BASE".equals(currencies.iterator().next().getInstance().getKey());
+        }
+
+        /**
+         * Gets the currency instances for the report.
+         *
+         * @param _parameter the _parameter
+         * @return the currency inst4 report
+         * @throws EFapsException on error
+         */
+        protected Collection<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
+            throws EFapsException
+        {
+            Collection<CurrencyInst> ret = new HashSet<>();
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            if (filter.containsKey("currency")) {
+                final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
+                if ("BASE".equals(currency.getKey())) {
+                    ret.add(new CurrencyInst(currency) {
+                        @Override
+                        public String getName()
+                            throws EFapsException
+                        {
+                            return DBProperties.getProperty(FilteredReport.class.getName() + ".BaseCurrency");
+                        }
+                        @Override
+                        public String getISOCode()
+                            throws EFapsException
+                        {
+                            return "BASE";
+                        }
+                    });
+                } else if (currency.isValid()) {
+                    ret.add(new CurrencyInst(currency));
+                } else {
+                    ret = CurrencyInst.getAvailable();
+                }
+            } else {
+                ret = CurrencyInst.getAvailable();
+            }
+            return ret;
+        }
         @Override
-        protected void addColumnDefinition(final Parameter _parameter,
-                                           final JasperReportBuilder _builder)
+        protected void addColumnDefinition(final Parameter _parameter, final JasperReportBuilder _builder)
             throws EFapsException
         {
             final ReportType reportType = getReportType(_parameter);
@@ -936,21 +756,19 @@ public abstract class SalesReport4Account_Base
                 gridList.add(dueDateColumn);
 
                 gridList.add(nameColumn);
-                if (ReportType.STANDARD.equals(reportType)
-                                && getFilteredReport().getReportKey().equals(ReportKey.OUT)) {
+                if (ReportType.STANDARD.equals(reportType) && isShowRevision()) {
                     gridList.add(revisionColumn);
                 }
 
                 if (!selected.contains(GroupBy.CONDITION) && getFilteredReport().isShowCondition()) {
                     gridList.add(conditionColumn);
                 }
-                if (!selected.contains(GroupBy.CONTACT)
-                                && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                if (!selected.contains(GroupBy.CONTACT) && !isContactReport()) {
                     gridList.add(contactNameColumn);
                 }
                 if (ReportType.STANDARD.equals(reportType) && getFilteredReport().isShowAssigned()
                                 && !selected.contains(GroupBy.ASSIGNED)
-                                && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                                && !isContactReport()) {
                     gridList.add(assignedColumn);
                 }
 
@@ -1032,8 +850,7 @@ public abstract class SalesReport4Account_Base
                 }
 
                 Collections.addAll(columnList, typeColumn.setFixedWidth(120),
-                                dateColumn,
-                                dueDateColumn,
+                                dateColumn, dueDateColumn,
                                 nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
                                 revisionColumn);
 
@@ -1041,13 +858,12 @@ public abstract class SalesReport4Account_Base
                     columnList.add(conditionColumn);
                 }
 
-                if (!selected.contains(GroupBy.CONTACT)
-                                && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                if (!selected.contains(GroupBy.CONTACT) && !isContactReport()) {
                     columnList.add(contactNameColumn.setFixedWidth(200));
                 }
 
                 if (getFilteredReport().isShowAssigned() && !selected.contains(GroupBy.ASSIGNED)
-                                && !ReportKey.CONTACT.equals(getFilteredReport().getReportKey())) {
+                                && !isContactReport()) {
                     columnList.add(assignedColumn);
                 }
 
@@ -1151,112 +967,12 @@ public abstract class SalesReport4Account_Base
             _builder.addColumn(columnList.toArray(new ColumnBuilder[gridList.size()]));
         }
 
-        /**
-         * Gets the currency instances for the report.
-         *
-         * @param _parameter the _parameter
-         * @return the currency inst4 report
-         * @throws EFapsException on error
-         */
-        protected Collection<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
-            throws EFapsException
-        {
-            Collection<CurrencyInst> ret = new HashSet<>();
-            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-            if (filter.containsKey("currency")) {
-                final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
-                if ("BASE".equals(currency.getKey())) {
-                    ret.add(new CurrencyInst(currency) {
-                        @Override
-                        public String getName()
-                            throws EFapsException
-                        {
-                            return DBProperties.getProperty(FilteredReport.class.getName() + ".BaseCurrency");
-                        }
-                        @Override
-                        public String getISOCode()
-                            throws EFapsException
-                        {
-                            return "BASE";
-                        }
-                    });
-                } else if (currency.isValid()) {
-                    ret.add(new CurrencyInst(currency));
-                } else {
-                    ret = CurrencyInst.getAvailable();
-                }
-            } else {
-                ret = CurrencyInst.getAvailable();
-            }
-            return ret;
-        }
-
-        /**
-         * Checks if is currency base.
-         *
-         * @param _parameter the _parameter
-         * @return true, if is currency base
-         * @throws EFapsException on error
-         */
-        protected boolean isCurrencyBase(final Parameter _parameter)
-            throws EFapsException
-        {
-            final Collection<CurrencyInst> currencies = getCurrencyInst4Report(_parameter);
-            return currencies.size() == 1 && "BASE".equals(currencies.iterator().next().getInstance().getKey());
-        }
-
-        /**
-         * Checks if is company depended.
-         *
-         * @param _parameter the _parameter
-         * @return true, if is company depended
-         * @throws EFapsException on error
-         */
-        protected boolean isCompanyDependent(final Parameter _parameter)
-            throws EFapsException
-        {
-            return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
-        }
-
-        /**
-         * Gets the data bean.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @param _reportKey the report key
-         * @return the data bean
-         */
-        protected DataBean getDataBean(final Parameter _parameter,
-                                       final ReportKey _reportKey)
-        {
-            return new DataBean(_reportKey);
-        }
-
-        /**
-         * Gets the pay doc.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return the pay doc
-         * @throws EFapsException on error
-         */
-        protected ReportType getReportType(final Parameter _parameter)
-            throws EFapsException
-        {
-            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-            final ReportType ret;
-            if (filterMap.containsKey("reportType")) {
-                final EnumFilterValue filterValue = (EnumFilterValue) filterMap.get("reportType");
-                ret = (ReportType) filterValue.getObject();
-            } else {
-                ret = ReportType.STANDARD;
-            }
-            return ret;
+        protected boolean isShowRevision() {
+            return false;
         }
     }
 
-    /**
-     * The Class DataBean.
-     */
-    public static class DataBean
+    protected static abstract class AbstractDataBean
     {
 
         /** The doc inst. */
@@ -1304,20 +1020,11 @@ public abstract class SalesReport4Account_Base
         /** The swapInfo. */
         private String swapInfo;
 
-        /** The report key. */
-        private final ReportKey reportKey;
-
         /** The report date. */
         private DateTime reportDate;
-        /**
-         * Instantiates a new data bean.
-         *
-         * @param _reportKey the report key
-         */
-        public DataBean(final ReportKey _reportKey)
-        {
-            reportKey = _reportKey;
-        }
+
+        protected abstract Properties getProperties()
+                        throws EFapsException;
 
         /**
          * Checks if is currency base.
@@ -1335,7 +1042,7 @@ public abstract class SalesReport4Account_Base
          * @param _currencyBase the _currency base
          * @return the data bean
          */
-        public DataBean setCurrencyBase(final boolean _currencyBase)
+        public AbstractDataBean setCurrencyBase(final boolean _currencyBase)
         {
             currencyBase = _currencyBase;
             return this;
@@ -1355,20 +1062,6 @@ public abstract class SalesReport4Account_Base
                                      final boolean _showSwapInfo)
             throws EFapsException
         {
-            final Properties props;
-            switch (reportKey) {
-                case CONTACT:
-                    props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
-                    break;
-                case OUT:
-                    props = Sales.REPORT_SALES4ACCOUNTOUT.get();
-                    break;
-                case IN:
-                default:
-                    props = Sales.REPORT_SALES4ACCOUNTIN.get();
-                    break;
-            }
-
             if (payments.isEmpty()) {
                 evalPayments();
             }
@@ -1392,7 +1085,7 @@ public abstract class SalesReport4Account_Base
             if (_showSwapInfo) {
                 ret.put("swapInfo", getSwapInfo());
             }
-            final boolean negate = BooleanUtils.toBoolean(props.getProperty(getDocInst().getType().getName()
+            final boolean negate = BooleanUtils.toBoolean(getProperties().getProperty(getDocInst().getType().getName()
                             + ".Negate"));
             if (isCurrencyBase()) {
                 final BigDecimal crossTmp = cross.get(Currency.getBaseCurrency().getId());
@@ -1430,7 +1123,7 @@ public abstract class SalesReport4Account_Base
          * @param _cross the _cross
          * @return the data bean
          */
-        public DataBean addCross(final Long _currencyId,
+        public AbstractDataBean addCross(final Long _currencyId,
                                  final BigDecimal _cross)
         {
             cross.put(_currencyId, _cross);
@@ -1453,7 +1146,7 @@ public abstract class SalesReport4Account_Base
          * @param _docInst value for instance variable {@link #docInst}
          * @return the data bean
          */
-        public DataBean setDocInst(final Instance _docInst)
+        public AbstractDataBean setDocInst(final Instance _docInst)
         {
             docInst = _docInst;
             return this;
@@ -1475,7 +1168,7 @@ public abstract class SalesReport4Account_Base
          * @param _docCreated value for instance variable {@link #docCreated}
          * @return the data bean
          */
-        public DataBean setDocCreated(final DateTime _docCreated)
+        public AbstractDataBean setDocCreated(final DateTime _docCreated)
         {
             docCreated = _docCreated;
             return this;
@@ -1497,7 +1190,7 @@ public abstract class SalesReport4Account_Base
          * @param _docDate value for instance variable {@link #docDate}
          * @return the data bean
          */
-        public DataBean setDocDate(final DateTime _docDate)
+        public AbstractDataBean setDocDate(final DateTime _docDate)
         {
             docDate = _docDate;
             return this;
@@ -1519,7 +1212,7 @@ public abstract class SalesReport4Account_Base
          * @param _docDueDate value for instance variable {@link #docDueDate}
          * @return the data bean
          */
-        public DataBean setDocDueDate(final DateTime _docDueDate)
+        public AbstractDataBean setDocDueDate(final DateTime _docDueDate)
         {
             docDueDate = _docDueDate;
             return this;
@@ -1541,7 +1234,7 @@ public abstract class SalesReport4Account_Base
          * @param _docName value for instance variable {@link #docName}
          * @return the data bean
          */
-        public DataBean setDocName(final String _docName)
+        public AbstractDataBean setDocName(final String _docName)
         {
             docName = _docName;
             return this;
@@ -1564,7 +1257,7 @@ public abstract class SalesReport4Account_Base
          *            {@link #docContactName}
          * @return the data bean
          */
-        public DataBean setDocContactName(final String _docContactName)
+        public AbstractDataBean setDocContactName(final String _docContactName)
         {
             docContactName = _docContactName;
             return this;
@@ -1586,7 +1279,7 @@ public abstract class SalesReport4Account_Base
          * @param _rate value for instance variable {@link #rate}
          * @return the data bean
          */
-        public DataBean setRate(final Object[] _rate)
+        public AbstractDataBean setRate(final Object[] _rate)
         {
             rate = _rate;
             return this;
@@ -1608,7 +1301,7 @@ public abstract class SalesReport4Account_Base
          * @param _docRevision value for instance variable {@link #docRevision}
          * @return the data bean
          */
-        public DataBean setDocRevision(final String _docRevision)
+        public AbstractDataBean setDocRevision(final String _docRevision)
         {
             docRevision = _docRevision;
             return this;
@@ -1624,21 +1317,9 @@ public abstract class SalesReport4Account_Base
         {
             if (getDocInst().isValid()) {
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
-                final Properties props;
-                switch (reportKey) {
-                    case CONTACT:
-                        props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
-                        break;
-                    case OUT:
-                        props = Sales.REPORT_SALES4ACCOUNTOUT.get();
-                        break;
-                    case IN:
-                    default:
-                        props = Sales.REPORT_SALES4ACCOUNTIN.get();
-                        break;
-                }
-                final Boolean perpay =  props.containsKey("PaymentPerPayment")
-                                ? BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment")) : null;
+                final Boolean perpay = getProperties().containsKey("PaymentPerPayment")
+                                ? BooleanUtils.toBoolean(getProperties().getProperty("PaymentPerPayment"))
+                                : null;
 
                 if (getReportDate().isBefore(new DateTime().withTimeAtStartOfDay())) {
                     docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
@@ -1666,7 +1347,7 @@ public abstract class SalesReport4Account_Base
          * @param _docStatus value for instance variable {@link #docStatus}
          * @return the data bean
          */
-        public DataBean setDocStatus(final String _docStatus)
+        public AbstractDataBean setDocStatus(final String _docStatus)
         {
             docStatus = _docStatus;
             return this;
@@ -1698,7 +1379,7 @@ public abstract class SalesReport4Account_Base
                         condition = condition + multi.getSelect(selName);
                     }
                 } catch (final EFapsException e) {
-                    SalesReport4Account_Base.LOG.error("Catched", e);
+                    LOG.error("Catched", e);
                 }
                 if (condition == null) {
                     condition = "";
@@ -1713,7 +1394,7 @@ public abstract class SalesReport4Account_Base
          * @param _condition the condition
          * @return the data bean
          */
-        public DataBean setCondition(final String _condition)
+        public AbstractDataBean setCondition(final String _condition)
         {
             condition = _condition;
             return this;
@@ -1753,7 +1434,7 @@ public abstract class SalesReport4Account_Base
          * @param _contactInst the contact inst
          * @return the data bean
          */
-        public DataBean setContactInst(final Instance _contactInst)
+        public AbstractDataBean setContactInst(final Instance _contactInst)
         {
             contactInst = _contactInst;
             return this;
@@ -1775,7 +1456,7 @@ public abstract class SalesReport4Account_Base
          * @param _swapInfo the new swapInfo
          * @return the data bean
          */
-        public DataBean setSwapInfo(final String _swapInfo)
+        public AbstractDataBean setSwapInfo(final String _swapInfo)
         {
             swapInfo = _swapInfo;
             return this;
@@ -1797,10 +1478,11 @@ public abstract class SalesReport4Account_Base
          * @param _reportDate value for instance variable {@link #reportDate}
          * @return the data bean
          */
-        public DataBean setReportDate(final DateTime _reportDate)
+        public AbstractDataBean setReportDate(final DateTime _reportDate)
         {
             reportDate = _reportDate;
             return this;
         }
     }
+
 }

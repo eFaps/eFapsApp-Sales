@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+  Copyright 2003 - 2020 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b3a91bb2-fd35-4972-9f25-0c17eac5c568</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountsPayableReportForm</name>
+        <field name="filter">
+            <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger event="UI_FIELD_VALUE" index="1"
+                method="setDefaultFilter"
+                name="Sales_AccountsPayableReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.AccountsPayableReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.AccountsPayableReport.FilterKey</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="Field03">reportDate</property>
+                <property name="Field04">filterDate</property>
+                <property name="Field05">type</property>
+                <property name="Field06">contact</property>
+                <property name="Field07">includePaid</property>
+                <property name="Field08">currency</property>
+                <property name="Field09">groupBy</property>
+                <property name="Field10">reportType</property>
+                <property name="FilterType01">DateTime</property>
+                <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">DateTime</property>
+                <property name="FilterType04">Enum</property>
+                <property name="FilterType05">Type</property>
+                <property name="FilterType06">Instance</property>
+                <property name="FilterType07">Boolean</property>
+                <property name="FilterType08">Currency</property>
+                <property name="FilterType09">GroupBy</property>
+                <property name="FilterType10">Enum</property>
+                <property name="FilterDefault01">YEARS:-10</property>
+                <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">TODAY</property>
+                <property name="FilterDefault04">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$FilterDate</property>
+                <property name="FilterDefault05">ALL</property>
+                <property name="FilterDefault06" />
+                <property name="FilterDefault07">true</property>
+                <property name="FilterDefault08" />
+                <property name="FilterDefault09">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$GroupBy</property>
+                <property name="FilterDefault10">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$ReportType</property>
+            </trigger>
+            <trigger event="UI_FIELD_VALUE" index="2"
+                method="getFilterFieldValue"
+                name="Sales_AccountsPayableReportForm.filter.UI_FIELD_VALUE.2"
+                program="org.efaps.esjp.sales.report.AccountsPayableReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.AccountsPayableReport.FilterKey</property>
+                <property name="ReportKey">OUT</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="Field03">reportDate</property>
+                <property name="Field04">filterDate</property>
+                <property name="Field05">type</property>
+                <property name="Field06">contact</property>
+                <property name="Field07">includePaid</property>
+                <property name="Field08">currency</property>
+                <property name="Field09">groupBy</property>
+                <property name="Field10">reportType</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.AccountsPayableReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.AccountsPayableReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.AccountsPayableReport.reportDate</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.AccountsPayableReport.filterDate</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.AccountsPayableReport.type</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.AccountsPayableReport.contact</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.AccountsPayableReport.includePaid</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.AccountsPayableReport.currency</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.AccountsPayableReport.groupBy</property>
+                <property name="DBProperty10">org.efaps.esjp.sales.report.AccountsPayableReport.reportType</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+        </field>
+        <field name="report">
+            <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger event="UI_FIELD_VALUE"
+                method="generateReport"
+                name="Sales_AccountsPayableReportForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.AccountsPayableReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.AccountsPayableReport.FilterKey</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

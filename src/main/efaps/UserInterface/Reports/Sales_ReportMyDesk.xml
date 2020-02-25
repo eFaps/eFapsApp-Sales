@@ -52,6 +52,8 @@
             <child>Sales_StatisticsReportMyDesk</child>
             <child>Sales_ProductsTransactionSummaryReportMyDesk</child>
             <child>Sales_RateValidationReportMyDesk</child>
+            <child>Sales_AccountsPayableReportMyDesk</child>
+            <child>Sales_AccountsReceivableReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

@@ -2340,6 +2340,101 @@ public final class Sales
                     .key(Sales.BASE + "report.ABCReport.ActivateContactAssigned2Employee")
                     .description("Activate the Assigned Employee.");
 
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_ACCOUNTS4CONTACT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsStatement4Contact")
+                    .description("Properties for AccountsStatement4Contact Report.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_ACCOUNTS4CONTACT_SWAPINFO = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsStatement4Contact.ActivateSwapInfo")
+                    .description("Activate the column for Swap related Infos.");
+
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_ACCOUNTSPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsPayable")
+                    .addDefaultValue("Type01", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("Type03", CISales.IncomingReminder.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.IncomingReceiptStatus.Open.key)
+                    .addDefaultValue("StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
+                    .addDefaultValue("Status03", CISales.IncomingReminderStatus.Open.key)
+                    .addDefaultValue("PAID.Type01", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("PAID.Type02", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("PAID.Type03", CISales.IncomingReminder.getType().getName())
+                    .addDefaultValue("PAID.StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("PAID.Status01", "!" + CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue("PAID.StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("PAID.Status02", "!" + CISales.IncomingReceiptStatus.Replaced.key)
+                    .addDefaultValue("PAID.StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
+                    .addDefaultValue("PAID.Status03", "!" + CISales.IncomingReminderStatus.Replaced.key)
+                    .description("Properties for AccountsPayable Report.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_ACCOUNTSPAYABLE_ASSIGNED = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsPayable.ActivateContactAssigned2Employee")
+                    .description("Activate the column for Employee Assigned to Contact.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_ACCOUNTSPAYABLE_SWAPINFO = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsPayable.ActivateSwapInfo")
+                    .description("Activate the column for Swap related Infos.");
+
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_ACCOUNTSRECIEVABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsRecievable")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("Type03", CISales.Reminder.getType().getName())
+                    .addDefaultValue("Type04", CISales.IncomingExchange.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
+                    .addDefaultValue("StatusGroup03", CISales.ReminderStatus.getType().getName())
+                    .addDefaultValue("Status03", CISales.ReminderStatus.Open.key)
+                    .addDefaultValue("StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
+                    .addDefaultValue("Status04", CISales.IncomingExchangeStatus.Open.key)
+                    .addDefaultValue("PAID.Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("PAID.Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("PAID.Type03", CISales.Reminder.getType().getName())
+                    .addDefaultValue("PAID.Type04", CISales.IncomingExchange.getType().getName())
+                    .addDefaultValue("PAID.StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("PAID.Status01", "!" + CISales.InvoiceStatus.Replaced.key)
+                    .addDefaultValue("PAID.StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("PAID.Status02", "!" + CISales.ReceiptStatus.Replaced.key)
+                    .addDefaultValue("PAID.StatusGroup03", CISales.ReminderStatus.getType().getName())
+                    .addDefaultValue("PAID.Status03", "!" + CISales.ReminderStatus.Replaced.key)
+                    .addDefaultValue("PAID.StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
+                    .addDefaultValue("PAID.Status04", "!" + CISales.IncomingExchangeStatus.Canceled.key)
+                    .description("Properties for AccountsRecievable Report.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_ACCOUNTSRECIEVABLE_ASSIGNED = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsRecievable.ActivateContactAssigned2Employee")
+                    .description("Activate the column for Employee Assigned to Contact.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_ACCOUNTSRECIEVABLE_SWAPINFO = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.AccountsRecievable.ActivateSwapInfo")
+                    .description("Activate the column for Swap related Infos.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute REPORT_CARRIER_ACTIVATE = new BooleanSysConfAttribute()
@@ -2594,7 +2689,6 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesReport4Account.CONTACT.ActivateSwapInfo")
                     .description("Activate the column for Swap related Infos.");
-
 
     /** See description. */
     @EFapsSysConfAttribute
