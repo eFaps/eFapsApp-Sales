@@ -51,6 +51,13 @@ public abstract class AccountsRecievableReport_Base
         return Sales.CHACTIVATESALESCOND.get();
     }
 
+    @Override
+    protected Properties getProperties4TypeList(final Parameter _parameter, final String _fieldName)
+        throws EFapsException
+    {
+        return Sales.REPORT_ACCOUNTSRECIEVABLE.get();
+    }
+
     public static class AccountsRecievableDynReport
         extends AccountsAbstractDynReport
     {

@@ -58,7 +58,7 @@
                 <property name="FilterDefault04">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$FilterDate</property>
                 <property name="FilterDefault05">ALL</property>
                 <property name="FilterDefault06" />
-                <property name="FilterDefault07">true</property>
+                <property name="FilterDefault07">false</property>
                 <property name="FilterDefault08" />
                 <property name="FilterDefault09">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$GroupBy</property>
                 <property name="FilterDefault10">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$ReportType</property>

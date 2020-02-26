@@ -51,6 +51,13 @@ public abstract class AccountsStatement4ContactReport_Base
         return Sales.CHACTIVATESALESCOND.get();
     }
 
+    @Override
+    protected Properties getProperties4TypeList(final Parameter _parameter, final String _fieldName)
+        throws EFapsException
+    {
+        return Sales.REPORT_ACCOUNTS4CONTACT.get();
+    }
+
     public static class AccountsStatement4ContactDynReport
         extends AccountsAbstractDynReport
     {

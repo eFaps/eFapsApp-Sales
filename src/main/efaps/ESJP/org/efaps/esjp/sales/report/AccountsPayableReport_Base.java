@@ -51,6 +51,13 @@ public abstract class AccountsPayableReport_Base
         return Sales.CHACTIVATEPURCHASECOND.get();
     }
 
+    @Override
+    protected Properties getProperties4TypeList(final Parameter _parameter, final String _fieldName)
+        throws EFapsException
+    {
+        return Sales.REPORT_ACCOUNTSPAYABLE.get();
+    }
+
     public static class AccountsPayableDynReport
         extends AccountsAbstractDynReport
     {
