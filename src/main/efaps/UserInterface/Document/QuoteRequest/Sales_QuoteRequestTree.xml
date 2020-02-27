@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2020 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,34 +15,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>77de6d1c-390b-4215-a659-a7c0ebf4799c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuoteRequestTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_QuoteRequestTree_Menu</menu>
             <form>Sales_QuoteRequestForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_QuoteRequest</type>
         <childs>
             <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_QuoteRequestTree_Position</child>
+            <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

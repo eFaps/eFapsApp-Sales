@@ -35,6 +35,12 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
+            <property name="HRef">TREEMENU</property>
+        </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>

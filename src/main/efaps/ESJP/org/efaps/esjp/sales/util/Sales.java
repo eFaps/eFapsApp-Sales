@@ -1236,10 +1236,25 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ORDEROUTBOUND_CREATEFROMPRODREQ = new BooleanSysConfAttribute()
+    public static final PropertiesSysConfAttribute ORDEROUTBOUND_CREATEFROMPRODREQAC
+        = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "OrderOutbound.CreateFromProductRequest")
-                    .description("Activate the ppossiblity to create an OrderOutbound from ProductRequest");
+                    .key(Sales.BASE + "OrderOutbound.CreateFromProductRequestAutoComplete")
+                    .addDefaultValue("Type", CISales.ProductRequest.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.ProductRequestStatus.getType().getName())
+                    .addDefaultValue("Status", CISales.ProductRequestStatus.Open.key)
+                    .description("Activation and QueryBuilder for Autocomplete a ProductRequest to create OrderOutbound from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute ORDEROUTBOUND_CREATEFROMQUOTEREQAC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderOutbound.CreateFromQuoteRequestAutoComplete")
+                    .addDefaultValue("Type", CISales.QuoteRequest.uuid.toString())
+                    .addDefaultValue("StatusGroup", CISales.QuoteRequestStatus.getType().getName())
+                    .addDefaultValue("Status", CISales.QuoteRequestStatus.Open.key)
+                    .description("Activation and QueryBuilder for Autocomplete a QuoteRequest to create OrderOutbound from.");
 
     /** See description. */
     @EFapsSysConfAttribute
