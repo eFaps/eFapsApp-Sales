@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -154,8 +152,8 @@ public abstract class SalesKardexBatchReport_Base
             fileOut.close();
             ret.put(ReturnValues.VALUES, temp);
             ret.put(ReturnValues.TRUE, true);
-        } catch (final IOException | EncryptedDocumentException | InvalidFormatException e) {
-            LOG.error("Catched IOException", e);
+        } catch (final IOException | EncryptedDocumentException e) {
+            LOG.error("Catched Exception", e);
         }
         return ret;
     }
@@ -325,7 +323,7 @@ public abstract class SalesKardexBatchReport_Base
                 _newCell.setCellStyle(newCellStyle);
             }
         }
-        switch (_oldCell.getCellTypeEnum()) {
+        switch (_oldCell.getCellType()) {
             case STRING:
                 _newCell.setCellValue(_oldCell.getStringCellValue());
                 break;
@@ -333,7 +331,7 @@ public abstract class SalesKardexBatchReport_Base
                 _newCell.setCellValue(_oldCell.getNumericCellValue());
                 break;
             case BLANK:
-                _newCell.setCellType(CellType.BLANK);
+                _newCell.setBlank();
                 break;
             case BOOLEAN:
                 _newCell.setCellValue(_oldCell.getBooleanCellValue());
@@ -345,7 +343,7 @@ public abstract class SalesKardexBatchReport_Base
                 if (_copyFormular) {
                     _newCell.setCellFormula(_oldCell.getCellFormula());
                 } else {
-                    switch (_oldCell.getCachedFormulaResultTypeEnum()) {
+                    switch (_oldCell.getCachedFormulaResultType()) {
                         case NUMERIC:
                             _newCell.setCellValue(_oldCell.getNumericCellValue());
                             break;
@@ -375,7 +373,7 @@ public abstract class SalesKardexBatchReport_Base
          */
         public CellRangeAddressWrapper(final CellRangeAddress _theRange)
         {
-            this.range = _theRange;
+            range = _theRange;
         }
 
         /**
@@ -391,10 +389,10 @@ public abstract class SalesKardexBatchReport_Base
                 ret = super.equals(_object);
             } else {
                 final CellRangeAddressWrapper wrapper = (CellRangeAddressWrapper) _object;
-                ret = this.range.getFirstColumn() == wrapper.range.getFirstColumn()
-                                && this.range.getFirstRow() == wrapper.range.getFirstRow()
-                                && this.range.getLastColumn() == wrapper.range.getLastColumn()
-                                && this.range.getLastRow() == wrapper.range.getLastRow();
+                ret = range.getFirstColumn() == wrapper.range.getFirstColumn()
+                                && range.getFirstRow() == wrapper.range.getFirstRow()
+                                && range.getLastColumn() == wrapper.range.getLastColumn()
+                                && range.getLastRow() == wrapper.range.getLastRow();
             }
             return ret;
         }
@@ -402,13 +400,13 @@ public abstract class SalesKardexBatchReport_Base
         @Override
         public int hashCode()
         {
-            return this.range.hashCode();
+            return range.hashCode();
         }
 
         @Override
         public String toString()
         {
-            return this.range.toString();
+            return range.toString();
         }
     }
 
