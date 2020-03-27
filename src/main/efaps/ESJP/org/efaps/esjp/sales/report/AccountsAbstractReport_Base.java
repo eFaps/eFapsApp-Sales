@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -55,6 +56,7 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -65,6 +67,7 @@ import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -395,14 +398,14 @@ public abstract class AccountsAbstractReport_Base
             if (InstanceUtils.isKindOf(_parameter.getInstance(), CIContacts.ContactAbstract)) {
                 _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, _parameter.getInstance());
             }
-        
+
             if (filter.containsKey("currency")) {
                 final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
                 if (currency.isValid()) {
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currency);
                 }
             }
-        
+
             if (filter.containsKey("type")) {
                 final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
                 final Set<Long> typeids = filters.getObject();
@@ -432,10 +435,10 @@ public abstract class AccountsAbstractReport_Base
         {
             final Map<Instance, String> ret = new HashMap<>();
             final DateTime reportDate = getReportDate(_parameter);
-        
+
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
             final DateTime dateFrom = filter.containsKey("dateFrom") ? (DateTime) filter.get("dateFrom") : null;
-        
+
             Collection<Long> typeIds = null;
             if (filter.containsKey("type")) {
                 final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
@@ -446,24 +449,54 @@ public abstract class AccountsAbstractReport_Base
             if (typeIds ==  null) {
                 typeIds = getTypeIds();
             }
-        
+
             final StatusHistory statusHistory = new StatusHistory();
             final Map<Instance, Long> inst2status = statusHistory.getStatusUpdatesByDateAndTypes(_parameter,
                             reportDate, dateFrom, typeIds.stream().toArray(Long[]::new));
-        
+
+            LOG.debug("Found {} for inst2status", inst2status.size());
+
+            // prepare the additional filters to be applied
+            final Set<Instance> filterlist = new HashSet<Instance>();
+            boolean applyFilterlist = false;
+            if (filter.containsKey("contact") || filter.containsKey("currency")) {
+                applyFilterlist = true;
+                final List<Type> types = getTypes();
+                final QueryBuilder queryBldr = new QueryBuilder(getTypes().get(0));
+                queryBldr.addType(types.stream().toArray(Type[]::new));
+                if (filter.containsKey("currency")) {
+                    final Instance contact = ((InstanceFilterValue) filter.get("contact")).getObject();
+                    if (contact.isValid()) {
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contact);
+                    }
+                }
+                if (filter.containsKey("currency")) {
+                    final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
+                    if (currency.isValid()) {
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currency);
+                    }
+                }
+                filterlist.addAll(queryBldr.getQuery().executeWithoutAccessCheck());
+            }
+
             // get a Set of status that are included in the report
             final Set<Long> statusIds = getFilteredReport().getStatusListFromProperties(_parameter, getProperties())
                             .stream()
                             .map(status -> status.getId())
                             .collect(Collectors.toSet());
-        
+
+            LOG.debug("Checking agains statusSet {}", statusIds);
+
             // check the list of instances with their status for the given date
             for (final Entry<Instance, Long> entry : inst2status.entrySet()) {
                 // if the status is wanted verify that it is in the report
-                if (statusIds.contains(entry.getValue())) {
+                // and check if the instance is part of the filterlist (if activated)
+                if (statusIds.contains(entry.getValue())
+                                && (!applyFilterlist || filterlist.contains(entry.getKey()))) {
                     ret.put(entry.getKey(), Status.get(entry.getValue()).getLabel());
                 }
             }
+            LOG.debug("Returning {} ", ret);
             return ret;
         }
 
@@ -471,14 +504,14 @@ public abstract class AccountsAbstractReport_Base
             throws EFapsException
         {
             final Map<Instance, AbstractDataBean> beans = new HashMap<>();
-        
+
             final MultiPrintQuery multi = new MultiPrintQuery(_instances);
             multi.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
                             CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
                             CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
                             CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
                             CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Revision);
-        
+
             final SelectBuilder selContactInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
                             .instance();
             final SelectBuilder selContactName = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
@@ -502,12 +535,12 @@ public abstract class AccountsAbstractReport_Base
                             .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
                             .setDocStatus(multi.<String>getSelect(selStatus))
                             .setReportDate(reportDate);
-        
+
                 if (!isContactReport()) {
                     dataBean.setContactInst(multi.<Instance>getSelect(selContactInst))
                             .setDocContactName(multi.<String>getSelect(selContactName));
                 }
-        
+
                 if (isCurrencyBase(_parameter)) {
                     dataBean.setCurrencyBase(true)
                         .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
@@ -530,33 +563,35 @@ public abstract class AccountsAbstractReport_Base
         protected abstract boolean isShowSwapInfo()
                         throws EFapsException;
 
+        protected List<Long> getTypeIds()
+            throws EFapsException
+        {
+            return getTypes().stream().map(Type::getId).collect(Collectors.toList());
+        }
+
         /**
          * Get a list of the types used in the report
          * @return list of types
          * @throws EFapsException
          */
-        protected List<Long> getTypeIds()
+        protected List<Type> getTypes()
             throws EFapsException
         {
             final Properties props = getProperties();
-            final List<Long> ret = new ArrayList<>();
-            if (props.containsKey("Type")) {
-                final Type type = isUUID(props.getProperty("Type"))
-                                ? Type.get(UUID.fromString(props.getProperty("Type")))
-                                : Type.get(props.getProperty("Type"));
-                ret.add(type.getId());
-            }
-            int i = 1;
-            String nameTmp = "Type" + String.format("%02d", i);
-            while (props.getProperty(nameTmp) != null) {
-                final Type type = isUUID(props.getProperty(nameTmp))
-                                ? Type.get(UUID.fromString(props.getProperty(nameTmp)))
-                                : Type.get(props.getProperty(nameTmp));
-                ret.add(type.getId());
-                i++;
-                nameTmp = "Type" + String.format("%02d", i);
-            }
-            return ret;
+            return PropertiesUtil.analyseProperty(props, "Type", 0).values()
+                            .stream()
+                            .map(type -> {
+                                try {
+                                    return isUUID(type)
+                                                    ? Type.get(UUID.fromString(type))
+                                                                    : Type.get(type);
+                                } catch (final CacheReloadException e) {
+                                   LOG.error("Invalid Type Definition for {}", type);
+                                }
+                                return null;
+                            })
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
         }
 
         protected void sort(final Parameter _parameter, final List<AbstractDataBean> _dataSource)
