@@ -1000,6 +1000,12 @@ public abstract class AbstractDocumentSum_Base
                 posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
                                 .divide(rate, RoundingMode.HALF_UP).setScale(scale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
+                final Taxes taxes = calc.getTaxes(baseCurrInst);
+                taxes.getEntries().forEach(entry -> {
+                    entry.setAmount(entry.getAmount().divide(rate, RoundingMode.HALF_UP));
+                    entry.setBase(entry.getBase().divide(rate, RoundingMode.HALF_UP));
+                });
+                posIns.add(CISales.PositionSumAbstract.Taxes, taxes);
                 posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
                 posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                 .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
@@ -1016,6 +1022,7 @@ public abstract class AbstractDocumentSum_Base
                                 calc.getNetPrice().setScale(scale, RoundingMode.HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossPrice,
                                 calc.getCrossPrice().setScale(scale, RoundingMode.HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateTaxes, calc.getTaxes(rateCurrInst));
                 add2PositionInsert(_parameter, calc, posIns, idx);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());
@@ -1123,6 +1130,12 @@ public abstract class AbstractDocumentSum_Base
                 update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                 .divide(rate, RoundingMode.HALF_UP).setScale(uScale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst);
+                final Taxes taxes = calc.getTaxes(baseCurrInst);
+                taxes.getEntries().forEach(entry -> {
+                    entry.setAmount(entry.getAmount().divide(rate, RoundingMode.HALF_UP));
+                    entry.setBase(entry.getBase().divide(rate, RoundingMode.HALF_UP));
+                });
+                update.add(CISales.PositionSumAbstract.Taxes, taxes);
                 update.add(CISales.PositionSumAbstract.Rate, rateObj);
                 update.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst);
                 update.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
@@ -1135,6 +1148,7 @@ public abstract class AbstractDocumentSum_Base
                                 calc.getNetPrice().setScale(scale, RoundingMode.HALF_UP));
                 update.add(CISales.PositionSumAbstract.RateCrossPrice,
                                 calc.getCrossPrice().setScale(scale, RoundingMode.HALF_UP));
+                update.add(CISales.PositionSumAbstract.RateTaxes, calc.getTaxes(rateCurrInst));
                 add2PositionUpdate(_parameter, calc, update, i);
                 update.execute();
                 _editDoc.addPosition(update.getInstance());

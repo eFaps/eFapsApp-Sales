@@ -40,6 +40,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.NumberFormatter_Base.FrmtKey;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
@@ -49,6 +50,8 @@ import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.tax.TaxType;
 import org.efaps.esjp.sales.tax.Tax_Base;
+import org.efaps.esjp.sales.tax.xml.TaxEntry;
+import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
@@ -1760,6 +1763,29 @@ public abstract class Calculator_Base
     {
         background = _background;
     }
+
+    public Taxes getTaxes(final Instance _currencyInst)
+        throws EFapsException
+    {
+        final Taxes ret = new Taxes();
+        if (!isWithoutTax()) {
+            final CurrencyInst curInst = CurrencyInst.get(_currencyInst);
+            final UUID currencyUUID = curInst.getUUID();
+            for (final TaxAmount taxAmount : getTaxesAmounts()) {
+                final TaxEntry taxentry = new TaxEntry();
+                taxentry.setAmount(taxAmount.getAmount());
+                taxentry.setBase(taxAmount.getBase());
+                taxentry.setUUID(taxAmount.getTax().getUUID());
+                taxentry.setCatUUID(taxAmount.getTax().getTaxCat().getUuid());
+                taxentry.setCurrencyUUID(currencyUUID);
+                taxentry.setDate(getDate());
+                ret.getEntries().add(taxentry);
+            }
+        }
+        return ret;
+    }
+
+
 
     /**
      * Price is net.

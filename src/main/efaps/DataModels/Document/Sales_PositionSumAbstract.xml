@@ -202,5 +202,19 @@
                 <property name="Formatter">total</property>
             </trigger>
         </attribute>
+        <attribute>
+            <name>Taxes</name>
+            <type>Jaxb</type>
+            <className>org.efaps.esjp.sales.tax.TaxesAttribute</className>
+            <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
+            <sqlcolumn>TAXES</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>RateTaxes</name>
+            <type>Jaxb</type>
+            <className>org.efaps.esjp.sales.tax.TaxesAttribute</className>
+            <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
+            <sqlcolumn>RTAXES</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
