@@ -16,22 +16,24 @@
     limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a391ca79-5f30-491f-85b7-74f087f53385</uuid>
+    <uuid>252fff39-30c8-452f-bec0-a5ea2d1d8fee</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreatePaymentCardType</name>
+        <name>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreatePaymentElectronicType</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
             <form>ERP_AttributeDefinitionMappingForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <execute
+                program="org.efaps.esjp.common.uiform.Create" />
         </target>
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_AttributeDefinitionPaymentCardType</property>
+        <property name="TargetCreateType">Sales_AttributeDefinitionPaymentElectronicType</property>
         <property name="TargetMode">create</property>
     </definition>
 </ui-command>

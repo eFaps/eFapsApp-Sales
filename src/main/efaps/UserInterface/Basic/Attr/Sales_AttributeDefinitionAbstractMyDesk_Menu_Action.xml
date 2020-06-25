@@ -33,6 +33,7 @@
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateCreditReason</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateReminderReason</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreatePaymentCardType</child>
+            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreatePaymentElectronicType</child>
         </childs>
         <parents>
             <parent>ERP_AttributeDefinitionMyDesk_Menu</parent>
