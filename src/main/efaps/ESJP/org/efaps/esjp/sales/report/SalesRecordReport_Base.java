@@ -31,15 +31,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +64,15 @@ import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  *
@@ -189,7 +189,7 @@ public abstract class SalesRecordReport_Base
     protected static final Map<UUID, String> DOCTYPE_MAP = new HashMap<>();
     static {
         SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Invoice.getType().getUUID(), "01");
-        SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Receipt.getType().getUUID(), "02");
+        SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Receipt.getType().getUUID(), "03");
         SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.CreditNote.getType().getUUID(), "07");
         SalesRecordReport_Base.DOCTYPE_MAP.put(CISales.Reminder.getType().getUUID(), "08");
     }
