@@ -1898,6 +1898,15 @@ public final class Sales
                     .key(Sales.BASE + "payment.out.Retention.PayableDocuments")
                     .description("Properties to define the Query for Documents that can be payed.");
 
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASH_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "AccountPettyCash.Activate")
+                    .description("Activate AccountPettyCash.");
+
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASH_PERMITPARTIAL = new BooleanSysConfAttribute()
