@@ -1932,7 +1932,7 @@ public final class Sales
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASH_CONNECT_RECEIPT = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "AccountPettyCash.ConnectIncomingInvoice")
+                    .key(Sales.BASE + "AccountPettyCash.ConnectIncomingReceipt")
                     .description("Enable the connection of Incoming Invoice.");
 
     /** See description. */
