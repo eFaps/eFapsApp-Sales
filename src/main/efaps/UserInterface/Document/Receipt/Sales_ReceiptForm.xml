@@ -36,10 +36,6 @@
             <trigger program="org.efaps.esjp.sales.document.Receipt" method="activatePositionsCalculator"
                 name="Sales_ReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
-        <field name="dateGroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
         <field name="date">
             <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -49,22 +45,6 @@
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Date"
                 name="Sales_ReceiptForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
-        </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getSalesPersonFieldValue"
-                name="Sales_ReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Admin_User_Person</property>
-                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-                <property name="OrderSelect">attribute[LastName]</property>
-                <property name="WhereAttrEqValue">Status|true</property>
-                <property name="SelectCurrent">true</property>
-            </trigger>
         </field>
         <field name="employee">
             <property name="SelectAlternateOID">linkfrom[Sales_Employee2Receipt#ToLink].linkto[FromLink].oid</property>
@@ -90,15 +70,7 @@
                 <property name="Attribute">org.efaps.sales.Receipt.AssignEmployee</property>
            </trigger>
         </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-        </field>
+
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
@@ -521,10 +493,6 @@
             <trigger program="org.efaps.esjp.sales.document.Receipt" method="activatePositionsCalculator"
                 name="Sales_ReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
-        <field name="dateGroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
         <field name="date">
             <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -534,31 +502,6 @@
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Date"
                 name="Sales_ReceiptForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
-        </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getSalesPersonFieldValue"
-                name="Sales_ReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Admin_User_Person</property>
-                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-                <property name="OrderSelect">attribute[LastName]</property>
-                <property name="WhereAttrEqValue">Status|true</property>
-                <property name="SelectCurrent">true</property>
-            </trigger>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
         </field>
         <field name="employee">
             <property name="SelectAlternateOID">linkfrom[Sales_Employee2Receipt#ToLink].linkto[FromLink].oid</property>
