@@ -30,7 +30,7 @@
             <property name="HRef">TREE</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-         <field name="type">
+         <field name="isDefault">
             <property name="Attribute">IsDefault</property>
             <property name="Label">Sales_Channel2ContactAbstract/IsDefault.Label</property>
         </field>
