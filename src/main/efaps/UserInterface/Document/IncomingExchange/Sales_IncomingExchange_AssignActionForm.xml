@@ -59,6 +59,7 @@
         <field name="date">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
+            <property name="Required">true</property>
             <property name="Label">Sales_IncomingExchange_AssignActionForm.date.Label</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_IncomingExchange_AssignActionForm.date.UI_ACCESSCHECK"
