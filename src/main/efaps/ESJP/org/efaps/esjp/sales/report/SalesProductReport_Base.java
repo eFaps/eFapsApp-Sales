@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -56,10 +56,13 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.products.ProductFamily;
+import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
@@ -87,11 +90,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-/**
- * TODO comment!
- *
- * @author The eFaps Team
- */
 @EFapsUUID("81ca4010-b4ef-40e5-ad0a-55b99db6b617")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class SalesProductReport_Base
@@ -249,7 +247,7 @@ public abstract class SalesProductReport_Base
          */
         public DynSalesProductReport(final SalesProductReport_Base _filteredReport)
         {
-            this.filteredReport = _filteredReport;
+            filteredReport = _filteredReport;
         }
 
         @Override
@@ -311,6 +309,8 @@ public abstract class SalesProductReport_Base
                                 .attribute(CIProducts.ProductAbstract.Name);
                 final SelectBuilder selProductDesc = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                                 .attribute(CIProducts.ProductAbstract.Description);
+                final SelectBuilder selProdFamInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                                .linkto(CIProducts.ProductAbstract.ProductFamilyLink).instance();
                 final SelectBuilder selDoc = new SelectBuilder().linkto(
                                 CISales.PositionSumAbstract.DocumentAbstractLink);
                 final SelectBuilder selContactInst = new SelectBuilder(selDoc).linkto(
@@ -324,15 +324,16 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selDocStatus = new SelectBuilder(selDoc).status().label();
                 final SelectBuilder selCondtion = new SelectBuilder(selDoc).linkfrom(
                                 CISales.ChannelCondition2DocumentAbstract.ToAbstractLink).linkto(
-                                                CISales.ChannelCondition2DocumentAbstract.FromAbstractLink).attribute(
-                                                                CISales.ChannelAbstract.Name);
+                                                CISales.ChannelCondition2DocumentAbstract.FromAbstractLink)
+                                .attribute(CISales.ChannelAbstract.Name);
 
                 if (Sales.REPORT_SALESPROD_CONDITION.get()) {
                     multi.addSelect(selCondtion);
                 }
 
                 multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName, selCurInst,
-                                selProductInst, selProductName, selProductDesc, selDocOID, selDocStatus);
+                                selProductInst, selProductName, selProductDesc, selProdFamInst, selDocOID,
+                                selDocStatus);
                 multi.execute();
                 while (multi.next()) {
                     final DateTime date = multi.<DateTime>getSelect(selDocDate);
@@ -340,6 +341,7 @@ public abstract class SalesProductReport_Base
                                     .setProductInst(multi.<Instance>getSelect(selProductInst))
                                     .setProductName(multi.<String>getSelect(selProductName))
                                     .setProductDesc(multi.<String>getSelect(selProductDesc))
+                                    .setProdFamInst(multi.getSelect(selProdFamInst))
                                     .setCurrency(currencyInst.getSymbol())
                                     .setContactInst(multi.<Instance>getSelect(selContactInst))
                                     .setContact(multi.<String>getSelect(selContactName))
@@ -359,7 +361,7 @@ public abstract class SalesProductReport_Base
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
                     BigDecimal quantityTmp = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
                     quantityTmp = quantityTmp.multiply(new BigDecimal(uoM.getNumerator())).divide(new BigDecimal(uoM
-                                    .getDenominator()), 4, BigDecimal.ROUND_HALF_UP);
+                                    .getDenominator()), 4, RoundingMode.HALF_UP);
                     dataBean.setQuantity(quantityTmp).setProductUoM(uoM.getName());
 
                     final Instance curInst = multi.getSelect(selCurInst);
@@ -394,8 +396,8 @@ public abstract class SalesProductReport_Base
                         final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, Instance.get(dataBean
                                         .getDocOID()).getType().getName());
 
-                        unitPrice = unitPriceTmp.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP);
-                        price = priceTmp.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP);
+                        unitPrice = unitPriceTmp.setScale(8).divide(rate, RoundingMode.HALF_UP);
+                        price = priceTmp.setScale(8).divide(rate, RoundingMode.HALF_UP);
                     }
                     dataBean.setUnitPrice(unitPrice).setPrice(price);
                 }
@@ -451,7 +453,7 @@ public abstract class SalesProductReport_Base
                                 current.setUnitPrice(BigDecimal.ZERO);
                             } else {
                                 current.setUnitPrice(current.getPrice().divide(current.getQuantity(),
-                                                BigDecimal.ROUND_HALF_UP));
+                                                RoundingMode.HALF_UP));
                             }
                         }
                     }
@@ -480,128 +482,43 @@ public abstract class SalesProductReport_Base
             for (final GroupBy group : groupBy) {
                 switch (group) {
                     case DAILY:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return _arg0.getDocDate().compareTo(_arg1.getDocDate());
-                            }
-                        });
+                        comparator.addComparator((_arg0, _arg1) -> _arg0.getDocDate().compareTo(_arg1.getDocDate()));
                         break;
                     case MONTHLY:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return Integer.valueOf(_arg0.getDocDate().getMonthOfYear()).compareTo(Integer.valueOf(
-                                                _arg1.getDocDate().getMonthOfYear()));
-                            }
-                        });
+                        comparator.addComparator((_arg0, _arg1) -> Integer.valueOf(_arg0.getDocDate().getMonthOfYear())
+                                        .compareTo(Integer.valueOf(
+                                                        _arg1.getDocDate().getMonthOfYear())));
                         break;
                     case YEARLY:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return Integer.valueOf(_arg0.getDocDate().getYear()).compareTo(Integer.valueOf(_arg1
-                                                .getDocDate().getYear()));
-                            }
-                        });
+                        comparator.addComparator((_arg0, _arg1) -> Integer.valueOf(_arg0.getDocDate().getYear())
+                                        .compareTo(Integer.valueOf(_arg1
+                                                        .getDocDate().getYear())));
                         break;
                     case CONTACT:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return _arg0.getContact().compareTo(_arg1.getContact());
-                            }
-                        });
+                        comparator.addComparator((_arg0, _arg1) -> _arg0.getContact().compareTo(_arg1.getContact()));
                         break;
                     case PRODUCT:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return _arg0.getProductName().compareTo(_arg1.getProductName());
-                            }
-                        });
+                        comparator.addComparator(
+                                        (_arg0, _arg1) -> _arg0.getProductName().compareTo(_arg1.getProductName()));
                         break;
                     case PRODFAMILY:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return _arg0.getProductFamily().compareTo(_arg1.getProductFamily());
-                            }
-                        });
+                        comparator.addComparator(
+                                        (_arg0, _arg1) -> _arg0.getProductFamily().compareTo(_arg1.getProductFamily()));
                         break;
                     case DOCTYPE:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return _arg0.getDocType().compareTo(_arg1.getDocType());
-                            }
-                        });
+                        comparator.addComparator((_arg0, _arg1) -> _arg0.getDocType().compareTo(_arg1.getDocType()));
                         break;
                     case CONDITION:
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
-
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return String.valueOf(_arg0.getCondition()).compareTo(String.valueOf(_arg1
-                                                .getCondition()));
-                            }
-                        });
+                        comparator.addComparator((_arg0, _arg1) -> String.valueOf(_arg0.getCondition())
+                                        .compareTo(String.valueOf(_arg1
+                                                        .getCondition())));
                         break;
                     default:
                         break;
                 }
             }
-            comparator.addComparator(new Comparator<DataBean>()
-            {
-
-                @Override
-                public int compare(final DataBean _arg0,
-                                   final DataBean _arg1)
-                {
-                    return _arg0.getDocDate().compareTo(_arg1.getDocDate());
-                }
-            });
-            comparator.addComparator(new Comparator<DataBean>()
-            {
-
-                @Override
-                public int compare(final DataBean _arg0,
-                                   final DataBean _arg1)
-                {
-                    return _arg0.getDocName().compareTo(_arg1.getDocName());
-                }
-            });
+            comparator.addComparator((_arg0, _arg1) -> _arg0.getDocDate().compareTo(_arg1.getDocDate()));
+            comparator.addComparator((_arg0, _arg1) -> _arg0.getDocName().compareTo(_arg1.getDocName()));
 
             Collections.sort(_data, comparator);
         }
@@ -616,7 +533,7 @@ public abstract class SalesProductReport_Base
         protected boolean isHideDetails(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             return (Boolean) filter.get("hideDetails");
         }
 
@@ -630,7 +547,7 @@ public abstract class SalesProductReport_Base
         protected CurrencyInst evaluateCurrencyInst(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
             final CurrencyInst ret;
 
             if (filterMap.containsKey("currency")) {
@@ -659,7 +576,7 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final PriceConfig ret;
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             final EnumFilterValue value = (EnumFilterValue) filter.get("priceConfig");
             if (value != null) {
                 ret = (PriceConfig) value.getObject();
@@ -680,7 +597,7 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final List<GroupBy> ret = new ArrayList<>();
-            final Map<String, Object> filters = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
             final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("groupBy");
             final List<Enum<?>> selected = groupBy.getObject();
             if (CollectionUtils.isNotEmpty(selected)) {
@@ -700,7 +617,7 @@ public abstract class SalesProductReport_Base
                                         final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             final DateTime dateFrom;
             if (filter.containsKey("dateFrom")) {
                 dateFrom = (DateTime) filter.get("dateFrom");
@@ -763,7 +680,7 @@ public abstract class SalesProductReport_Base
             if (isContact(_parameter)) {
                 ret = new Object[] { _parameter.getInstance() };
             } else {
-                final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
                 if (filter == null || filter != null && filter.getObject() == null) {
                     ret = new Object[] {};
@@ -800,7 +717,7 @@ public abstract class SalesProductReport_Base
         {
             boolean ret = false;
             if (!isContact(_parameter)) {
-                final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
                 ret = filter != null && filter.isNegate();
             }
@@ -832,7 +749,7 @@ public abstract class SalesProductReport_Base
             if (isProduct(_parameter)) {
                 ret = new Object[] { _parameter.getInstance() };
             } else {
-                final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
                 if (filter == null || filter != null && filter.getObject() == null) {
                     ret = new Object[] {};
@@ -855,7 +772,7 @@ public abstract class SalesProductReport_Base
         {
             boolean ret = false;
             if (!isProduct(_parameter)) {
-                final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
                 ret = filter != null && filter.isNegate();
             }
@@ -873,7 +790,7 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final Object[] ret;
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
             final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
             if (filter == null || filter != null && filter.getObject() == null) {
                 ret = new Object[] {};
@@ -893,7 +810,7 @@ public abstract class SalesProductReport_Base
         protected boolean isConditionNegate(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
             final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
             final boolean ret = filter != null && filter.isNegate();
             return ret;
@@ -912,7 +829,7 @@ public abstract class SalesProductReport_Base
 
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
-                                          final JasperReportBuilder _builder)
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
             final Set<ColumnBuilder<?, ?>> columns = new LinkedHashSet<>();
@@ -923,35 +840,35 @@ public abstract class SalesProductReport_Base
 
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
-            final TextColumnBuilder<DateTime> dateColumn = DynamicReports.col.column(this.filteredReport.getDBProperty(
+            final TextColumnBuilder<DateTime> dateColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "Date"), "docDate", DateTimeDate.get());
-            final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(this.filteredReport.getDBProperty(
+            final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "Contact"), "contact", DynamicReports.type.stringType()).setWidth(250);
-            final TextColumnBuilder<String> docTypeColumn = DynamicReports.col.column(this.filteredReport.getDBProperty(
+            final TextColumnBuilder<String> docTypeColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "DocType"), "docType", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(this.filteredReport.getDBProperty(
+            final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "DocName"), "docName", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> conditionColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> conditionColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Condition"), "condition", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> statusColumn = DynamicReports.col.column(this.filteredReport.getDBProperty(
+            final TextColumnBuilder<String> statusColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "DocStatus"), "docStatus", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> productFamilyColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> productFamilyColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("ProductFamily"), "productFamily", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> productNameColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> productNameColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("ProductName"), "productName", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> productDescColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> productDescColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("ProductDesc"), "productDesc", DynamicReports.type.stringType());
-            final TextColumnBuilder<BigDecimal> quantityColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> quantityColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Quantity"), "quantity", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<String> uomColumn = DynamicReports.col.column(this.filteredReport.getDBProperty(
+            final TextColumnBuilder<String> uomColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "UoM"), "productUoM", DynamicReports.type.stringType());
-            final TextColumnBuilder<BigDecimal> unitPriceColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> unitPriceColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("UnitPrice"), "unitPrice", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> discountColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> discountColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Discount"), "productDiscount", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Price"), "price", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(this.filteredReport
+            final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Currency"), "currency", DynamicReports.type.stringType());
 
             Collections.addAll(columns, contactColumn, linkColumn, docTypeColumn, docNameColumn, dateColumn,
@@ -971,7 +888,7 @@ public abstract class SalesProductReport_Base
             for (final GroupBy group : groupBy) {
                 switch (group) {
                     case YEARLY:
-                        final TextColumnBuilder<DateTime> yearColumn = DynamicReports.col.column(this.filteredReport
+                        final TextColumnBuilder<DateTime> yearColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Year"), "docDate", DateTimeYear.get());
                         final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
                         final VariableBuilder<BigDecimal> quantity4Year = DynamicReports.variable("quantity",
@@ -981,19 +898,20 @@ public abstract class SalesProductReport_Base
 
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Year = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Year", quantity4Year,
-                                                        price4Year), unitPriceColumn, Calculation.NOTHING).setStyle(
-                                                                        totalStyle);
+                                                        price4Year), unitPriceColumn, Calculation.NOTHING)
+                                        .setStyle(
+                                                        totalStyle);
                         columns.add(yearColumn);
                         _builder.addGroup(yearGroup)
-                            .addVariable(quantity4Year, price4Year)
-                            .addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Year,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4Year, price4Year)
+                                        .addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Year,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4Year.setResetGroup(yearGroup);
                         price4Year.setResetGroup(yearGroup);
                         break;
                     case MONTHLY:
-                        final TextColumnBuilder<DateTime> monthColumn = DynamicReports.col.column(this.filteredReport
+                        final TextColumnBuilder<DateTime> monthColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Month"), "docDate", DateTimeMonth.get("MMMMM"));
                         final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
                         final VariableBuilder<BigDecimal> quantity4Month = DynamicReports.variable("quantity",
@@ -1003,13 +921,14 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Month = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Month",
                                                         quantity4Month, price4Month), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         columns.add(monthColumn);
                         _builder.addGroup(monthGroup)
-                            .addVariable(quantity4Month, price4Month)
-                            .addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Month,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4Month, price4Month)
+                                        .addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Month,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4Month.setResetGroup(monthGroup);
                         price4Month.setResetGroup(monthGroup);
                         break;
@@ -1022,12 +941,13 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Daily = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Daily",
                                                         quantity4Daily, price4Daily), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         _builder.addGroup(dailyGroup)
-                            .addVariable(quantity4Daily, price4Daily)
-                            .addSubtotalAtGroupFooter(dailyGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Daily,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4Daily, price4Daily)
+                                        .addSubtotalAtGroupFooter(dailyGroup, DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Daily,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4Daily.setResetGroup(dailyGroup);
                         price4Daily.setResetGroup(dailyGroup);
                         break;
@@ -1041,12 +961,13 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Contact = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Contact",
                                                         quantity4Contact, price4Contact), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         _builder.addGroup(contactGroup)
-                            .addVariable(quantity4Contact, price4Contact)
-                            .addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Contact,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4Contact, price4Contact)
+                                        .addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Contact,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4Contact.setResetGroup(contactGroup);
                         price4Contact.setResetGroup(contactGroup);
                         break;
@@ -1060,17 +981,18 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4DocType = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4DocType",
                                                         quantity4DocType, price4DocType), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         _builder.addGroup(docTypeGroup)
-                            .addVariable(quantity4DocType, price4DocType)
-                            .addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4DocType,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4DocType, price4DocType)
+                                        .addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4DocType,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4DocType.setResetGroup(docTypeGroup);
                         price4DocType.setResetGroup(docTypeGroup);
                         break;
                     case PRODUCT:
-                        final TextColumnBuilder<String> productColumn = DynamicReports.col.column(this.filteredReport
+                        final TextColumnBuilder<String> productColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Product"), "product", DynamicReports.type.stringType());
                         final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn)
                                         .groupByDataType();
@@ -1081,15 +1003,16 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Product = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Product",
                                                         quantity4Product, price4Product), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         columns.remove(productNameColumn);
                         columns.remove(productDescColumn);
                         columns.add(productColumn);
                         _builder.addGroup(productGroup)
-                            .addVariable(quantity4Product, price4Product)
-                            .addSubtotalAtGroupFooter(productGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Product,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4Product, price4Product)
+                                        .addSubtotalAtGroupFooter(productGroup, DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Product,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4Product.setResetGroup(productGroup);
                         price4Product.setResetGroup(productGroup);
                         break;
@@ -1103,12 +1026,14 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4FamilyGroup = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4FamilyGroup",
                                                         quantity4FamilyGroup, price4FamilyGroup), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         _builder.addGroup(productFamilyGroup)
-                            .addVariable(quantity4FamilyGroup, price4FamilyGroup)
-                            .addSubtotalAtGroupFooter(productFamilyGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4FamilyGroup,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4FamilyGroup, price4FamilyGroup)
+                                        .addSubtotalAtGroupFooter(productFamilyGroup,
+                                                        DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4FamilyGroup,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4FamilyGroup.setResetGroup(productFamilyGroup);
                         price4FamilyGroup.setResetGroup(productFamilyGroup);
                         break;
@@ -1122,12 +1047,15 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4ConditionGroup = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4ConditionGroup",
                                                         quantity4ConditionGroup, price4ConditionGroup), unitPriceColumn,
-                                                        Calculation.NOTHING).setStyle(totalStyle);
+                                                        Calculation.NOTHING)
+                                        .setStyle(totalStyle);
                         _builder.addGroup(conditionGroup)
-                            .addVariable(quantity4ConditionGroup, price4ConditionGroup)
-                            .addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn), unitPriceTotal4ConditionGroup,
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addVariable(quantity4ConditionGroup, price4ConditionGroup)
+                                        .addSubtotalAtGroupFooter(conditionGroup,
+                                                        DynamicReports.sbt.sum(quantityColumn),
+                                                        DynamicReports.sbt.sum(priceColumn),
+                                                        unitPriceTotal4ConditionGroup,
+                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                         quantity4ConditionGroup.setResetGroup(conditionGroup);
                         price4ConditionGroup.setResetGroup(conditionGroup);
                         break;
@@ -1169,9 +1097,9 @@ public abstract class SalesProductReport_Base
                 columns.remove(productDescColumn);
             }
             _builder.addColumn(columns.toArray(new ColumnBuilder<?, ?>[columns.size()]))
-                .addSubtotalAtSummary(DynamicReports.sbt.sum(quantityColumn),
-                                    DynamicReports.sbt.sum(priceColumn),
-                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                            .addSubtotalAtSummary(DynamicReports.sbt.sum(quantityColumn),
+                                            DynamicReports.sbt.sum(priceColumn),
+                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
         }
 
         @Override
@@ -1188,7 +1116,7 @@ public abstract class SalesProductReport_Base
          */
         protected SalesProductReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 
@@ -1220,20 +1148,20 @@ public abstract class SalesProductReport_Base
                               final VariableBuilder<BigDecimal> _price)
         {
             super(_name);
-            this.price = _price;
-            this.quantity = _quantity;
+            price = _price;
+            quantity = _quantity;
         }
 
         @Override
         public BigDecimal evaluate(final ReportParameters _reportParameters)
         {
-            final BigDecimal quantitySumValue = _reportParameters.getValue(this.quantity);
-            final BigDecimal priceSumValue = _reportParameters.getValue(this.price);
+            final BigDecimal quantitySumValue = _reportParameters.getValue(quantity);
+            final BigDecimal priceSumValue = _reportParameters.getValue(price);
             final BigDecimal ret;
             if (priceSumValue.compareTo(BigDecimal.ZERO) == 0) {
                 ret = BigDecimal.ZERO;
             } else {
-                ret = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
+                ret = priceSumValue.divide(quantitySumValue, 4, RoundingMode.HALF_UP);
             }
             return ret;
         }
@@ -1287,6 +1215,8 @@ public abstract class SalesProductReport_Base
         /** The product desc. */
         private String productDesc;
 
+        private Instance prodFamInst;
+
         /** The product uo m. */
         private String productUoM;
 
@@ -1306,7 +1236,7 @@ public abstract class SalesProductReport_Base
          */
         public String getProductDesc()
         {
-            return this.productDesc;
+            return productDesc;
         }
 
         /**
@@ -1317,7 +1247,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setProductDesc(final String _productDesc)
         {
-            this.productDesc = _productDesc;
+            productDesc = _productDesc;
             return this;
         }
 
@@ -1328,7 +1258,7 @@ public abstract class SalesProductReport_Base
          */
         public String getDocOID()
         {
-            return this.docOID;
+            return docOID;
         }
 
         /**
@@ -1339,7 +1269,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setDocOID(final String _docOID)
         {
-            this.docOID = _docOID;
+            docOID = _docOID;
             return this;
         }
 
@@ -1350,7 +1280,7 @@ public abstract class SalesProductReport_Base
          */
         public String getDocName()
         {
-            return this.docName;
+            return docName;
         }
 
         /**
@@ -1361,7 +1291,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             return this;
         }
 
@@ -1372,7 +1302,7 @@ public abstract class SalesProductReport_Base
          */
         public String getCurrency()
         {
-            return this.currency;
+            return currency;
         }
 
         /**
@@ -1383,7 +1313,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setCurrency(final String _currency)
         {
-            this.currency = _currency;
+            currency = _currency;
             return this;
         }
 
@@ -1394,7 +1324,7 @@ public abstract class SalesProductReport_Base
          */
         public String getContact()
         {
-            return this.contact;
+            return contact;
         }
 
         /**
@@ -1405,7 +1335,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setContact(final String _contact)
         {
-            this.contact = _contact;
+            contact = _contact;
             return this;
         }
 
@@ -1416,7 +1346,7 @@ public abstract class SalesProductReport_Base
          */
         public DateTime getDocDate()
         {
-            return this.docDate;
+            return docDate;
         }
 
         /**
@@ -1427,7 +1357,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setDate(final DateTime _docDate)
         {
-            this.docDate = _docDate;
+            docDate = _docDate;
             return this;
         }
 
@@ -1438,7 +1368,7 @@ public abstract class SalesProductReport_Base
          */
         public BigDecimal getQuantity()
         {
-            return this.quantity;
+            return quantity;
         }
 
         /**
@@ -1449,7 +1379,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setQuantity(final BigDecimal _quantity)
         {
-            this.quantity = _quantity;
+            quantity = _quantity;
             return this;
         }
 
@@ -1460,7 +1390,7 @@ public abstract class SalesProductReport_Base
          */
         public Instance getContactInst()
         {
-            return this.contactInst;
+            return contactInst;
         }
 
         /**
@@ -1471,7 +1401,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setContactInst(final Instance _contactInst)
         {
-            this.contactInst = _contactInst;
+            contactInst = _contactInst;
             return this;
         }
 
@@ -1482,7 +1412,7 @@ public abstract class SalesProductReport_Base
          */
         public Instance getProductInst()
         {
-            return this.productInst;
+            return productInst;
         }
 
         /**
@@ -1493,7 +1423,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setProductInst(final Instance _productInst)
         {
-            this.productInst = _productInst;
+            productInst = _productInst;
 
             return this;
         }
@@ -1505,7 +1435,7 @@ public abstract class SalesProductReport_Base
          */
         public String getProductName()
         {
-            return this.productName;
+            return productName;
         }
 
         /**
@@ -1516,7 +1446,18 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setProductName(final String _productName)
         {
-            this.productName = _productName;
+            productName = _productName;
+            return this;
+        }
+
+        public Instance getProdFamInst()
+        {
+            return prodFamInst;
+        }
+
+        public DataBean setProdFamInst(final Instance _prodFamInst)
+        {
+            prodFamInst = _prodFamInst;
             return this;
         }
 
@@ -1527,7 +1468,7 @@ public abstract class SalesProductReport_Base
          */
         public String getProductUoM()
         {
-            return this.productUoM;
+            return productUoM;
         }
 
         /**
@@ -1538,7 +1479,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setProductUoM(final String _productUoM)
         {
-            this.productUoM = _productUoM;
+            productUoM = _productUoM;
             return this;
         }
 
@@ -1549,7 +1490,7 @@ public abstract class SalesProductReport_Base
          */
         public BigDecimal getProductDiscount()
         {
-            return this.productDiscount;
+            return productDiscount;
         }
 
         /**
@@ -1560,7 +1501,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setProductDiscount(final BigDecimal _productDiscount)
         {
-            this.productDiscount = _productDiscount;
+            productDiscount = _productDiscount;
             return this;
         }
 
@@ -1569,7 +1510,7 @@ public abstract class SalesProductReport_Base
          */
         public BigDecimal getUnitPrice()
         {
-            return this.unitPrice;
+            return unitPrice;
         }
 
         /**
@@ -1580,7 +1521,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setUnitPrice(final BigDecimal _unitPrice)
         {
-            this.unitPrice = _unitPrice;
+            unitPrice = _unitPrice;
             return this;
         }
 
@@ -1589,7 +1530,7 @@ public abstract class SalesProductReport_Base
          */
         public BigDecimal getPrice()
         {
-            return this.price;
+            return price;
         }
 
         /**
@@ -1600,7 +1541,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setPrice(final BigDecimal _price)
         {
-            this.price = _price;
+            price = _price;
             return this;
         }
 
@@ -1609,7 +1550,7 @@ public abstract class SalesProductReport_Base
          */
         public String getDocType()
         {
-            return this.docType;
+            return docType;
         }
 
         /**
@@ -1620,7 +1561,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setDocType(final String _docType)
         {
-            this.docType = _docType;
+            docType = _docType;
             return this;
         }
 
@@ -1629,7 +1570,7 @@ public abstract class SalesProductReport_Base
          */
         public String getDocStatus()
         {
-            return this.docStatus;
+            return docStatus;
         }
 
         /**
@@ -1640,7 +1581,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setDocStatus(final String _docStatus)
         {
-            this.docStatus = _docStatus;
+            docStatus = _docStatus;
             return this;
         }
 
@@ -1662,39 +1603,42 @@ public abstract class SalesProductReport_Base
          */
         public String getProductFamily()
         {
-            if (this.productFamily == null) {
+            if (productFamily == null) {
                 try {
-                    final PrintQuery print = new PrintQuery(getProductInst());
-                    final SelectBuilder selClazz = SelectBuilder.get().clazz().type();
-                    print.addSelect(selClazz);
-                    print.execute();
-                    final List<Classification> clazzList = print.<List<Classification>>getSelect(selClazz);
-                    if (clazzList == null) {
-                        this.productFamily = "-";
+                    if (Products.FAMILY_ACTIVATE.get()) {
+                        productFamily = new ProductFamily().getName(ParameterUtil.instance(), getProdFamInst());
                     } else {
-                        final ClassSelect classSel = new ClassSelect()
-                        {
-
-                            @Override
-                            protected int getLevel()
+                        final PrintQuery print = new PrintQuery(getProductInst());
+                        final SelectBuilder selClazz = SelectBuilder.get().clazz().type();
+                        print.addSelect(selClazz);
+                        print.execute();
+                        final List<Classification> clazzList = print.<List<Classification>>getSelect(selClazz);
+                        if (clazzList == null) {
+                            productFamily = "-";
+                        } else {
+                            final ClassSelect classSel = new ClassSelect()
                             {
-                                int ret = -1;
-                                try {
-                                    ret = Sales.REPORT_SALESPROD_PRODFAMLEVEL.get();
-                                } catch (final EFapsException e) {
-                                    SalesProductReport_Base.LOG.error("Catched error on Configuration evaluation.");
-                                }
-                                return ret;
-                            }
-                        };
 
-                        this.productFamily = (String) classSel.evalValue(clazzList);
+                                @Override
+                                protected int getLevel()
+                                {
+                                    int ret = -1;
+                                    try {
+                                        ret = Sales.REPORT_SALESPROD_PRODFAMLEVEL.get();
+                                    } catch (final EFapsException e) {
+                                        SalesProductReport_Base.LOG.error("Catched error on Configuration evaluation.");
+                                    }
+                                    return ret;
+                                }
+                            };
+                            productFamily = (String) classSel.evalValue(clazzList);
+                        }
                     }
                 } catch (final EFapsException e) {
                     SalesProductReport_Base.LOG.error("Catched error on Family evaluation.");
                 }
             }
-            return this.productFamily;
+            return productFamily;
         }
 
         /**
@@ -1704,7 +1648,7 @@ public abstract class SalesProductReport_Base
          */
         public String getCondition()
         {
-            return this.condition;
+            return condition;
         }
 
         /**
@@ -1715,7 +1659,7 @@ public abstract class SalesProductReport_Base
          */
         public DataBean setCondition(final String _condition)
         {
-            this.condition = _condition;
+            condition = _condition;
             return this;
         }
     }
