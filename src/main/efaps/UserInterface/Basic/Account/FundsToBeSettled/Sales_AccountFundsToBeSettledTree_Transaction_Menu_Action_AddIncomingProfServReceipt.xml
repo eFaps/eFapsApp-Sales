@@ -15,22 +15,25 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1c1682b9-0d9f-4a3c-bbf7-830785e13414</uuid>
+    <uuid>45338c21-0d03-46a7-aae9-3eb10779454e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action</name>
-        <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateIncomingCreditNote</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingInvoice</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingReceipt</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingProfServReceipt</child>
-        </childs>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingProfServReceipt</name>
+        <target>
+            <search>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingProfServReceipt_Search</search>
+            <execute
+                program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="ConnectType">Sales_AccountFundsToBeSettled2IncomingProfServReceipt</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
     </definition>
-</ui-menu>
+</ui-command>
