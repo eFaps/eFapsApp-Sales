@@ -36,6 +36,11 @@
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.CreditNote.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.CreditNote.Mime</property>
+                <!-- Sales_Employee2CreditNote -->
+                <property name="ConnectType01">ac678c74-06bd-41f6-b0de-23657b00c79f</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">employee</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.CreditNote" method="validate">
                 <property name="Validation">NAME</property>

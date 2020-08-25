@@ -51,6 +51,11 @@
                 <property name="ConnectCurrentLink01">FromLink</property>
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">receipts</property>
+                <!-- Sales_Employee2CreditNote -->
+                <property name="ConnectType02">ac678c74-06bd-41f6-b0de-23657b00c79f</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.CreditNote" method="validate">
                 <property name="Validation">NAME</property>
