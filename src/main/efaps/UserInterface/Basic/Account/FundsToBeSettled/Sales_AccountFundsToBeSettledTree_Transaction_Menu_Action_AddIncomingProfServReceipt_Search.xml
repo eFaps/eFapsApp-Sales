@@ -25,7 +25,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingProfServReceipt_Search</name>
         <default>
-            <command>Sales_IncomingProfServReceipteSearch</command>
+            <command>Sales_IncomingProfServReceiptSearch</command>
         </default>
         <childs>
             <child>Sales_IncomingProfServReceiptSearch</child>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.efaps.esjp.sales;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -339,7 +340,8 @@ public abstract class Account_Base
                                      final Instance _docInst)
         throws EFapsException
     {
-        if (_docInst.getType().isCIType(CISales.IncomingInvoice)) {
+        if (_docInst.getType().isCIType(CISales.IncomingInvoice)
+                        || _docInst.getType().isCIType(CISales.IncomingProfServReceipt)) {
             final PrintQuery print = new PrintQuery(_docInst);
             print.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.RateCurrencyId,
                             CISales.DocumentSumAbstract.Note, CISales.DocumentSumAbstract.RateCrossTotal);
@@ -465,7 +467,7 @@ public abstract class Account_Base
 
             final BigDecimal rate = BigDecimal.ONE;
 
-            crossTotal = crossTotal.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP));
+            crossTotal = crossTotal.add(amount.divide(rate, RoundingMode.HALF_UP));
             final Insert transInsert = new Insert(CISales.TransactionOutbound);
             transInsert.add(CISales.TransactionOutbound.Amount, amount);
             transInsert.add(CISales.TransactionOutbound.CurrencyId, currId);
@@ -930,7 +932,7 @@ public abstract class Account_Base
         final BigDecimal amount = getStartAmount(_parameter);
 
         final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, amount.setScale(2, BigDecimal.ROUND_HALF_UP));
+        ret.put(ReturnValues.VALUES, amount.setScale(2, RoundingMode.HALF_UP));
         return ret;
     }
     /**
