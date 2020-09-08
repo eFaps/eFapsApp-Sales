@@ -149,7 +149,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </reportElement>
                 <textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="60" y="114" width="380" height="12" uuid="99fcedc8-8762-4a94-9ee7-c7d29bb0b123">
                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
                 </reportElement>
@@ -248,7 +248,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
     </columnHeader>
     <detail>
         <band height="59">
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement positionType="Float" x="0" y="40" width="554" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="0f3a8fda-0e7d-4428-9fe1-c2a5e45c5143">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -283,7 +283,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                         <jr:detailCell style="Table_TD" height="16">
                             <property name="com.jaspersoft.studio.unit.height" value="px"/>
                             <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="16" uuid="ee37eec8-7cb3-472a-b7ed-5e7cad579aed">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                 </reportElement>
@@ -306,7 +306,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="16">
                             <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="35" height="16" uuid="2b30044b-a45c-4618-8199-9b8e43e273ee">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -330,7 +330,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="16">
                             <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="35" height="16" uuid="d8bf7905-0323-424a-840d-e31059e83724">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -354,7 +354,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="16">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="16" uuid="1acf9f1a-e9cc-4dee-be9f-61a26a3baae7">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                 </reportElement>
@@ -377,7 +377,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="16">
                             <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="265" height="16" uuid="ef8a95de-ede6-425c-af01-9499b76ba8e8">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                 </reportElement>
@@ -400,7 +400,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="16">
                             <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="65" height="16" uuid="fa7d28cd-6a04-4fff-82ac-69a78a9e9a9c">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -424,7 +424,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="16">
-                            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="16" uuid="027d9357-6d5f-44da-ad36-0ad2bb50357c">
                                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                                 </reportElement>
@@ -439,7 +439,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
     </detail>
     <columnFooter>
         <band height="51">
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="0" y="0" width="440" height="16" uuid="8ff416cd-7cb0-49b7-b400-9d5e2078491e">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>

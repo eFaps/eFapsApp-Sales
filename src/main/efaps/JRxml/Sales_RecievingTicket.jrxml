@@ -29,7 +29,7 @@
     <field name="note" class="java.lang.String"/>
     <pageHeader>
         <band height="24" splitType="Stretch">
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="0" y="0" width="554" height="14" uuid="f1aac0bb-cca7-4ced-83bf-af1e337c6cec"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -41,7 +41,7 @@
     <columnHeader>
         <band height="95" splitType="Stretch">
             <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement x="455" y="19" width="100" height="12" uuid="40344b0e-3ac8-45e6-aa9d-a9fc609d41e9">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -69,7 +69,7 @@
                 </reportElement>
                 <textFieldExpression><![CDATA[$F{revision}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="0" y="1" width="554" height="18" uuid="72648392-e0a4-4570-8df9-307512e47a6b"/>
                 <textElement>
                     <font size="12" isBold="true"/>
@@ -111,7 +111,7 @@
                 </reportElement>
                 <text><![CDATA[Posiciónes:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="100" y="60" width="454" height="12" isPrintWhenDetailOverflows="true" uuid="8eb86790-c720-47cd-a8e0-ca6c677e0ae6">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>

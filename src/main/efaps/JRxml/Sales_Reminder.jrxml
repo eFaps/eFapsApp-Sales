@@ -194,7 +194,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                         <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                         <jr:detailCell style="Table 1_TD" height="15">
                             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="90" height="15" isPrintWhenDetailOverflows="true" uuid="019336ea-e900-4c34-b064-f9841df91873"/>
                                 <textElement verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{invType}]]></textFieldExpression>
@@ -204,7 +204,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                     <jr:column width="110" uuid="47b286fc-4164-47c6-affb-2d1c4bf1ed35">
                         <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
                         <jr:detailCell style="Table 1_TD" height="15">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="110" height="15" isPrintWhenDetailOverflows="true" uuid="879e97f4-9a86-48db-bbc4-524861412d8d"/>
                                 <textElement verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{invName}]]></textFieldExpression>
@@ -214,7 +214,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                     <jr:column width="110" uuid="ca0a60a2-21ce-4a06-9c52-892d873153f9">
                         <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
                         <jr:detailCell style="Table 1_TD" height="15">
-                            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="110" height="15" isPrintWhenDetailOverflows="true" uuid="0fed7c27-3068-4da0-9e32-44185b93e2a1"/>
                                 <textElement verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{invDate}.toDate()]]></textFieldExpression>
@@ -225,7 +225,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
             </componentElement>
         </band>
         <band height="86">
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement positionType="Float" x="0" y="70" width="555" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="0a82cc8e-fa0c-4c9c-9f9a-604daf28bc4b">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -256,7 +256,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="14">
                             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="14" uuid="46db5185-1909-41ea-9ce4-6447d457445a"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
@@ -275,7 +275,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="14">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="14" uuid="7ff0ce8b-fcd6-45d2-b4a4-106ee198c917"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{prodName}]]></textFieldExpression>
@@ -294,7 +294,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="14">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="320" height="14" uuid="3bf76a3f-fb74-456f-9671-a94530ca1323"/>
                                 <textFieldExpression><![CDATA[$F{productDesc}]]></textFieldExpression>
                             </textField>
@@ -312,7 +312,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="14">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="46" height="14" isPrintWhenDetailOverflows="true" uuid="8d2b6659-4ae5-40f8-82b0-07e13d5b9144"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{uom}]]></textFieldExpression>
@@ -332,12 +332,12 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="14">
                             <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="34" y="0" width="10" height="14" isPrintWhenDetailOverflows="true" uuid="1d0611e0-7b5d-4460-b3e2-294f5f45a7d5"/>
                                 <textElement verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
                             </textField>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="34" height="14" isPrintWhenDetailOverflows="true" uuid="a923c72f-31c2-4592-857e-baf709102376"/>
                                 <textElement textAlignment="Right" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{rateNetUnitPrice}]]></textFieldExpression>
@@ -357,12 +357,12 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="14">
                             <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="43" y="0" width="10" height="14" isPrintWhenDetailOverflows="true" uuid="293d36ba-a8f8-4cb0-90a1-21c4faab64ad"/>
                                 <textElement verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
                             </textField>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="43" height="14" isPrintWhenDetailOverflows="true" uuid="828056d9-3c0d-48a2-b8ca-621c328f2682"/>
                                 <textElement textAlignment="Right" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{rateNetPrice}]]></textFieldExpression>
@@ -390,7 +390,7 @@ linkto[Contact].class[Contacts_ClassLocation].linkto[DistrictLocationLink].attri
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{rateCrossTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="0" y="15" width="379" height="15" isPrintWhenDetailOverflows="true" uuid="8ff416cd-7cb0-49b7-b400-9d5e2078491e"/>
                 <textFieldExpression><![CDATA[new StringBuilder().append(Converter.getMaleConverter(
     new Locale("es")).convert($F{rateCrossTotal}.longValue())).append(" y ")

@@ -47,7 +47,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA["LIQUIDACIÓN " + $F{name}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="91" y="14" width="711" height="14" uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>
@@ -70,7 +70,7 @@
 				</textElement>
 				<text><![CDATA[CAJA:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="91" y="0" width="711" height="14" uuid="95de231f-f359-4b91-b319-8334960ede77"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>

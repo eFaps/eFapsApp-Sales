@@ -105,7 +105,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA["Requerimiento de materiales: " + $F{name}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="450" y="52" width="105" height="15" uuid="ca367d15-684a-4a3a-b0d5-4905840238e0">
 					<printWhenExpression><![CDATA[new Boolean($F{userFirstName} != null)]]></printWhenExpression>
 				</reportElement>
@@ -133,7 +133,7 @@
 				<reportElement x="0" y="80" width="110" height="15" uuid="4775b20a-c649-4669-975b-cf02a4202d09"/>
 				<text><![CDATA[Proveedor sugerido:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="110" y="80" width="445" height="15" uuid="a68aa256-c53c-4a84-89e6-333df91a48fd"/>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
@@ -141,7 +141,7 @@
 	</columnHeader>
 	<detail>
 		<band height="80">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="0" y="60" width="554" height="16" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="0f3a8fda-0e7d-4428-9fe1-c2a5e45c5143">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -176,7 +176,7 @@
 						<jr:detailCell height="16">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement style="Table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="16" uuid="ee37eec8-7cb3-472a-b7ed-5e7cad579aed">
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 								</reportElement>
@@ -199,7 +199,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="16">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement style="Table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="16" uuid="2b30044b-a45c-4618-8199-9b8e43e273ee">
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -223,7 +223,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="16">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement style="Table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="75" height="16" uuid="d8bf7905-0323-424a-840d-e31059e83724">
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -247,7 +247,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell height="16">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement style="Table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="95" height="16" uuid="1acf9f1a-e9cc-4dee-be9f-61a26a3baae7">
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 								</reportElement>
@@ -270,7 +270,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="16">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 								<reportElement style="Table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="305" height="16" uuid="ef8a95de-ede6-425c-af01-9499b76ba8e8">
 									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 								</reportElement>

@@ -105,7 +105,7 @@ attribute[Note] as note]]>
             </subreport>
         </band>
         <band height="30">
-            <textField isStretchWithOverflow="true" isBlankWhenNull="false">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="false">
                 <reportElement x="-1" y="0" width="556" height="20" uuid="938cfc07-0f13-42cb-b22e-6a5eb36b48cc">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>

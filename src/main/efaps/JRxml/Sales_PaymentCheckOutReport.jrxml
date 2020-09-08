@@ -52,12 +52,12 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
                 </textElement>
                 <text><![CDATA[Empresa:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="70" y="0" width="485" height="20" uuid="9eac329f-da82-4fdd-a923-4987ed67c195"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="70" y="20" width="485" height="20" uuid="26008a2f-d3ab-4f71-aef3-358bde2b921f"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>

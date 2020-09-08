@@ -108,7 +108,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <textFieldExpression><![CDATA["No. " + $F{name}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="280" y="0" width="274" height="12" uuid="daf846f9-9c3a-4c09-9c18-c6609feff15e">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -116,7 +116,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="280" y="12" width="274" height="12" uuid="3ef67a9e-81fc-44ad-89f6-97e54851ba05">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -124,7 +124,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="280" y="24" width="274" height="12" uuid="3b903439-53a5-4474-952e-43339bc50ddc">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -132,7 +132,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$P{CompanyStreet}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="280" y="36" width="274" height="12" uuid="c62aef80-67ff-4289-8cb9-131b58f7e3a3">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -309,7 +309,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell height="12">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="12" isPrintWhenDetailOverflows="true" uuid="1e313b49-2732-4f14-bb62-fec5147ad9b4">
                                     <property name="local_mesure_unitwidth" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -400,7 +400,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell height="12">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="310" height="12" isPrintWhenDetailOverflows="true" uuid="6d90a391-e271-4069-8c4f-953d6fa6bcb6">
                                     <property name="local_mesure_unitx" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -446,7 +446,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell height="12">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="47" height="12" uuid="cc41c5ff-e9d1-43a5-8ecf-f75cc8419277">
                                     <property name="local_mesure_unitx" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -466,7 +466,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                                 <textElement textAlignment="Right" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[$F{rateNetUnitPrice}]]></textFieldExpression>
                             </textField>
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="47" y="0" width="13" height="12" uuid="c503c0e6-2cec-419c-9d9d-f64855d29d0c">
                                     <property name="local_mesure_unity" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -513,7 +513,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell height="12">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="47" height="12" uuid="afa82ee4-66a0-43bf-9f52-634bad4168c9">
                                     <property name="local_mesure_unitx" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -533,7 +533,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                                 </textElement>
                                 <textFieldExpression><![CDATA[$F{rateNetPrice}]]></textFieldExpression>
                             </textField>
-                            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
                                 <reportElement stretchType="RelativeToBandHeight" x="47" y="0" width="13" height="12" uuid="777eb69b-ab34-41e2-811d-a9fe1c37574a">
                                     <property name="local_mesure_unity" value="pixel"/>
                                     <property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -559,7 +559,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
     </detail>
     <columnFooter>
         <band height="72">
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement x="440" y="0" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="eee8cff7-0d0a-4064-85f8-2da55a85dc38">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -569,7 +569,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rateNetTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement x="440" y="24" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="3c6521ae-ca70-45c3-bd7d-b74367221ddd">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -579,7 +579,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rateCrossTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement x="440" y="12" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="460299fe-5996-46c4-824c-1e9d24a99cb2">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -589,7 +589,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rateCrossTotal}.subtract( $F{rateNetTotal} )]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="540" y="0" width="15" height="12" isPrintWhenDetailOverflows="true" uuid="ebf11af6-08e7-4030-b2d6-13747f4dbb3a">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -602,7 +602,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="540" y="12" width="15" height="12" isPrintWhenDetailOverflows="true" uuid="6c336cee-8e93-4cd8-a0ff-28df04f2e57f">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -615,7 +615,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="540" y="24" width="15" height="12" isPrintWhenDetailOverflows="true" uuid="950be8f2-9193-4ad6-a069-e2a3c58352bf">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -649,7 +649,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
                 </textElement>
                 <text><![CDATA[I.G.V.:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="0" y="0" width="340" height="36" uuid="c0f884d2-32ce-4b8f-8e45-376ed2671351"/>
                 <textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
             </textField>

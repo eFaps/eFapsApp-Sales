@@ -115,14 +115,14 @@
                 <reportElement x="0" y="20" width="554" height="20" uuid="c9cd073c-9e2d-4488-873d-5a24aa491c6c"/>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="0" y="40" width="554" height="20" uuid="b656bfff-c25e-48f6-b924-968f0c2153d3"/>
                 <textElement textAlignment="Center">
                     <font size="12" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{typeLabel} + " - " + $F{name}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement x="439" y="0" width="115" height="20" uuid="afce8813-f759-46d8-aeba-c806016acb6d"/>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
@@ -157,7 +157,7 @@
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="15">
-                            <textField isStretchWithOverflow="true" pattern="#,##0.####" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" pattern="#,##0.####" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="40" height="15" uuid="2176b472-f086-405e-b128-28f643cb4b1f"/>
                                 <textElement textAlignment="Right"/>
                                 <textFieldExpression><![CDATA[$V{transQuantity}]]></textFieldExpression>
@@ -176,7 +176,7 @@
                             </staticText>
                         </jr:columnHeader>
                         <jr:detailCell style="Table_TD" height="15">
-                            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="40" height="15" uuid="4593d554-afc9-4ec3-af3b-832f2041d839"/>
                                 <box leftPadding="3"/>
                                 <textFieldExpression><![CDATA[$F{uoM}]]></textFieldExpression>
@@ -255,7 +255,7 @@
                         <jr:detailCell style="Table_TD" height="15">
                             <property name="com.jaspersoft.studio.unit.width" value="px"/>
                             <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-                            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                                 <reportElement x="0" y="0" width="60" height="15" uuid="f15efcd6-76c8-4cd4-be5a-94ba6695ae09"/>
                                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
                             </textField>

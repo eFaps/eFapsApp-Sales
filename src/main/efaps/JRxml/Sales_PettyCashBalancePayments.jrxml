@@ -183,7 +183,7 @@ Doc.]]></text>
 		<band height="16" splitType="Prevent">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="ContainerHeight" x="535" y="0" width="55" height="16" uuid="d40d7e74-3ccd-4040-818f-55b4fc3e89b0"/>
 				<box rightPadding="2">
 					<bottomPen lineWidth="1.0"/>
@@ -209,7 +209,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
     : $F{accountAmounts}
 )]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="28" height="16" uuid="239cfb67-2938-41a6-997f-0764097b857d">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -225,7 +225,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="70" y="0" width="60" height="16" uuid="568d7f57-e6de-4a81-a2d6-9c20c69d4617">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -241,7 +241,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numberDoc}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement key="" stretchType="RelativeToTallestObject" x="28" y="0" width="42" height="16" uuid="9bb76fd5-6a93-45af-a128-dbcf29c1ceae">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -257,7 +257,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentType}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="310" y="0" width="225" height="16" uuid="7ee65b27-e697-4d8a-9cff-e2616380a3d0">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -285,7 +285,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
         )
     )]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="false">
 				<reportElement stretchType="RelativeToTallestObject" x="130" y="0" width="55" height="16" uuid="0cd0a4bd-5540-4933-a762-a038f04da630">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -301,7 +301,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codeDoc}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement key="" stretchType="RelativeToTallestObject" x="590" y="0" width="212" height="16" uuid="87f8a67e-8f57-4a20-beaa-06f581cee164">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
@@ -318,7 +318,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="185" y="0" width="58" height="16" isPrintWhenDetailOverflows="true" uuid="c7f3b6b6-95ee-4edc-8a86-008b37b23e8d">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -347,7 +347,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<text><![CDATA[SALDO A REPONER:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="243" y="0" width="48" height="16" uuid="015141c2-17c9-4dcc-86da-03d16f74886a">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -363,7 +363,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement key="" stretchType="RelativeToTallestObject" x="291" y="0" width="19" height="16" uuid="84a8c42a-12ae-4a67-8e75-569f34968819">
 					<printWhenExpression><![CDATA[$F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
                     || $F{typeUUID}.toString().equals("e6274de0-4ca3-48cd-a0e5-97932e420668")
@@ -383,7 +383,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 	</detail>
 	<columnFooter>
 		<band height="40">
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="535" y="0" width="55" height="16" uuid="6d6fca76-7509-4fb6-b49a-b4b87b2b8ee3"/>
 				<box rightPadding="2">
 					<bottomPen lineWidth="1.0"/>
@@ -393,7 +393,7 @@ $F{typeUUID}.toString().equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
 				</textElement>
 				<textFieldExpression><![CDATA[$P{AmountPettyCash}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="535" y="21" width="55" height="16" uuid="804a2d72-5c99-4005-8fb2-79eb100341f4"/>
 				<box rightPadding="2">
 					<bottomPen lineWidth="1.0"/>

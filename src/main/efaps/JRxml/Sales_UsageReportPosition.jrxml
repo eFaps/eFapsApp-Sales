@@ -94,7 +94,7 @@ linkto[Storage].attribute[Name] as storage]]>
         <band height="21" splitType="Stretch">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" uuid="ccc0a32e-e9da-4d3a-ba3b-4e0cdd7e5906">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -110,7 +110,7 @@ linkto[Storage].attribute[Name] as storage]]>
                 <textElement markup="none"/>
                 <textFieldExpression><![CDATA[$F{Quantity}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="60" y="0" width="80" height="20" isPrintWhenDetailOverflows="true" uuid="b3420861-09da-4f77-b14e-805636e61599">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -124,7 +124,7 @@ linkto[Storage].attribute[Name] as storage]]>
                 <textElement markup="none"/>
                 <textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="140" y="0" width="290" height="20" isPrintWhenDetailOverflows="true" uuid="acc4912b-7692-4967-a481-c6bf93792d53">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -137,7 +137,7 @@ linkto[Storage].attribute[Name] as storage]]>
                 </box>
                 <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="430" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" uuid="b3b3630f-33b7-43c0-8871-da9ac075e24c">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -152,7 +152,7 @@ linkto[Storage].attribute[Name] as storage]]>
                 </box>
                 <textFieldExpression><![CDATA[$F{uoM}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="480" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="4ef5e25d-a2c1-4384-8b7b-25e3199fc2be">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>

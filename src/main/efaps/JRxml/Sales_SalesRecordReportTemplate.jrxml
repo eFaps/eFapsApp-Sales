@@ -36,14 +36,14 @@
 				</textElement>
 				<text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACIÓN O RAZÓN SOCIAL:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="370" y="32" width="482" height="16" uuid="0e41b07c-f013-41b8-ae48-c7064323429a"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="370" y="48" width="482" height="16" uuid="0e41b07c-f013-41b8-ae48-c7064323429a"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>

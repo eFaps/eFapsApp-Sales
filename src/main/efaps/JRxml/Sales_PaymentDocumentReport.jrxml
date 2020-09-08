@@ -110,12 +110,12 @@
 				</textElement>
 				<text><![CDATA[R.U.C.:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="70" y="40" width="210" height="20" uuid="bf287c4d-79a6-45ad-9050-ce8ed99d048e"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="70" y="60" width="210" height="20" uuid="59db75b9-42ce-4c4a-8255-2099ad884ae2"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
@@ -131,39 +131,39 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{typeLabel} + " - " + $F{code}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="40" width="100" height="15" uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3"/>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="###0.0000" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="###0.0000" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="364" y="113" width="102" height="15" uuid="bac2d87a-b281-4422-9149-434dda530475"/>
 				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="73" width="485" height="15" uuid="2c9cca4b-1e7f-4647-8125-e9b9aba23a66"/>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="93" width="168" height="15" uuid="5a914ba1-67fc-49f1-923c-aa0f6d76c81f"/>
 				<textFieldExpression><![CDATA[$V{accountName} != null && !$V{accountName}.isEmpty()
 ? $V{accountName}
 : $V{accountDraftName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="260" y="93" width="228" height="15" uuid="3020349f-aadd-4baf-9742-0d317dad4011"/>
 				<textFieldExpression><![CDATA[$V{accountCurrencyName} != null && !$V{accountCurrencyName}.isEmpty()
 ? $V{accountCurrencyName}
 : $V{accountCurrencyDraftName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="113" width="396" height="15" uuid="54612e49-0205-4a12-a5f7-081dd1e3cbe5"/>
 				<textFieldExpression><![CDATA[$F{currencyName}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="140" width="396" height="15" uuid="fd32ac6f-04d6-4ee0-a5ee-2dbcebb2b8e8"/>
 				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="364" y="40" width="102" height="15" uuid="aa97391b-0bbe-4bc2-b50e-a082d7d82a37"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
@@ -216,7 +216,7 @@
 				</textElement>
 				<text><![CDATA[N° DE OPERACIÓN]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="92" y="55" width="100" height="15" uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3"/>
 				<textFieldExpression><![CDATA[(($F{typeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{typeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03")) ) && $F{dueDate}!= $F{date}) ? $F{dueDate}.toDate() : ""]]></textFieldExpression>
 			</textField>
@@ -252,7 +252,7 @@
 				</textElement>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="450" y="10" width="105" height="15" uuid="b985791b-8158-4d1e-b26f-f32caf23bdca"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{amount}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>

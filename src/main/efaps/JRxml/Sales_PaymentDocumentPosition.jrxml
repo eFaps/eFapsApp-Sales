@@ -110,7 +110,7 @@
 	</columnHeader>
 	<detail>
 		<band height="15" splitType="Stretch">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="15" uuid="f161504e-3b30-43e5-b3c1-4149bf054e7e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -121,7 +121,7 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{nameDoc}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="100" y="0" width="70" height="15" uuid="1a0cadf6-bbd1-47ae-87b7-d88f0f4cdcd1"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -132,7 +132,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{dateDoc}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="170" y="0" width="35" height="15" uuid="051b2918-3e55-4d87-9a45-3b02a7456268"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -143,7 +143,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{symbolDoc}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="#,##0.000#########" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.000#########" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="205" y="0" width="65" height="15" uuid="be6d8ab2-a72d-46c9-baa2-010992f72f01"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -154,7 +154,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="270" y="0" width="200" height="15" uuid="1741a8d9-3ac4-44be-9526-11cea683589a"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -165,7 +165,7 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{contactNameDoc}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="470" y="0" width="84" height="15" uuid="d682c8e2-73fd-451d-b9ed-7fc992c87cb0"/>
 				<box>
 					<topPen lineWidth="1.0"/>
