@@ -1951,6 +1951,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASH_CONNECT_PROFSERVRECEIPT = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "AccountPettyCash.ConnectIncomingProfServReceipt")
+                    .description("Enable the connection of Incoming ProfServReceipt.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASHBAL_REQUIREBOOKED4PAY = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashBalance.RequireBooked4Payment")
