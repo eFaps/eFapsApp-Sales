@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2020 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,25 +15,24 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d7d315f2-2b40-4fdb-a5ca-8d4ab810867f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_FundsToBeSettledReceiptPositionTable</name>
-        <!-- fields -->
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_FundsToBeSettledReceiptPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Quantity" name="Sales_FundsToBeSettledReceiptPositionTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"/>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Quantity"
+                name="Sales_FundsToBeSettledReceiptPositionTable.product.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
@@ -41,15 +41,20 @@
             <property name="Label">Sales_FundsToBeSettledReceiptPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                method="autoComplete4Product"
                 name="Sales_FundsToBeSettledReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Type">Products_ProductCostTextPosition</property>
                 <property name="Type01">Products_ProductService</property>
+                <!-- Sales-Configuration for Overwrite Properties-->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.FundsToBeSettledReceipt.ProductAutoComplete</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Product"
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Product"
                 name="Sales_FundsToBeSettledReceiptPositionTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"/>
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="productDesc">
             <property name="ModeCreate">EDITABLE</property>
@@ -77,14 +82,20 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_FundsToBeSettledReceiptPosition/NetUnitPrice.Label</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4NetUnitPrice" name="Sales_FundsToBeSettledReceiptPositionTable.netUnitPrice.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"/>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4NetUnitPrice"
+                name="Sales_FundsToBeSettledReceiptPositionTable.netUnitPrice.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="discount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Discount</property>
             <property name="Label">Sales_FundsToBeSettledReceiptPosition/Discount.Label</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Discount" name="Sales_FundsToBeSettledReceiptPositionTable.discount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"/>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Discount"
+                name="Sales_FundsToBeSettledReceiptPositionTable.discount.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
         <field name="discountNetUnitPrice">
             <property name="ModeCreate">READONLY</property>
@@ -102,7 +113,8 @@
             <property name="Attribute">CrossPrice</property>
             <property name="Label">Sales_IncomingInvoicePosition/CrossPrice.Label</property>
             <property name="Align">right</property>
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+            <trigger
+                program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="updateFields4CrossPrice"
                 name="Sales_PettyCashReceiptPositionTable.crossPrice.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />

@@ -610,6 +610,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute FUNDSTOBESETTLEDRECEIPT_PRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "FundsToBeSettledReceipt.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute GOODSISSUESLIPACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "GoodsIssueSlip.Activate")
@@ -1912,14 +1919,12 @@ public final class Sales
                     .key(Sales.BASE + "payment.out.Retention.PayableDocuments")
                     .description("Properties to define the Query for Documents that can be payed.");
 
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PETTYCASH_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "AccountPettyCash.Activate")
                     .description("Activate AccountPettyCash.");
-
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -2026,6 +2031,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashReceipt.AssignEmployee")
                     .description("Activate the mechanism to assign an employee to PettyCashReceipt.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PETTYCASHRECEIPT_PRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "PettyCashReceipt.ProductAutoComplete")
+                    .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
 
     /** See description. */
     @EFapsSysConfAttribute
