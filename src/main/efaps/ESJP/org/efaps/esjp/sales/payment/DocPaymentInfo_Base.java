@@ -1324,7 +1324,7 @@ public abstract class DocPaymentInfo_Base
             } else if (_perPayment && getRateInfo().getTargetCurrencyInstance().equals(_targetCurrency)) {
                 ret = getRateInfo().getCurrencyInstObj().isInvert()
                                 ? getAmount().multiply(getRateInfo().getRateUI())
-                                : getAmount().divide(getRateInfo().getRate());
+                                : getAmount().divide(getRateInfo().getRate(), RoundingMode.HALF_UP);
             } else {
                 ret = Currency.convert(_parameter, getAmount(), getCurrencyInstance(),
                                     _targetCurrency, "WHAT_SHOULD_I_USED",
