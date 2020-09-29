@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,11 +65,6 @@ import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
-/**
- * TODO comment!
- *
- * @author The eFaps Team
- */
 @EFapsUUID("9b1b92aa-550a-48d3-a58e-2c47e54802f9")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class PettyCashReceipt_Base
@@ -402,13 +397,19 @@ public abstract class PettyCashReceipt_Base
                     balanceCurrencyInstance = Instance.get(CIERP.Currency.getType(),
                                     multi.<Long>getAttribute(CISales.Balance.Currency));
                 }
-                final Instance rateCurrencyInstance =  new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId");
-                final BigDecimal netTotal = getNetTotal(_parameter, calcList);
-                final DateTime dateTime = DateTime.parse( _parameter.getParameterValue("date"));
-                final BigDecimal amount = Currency.convert(_parameter, netTotal, rateCurrencyInstance,
-                                balanceCurrencyInstance, CISales.PettyCashReceipt.getType().getName(),
-                                LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()));
-                if (amount.compareTo(amountBal) == 1) {
+                if (InstanceUtils.isValid(balanceCurrencyInstance)) {
+                    final Instance rateCurrencyInstance = new Currency().getCurrencyFromUI(_parameter,
+                                    "rateCurrencyId");
+                    final BigDecimal netTotal = getNetTotal(_parameter, calcList);
+                    final DateTime dateTime = DateTime.parse(_parameter.getParameterValue("date"));
+                    final BigDecimal amount = Currency.convert(_parameter, netTotal, rateCurrencyInstance,
+                                    balanceCurrencyInstance, CISales.PettyCashReceipt.getType().getName(),
+                                    LocalDate.of(dateTime.getYear(), dateTime.getMonthOfYear(),
+                                                    dateTime.getDayOfMonth()));
+                    if (amount.compareTo(amountBal) == 1) {
+                        ret.add(new EvaluateBalanceAccountDocWarning());
+                    }
+                } else {
                     ret.add(new EvaluateBalanceAccountDocWarning());
                 }
             }
