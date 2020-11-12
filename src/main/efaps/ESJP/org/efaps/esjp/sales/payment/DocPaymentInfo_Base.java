@@ -225,6 +225,7 @@ public abstract class DocPaymentInfo_Base
 
     /**
      * Get the crossTotal converted into the the given target currency.
+     *
      * @param _parameter Parameter
      * @param _targetCurrency currency to convert into
      * @return converted crossTotal
@@ -274,7 +275,7 @@ public abstract class DocPaymentInfo_Base
     {
         if (rateInfo4Target == null) {
             rateInfo4Target = new Currency().evaluateRateInfos(getParameter(),
-                        getDate(), getRateCurrencyInstance(), getTargetInfo().getCurrencyInstance())[2];
+                            getDate(), getRateCurrencyInstance(), getTargetInfo().getCurrencyInstance())[2];
         }
         return rateInfo4Target;
     }
@@ -282,7 +283,8 @@ public abstract class DocPaymentInfo_Base
     /**
      * Setter method for instance variable {@link #rateInfo4Account}.
      *
-     * @param _rateInfo4Account value for instance variable {@link #rateInfo4Account}
+     * @param _rateInfo4Account value for instance variable
+     *            {@link #rateInfo4Account}
      */
     public void setRateInfo4Target(final RateInfo _rateInfo4Account)
     {
@@ -373,7 +375,7 @@ public abstract class DocPaymentInfo_Base
                     val = props.getProperty(instance.getType().getName() + ".Threshold");
                 }
                 if (val != null) {
-                    final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
+                    final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance();
                     format.setParseBigDecimal(true);
                     threshold = (BigDecimal) format.parse(val);
                 }
@@ -622,7 +624,8 @@ public abstract class DocPaymentInfo_Base
     /**
      * Setter method for instance variable {@link #rateCrossTotal}.
      *
-     * @param _rateCrossTotal value for instance variable {@link #rateCrossTotal}
+     * @param _rateCrossTotal value for instance variable
+     *            {@link #rateCrossTotal}
      * @return the doc payment info
      */
     public DocPaymentInfo setRateCrossTotal(final BigDecimal _rateCrossTotal)
@@ -645,7 +648,8 @@ public abstract class DocPaymentInfo_Base
     /**
      * Setter method for instance variable {@link #currencyInstance}.
      *
-     * @param _currencyInstance value for instance variable {@link #currencyInstance}
+     * @param _currencyInstance value for instance variable
+     *            {@link #currencyInstance}
      * @return the doc payment info
      */
     public DocPaymentInfo setCurrencyInstance(final Instance _currencyInstance)
@@ -657,7 +661,8 @@ public abstract class DocPaymentInfo_Base
     /**
      * Setter method for instance variable {@link #rateCurrencyInstance}.
      *
-     * @param _rateCurrencyInstance value for instance variable {@link #rateCurrencyInstance}
+     * @param _rateCurrencyInstance value for instance variable
+     *            {@link #rateCurrencyInstance}
      * @return the doc payment info
      */
     public DocPaymentInfo setRateCurrencyInstance(final Instance _rateCurrencyInstance)
@@ -726,14 +731,15 @@ public abstract class DocPaymentInfo_Base
         while (multi.next()) {
             final DocPaymentInfo_Base info = instance2info.get(multi.getCurrentInstance());
             info.setCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal))
-                .setRateCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal))
-                .setName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                .setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                .setRateInfo(new Currency().evaluateRateInfo(info.getParameter(),
-                            multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)))
-                .setCurrencyInstance(multi.<Instance>getSelect(selCurInst))
-                .setRateCurrencyInstance(multi.<Instance>getSelect(selRateCurInst))
-                .setContactName(multi.<String>getSelect(selContactName));
+                            .setRateCrossTotal(
+                                            multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal))
+                            .setName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                            .setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                            .setRateInfo(new Currency().evaluateRateInfo(info.getParameter(),
+                                            multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)))
+                            .setCurrencyInstance(multi.<Instance>getSelect(selCurInst))
+                            .setRateCurrencyInstance(multi.<Instance>getSelect(selRateCurInst))
+                            .setContactName(multi.<String>getSelect(selContactName));
         }
     }
 
@@ -775,38 +781,43 @@ public abstract class DocPaymentInfo_Base
                         selPaymentDocRate);
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
-            final Instance docInst = multi.getSelect(selDocInst);
-            final DocPaymentInfo_Base info = instance2info.get(docInst);
-            final Instance curInst = multi.getSelect(selCurInst);
-            final Instance rateCurInst = multi.getSelect(selRateCurInst);
-
-            final DateTime dateTmp = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
-            BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
             final Instance payDocInst = multi.getSelect(selPaymentDocInst);
-            final String name = multi.getSelect(selPaymentDocName);
-            final RateInfo rateInfo;
+            if (InstanceUtils.isValid(payDocInst)) {
 
-            // payment was in the same currency
-            if (curInst.equals(rateCurInst)) {
-                // the applied currency was the base currency
-                if (Currency.getBaseCurrency().equals(rateCurInst)) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                final DocPaymentInfo_Base info = instance2info.get(docInst);
+                final Instance curInst = multi.getSelect(selCurInst);
+                final Instance rateCurInst = multi.getSelect(selRateCurInst);
+
+                final DateTime dateTmp = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+                BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+
+                final String name = multi.getSelect(selPaymentDocName);
+                final RateInfo rateInfo;
+
+                // payment was in the same currency
+                if (curInst.equals(rateCurInst)) {
+                    // the applied currency was the base currency
+                    if (Currency.getBaseCurrency().equals(rateCurInst)) {
+                        rateInfo = RateInfo.getRateInfo(multi.<Object[]>getAttribute(
+                                        CIERP.Document2PaymentDocumentAbstract.Rate));
+                    } else {
+                        rateInfo = RateInfo.getRateInfo(multi.<Object[]>getSelect(selPaymentDocRate));
+                    }
+                } else {
+                    // different currencies use the one registered in the
+                    // relation
                     rateInfo = RateInfo.getRateInfo(multi.<Object[]>getAttribute(
                                     CIERP.Document2PaymentDocumentAbstract.Rate));
-                } else {
-                    rateInfo = RateInfo.getRateInfo(multi.<Object[]>getSelect(selPaymentDocRate));
                 }
-            } else {
-                // different currencies use the one registered in the relation
-                rateInfo = RateInfo.getRateInfo(multi.<Object[]>getAttribute(
-                                CIERP.Document2PaymentDocumentAbstract.Rate));
+                if (InstanceUtils.isKindOf(payDocInst, CISales.PaymentDocumentOutAbstract)) {
+                    amount = amount.negate();
+                }
+                info.payPos.add(new PayPos(dateTmp, amount, curInst)
+                                .setTypeLabel(payDocInst.getType().getLabel())
+                                .setName(name)
+                                .setRateInfo(rateInfo));
             }
-            if (InstanceUtils.isKindOf(payDocInst, CISales.PaymentDocumentOutAbstract)) {
-                amount = amount.negate();
-            }
-            info.payPos.add(new PayPos(dateTmp, amount, curInst)
-                            .setTypeLabel(payDocInst.getType().getLabel())
-                            .setName(name)
-                            .setRateInfo(rateInfo));
         }
     }
 
@@ -821,7 +832,8 @@ public abstract class DocPaymentInfo_Base
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = DocPaymentInfo_Base.getInfoMap(_parameter, _infos);
 
-        // check related taxdocs for detraction, for detraction the payment for detraction will be included
+        // check related taxdocs for detraction, for detraction the payment for
+        // detraction will be included
         final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
         attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToAbstractLink,
                         instance2info.keySet().toArray());
@@ -951,9 +963,9 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
-     * Register Swap information a payments. Only the "from" one is payed,
-     * the "to" one is the one paying. Only will be added as a payment
-     * position if none of the documents has the status canceled.
+     * Register Swap information a payments. Only the "from" one is payed, the
+     * "to" one is the one paying. Only will be added as a payment position if
+     * none of the documents has the status canceled.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _infos infos to be initialized with the base information
@@ -1112,14 +1124,14 @@ public abstract class DocPaymentInfo_Base
         ret.append("<div style=\"display:flex;flex-wrap:wrap;\">");
 
         ret.append("<div style=\"margin:10px;\">")
-            .append("<h3>").append(getLabel("PerPayment")).append("</h3>");
+                        .append("<h3>").append(getLabel("PerPayment")).append("</h3>");
         for (final Instance currencyInstance : currencyInstances) {
             ret.append(getTable(_parameter, payInfo, CurrencyInst.get(currencyInstance), true));
         }
         ret.append("</div>");
 
         ret.append("<div style=\"margin:10px;\">")
-            .append("<h3>").append(getLabel("PerDoc")).append("</h3>");
+                        .append("<h3>").append(getLabel("PerDoc")).append("</h3>");
         for (final Instance currencyInstance : currencyInstances) {
             ret.append(getTable(_parameter, payInfo, CurrencyInst.get(currencyInstance), false));
         }
@@ -1128,12 +1140,14 @@ public abstract class DocPaymentInfo_Base
         return ret;
     }
 
-    protected static List<Instance> getCurrencies() throws EFapsException {
+    protected static List<Instance> getCurrencies()
+        throws EFapsException
+    {
         final Instance baseCurrencyInstance = Currency.getBaseCurrency();
         final List<Instance> currencyInstances = (List<Instance>) Currency.getAvailable();
         currencyInstances.remove(baseCurrencyInstance);
 
-        Collections.sort(currencyInstances, (i1,i2) -> {
+        Collections.sort(currencyInstances, (i1, i2) -> {
             try {
                 return CurrencyInst.get(i1).getName().compareTo(CurrencyInst.get(i2).getName());
             } catch (final EFapsException e) {
@@ -1154,52 +1168,54 @@ public abstract class DocPaymentInfo_Base
         final DecimalFormat formatter = NumberFormatter.get().getFrmt4Total(_parameter.getInstance().getType());
 
         final Table table = new Table()
-            .setStyle("width:100%;")
-            .addRow()
-                .addHeaderColumn(getLabel("LabelColumn"), 4)
-                .addHeaderColumn(getLabel("AmountColumn"))
-            .addRow()
-                .addColumn(_currencyInst.getName(), "font-weight:bold;font-size: 120%;")
-            .addRow()
-                .addColumn(getLabel("CrossTotal"), "font-weight:bold", 4)
-                .addColumn(frmtAmount(formatter, _payInfo.getCrossTotalInCurrency(_parameter,
-                                _currencyInst.getInstance()), _currencyInst), "text-align: right;");
+                        .setStyle("width:100%;")
+                        .addRow()
+                        .addHeaderColumn(getLabel("LabelColumn"), 4)
+                        .addHeaderColumn(getLabel("AmountColumn"))
+                        .addRow()
+                        .addColumn(_currencyInst.getName(), "font-weight:bold;font-size: 120%;")
+                        .addRow()
+                        .addColumn(getLabel("CrossTotal"), "font-weight:bold", 4)
+                        .addColumn(frmtAmount(formatter, _payInfo.getCrossTotalInCurrency(_parameter,
+                                        _currencyInst.getInstance()), _currencyInst), "text-align: right;");
 
-        for (final PayPos payPos  : _payInfo.getPayPos()) {
+        for (final PayPos payPos : _payInfo.getPayPos()) {
             table.addRow()
-                .addColumn(payPos.getTypeLabel())
-                .addColumn(payPos.getName())
-                .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate()
-                                .withLocale(Context.getThreadContext().getLocale())));
+                            .addColumn(payPos.getTypeLabel())
+                            .addColumn(payPos.getName())
+                            .addColumn(payPos.getDate().toString(DateTimeFormat.mediumDate()
+                                            .withLocale(Context.getThreadContext().getLocale())));
 
             if (!payPos.getCurrencyInstance().equals(_currencyInst.getInstance())) {
                 // add the payment in its currency of origin
                 table.addColumn(frmtAmount(formatter, payPos.getAmount(), payPos.getCurrencyInstance()),
-                                    "text-align: right;");
+                                "text-align: right;");
                 // add the payment in the target currency
                 table.addColumn(frmtAmount(formatter, payPos.getAmountInCurrency(_parameter,
                                 _currencyInst.getInstance(), _perPayment), _currencyInst), "text-align: right;");
             } else {
                 table.getCurrentColumn().setColSpan(2)
-                    .getCurrentTable()
-                    .addColumn(frmtAmount(formatter, payPos.getAmount(),_currencyInst), "text-align: right;");
+                                .getCurrentTable()
+                                .addColumn(frmtAmount(formatter, payPos.getAmount(), _currencyInst),
+                                                "text-align: right;");
             }
         }
         table
-            .addRow()
-                .addColumn(getLabel("Paid"), "font-weight:bold", 4)
-                .addColumn(frmtAmount(formatter, _payInfo.getPaidInCurrency(_currencyInst.getInstance(), _perPayment),
-                                _currencyInst), "text-align: right;")
-            .addRow()
-                .addColumn(getLabel("Balance"), "font-weight:bold;text-align:right", 4)
-                .addColumn(frmtAmount(formatter, _payInfo.getBalanceInCurrency(_currencyInst.getInstance(),
-                                _perPayment), _currencyInst), "text-align: right;");
+                        .addRow()
+                        .addColumn(getLabel("Paid"), "font-weight:bold", 4)
+                        .addColumn(frmtAmount(formatter,
+                                        _payInfo.getPaidInCurrency(_currencyInst.getInstance(), _perPayment),
+                                        _currencyInst), "text-align: right;")
+                        .addRow()
+                        .addColumn(getLabel("Balance"), "font-weight:bold;text-align:right", 4)
+                        .addColumn(frmtAmount(formatter, _payInfo.getBalanceInCurrency(_currencyInst.getInstance(),
+                                        _perPayment), _currencyInst), "text-align: right;");
         return table.toHtml();
     }
 
     private static String getLabel(final String _key)
     {
-        return DBProperties.getProperty(DocPaymentInfo.class.getName() +  "." + _key);
+        return DBProperties.getProperty(DocPaymentInfo.class.getName() + "." + _key);
     }
 
     private static String frmtAmount(final DecimalFormat _formatter,
@@ -1304,8 +1320,9 @@ public abstract class DocPaymentInfo_Base
 
         /**
          * Get the amount converted into the the given target currency.
-         * PerPayment true means use the rate registered in the payment
-         * else uses the registered exchange rate.
+         * PerPayment true means use the rate registered in the payment else
+         * uses the registered exchange rate.
+         *
          * @param _parameter Parameter
          * @param _targetCurrency currency to convert into
          * @return converted crossTotal
@@ -1314,7 +1331,7 @@ public abstract class DocPaymentInfo_Base
         public BigDecimal getAmountInCurrency(final Parameter _parameter,
                                               final Instance _targetCurrency,
                                               final boolean _perPayment)
-              throws EFapsException
+            throws EFapsException
         {
             BigDecimal ret;
             if (getCurrencyInstance().equals(_targetCurrency)) {
@@ -1327,8 +1344,9 @@ public abstract class DocPaymentInfo_Base
                                 : getAmount().divide(getRateInfo().getRate(), RoundingMode.HALF_UP);
             } else {
                 ret = Currency.convert(_parameter, getAmount(), getCurrencyInstance(),
-                                    _targetCurrency, "WHAT_SHOULD_I_USED",
-                            LocalDate.of(getDate().getYear(), getDate().getMonthOfYear(), getDate().getDayOfMonth()));
+                                _targetCurrency, "WHAT_SHOULD_I_USED",
+                                LocalDate.of(getDate().getYear(), getDate().getMonthOfYear(),
+                                                getDate().getDayOfMonth()));
             }
             return ret;
         }
@@ -1492,7 +1510,8 @@ public abstract class DocPaymentInfo_Base
         /**
          * Setter method for instance variable {@link #currencyInstance}.
          *
-         * @param _currencyInstance value for instance variable {@link #currencyInstance}
+         * @param _currencyInstance value for instance variable
+         *            {@link #currencyInstance}
          */
         public void setCurrencyInstance(final Instance _currencyInstance)
         {
@@ -1502,7 +1521,8 @@ public abstract class DocPaymentInfo_Base
         /**
          * Setter method for instance variable {@link #currencyInst}.
          *
-         * @param _currencyInst value for instance variable {@link #currencyInst}
+         * @param _currencyInst value for instance variable
+         *            {@link #currencyInst}
          */
         public void setCurrencyInst(final CurrencyInst _currencyInst)
         {
@@ -1516,6 +1536,7 @@ public abstract class DocPaymentInfo_Base
     public static class TargetDocInfo
         extends AbstractTargetInfo
     {
+
         /**
          * /**
          *
@@ -1544,8 +1565,10 @@ public abstract class DocPaymentInfo_Base
     public static class AccountInfo
         extends AbstractTargetInfo
     {
+
         /**
-        /**
+         * /**
+         *
          * @param _instance insatcne of the account
          * @throws EFapsException on error
          */
