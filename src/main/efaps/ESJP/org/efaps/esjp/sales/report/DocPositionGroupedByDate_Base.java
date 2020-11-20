@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -189,18 +190,18 @@ public abstract class DocPositionGroupedByDate_Base
                 uoMStr = defaultUoM.getName();
                 if (!defaultUoM.equals(uom)) {
                     quantity = quantity.multiply(new BigDecimal(uom.getNumerator()))
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP);
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(uom.getDenominator()), RoundingMode.HALF_UP);
                     quantity = quantity.multiply(new BigDecimal(defaultUoM.getDenominator()))
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(defaultUoM.getNumerator()), BigDecimal.ROUND_HALF_UP);
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(defaultUoM.getNumerator()), RoundingMode.HALF_UP);
                 }
             } else {
                 uoMStr = uom.getDimension().getBaseUoM().getName();
                 if (!uom.equals(uom.getDimension().getBaseUoM())) {
                     quantity = quantity.multiply(new BigDecimal(uom.getNumerator()))
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP);
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(uom.getDenominator()), RoundingMode.HALF_UP);
                 }
             }
             map.put("quantity", quantity);

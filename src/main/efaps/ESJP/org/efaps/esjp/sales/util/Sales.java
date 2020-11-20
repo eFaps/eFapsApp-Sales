@@ -1,7 +1,7 @@
 //CHECKSTYLE:OFF
 //CHECKSTYLE:ON
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,6 @@ import org.efaps.esjp.sales.cashflow.CashFlowCategory;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("70a6a397-b8ef-40c5-853e-cff331bc79bb")
@@ -2514,6 +2512,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocPositionReport.ActivateBOM")
                     .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_DOCPOS_POS = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.DocPositionReport.ActivatePOS")
+                    .description("Activate POS Group for DocPositionReport.");
 
     /** See description. */
     @EFapsSysConfAttribute

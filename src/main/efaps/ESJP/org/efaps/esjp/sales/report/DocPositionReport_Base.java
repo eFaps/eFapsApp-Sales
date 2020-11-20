@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,22 +33,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabVariableBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
@@ -63,6 +47,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -81,7 +66,22 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
-// TODO: Auto-generated Javadoc
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabVariableBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 /**
  * The Class DocPositionReport_Base.
  *
@@ -180,8 +180,17 @@ public abstract class DocPositionReport_Base
         throws EFapsException
     {
         if (valueList == null) {
+            final Map<String, Object> filter = getFilterMap(_parameter);
+
             final DocPositionGroupedByDate ds = new DocPositionGroupedByDate()
             {
+                final SelectBuilder selPOSDetails = SelectBuilder.get()
+                                .linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                                .linkfrom("POS_Balance2Document", "ToLink")
+                                .linkto("FromLink")
+                                .linkto("UserLink")
+                                .attribute("Name");
+
                 @Override
                 protected void add2QueryBuilder(final Parameter _parameter,
                                                 final QueryBuilder _queryBldr)
@@ -190,8 +199,27 @@ public abstract class DocPositionReport_Base
                     super.add2QueryBuilder(_parameter, _queryBldr);
                     DocPositionReport_Base.this.add2QueryBuilder(_parameter, _queryBldr);
                 }
+
+                @Override
+                protected void add2Print(final Parameter _parameter, final MultiPrintQuery _multi)
+                    throws EFapsException
+                {
+                    super.add2Print(_parameter, _multi);
+                    if (BooleanUtils.isTrue((Boolean) filter.get("posDetails"))) {
+                        _multi.addSelect(selPOSDetails);
+                    }
+                }
+
+                @Override
+                protected void add2RowMap(final Parameter _parameter, final MultiPrintQuery _multi,
+                                          final Map<String, Object> _map)
+                    throws EFapsException
+                {
+                    super.add2RowMap(_parameter, _multi, _map);
+                    _map.put("posDetails", _multi.getSelect(selPOSDetails));
+                }
             };
-            final Map<String, Object> filter = getFilterMap(_parameter);
+
             final DateTime start;
             final DateTime end;
             if (filter.containsKey("dateFrom")) {
@@ -454,6 +482,10 @@ public abstract class DocPositionReport_Base
                     chain.addComparator((_o1,
                      _o2) -> String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName"))));
                 }
+                if (BooleanUtils.isTrue((Boolean) filterMap.get("posDetails"))) {
+                    chain.addComparator((_o1,
+                     _o2) -> String.valueOf(_o1.get("posDetails")).compareTo(String.valueOf(_o2.get("posDetails"))));
+                }
                 chain.addComparator((_o1,
                  _o2) -> String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName"))));
                 chain.addComparator((_o1,
@@ -556,6 +588,12 @@ public abstract class DocPositionReport_Base
                 final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab.rowGroup("docName",
                                 String.class);
                 rowGrpBldrs.add(docGroup);
+            }
+
+            if (BooleanUtils.isTrue((Boolean) filterMap.get("posDetails"))) {
+                final CrosstabRowGroupBuilder<String> posGroup = DynamicReports.ctab.rowGroup("posDetails",
+                                String.class);
+                rowGrpBldrs.add(posGroup);
             }
 
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure(

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2020 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -46,6 +47,7 @@
                 <property name="Field11">unitPrice</property>
                 <property name="Field12">docDetails</property>
                 <property name="Field13">bom</property>
+                <property name="Field14">posDetails</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -59,6 +61,7 @@
                 <property name="FilterType11">Boolean</property>
                 <property name="FilterType12">Boolean</property>
                 <property name="FilterType13">Boolean</property>
+                <property name="FilterType14">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -72,7 +75,9 @@
                 <property name="FilterDefault11">false</property>
                 <property name="FilterDefault12">false</property>
                 <property name="FilterDefault13">false</property>
+                <property name="FilterDefault14">false</property>
                 <property name="AccessAttribute13">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="AccessAttribute14">org.efaps.sales.report.DocPositionReport.ActivatePOS</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
@@ -93,6 +98,7 @@
                 <property name="Field11">unitPrice</property>
                 <property name="Field12">docDetails</property>
                 <property name="Field13">bom</property>
+                <property name="Field14">posDetails</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
@@ -106,9 +112,11 @@
                 <property name="DBProperty11">org.efaps.esjp.sales.report.DocPositionReport.unitPrice</property>
                 <property name="DBProperty12">org.efaps.esjp.sales.report.DocPositionReport.docDetails</property>
                 <property name="DBProperty13">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+                <property name="DBProperty14">org.efaps.esjp.sales.report.DocPositionReport.posDetails</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Products_ProductAbstract_Select">attribute[Name]</property>
                 <property name="AccessAttribute13">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="AccessAttribute14">org.efaps.sales.report.DocPositionReport.ActivatePOS</property>
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
