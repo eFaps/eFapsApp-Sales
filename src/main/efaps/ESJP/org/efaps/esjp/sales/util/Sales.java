@@ -945,6 +945,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_VALIDATION = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingInvoice.Validation")
+                    .addDefaultValue("Validation01", "NAME")
+                    .addDefaultValue("Validation02", "QUANTITYGREATERZERO")
+                    .addDefaultValue("Validation03", "AMOUNTGREATERZERO")
+                    .addDefaultValue("NAME.ValidateContact", "true")
+                    .addDefaultValue("NAME.QueryType01", "Sales_IncomingInvoice")
+                    .addDefaultValue("NAME.QueryType02", "Sales_IncomingReceipt")
+                    .addDefaultValue("NAME.QueryType03", "Accounting_ExternalVoucher")
+                    .description("Configuration Properties to activate validations.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INCOMINGPROFSERVREC_ACTRET = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingProfServReceipt.ActivateRetention")
@@ -1065,10 +1079,24 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGRECEIPT_FILESTRBROWSER = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGRECEIPT_FILESTRBROWSER = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingReceipt.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGRECEIPT_VALIDATION = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingReceipt.Validation")
+                    .addDefaultValue("Validation01", "NAME")
+                    .addDefaultValue("Validation02", "QUANTITYGREATERZERO")
+                    .addDefaultValue("Validation03", "AMOUNTGREATERZERO")
+                    .addDefaultValue("NAME.ValidateContact", "true")
+                    .addDefaultValue("NAME.QueryType01", "Sales_IncomingInvoice")
+                    .addDefaultValue("NAME.QueryType02", "Sales_IncomingReceipt")
+                    .addDefaultValue("NAME.QueryType03", "Accounting_ExternalVoucher")
+                    .description("Configuration Properties to activate validations.");
 
     /** See description. */
     @EFapsSysConfAttribute

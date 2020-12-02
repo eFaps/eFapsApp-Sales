@@ -855,7 +855,7 @@ public abstract class IncomingInvoice_Base
                 return ret;
             }
         };
-        return validation.validate(_parameter, this);
+        return validation.validate(_parameter, this, Sales.INCOMINGINVOICE_VALIDATION.get());
     }
 
     /**
@@ -912,6 +912,7 @@ public abstract class IncomingInvoice_Base
         }
         return ret;
     }
+
 
 
 

@@ -52,6 +52,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.listener.ITypedClass;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractPositionWarning;
 import org.efaps.esjp.erp.AbstractWarning;
@@ -78,16 +79,17 @@ import org.slf4j.LoggerFactory;
 public abstract class Validation_Base
     extends AbstractDocument
 {
+
     /**
      * Enum for enabling standard validations.
      */
     public enum Validations
     {
-        /** Basic validation for Positions.*/
+        /** Basic validation for Positions. */
         POSITION,
-        /** Basic validation for Positions.*/
+        /** Basic validation for Positions. */
         DUPLICATEDPOSITION,
-        /** Validate that only one product is selected.*/
+        /** Validate that only one product is selected. */
         ONLYONEPRODUCT,
         /** Validate Quantity in Stock. */
         QUANTITYINSTOCK,
@@ -105,11 +107,14 @@ public abstract class Validation_Base
         SERIAL,
         /** Present always a warning "Are you sure". */
         AREYOUSURE,
-        /** Validate the selected products for Individual.*/
+        /** Validate the selected products for Individual. */
         INDIVIDUAL,
-        /** Validate that the given date is after the last Closure date for given Storages. */
+        /**
+         * Validate that the given date is after the last Closure date for given
+         * Storages.
+         */
         STOCKCLOSURE,
-        /**Validate the maximum number of lines in the document*/
+        /** Validate the maximum number of lines in the document */
         MAXLINES;
     }
 
@@ -163,40 +168,40 @@ public abstract class Validation_Base
         for (final Validations validation : getValidations(_parameter, _validationProperties)) {
             switch (validation) {
                 case POSITION:
-                    warnings.addAll(validatePositions(_parameter, _doc));
+                    warnings.addAll(validatePositions(_parameter, _doc, _validationProperties));
                     break;
                 case DUPLICATEDPOSITION:
-                    warnings.addAll(validateDuplicatedPositions(_parameter, _doc));
+                    warnings.addAll(validateDuplicatedPositions(_parameter, _doc, _validationProperties));
                     break;
                 case ONLYONEPRODUCT:
-                    warnings.addAll(validateOnlyOneProduct(_parameter, _doc));
+                    warnings.addAll(validateOnlyOneProduct(_parameter, _doc, _validationProperties));
                     break;
                 case QUANTITYINSTOCK:
-                    warnings.addAll(validateQuantityInStorage(_parameter, _doc));
+                    warnings.addAll(validateQuantityInStorage(_parameter, _doc, _validationProperties));
                     break;
                 case QUANTITYINSTOCK4DOC:
-                    warnings.addAll(validateQuantityInStorage4Doc(_parameter, _doc));
+                    warnings.addAll(validateQuantityInStorage4Doc(_parameter, _doc, _validationProperties));
                     break;
                 case QUANTITYGREATERZERO:
-                    warnings.addAll(validateQuantityGreaterZero(_parameter, _doc));
+                    warnings.addAll(validateQuantityGreaterZero(_parameter, _doc, _validationProperties));
                     break;
                 case NAME:
-                    warnings.addAll(validateName(_parameter, _doc));
+                    warnings.addAll(validateName(_parameter, _doc, _validationProperties));
                     break;
                 case SERIAL:
-                    warnings.addAll(validateSerial(_parameter, _doc));
+                    warnings.addAll(validateSerial(_parameter, _doc, _validationProperties));
                     break;
                 case AMOUNTGREATERZERO:
-                    warnings.addAll(validateAmountGreaterZero(_parameter, _doc));
+                    warnings.addAll(validateAmountGreaterZero(_parameter, _doc, _validationProperties));
                     break;
                 case TOTALGREATERZERO:
-                    warnings.addAll(validateTotalGreaterZero(_parameter, _doc));
+                    warnings.addAll(validateTotalGreaterZero(_parameter, _doc, _validationProperties));
                     break;
                 case INDIVIDUAL:
-                    warnings.addAll(validateIndividual(_parameter, _doc));
+                    warnings.addAll(validateIndividual(_parameter, _doc, _validationProperties));
                     break;
                 case STOCKCLOSURE:
-                    warnings.addAll(validateStockClosure(_parameter, _doc));
+                    warnings.addAll(validateStockClosure(_parameter, _doc, _validationProperties));
                     break;
                 case AREYOUSURE:
                     areyousure = true;
@@ -236,13 +241,13 @@ public abstract class Validation_Base
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
-        final var maxLines = Integer
-                        .parseInt(_validationProperties.getProperty(Validations.MAXLINES.name() + ".Value", "10"));
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties, Validations.MAXLINES.name());
+        final var error = properties.getProperty("Level", "WARN").equals("ERROR");
+        final var maxLines = Integer.parseInt(properties.getProperty("Value", "10"));
         if (getPositionsCount(_parameter) > maxLines) {
             final var warning = new MaxLineWarning();
             warning.addObject(maxLines);
-            final var level = _validationProperties.getProperty(Validations.MAXLINES.name() + ".Level", "WARN");
-            warning.setError(level.equals("ERROR"));
+            warning.setError(error);
             ret.add(warning);
         }
         return ret;
@@ -250,22 +255,26 @@ public abstract class Validation_Base
 
     /**
      * Validate that the positions are valid.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validatePositions(final Parameter _parameter,
-                                            final ITypedClass _doc)
+                                            final ITypedClass _doc,
+                                            final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties, Validations.POSITION.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
             final Instance prodInst = Instance.get(product[i]);
             if (!prodInst.isValid()) {
-                ret.add(new PositionWarning().setPosition(i + 1));
+                ret.add(new PositionWarning().setPosition(i + 1).setError(error));
             }
         }
         return ret;
@@ -273,23 +282,27 @@ public abstract class Validation_Base
 
     /**
      * Validate that the positions are valid.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateDuplicatedPositions(final Parameter _parameter,
-                                                      final ITypedClass _doc)
+                                                      final ITypedClass _doc,
+                                                      final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties, Validations.MAXLINES.name());
+        final var error = properties.getProperty("Level", "WARN").equals("ERROR");
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         final Set<Instance> prods = new HashSet<>();
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
             final Instance prodInst = Instance.get(product[i]);
             if (prods.contains(prodInst)) {
-                ret.add(new DuplicatedPositionWarning().setPosition(i + 1));
+                ret.add(new DuplicatedPositionWarning().setPosition(i + 1).setError(error));
             } else {
                 prods.add(prodInst);
             }
@@ -299,16 +312,21 @@ public abstract class Validation_Base
 
     /**
      * Validate that the positions are valid.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateOnlyOneProduct(final Parameter _parameter,
-                                                 final ITypedClass _doc)
+                                                 final ITypedClass _doc,
+                                                 final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.ONLYONEPRODUCT.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         Instance currentProdInst = null;
@@ -317,58 +335,63 @@ public abstract class Validation_Base
             if (currentProdInst == null) {
                 currentProdInst = prodInst;
             } else if (!currentProdInst.equals(prodInst)) {
-                ret.add(new OnlyOneProductWarning());
+                ret.add(new OnlyOneProductWarning().setError(error));
             }
         }
         return ret;
     }
 
     /**
-     * Validate that the given quantities have numbers bigger than Zero.
+     * Validate that the given crossprices are bigger than Zero.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateAmountGreaterZero(final Parameter _parameter,
-                                                    final ITypedClass _doc)
+                                                    final ITypedClass _doc,
+                                                    final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.AMOUNTGREATERZERO.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
         final List<Calculator> calcs = ((AbstractDocument) _doc).analyseTable(_parameter, null);
         int i = 0;
-        BigDecimal total = BigDecimal.ZERO;
         for (final Calculator calc : calcs) {
             if (!calc.isEmpty()) {
-                total = total.add(calc.getCrossPrice());
                 if (calc.getCrossPrice().compareTo(BigDecimal.ZERO) < 1) {
-                    ret.add(new AmountGreaterZeroWarning().setPosition(i + 1));
+                    ret.add(new AmountGreaterZeroWarning().setPosition(i + 1).setError(error));
                 }
             }
             i++;
-        }
-        if (total.compareTo(BigDecimal.ZERO) < 1) {
-            ret.add(new TotalGreaterZeroWarning());
         }
         return ret;
     }
 
     /**
      * Validate that the given quantities have numbers bigger than Zero.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateTotalGreaterZero(final Parameter _parameter,
-                                                   final ITypedClass _doc)
+                                                   final ITypedClass _doc,
+                                                   final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
-        final List<Calculator> calcs =  ((AbstractDocument) _doc).analyseTable(_parameter, null);
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.TOTALGREATERZERO.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
+        final List<Calculator> calcs = ((AbstractDocument) _doc).analyseTable(_parameter, null);
         final BigDecimal total = Calculator.getNetTotal(_parameter, calcs);
         if (total.compareTo(BigDecimal.ZERO) < 1) {
-            ret.add(new TotalGreaterZeroWarning());
+            ret.add(new TotalGreaterZeroWarning().setError(error));
         }
         return ret;
     }
@@ -394,14 +417,17 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateName(final Parameter _parameter,
-                                       final ITypedClass _doc)
+                                       final ITypedClass _doc,
+                                       final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
 
         final Instance docInst = _parameter.getInstance();
 
-        final String fieldName = getProperty(_parameter, "NAME_FieldName");
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties, Validations.NAME.name());
+
+        final String fieldName = properties.getProperty("FieldName");
         String name = null;
         if (fieldName == null) {
             name = _parameter.getParameterValue("name4create");
@@ -413,14 +439,15 @@ public abstract class Validation_Base
         }
 
         if (StringUtils.isNotEmpty(name)) {
-            if (!name.matches(Sales.VALIDATION_NAMEREGEX.get())) {
+            final var regex = properties.getProperty("Regex", Sales.VALIDATION_NAMEREGEX.get());
+            if (!name.matches(regex)) {
                 ret.add(new InvalidNameWarning());
             }
-            if ("true".equalsIgnoreCase(getProperty(_parameter, "NAME_ValidateContact"))) {
+            if ("true".equalsIgnoreCase(properties.getProperty("ValidateContact", "false"))) {
                 final Instance contactInst = getContactInstance(_parameter);
                 if (contactInst != null && contactInst.isValid()) {
                     QueryBuilder queryBldr = null;
-                    final Map<Integer, String> types = analyseProperty(_parameter, "NAME_QueryType");
+                    final Map<Integer, String> types = PropertiesUtil.analyseProperty(properties, "QueryType", 0);
                     for (final Entry<Integer, String> entryType : types.entrySet()) {
                         final Type type = Type.get(entryType.getValue());
                         if (type != null) {
@@ -465,10 +492,14 @@ public abstract class Validation_Base
      * @throws EFapsException on error
      */
     public List<IWarning> validateSerial(final Parameter _parameter,
-                                         final ITypedClass _doc)
+                                         final ITypedClass _doc,
+                                         final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties, Validations.NAME.name());
+        final var error = properties.getProperty("Level", "WARN").equals("ERROR");
+
         final Instance docInst = _parameter.getInstance();
         Type type = null;
         if (docInst != null && docInst.isValid()) {
@@ -480,7 +511,7 @@ public abstract class Validation_Base
             }
         }
 
-        final String fieldName = getProperty(_parameter, "NAME_FieldName");
+        final String fieldName = properties.getProperty("FieldName");
         String name = null;
         String snName = null;
         if (fieldName == null) {
@@ -500,12 +531,11 @@ public abstract class Validation_Base
             final QueryBuilder queryBldr = new QueryBuilder(type);
             queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, name).setIgnoreCase(true);
             if (!queryBldr.getQuery().execute().isEmpty()) {
-                ret.add(new ExistingSerialWarning());
+                ret.add(new ExistingSerialWarning().setError(error));
             }
         }
         return ret;
     }
-
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
@@ -538,19 +568,23 @@ public abstract class Validation_Base
         return ret;
     }
 
-
     /**
      * Validate that the given quantities have numbers bigger than Zero.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityGreaterZero(final Parameter _parameter,
-                                                      final ITypedClass _doc)
+                                                      final ITypedClass _doc,
+                                                      final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.QUANTITYGREATERZERO.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
         final String[] quantities = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Quantity.name));
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
@@ -563,7 +597,7 @@ public abstract class Validation_Base
                 Validation_Base.LOG.debug("Catched ParseException on validation", e);
             }
             if (quantity.compareTo(BigDecimal.ZERO) < 1) {
-                ret.add(new QuantityGreateZeroWarning().setPosition(i + 1));
+                ret.add(new QuantityGreateZeroWarning().setPosition(i + 1).setError(error));
             }
         }
         return ret;
@@ -571,16 +605,22 @@ public abstract class Validation_Base
 
     /**
      * Validate that the given quantities exist in the stock.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityInStorage4Doc(final Parameter _parameter,
-                                                        final ITypedClass _doc)
+                                                        final ITypedClass _doc,
+                                                        final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.QUANTITYINSTOCK4DOC.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
+
         final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionProdDocAbstract);
         posQueryBldr.addWhereAttrEqValue(CISales.PositionProdDocAbstract.DocumentAbstractLink, _parameter
                         .getInstance());
@@ -616,7 +656,7 @@ public abstract class Validation_Base
                                 .getDenominator()), RoundingMode.HALF_UP);
                 if (quantity.compareTo(currQuantity) > 0) {
                     ret.add(new NotEnoughStockWarning().setPosition(posMulti.<Integer>getAttribute(
-                                    CISales.PositionProdDocAbstract.PositionNumber)));
+                                    CISales.PositionProdDocAbstract.PositionNumber)).setError(error));
                 }
             }
         }
@@ -625,16 +665,22 @@ public abstract class Validation_Base
 
     /**
      * Validate that the given quantities exist in the stock.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityInStorage(final Parameter _parameter,
-                                                    final ITypedClass _doc)
+                                                    final ITypedClass _doc,
+                                                    final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.QUANTITYINSTOCK.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
+
         final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Product.name));
         final String[] uoMs = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
@@ -653,7 +699,7 @@ public abstract class Validation_Base
                 if (ArrayUtils.isNotEmpty(storage)) {
                     queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, Instance.get(storage[i]));
                 } else if ("true".equalsIgnoreCase(getProperty(_parameter, "QUANTITYINSTOCK_UseDefaultWareHouse"))) {
-                    final Instance wareHInst =  ((AbstractDocument) _doc).getDefaultStorage(_parameter);
+                    final Instance wareHInst = ((AbstractDocument) _doc).getDefaultStorage(_parameter);
                     if (wareHInst != null && wareHInst.isValid()) {
                         queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, wareHInst);
                     }
@@ -679,7 +725,7 @@ public abstract class Validation_Base
                     quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())).divide(
                                     new BigDecimal(uoM.getDenominator()), RoundingMode.HALF_UP);
                     if (quantity.compareTo(currQuantity) > 0) {
-                        ret.add(new NotEnoughStockWarning().setPosition(i + 1));
+                        ret.add(new NotEnoughStockWarning().setPosition(i + 1).setError(error));
                     }
                 }
             }
@@ -696,10 +742,14 @@ public abstract class Validation_Base
      * @throws EFapsException the e faps exception
      */
     public List<IWarning> validateIndividual(final Parameter _parameter,
-                                             final ITypedClass _doc)
+                                             final ITypedClass _doc,
+                                             final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.INDIVIDUAL.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
         if (Products.ACTIVATEINDIVIDUAL.get()) {
             final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                             CISales.PositionAbstract.Product.name));
@@ -715,16 +765,17 @@ public abstract class Validation_Base
             int idx = 1;
             while (multi.next()) {
                 final Instance prodInst = multi.getCurrentInstance();
-                // if it is not an individual product, verify that it is not marked a individual
+                // if it is not an individual product, verify that it is not
+                // marked a individual
                 if (!prodInst.getType().isKindOf(CIProducts.ProductIndividualAbstract)) {
                     Products.ProductIndividual individual = multi.getAttribute(CIProducts.ProductAbstract.Individual);
                     if (individual == null) {
-                        individual  = Products.ProductIndividual.NONE;
+                        individual = Products.ProductIndividual.NONE;
                     }
                     switch (individual) {
                         case BATCH:
                         case INDIVIDUAL:
-                            ret.add(new ProductMustBeIndividualWarning().setPosition(idx));
+                            ret.add(new ProductMustBeIndividualWarning().setPosition(idx).setError(error));
                             break;
                         case NONE:
                         default:
@@ -746,10 +797,14 @@ public abstract class Validation_Base
      * @throws EFapsException the e faps exception
      */
     public List<IWarning> validateStockClosure(final Parameter _parameter,
-                                               final ITypedClass _doc)
+                                               final ITypedClass _doc,
+                                               final Properties _validationProperties)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
+        final var properties = PropertiesUtil.getProperties4Prefix(_validationProperties,
+                        Validations.STOCKCLOSURE.name());
+        final var error = properties.getProperty("Level", "ERROR").equals("ERROR");
         final DateTime date = new DateTime(_parameter.getParameterValue("date"));
         final String[] storageArray = _parameter.getParameterValues("storage");
         if (ArrayUtils.isNotEmpty(storageArray)) {
@@ -767,10 +822,10 @@ public abstract class Validation_Base
                 }
             }
         } else {
-            final Instance defStoreInst =  ((AbstractDocument) _doc).getDefaultStorage(_parameter);
+            final Instance defStoreInst = ((AbstractDocument) _doc).getDefaultStorage(_parameter);
             if (InstanceUtils.isValid(defStoreInst)) {
                 if (!Storage.validateClosureDate(_parameter, defStoreInst, date)) {
-                    ret.add(new ClosureWarning());
+                    ret.add(new ClosureWarning().setError(error));
                 }
             }
         }
@@ -783,13 +838,6 @@ public abstract class Validation_Base
     public static class PositionWarning
         extends AbstractPositionWarning
     {
-        /**
-         * Constructor.
-         */
-        public PositionWarning()
-        {
-            setError(true);
-        }
     }
 
     /**
@@ -806,13 +854,6 @@ public abstract class Validation_Base
     public static class NotEnoughStockWarning
         extends AbstractPositionWarning
     {
-        /**
-         * Constructor.
-         */
-        public NotEnoughStockWarning()
-        {
-            setError(true);
-        }
     }
 
     /**
@@ -821,13 +862,6 @@ public abstract class Validation_Base
     public static class QuantityGreateZeroWarning
         extends AbstractPositionWarning
     {
-        /**
-         * Constructor.
-         */
-        public QuantityGreateZeroWarning()
-        {
-            setError(true);
-        }
     }
 
     /**
@@ -836,13 +870,6 @@ public abstract class Validation_Base
     public static class AmountGreaterZeroWarning
         extends AbstractPositionWarning
     {
-        /**
-         * Constructor.
-         */
-        public AmountGreaterZeroWarning()
-        {
-            setError(true);
-        }
     }
 
     /**
@@ -851,13 +878,6 @@ public abstract class Validation_Base
     public static class TotalGreaterZeroWarning
         extends AbstractWarning
     {
-        /**
-         * Constructor.
-         */
-        public TotalGreaterZeroWarning()
-        {
-            setError(true);
-        }
     }
 
     /**
@@ -898,13 +918,6 @@ public abstract class Validation_Base
     public static class OnlyOneProductWarning
         extends AbstractWarning
     {
-        /**
-         * Constructor.
-         */
-        public OnlyOneProductWarning()
-        {
-            setError(true);
-        }
     }
 
     /**
@@ -913,22 +926,10 @@ public abstract class Validation_Base
     public static class ProductMustBeIndividualWarning
         extends AbstractPositionWarning
     {
-        /**
-         * Constructor.
-         */
-        public ProductMustBeIndividualWarning()
-        {
-            setError(true);
-        }
     }
 
     public static class MaxLineWarning
         extends AbstractWarning
     {
-        public MaxLineWarning()
-        {
-            setError(false);
-        }
     }
-
 }

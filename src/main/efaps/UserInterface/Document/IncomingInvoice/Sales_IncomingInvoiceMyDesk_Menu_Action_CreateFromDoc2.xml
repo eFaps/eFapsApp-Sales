@@ -71,15 +71,7 @@
                 <property name="ConnectForeignLink05">FromLink</property>
                 <property name="ConnectForeignField05">department</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
-                <property name="Validation01">NAME</property>
-                <property name="Validation02">QUANTITYGREATERZERO</property>
-                <property name="Validation03">AMOUNTGREATERZERO</property>
-                <property name="NAME_ValidateContact">true</property>
-                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
-                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
-                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
-            </validate>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate"/>
             <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
         <property name="Target">modal</property>

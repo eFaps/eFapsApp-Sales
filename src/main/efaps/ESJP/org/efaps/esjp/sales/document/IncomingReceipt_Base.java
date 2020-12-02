@@ -165,4 +165,12 @@ public abstract class IncomingReceipt_Base
         return CISales.IncomingReceipt.getType();
     }
 
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation();
+        return validation.validate(_parameter, this, Sales.INCOMINGRECEIPT_VALIDATION.get());
+    }
+
 }
