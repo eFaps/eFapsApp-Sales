@@ -183,4 +183,12 @@ public abstract class Receipt_Base
         }
         return ret;
     }
+
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation();
+        return validation.validate(_parameter, this, Sales.RECEIPT_VALIDATION.get());
+    }
 }

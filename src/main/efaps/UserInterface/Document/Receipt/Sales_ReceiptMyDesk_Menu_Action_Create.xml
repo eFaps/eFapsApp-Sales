@@ -18,8 +18,9 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>cbab4d23-05d3-4a47-9fa6-aa4309535b10</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
@@ -34,7 +35,9 @@
         </access>
         <target>
             <form>Sales_ReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
+            <execute
+                program="org.efaps.esjp.sales.document.Receipt"
+                method="create">
                 <property name="PositionType">Sales_ReceiptPosition</property>
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
@@ -53,10 +56,9 @@
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">condition</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
-                <property name="Validation01">AMOUNTGREATERZERO</property>
-            </validate>
+            <validate
+                program="org.efaps.esjp.sales.document.Receipt"
+                method="validate" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Receipt</property>
@@ -78,7 +80,9 @@
         </access>
         <target>
             <form>Sales_ReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
+            <execute
+                program="org.efaps.esjp.sales.document.Receipt"
+                method="create">
                 <property name="PositionType">Sales_ReceiptPosition</property>
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
@@ -103,10 +107,9 @@
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">condition</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
-                <property name="Validation01">AMOUNTGREATERZERO</property>
-            </validate>
+            <validate
+                program="org.efaps.esjp.sales.document.Receipt"
+                method="validate" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Receipt</property>

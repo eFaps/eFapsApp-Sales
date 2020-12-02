@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -154,5 +153,13 @@ public abstract class Invoice_Base
                             CIFormSales.Sales_InvoiceForm.orderInbound.name, queryBldr));
         }
         return ret;
+    }
+
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation();
+        return validation.validate(_parameter, this, Sales.INVOICE_VALIDATION.get());
     }
 }

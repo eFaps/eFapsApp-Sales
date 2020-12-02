@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,19 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -66,7 +70,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -105,7 +108,9 @@ public abstract class Validation_Base
         /** Validate the selected products for Individual.*/
         INDIVIDUAL,
         /** Validate that the given date is after the last Closure date for given Storages. */
-        STOCKCLOSURE;
+        STOCKCLOSURE,
+        /**Validate the maximum number of lines in the document*/
+        MAXLINES;
     }
 
     /**
@@ -123,13 +128,40 @@ public abstract class Validation_Base
                            final ITypedClass _doc)
         throws EFapsException
     {
+        return validate(_parameter, _doc, null);
+    }
+
+    public Collection<Validations> getValidations(final Parameter _parameter, final Properties _validationProperties)
+        throws EFapsException
+    {
+        final List<Validations> ret = new ArrayList<>();
+        final var validations = _validationProperties == null ? analyseProperty(_parameter, "Validation")
+                        : analyseProperty(_parameter, _validationProperties, "Validation");
+        for (final String validation : validations.values()) {
+            final var val = EnumUtils.getEnum(Validations.class, validation);
+            if (val != null) {
+                ret.add(val);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return Return with the result
+     * @throws EFapsException on error
+     */
+    public Return validate(final Parameter _parameter,
+                           final ITypedClass _doc,
+                           final Properties _validationProperties)
+        throws EFapsException
+    {
         final Return ret = new Return();
-        final Map<Integer, String> validations = analyseProperty(_parameter, "Validation");
         List<IWarning> warnings = new ArrayList<>();
         boolean areyousure = false;
-        for (final String validation : validations.values()) {
-            final Validations val = Validations.valueOf(validation);
-            switch (val) {
+        for (final Validations validation : getValidations(_parameter, _validationProperties)) {
+            switch (validation) {
                 case POSITION:
                     warnings.addAll(validatePositions(_parameter, _doc));
                     break;
@@ -169,6 +201,9 @@ public abstract class Validation_Base
                 case AREYOUSURE:
                     areyousure = true;
                     break;
+                case MAXLINES:
+                    warnings.addAll(validateMaxLines(_parameter, _doc, _validationProperties));
+                    break;
                 default:
                     break;
             }
@@ -192,6 +227,23 @@ public abstract class Validation_Base
             if (!WarningUtil.hasError(warnings)) {
                 ret.put(ReturnValues.TRUE, true);
             }
+        }
+        return ret;
+    }
+
+    public List<IWarning> validateMaxLines(final Parameter _parameter, final ITypedClass _doc,
+                                           final Properties _validationProperties)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<>();
+        final var maxLines = Integer
+                        .parseInt(_validationProperties.getProperty(Validations.MAXLINES.name() + ".Value", "10"));
+        if (getPositionsCount(_parameter) > maxLines) {
+            final var warning = new MaxLineWarning();
+            warning.addObject(maxLines);
+            final var level = _validationProperties.getProperty(Validations.MAXLINES.name() + ".Level", "WARN");
+            warning.setError(level.equals("ERROR"));
+            ret.add(warning);
         }
         return ret;
     }
@@ -561,7 +613,7 @@ public abstract class Validation_Base
                 BigDecimal quantity = posMulti.getAttribute(CISales.PositionProdDocAbstract.Quantity);
                 final UoM uoM = Dimension.getUoM(posMulti.<Long>getAttribute(CISales.PositionProdDocAbstract.UoM));
                 quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())).divide(new BigDecimal(uoM
-                                .getDenominator()), BigDecimal.ROUND_HALF_UP);
+                                .getDenominator()), RoundingMode.HALF_UP);
                 if (quantity.compareTo(currQuantity) > 0) {
                     ret.add(new NotEnoughStockWarning().setPosition(posMulti.<Integer>getAttribute(
                                     CISales.PositionProdDocAbstract.PositionNumber)));
@@ -625,7 +677,7 @@ public abstract class Validation_Base
                     }
                     final UoM uoM = Dimension.getUoM(Long.valueOf(uoMs[i]));
                     quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())).divide(
-                                    new BigDecimal(uoM.getDenominator()), BigDecimal.ROUND_HALF_UP);
+                                    new BigDecimal(uoM.getDenominator()), RoundingMode.HALF_UP);
                     if (quantity.compareTo(currQuantity) > 0) {
                         ret.add(new NotEnoughStockWarning().setPosition(i + 1));
                     }
@@ -832,7 +884,6 @@ public abstract class Validation_Base
     {
     }
 
-
     /**
      * Warning for existing name.
      */
@@ -868,6 +919,15 @@ public abstract class Validation_Base
         public ProductMustBeIndividualWarning()
         {
             setError(true);
+        }
+    }
+
+    public static class MaxLineWarning
+        extends AbstractWarning
+    {
+        public MaxLineWarning()
+        {
+            setError(false);
         }
     }
 

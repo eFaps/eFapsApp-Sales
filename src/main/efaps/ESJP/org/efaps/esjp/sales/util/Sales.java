@@ -1234,6 +1234,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INVOICE_VALIDATION = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Invoice.Validation")
+                    .addDefaultValue("Validation01", "QUANTITYGREATERZERO")
+                    .addDefaultValue("Validation02", "AMOUNTGREATERZERO")
+                    .addDefaultValue("Validation03", "DUPLICATEDPOSITION")
+                    .addDefaultValue("Validation04", "SERIAL")
+                    .description("Configuration Properties to activate validations.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INSTALLMENT_USENUMGEN = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Installment.UseNumberGenerator")
@@ -1397,7 +1408,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    @SuppressWarnings("checkstyle:linelength")
     public static final PropertiesSysConfAttribute PAYMENT_RULES = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.Rules")
@@ -2270,6 +2280,15 @@ public final class Sales
                     .addDefaultValue("Type", "Sales_DeliveryNote")
                     .addDefaultValue("StatusGroup01", "Sales_DeliveryNoteStatus")
                     .addDefaultValue("Status01", "Open");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute RECEIPT_VALIDATION = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Receipt.Validation")
+                    .addDefaultValue("Validation01", "QUANTITYGREATERZERO")
+                    .addDefaultValue("Validation02", "AMOUNTGREATERZERO")
+                    .description("Configuration Properties to activate validations.");
 
     /** See description. */
     @EFapsSysConfAttribute
