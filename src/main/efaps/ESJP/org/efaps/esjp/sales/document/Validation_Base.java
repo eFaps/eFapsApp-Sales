@@ -133,15 +133,14 @@ public abstract class Validation_Base
                            final ITypedClass _doc)
         throws EFapsException
     {
-        return validate(_parameter, _doc, null);
+        return validate(_parameter, _doc, PropertiesUtil.getProperties(_parameter));
     }
 
     public Collection<Validations> getValidations(final Parameter _parameter, final Properties _validationProperties)
         throws EFapsException
     {
         final List<Validations> ret = new ArrayList<>();
-        final var validations = _validationProperties == null ? analyseProperty(_parameter, "Validation")
-                        : analyseProperty(_parameter, _validationProperties, "Validation");
+        final var validations = PropertiesUtil.analyseProperty(_validationProperties, "Validation", 0);
         for (final String validation : validations.values()) {
             final var val = EnumUtils.getEnum(Validations.class, validation);
             if (val != null) {
