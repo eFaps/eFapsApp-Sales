@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.esjp.common.eql.AbstractSelect;
 import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.Tax_Base;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.util.EFapsException;
@@ -62,8 +63,9 @@ public abstract class AbstractTaxSelect_Base
         while (multi.next()) {
            final Taxes taxes =  multi.getAttribute(getAttribute());
            if (taxes != null) {
-               if (taxes.getEntries().size() == 1) {
-                   taxes.getEntries().get(0).getAmount();
+               if (taxes.getEntries().size() == 1 && taxHint == null) {
+                   final var value = taxes.getEntries().get(0).getAmount();
+                   getValues().put(multi.getCurrentInstance(), value);
                } else {
                    if (taxHint == null) {
                        LOG.error("cannot evaluate TaxSelect for {} due to having more than one entry but no TaxHint",
@@ -76,7 +78,7 @@ public abstract class AbstractTaxSelect_Base
                                getValues().put(multi.getCurrentInstance(), value);
                                break;
                            } else {
-                              final Tax tax = Tax.get(taxEntry.getCatUUID(), taxEntry.getUUID());
+                              final Tax tax = Tax_Base.get(taxEntry.getCatUUID(), taxEntry.getUUID());
                               if (taxHint.equals(tax.getName())) {
                                   value = taxEntry.getAmount();
                                   getValues().put(multi.getCurrentInstance(), value);
