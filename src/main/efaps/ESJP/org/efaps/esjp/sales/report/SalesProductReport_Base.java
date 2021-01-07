@@ -57,6 +57,7 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
@@ -1606,7 +1607,11 @@ public abstract class SalesProductReport_Base
             if (productFamily == null) {
                 try {
                     if (Products.FAMILY_ACTIVATE.get()) {
-                        productFamily = new ProductFamily().getName(ParameterUtil.instance(), getProdFamInst());
+                        if (InstanceUtils.isValid(getProdFamInst())) {
+                            productFamily = new ProductFamily().getName(ParameterUtil.instance(), getProdFamInst());
+                        } else {
+                            productFamily = "N/A";
+                        }
                     } else {
                         final PrintQuery print = new PrintQuery(getProductInst());
                         final SelectBuilder selClazz = SelectBuilder.get().clazz().type();
