@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2020 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -73,6 +73,10 @@
             <property name="Label">Sales_PaymentDocumentAbstract/RateCurrencyLink.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Note.Label</property>
+        </field>
          <field name="creator">
             <property name="Attribute">Creator</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Creator.Label</property>
@@ -113,5 +117,6 @@
                 <property name="AttributeExists08">org.efaps.sales.payment.in.Retention.Status4Create</property>
             </trigger>
         </field>
+
     </definition>
 </ui-table>

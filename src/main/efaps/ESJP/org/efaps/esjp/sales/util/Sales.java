@@ -659,6 +659,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGCHECK_ACTIVATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "IncomingCheck.Activate")
+                    .defaultValue(CINumGenSales.IncomingCheckRevisionSequence.uuid.toString())
+                    .description("Activate Incoming Check mechanism");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INCOMINGCHECK_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingCheck.RevisionSequence")
