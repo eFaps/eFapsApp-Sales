@@ -34,6 +34,7 @@
             <child>Sales_PaymentOrderTree_Payment</child>
             <child>Sales_PaymentOrderTree_PaymentAnalysis</child>
             <child>Sales_PaymentOrderTree_Doc</child>
+            <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

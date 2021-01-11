@@ -35,6 +35,7 @@
             <child>Sales_InvoiceTree_PaymentAnalysis</child>
             <child>Sales_InvoiceTree_Position</child>
             <child>Sales_InvoiceTree_Doc</child>
+            <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

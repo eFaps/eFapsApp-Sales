@@ -34,6 +34,7 @@
             <child>Sales_IncomingInvoiceTree_Doc</child>
             <child>Sales_IncomingInvoiceTree_Payment</child>
             <child>Sales_IncomingInvoiceTree_PaymentAnalysis</child>
+            <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
