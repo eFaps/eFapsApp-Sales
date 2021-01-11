@@ -1858,6 +1858,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTOUT_CASH_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.out.Cash.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTOUT_CASH_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.out.Cash.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENTOUT_CHECK_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Check.PayableDocuments")
@@ -1883,6 +1897,20 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Deposit.Status4Create")
                     .description("Possiblity to set the create Status for PaymentDeposit.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTOUT_DEPOSIT_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.out.Deposit.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTOUT_DEPOSIT_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "payment.out.Deposit.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
 
     /** See description. */
     @EFapsSysConfAttribute
