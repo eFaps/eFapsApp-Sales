@@ -2,6 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.13.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_OrderOutbound" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="58846f9e-83fb-4b1a-829c-20202a836695">
 	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
+	<property name="org.efaps.eql.Version" value="2"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -76,9 +77,9 @@ linkto[RateCurrencyId].attribute[Symbol] as currencySymbol,
 linkto[RateCurrencyId].attribute[ISOCode] as currencyISOCode,
 linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 	</queryString>
-	<field name="date" class="org.joda.time.DateTime"/>
+	<field name="date" class="java.time.LocalDate"/>
 	<field name="contactName" class="java.lang.String"/>
-	<field name="dueDate" class="org.joda.time.DateTime"/>
+	<field name="dueDate" class="java.time.LocalDate"/>
 	<field name="contactTaxNumber" class="java.lang.String"/>
 	<field name="contactAddressStreet" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
@@ -162,7 +163,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<text><![CDATA[Proveedor:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement x="505" y="69" width="50" height="15" uuid="0ee50cae-3fbf-4ab4-a857-cea67214f45c">
+				<reportElement x="495" y="69" width="60" height="15" uuid="0ee50cae-3fbf-4ab4-a857-cea67214f45c">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -170,10 +171,10 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[java.util.Date.from($F{dueDate}.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="400" y="69" width="105" height="15" uuid="7593808b-f24d-427b-b8a3-9ce8c513ee79">
+				<reportElement x="390" y="69" width="105" height="15" uuid="7593808b-f24d-427b-b8a3-9ce8c513ee79">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -222,15 +223,15 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<textFieldExpression><![CDATA[$F{contactAddressStreet}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement x="505" y="0" width="50" height="15" uuid="616f9d0e-d855-4642-b12f-d3a7cb785be8">
+				<reportElement stretchType="ContainerHeight" x="495" y="0" width="60" height="15" uuid="616f9d0e-d855-4642-b12f-d3a7cb785be8">
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[java.util.Date.from($F{date}.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant())]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="30" width="70" height="15" uuid="9746f9cb-5c84-4d35-afd4-1d9a0878cda3">
@@ -247,7 +248,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				<text><![CDATA[RUC:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="465" y="0" width="40" height="15" uuid="2137fb2b-8218-4f33-b759-90da6c43029d">
+				<reportElement x="455" y="0" width="40" height="15" uuid="2137fb2b-8218-4f33-b759-90da6c43029d">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -378,11 +379,11 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="310" uuid="77c5c949-c20a-4738-9be4-67517f6cdc5a">
+					<jr:column width="290" uuid="77c5c949-c20a-4738-9be4-67517f6cdc5a">
 						<property name="local_mesure_unitwidth" value="pixel"/>
 						<jr:columnHeader height="12">
 							<staticText>
-								<reportElement mode="Opaque" x="0" y="0" width="310" height="12" forecolor="#FFFFFF" backcolor="#828282" uuid="dc6db4d0-707d-45a6-a699-5d6bdbbbedd1">
+								<reportElement mode="Opaque" x="0" y="0" width="290" height="12" forecolor="#FFFFFF" backcolor="#828282" uuid="dc6db4d0-707d-45a6-a699-5d6bdbbbedd1">
 									<property name="local_mesure_unitx" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.x" value="px"/>
 									<property name="local_mesure_unity" value="pixel"/>
@@ -404,7 +405,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 						</jr:columnHeader>
 						<jr:detailCell height="12">
 							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="310" height="12" isPrintWhenDetailOverflows="true" uuid="6d90a391-e271-4069-8c4f-953d6fa6bcb6">
+								<reportElement x="0" y="0" width="290" height="12" isPrintWhenDetailOverflows="true" uuid="6d90a391-e271-4069-8c4f-953d6fa6bcb6">
 									<property name="local_mesure_unitx" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.x" value="px"/>
 									<property name="local_mesure_unity" value="pixel"/>
@@ -422,11 +423,11 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="e1d80c7d-dc0f-43c6-8f24-5f3273b4c8ce">
+					<jr:column width="70" uuid="e1d80c7d-dc0f-43c6-8f24-5f3273b4c8ce">
 						<property name="local_mesure_unitwidth" value="pixel"/>
 						<jr:columnHeader height="12">
 							<staticText>
-								<reportElement mode="Opaque" x="0" y="0" width="60" height="12" forecolor="#FFFFFF" backcolor="#828282" uuid="4939c69e-7bce-470c-8716-f258d0ba1054">
+								<reportElement mode="Opaque" x="0" y="0" width="70" height="12" forecolor="#FFFFFF" backcolor="#828282" uuid="4939c69e-7bce-470c-8716-f258d0ba1054">
 									<property name="local_mesure_unity" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.y" value="px"/>
 									<property name="local_mesure_unitx" value="pixel"/>
@@ -449,8 +450,9 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell height="12">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="47" height="12" uuid="cc41c5ff-e9d1-43a5-8ecf-f75cc8419277">
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="12" uuid="cc41c5ff-e9d1-43a5-8ecf-f75cc8419277">
 									<property name="local_mesure_unitx" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.x" value="px"/>
 									<property name="local_mesure_unity" value="pixel"/>
@@ -470,7 +472,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 								<textFieldExpression><![CDATA[$F{rateNetUnitPrice}]]></textFieldExpression>
 							</textField>
 							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToBandHeight" x="47" y="0" width="13" height="12" uuid="c503c0e6-2cec-419c-9d9d-f64855d29d0c">
+								<reportElement stretchType="RelativeToBandHeight" x="50" y="0" width="20" height="12" uuid="c503c0e6-2cec-419c-9d9d-f64855d29d0c">
 									<property name="local_mesure_unity" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.y" value="px"/>
 									<property name="local_mesure_unitheight" value="pixel"/>
@@ -489,11 +491,11 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="59f6cbd3-ce53-4a76-b03d-2a8a3a0e1ffc">
+					<jr:column width="74" uuid="59f6cbd3-ce53-4a76-b03d-2a8a3a0e1ffc">
 						<property name="local_mesure_unitwidth" value="pixel"/>
 						<jr:columnHeader height="12">
 							<staticText>
-								<reportElement mode="Opaque" x="0" y="0" width="60" height="12" forecolor="#FFFFFF" backcolor="#828282" uuid="9e7909e0-7f18-4990-b9e7-a4e5fd67bdb1">
+								<reportElement mode="Opaque" x="0" y="0" width="74" height="12" forecolor="#FFFFFF" backcolor="#828282" uuid="9e7909e0-7f18-4990-b9e7-a4e5fd67bdb1">
 									<property name="local_mesure_unitwidth" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 									<property name="local_mesure_unitheight" value="pixel"/>
@@ -516,8 +518,9 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell height="12">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="47" height="12" uuid="afa82ee4-66a0-43bf-9f52-634bad4168c9">
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="12" uuid="afa82ee4-66a0-43bf-9f52-634bad4168c9">
 									<property name="local_mesure_unitx" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.x" value="px"/>
 									<property name="local_mesure_unity" value="pixel"/>
@@ -537,7 +540,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 								<textFieldExpression><![CDATA[$F{rateNetPrice}]]></textFieldExpression>
 							</textField>
 							<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToBandHeight" x="47" y="0" width="13" height="12" uuid="777eb69b-ab34-41e2-811d-a9fe1c37574a">
+								<reportElement stretchType="RelativeToBandHeight" x="60" y="0" width="14" height="12" uuid="777eb69b-ab34-41e2-811d-a9fe1c37574a">
 									<property name="local_mesure_unity" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.y" value="px"/>
 									<property name="local_mesure_unitheight" value="pixel"/>
