@@ -1114,9 +1114,10 @@ public abstract class Account_Base
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-
+        final Instance instance = InstanceUtils.isValid(_parameter.getInstance())
+                        ? _parameter.getInstance() :_parameter.getCallInstance();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, _parameter.getInstance());
+        queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, instance);
         queryBldr.addOrderByAttributeAsc(CISales.TransactionAbstract.Date);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.TransactionAbstract.Amount);
