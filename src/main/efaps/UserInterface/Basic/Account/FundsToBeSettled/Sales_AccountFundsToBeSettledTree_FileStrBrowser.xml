@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2021 The eFaps Team
 
@@ -19,28 +18,30 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>87566794-cb6e-4e68-88a9-324badfd65d8</uuid>
+    <uuid>1f30ecda-efe6-447b-8803-b18f952d1524</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
             <application name="eFapsApp-Archives" />
         </application-dependencies>
-        <name>Sales_AccountFundsToBeSettledTree_File</name>
+        <name>Sales_AccountFundsToBeSettledTree_FileStrBrowser</name>
         <target>
             <menu>Sales_AccountFundsToBeSettledTree_File_Menu</menu>
-            <table>Archives_Object2FileTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_AccountFundsToBeSettled2ArchiveAbstract</property>
-                <property name="LinkFrom">FromLink</property>
+            <table>Archives_ArchiveTable</table>
+            <evaluate
+                program="org.efaps.esjp.archives.ArchiveStructurBrowser">
+                <property name="Type">Archives_ArchiveRoot</property>
+                <property name="Object2ArchiveType">Sales_AccountFundsToBeSettled2ArchiveAbstract</property>
+                <property name="Child_Type">Archives_ArchiveNode</property>
+                <property name="Child_LinkFrom">ParentLink</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_AccountFundsToBeSettledTree_File.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_AccountFundsToBeSettledTree_FileStrBrowserr.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.AccountFundsToBeSettled.ActivateFiles</property>
+                <property name="Attribute">org.efaps.sales.AccountFundsToBeSettled.ActivateFilesStructurBrowser</property>
             </trigger>
         </target>
         <!-- adding via parent due to application Dependency -->
@@ -49,5 +50,6 @@
         </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetStructurBrowserField">name</property>
     </definition>
 </ui-command>

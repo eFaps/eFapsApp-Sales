@@ -72,10 +72,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute AFUNDSSETTLEDPERMITA = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute AFUNDSSETTLED_PERMITA = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "AccountFundsToBeSettled.PermitAugment")
                     .description("Permit the augmentation for FundstoBeSettled.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute AFUNDSSETTLED_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "AccountFundsToBeSettled.ActivateFiles")
+                    .description("Activate file upload for AccountFundsToBeSettled");
 
     /** See description. */
     @EFapsSysConfAttribute

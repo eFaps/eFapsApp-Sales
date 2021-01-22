@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2021 The eFaps Team
 
@@ -16,45 +15,37 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>315169ba-3869-46b2-a2e9-ac6bfac1e4bd</uuid>
+    <uuid>9fd10d14-c6c3-4782-88f0-5a117ce22e5e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-Archives" />
-        </application-dependencies>
-        <name>Sales_AccountFundsToBeSettledTree_File_Menu_Action_CreateRoot</name>
+        <name>Sales_AccountFundsToBeSettledTree_File_Menu_Action_Create</name>
         <access>
-            <role>Archives_Admin</role>
-            <role>Archives_Modifier</role>
+            <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Archives_ArchiveRootForm</form>
-            <execute method="createRoot" program="org.efaps.esjp.archives.Archive">
+            <form>Archives_ArchiveFileForm</form>
+            <execute
+                program="org.efaps.esjp.common.uiform.Create">
                 <property name="ConnectType">Sales_AccountFundsToBeSettled2ArchiveAbstract</property>
                 <property name="ConnectChildAttribute">ToLink</property>
                 <property name="ConnectParentAttribute">FromLink</property>
-                <property name="StatusGroup">Archives_ArchiveNodeStatus</property>
+                <property name="StatusGroup">Archives_ArchiveFileStatus</property>
                 <property name="Status">Editable</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_IncomingInvoiceTree_FileStrBrowser.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" index="1">
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_AccountFundsToBeSettledTree_File_Menu_Action_Create.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateFilesStructurBrowser</property>
-           </trigger>
-            <trigger event="UI_ACCESSCHECK" method="checkAccess2ArchiveRoot"
-                name="Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
-                program="org.efaps.esjp.archives.Archive" index="2">
-                <property name="Object2ArchiveType">Sales_AccountFundsToBeSettled2ArchiveAbstract</property>
+                <property name="Attribute">org.efaps.sales.AccountFundsToBeSettled.ActivateFiles</property>
             </trigger>
         </target>
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Archives_ArchiveRoot</property>
+        <property name="TargetCreateType">Archives_ArchiveFile</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
