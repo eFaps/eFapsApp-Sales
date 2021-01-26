@@ -704,6 +704,7 @@ public abstract class AbstractDocument_Base
                 instCallLst.add(instCall);
                 // if no instance was detected to copy from set the default Currency
                 js.append(updateRateFields(_parameter, null)).append("\n")
+                    .append(getJavaScript4Document(_parameter, instCallLst))
                     .append(add2JavaScript4Document(_parameter, instCallLst))
                     .append(getJavaScript4Positions(_parameter, instCall));
             }
