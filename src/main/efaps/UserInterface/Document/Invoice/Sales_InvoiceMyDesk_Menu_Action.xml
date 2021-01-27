@@ -28,6 +28,7 @@
         <childs>
             <child>Sales_InvoiceMyDesk_Menu_Action_Create</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc</child>
+            <child>Sales_InvoiceMyDesk_Menu_Action_CreateFromWizard</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_SetOpen</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_Copy</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_Recalculate</child>

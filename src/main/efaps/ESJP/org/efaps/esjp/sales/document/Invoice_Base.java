@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2020 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,17 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -30,12 +36,19 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
+import org.efaps.eql.EQL;
+import org.efaps.eql.builder.Selectables;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.contacts.taxid.Request;
+import org.efaps.esjp.contacts.taxid.TaxIdInfo;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -161,5 +174,91 @@ public abstract class Invoice_Base
     {
         final Validation validation = new Validation();
         return validation.validate(_parameter, this, Sales.INVOICE_VALIDATION.get());
+    }
+
+    public Return taxIdSuggestion(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final var query = EQL.builder().nestedQuery(CIContacts.ClassOrganisation)
+                        .where()
+                        .attribute(CIContacts.ClassOrganisation.TaxNumber).like(input + "%").up()
+                        .selectable(Selectables.attribute(CIContacts.ClassOrganisation.ContactLink));
+
+        final var eval = EQL.builder().print().query(CIContacts.Contact)
+                        .where().attribute(CIContacts.Contact.ID).in(query)
+                        .select()
+                        .attribute(CIContacts.Contact.OID, CIContacts.Contact.Name)
+                        .clazz(CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber)
+                        .as("taxId")
+                        .evaluate();
+        final List<Map<String, String>> list = new ArrayList<>();
+        while (eval.next()) {
+            final String oid = eval.get(CIContacts.Contact.OID);
+            final String name = eval.get(CIContacts.Contact.Name);
+            final String taxId = eval.get("taxId");
+
+            final Map<String, String> map = new HashMap<>();
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), taxId + " - " + name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), taxId + " - " + name);
+            list.add(map);
+        }
+        Collections.sort(list, (_o1,
+                                _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()).compareTo(
+                                                _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey())));
+        if (list.isEmpty() && input.matches("^\\d{11}")) {
+            final Map<String, String> map = new HashMap<>();
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), input + " - " + "Buscar en linea");
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), input + " - " + "Buscar en linea");
+            list.add(map);
+        }
+
+        final var ret = new Return();
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    public Return updateFields4TaxIdSuggestion(final Parameter _parameter)
+        throws EFapsException
+    {
+        // get the value
+        final String value = _parameter.getParameterValue("taxId");
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final var pattern = Pattern.compile("^\\d{11}");
+        final var matcher = pattern.matcher(value);
+        if (matcher.find()) {
+            final Map<String, Object> map = new HashMap<>();
+            list.add(map);
+            final var taxId = matcher.group();
+
+            final var query = EQL.builder().nestedQuery(CIContacts.ClassOrganisation)
+                            .where()
+                            .attribute(CIContacts.ClassOrganisation.TaxNumber).eq(taxId).up()
+                            .selectable(Selectables.attribute(CIContacts.ClassOrganisation.ContactLink));
+
+            final var eval = EQL.builder().print().query(CIContacts.Contact)
+                            .where().attribute(CIContacts.Contact.ID).in(query)
+                            .select()
+                            .msgPhrase(CIMsgContacts.ContactInfoMsgPhrase)
+                            .as("info")
+                            .evaluate();
+            String info = "";
+            if (eval.next()) {
+                info = StringEscapeUtils.escapeEcmaScript(eval.get("info"));
+                map.put("contactOID", eval.inst().getOid());
+            } else {
+                final var request = new Request();
+                final var dto  = request.getTaxpayer(taxId);
+                info = new TaxIdInfo().getSnipplet4Taxpayer(_parameter, dto).toString();
+                map.put("contactOID", "NEW");
+            }
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(),
+                            "document.getElementsByName('info')[0].innerHTML=\"" + info + "\";");
+        }
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
     }
 }
