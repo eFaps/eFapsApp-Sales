@@ -200,7 +200,7 @@ public abstract class Invoice_Base
 
             final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), taxId + " - " + name);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), taxId);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), taxId + " - " + name);
             list.add(map);
         }
@@ -209,7 +209,7 @@ public abstract class Invoice_Base
                                                 _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey())));
         if (list.isEmpty() && input.matches("^\\d{11}")) {
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), input + " - " + "Buscar en linea");
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), input);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), input + " - " + "Buscar en linea");
             list.add(map);
         }
@@ -240,18 +240,24 @@ public abstract class Invoice_Base
             final var eval = EQL.builder().print().query(CIContacts.Contact)
                             .where().attribute(CIContacts.Contact.ID).in(query)
                             .select()
+                            .attribute(CIContacts.Contact.Name)
                             .msgPhrase(CIMsgContacts.ContactInfoMsgPhrase)
                             .as("info")
                             .evaluate();
             String info = "";
             if (eval.next()) {
-                info = StringEscapeUtils.escapeEcmaScript(eval.get("info"));
-                map.put("contactOID", eval.inst().getOid());
+                final var html = eval.get(CIContacts.Contact.Name) + "<br>" +  eval.get("info");
+                info = StringEscapeUtils.escapeEcmaScript(html);
+                map.put("fillContact", eval.inst().getOid());
             } else {
                 final var request = new Request();
                 final var dto  = request.getTaxpayer(taxId);
                 info = new TaxIdInfo().getSnipplet4Taxpayer(_parameter, dto).toString();
-                map.put("contactOID", "NEW");
+                if (dto == null) {
+                    map.put("fillContact", "NONE");
+                } else {
+                    map.put("fillContact", taxId);
+                }
             }
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(),
                             "document.getElementsByName('info')[0].innerHTML=\"" + info + "\";");
@@ -260,5 +266,20 @@ public abstract class Invoice_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    @Override
+    protected Instance getContactInstance4Hint(final Parameter _parameter, final String _contactHint)
+        throws EFapsException
+    {
+        final Instance ret;
+        if ("NONE".equals(_contactHint)) {
+            ret = null;
+        } else {
+            final var request = new Request();
+            final var dto = request.getTaxpayer(_contactHint);
+            ret = new TaxIdInfo().createContactFromTaxpayerDto(dto, true);
+        }
+        return ret;
     }
 }

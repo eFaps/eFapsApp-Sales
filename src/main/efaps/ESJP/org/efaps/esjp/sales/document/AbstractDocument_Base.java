@@ -77,6 +77,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
@@ -641,10 +642,42 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Return retVal = new Return();
+        final var js1 = getJavaScript4SelectDoc(_parameter);
+        final var js2 = getJavaScript4Doc(_parameter);
+        final var js3 = getJavaScript4Contact(_parameter);
         retVal.put(ReturnValues.SNIPLETT,
-                        InterfaceUtils.wrappInScriptTag(_parameter, getJavaScript4SelectDoc(_parameter)
-                                        + getJavaScript4Doc(_parameter), true, 1500));
+                        InterfaceUtils.wrappInScriptTag(_parameter, js1 + js2 + js3, true, 1500));
         return retVal;
+    }
+
+    protected StringBuilder getJavaScript4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final var js = new StringBuilder();
+        if (_parameter.getParameterValue("fillContact") != null) {
+            final var contactHint = _parameter.getParameterValue("fillContact");
+            var contactInst = Instance.get(contactHint);
+            if (!InstanceUtils.isKindOf(contactInst, CIContacts.ContactAbstract)) {
+                contactInst = getContactInstance4Hint(_parameter, contactHint);
+            }
+            if (InstanceUtils.isValid(contactInst)) {
+                final var eval = EQL.builder().print(contactInst).attribute(CIContacts.ContactAbstract.Name).evaluate();
+                if (eval.next()) {
+                    final String contactName = eval.get(CIContacts.ContactAbstract.Name);
+                    final String contactData = getFieldValue4Contact(contactInst, false);
+                    js.append(getSetFieldValue(0, "contact", contactInst.getOid(), contactName)).append("\n")
+                                    .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
+                                    .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
+                }
+            }
+        }
+        return js;
+    }
+
+    protected Instance getContactInstance4Hint(final Parameter _parameter, final String _contactHint)
+        throws EFapsException
+    {
+        return null;
     }
 
     /**
