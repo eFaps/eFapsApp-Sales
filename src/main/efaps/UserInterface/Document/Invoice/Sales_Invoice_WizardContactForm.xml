@@ -33,7 +33,6 @@
                 method="taxIdSuggestion"
                 name="Sales_Invoice_WizardContactForm.taxId.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <property name="AutoType">SUGGESTION</property>
             </trigger>
              <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4TaxIdSuggestion"

@@ -46,6 +46,7 @@ import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.taxid.Request;
 import org.efaps.esjp.contacts.taxid.TaxIdInfo;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -224,34 +225,28 @@ public abstract class Invoice_Base
     {
         // get the value
         final String value = _parameter.getParameterValue("taxId");
+        final var contactInst = Instance.get(value);
         final List<Map<String, Object>> list = new ArrayList<>();
-        final var pattern = Pattern.compile("^\\d{11}");
-        final var matcher = pattern.matcher(value);
-        if (matcher.find()) {
-            final Map<String, Object> map = new HashMap<>();
-            list.add(map);
-            final var taxId = matcher.group();
-
-            final var query = EQL.builder().nestedQuery(CIContacts.ClassOrganisation)
-                            .where()
-                            .attribute(CIContacts.ClassOrganisation.TaxNumber).eq(taxId).up()
-                            .selectable(Selectables.attribute(CIContacts.ClassOrganisation.ContactLink));
-
-            final var eval = EQL.builder().print().query(CIContacts.Contact)
-                            .where().attribute(CIContacts.Contact.ID).in(query)
-                            .select()
+        final Map<String, Object> map = new HashMap<>();
+        list.add(map);
+        String info = "";
+        if (InstanceUtils.isKindOf(contactInst, CIContacts.ContactAbstract)) {
+            final var eval = EQL.builder().print(contactInst)
                             .attribute(CIContacts.Contact.Name)
-                            .msgPhrase(CIMsgContacts.ContactInfoMsgPhrase)
-                            .as("info")
+                            .msgPhrase(CIMsgContacts.ContactInfoMsgPhrase).as("info")
                             .evaluate();
-            String info = "";
             if (eval.next()) {
-                final var html = eval.get(CIContacts.Contact.Name) + "<br>" +  eval.get("info");
+                final var html = eval.get(CIContacts.Contact.Name) + "<br><br>" + eval.get("info");
                 info = StringEscapeUtils.escapeEcmaScript(html);
                 map.put("fillContact", eval.inst().getOid());
-            } else {
+            }
+        } else {
+            final var pattern = Pattern.compile("^\\d{11}");
+            final var matcher = pattern.matcher(value);
+            if (matcher.find()) {
+                final var taxId = matcher.group();
                 final var request = new Request();
-                final var dto  = request.getTaxpayer(taxId);
+                final var dto = request.getTaxpayer(taxId);
                 info = new TaxIdInfo().getSnipplet4Taxpayer(_parameter, dto).toString();
                 if (dto == null) {
                     map.put("fillContact", "NONE");
@@ -259,10 +254,9 @@ public abstract class Invoice_Base
                     map.put("fillContact", taxId);
                 }
             }
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(),
-                            "document.getElementsByName('info')[0].innerHTML=\"" + info + "\";");
         }
-
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(),
+                        "document.getElementsByName('info')[0].innerHTML=\"" + info + "\";");
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
