@@ -25,7 +25,6 @@
         <childs>
             <child>Sales_PaymentDocumentMyDesk</child>
             <child>Sales_PaymentDocument4ToBeSettledMyDesk</child>
-            <child>Sales_PaymentDocument_Report4AccountMyDesk</child>
             <child>Sales_AccountsReceivableReportMyDesk</child>
             <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk</child>
             <child>Sales_CollectionOrderMyDesk</child>
