@@ -177,7 +177,7 @@ public abstract class Invoice_Base
         return validation.validate(_parameter, this, Sales.INVOICE_VALIDATION.get());
     }
 
-    public Return taxIdSuggestion(final Parameter _parameter)
+    public Return autoComplete4TaxId(final Parameter _parameter)
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
@@ -220,7 +220,7 @@ public abstract class Invoice_Base
         return ret;
     }
 
-    public Return updateFields4TaxIdSuggestion(final Parameter _parameter)
+    public Return updateFields4TaxId(final Parameter _parameter)
         throws EFapsException
     {
         // get the value

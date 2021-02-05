@@ -1184,6 +1184,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICE_ACTIVATEWIZARD = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Invoice.ActivateWizard")
+                    .description("Activate the Wizard for Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INVOICE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.JasperReport")
