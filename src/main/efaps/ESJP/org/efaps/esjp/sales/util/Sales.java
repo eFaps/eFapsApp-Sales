@@ -1598,6 +1598,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_CREDITCARD_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.CreditCard.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1619,6 +1625,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_DEBITCARD_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.DebitCard.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1641,6 +1653,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_DETRACTION_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Detraction.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1677,6 +1695,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_CASH_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Cash.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1698,6 +1722,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_CHECK_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Check.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1719,6 +1749,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_DEPOSIT_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Deposit.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
@@ -1733,6 +1769,7 @@ public final class Sales
     public static final BooleanSysConfAttribute PAYMENT_INTERNAL_ACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Internal.Activate")
+
                     .description("Activate the Internal Payment Documents.");
 
     /** See description. */
@@ -1747,6 +1784,12 @@ public final class Sales
     public static final PropertiesSysConfAttribute PAYMENT_INTERNAL_PAYABLE = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.in.Internal.PayableDocuments")
+                    .addDefaultValue("Type01", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue("StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.IncomingReceiptStatus.Open.key)
                     .description("Properties to define the Query for Documents that can be payed.");
 
     /** See description. */
