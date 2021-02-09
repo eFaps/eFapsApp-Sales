@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +153,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public DynAccountCashDeskBookReport(final AccountCashDeskBookReport_Base _report)
         {
-            this.filteredReport = _report;
+            filteredReport = _report;
         }
 
         @Override
@@ -193,14 +192,7 @@ public abstract class AccountCashDeskBookReport_Base
                 bean.setBalance(total);
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        return _o1.getDate().compareTo(_o2.getDate());
-                    }
-                }
+            chain.addComparator((_o1, _o2) -> _o1.getDate().compareTo(_o2.getDate())
             );
             Collections.sort(datasource, chain);
             return new JRBeanCollectionDataSource(datasource);
@@ -225,7 +217,7 @@ public abstract class AccountCashDeskBookReport_Base
                                 CISales.PaymentDocumentIOAbstract.Note);
                 print.addSelect(selContactName);
                 print.execute();
-
+                _bean.setTypeDoc(_payDocInst.getType().getLabel());
                 _bean.setVoucher(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Code));
                 _bean.setContact(print.<String>getSelect(selContactName));
                 _bean.setDescription(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Note));
@@ -260,7 +252,7 @@ public abstract class AccountCashDeskBookReport_Base
                 _queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, 0);
             }
 
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("dateFrom")) {
                 final DateTime date = (DateTime) filter.get("dateFrom");
                 _queryBldr.addWhereAttrGreaterValue(CISales.TransactionAbstract.Date,
@@ -289,6 +281,9 @@ public abstract class AccountCashDeskBookReport_Base
             final TextColumnBuilder<DateTime> dateColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.Date"),
                             "date", DateTimeDate.get());
+            final TextColumnBuilder<String> typeDocColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.TypeDoc"),
+                            "typeDoc", DynamicReports.type.stringType());
             final TextColumnBuilder<String> voucherColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.Voucher"),
                             "voucher", DynamicReports.type.stringType());
@@ -323,8 +318,8 @@ public abstract class AccountCashDeskBookReport_Base
                 _builder.addColumn(linkColumn);
             }
 
-            _builder.addColumn(dateColumn, voucherColumn, typeColumn, numDocColumn, contactColumn, descriptionColumn,
-                            inColumn, outColumn, balanceColumn);
+            _builder.addColumn(dateColumn, typeDocColumn, voucherColumn, typeColumn, numDocColumn, contactColumn,
+                            descriptionColumn, inColumn, outColumn, balanceColumn);
 
             final AggregationSubtotalBuilder<BigDecimal> totalInSum = DynamicReports.sbt.sum(inColumn);
             final AggregationSubtotalBuilder<BigDecimal> totalOutSum = DynamicReports.sbt.sum(outColumn);
@@ -350,7 +345,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         protected AccountCashDeskBookReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 
@@ -403,6 +398,8 @@ public abstract class AccountCashDeskBookReport_Base
          */
         private String voucher;
 
+        private String typeDoc;
+
         /**
          * Type of the transaction.
          */
@@ -445,7 +442,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public String getOid()
         {
-            return this.oid;
+            return oid;
         }
 
         /**
@@ -455,7 +452,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setOid(final String _oid)
         {
-            this.oid = _oid;
+            oid = _oid;
         }
 
         /**
@@ -465,7 +462,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public DateTime getDate()
         {
-            return this.date;
+            return date;
         }
 
         /**
@@ -475,7 +472,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setDate(final DateTime _date)
         {
-            this.date = _date;
+            date = _date;
         }
 
         /**
@@ -485,7 +482,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public String getVoucher()
         {
-            return this.voucher;
+            return voucher;
         }
 
         /**
@@ -495,8 +492,20 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setVoucher(final String _voucher)
         {
-            this.voucher = _voucher;
+            voucher = _voucher;
         }
+
+        public String getTypeDoc()
+        {
+            return typeDoc;
+        }
+
+
+        public void setTypeDoc(final String typeDoc)
+        {
+            this.typeDoc = typeDoc;
+        }
+
 
         /**
          * Getter method for the instance variable {@link #typeTrans}.
@@ -505,7 +514,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public String getTypeTrans()
         {
-            return this.typeTrans;
+            return typeTrans;
         }
 
         /**
@@ -515,7 +524,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setTypeTrans(final String _typeTrans)
         {
-            this.typeTrans = _typeTrans;
+            typeTrans = _typeTrans;
         }
 
         /**
@@ -525,7 +534,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public String getNumDoc()
         {
-            return this.numDoc;
+            return numDoc;
         }
 
         /**
@@ -535,7 +544,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setNumDoc(final String _numDoc)
         {
-            this.numDoc = _numDoc;
+            numDoc = _numDoc;
         }
 
         /**
@@ -545,7 +554,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public String getContact()
         {
-            return this.contact;
+            return contact;
         }
 
         /**
@@ -555,7 +564,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setContact(final String _contact)
         {
-            this.contact = _contact;
+            contact = _contact;
         }
 
         /**
@@ -565,7 +574,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public String getDescription()
         {
-            return this.description;
+            return description;
         }
 
         /**
@@ -575,7 +584,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setDescription(final String _description)
         {
-            this.description = _description;
+            description = _description;
         }
 
         /**
@@ -585,7 +594,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public BigDecimal getIn()
         {
-            return this.in;
+            return in;
         }
 
         /**
@@ -595,7 +604,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setIn(final BigDecimal _in)
         {
-            this.in = _in;
+            in = _in;
         }
 
         /**
@@ -605,7 +614,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public BigDecimal getOut()
         {
-            return this.out;
+            return out;
         }
 
         /**
@@ -615,7 +624,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setOut(final BigDecimal _out)
         {
-            this.out = _out;
+            out = _out;
         }
 
         /**
@@ -625,7 +634,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public BigDecimal getBalance()
         {
-            return this.balance;
+            return balance;
         }
 
         /**
@@ -635,7 +644,7 @@ public abstract class AccountCashDeskBookReport_Base
          */
         public void setBalance(final BigDecimal _balance)
         {
-            this.balance = _balance;
+            balance = _balance;
         }
     }
 }
