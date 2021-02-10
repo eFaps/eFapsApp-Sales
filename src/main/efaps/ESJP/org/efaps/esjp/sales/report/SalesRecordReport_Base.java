@@ -339,8 +339,18 @@ public abstract class SalesRecordReport_Base
                         final String country = multi.getSelect(selCountry);
                         final Taxes taxes = multi.getAttribute(CISales.DocumentSumAbstract.Taxes);
 
-                        final BigDecimal netTotal = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
-                        final BigDecimal crossTotal = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                        BigDecimal netTotal = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
+                        BigDecimal crossTotal = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+
+                        // if configured to negate
+                        if ("true".equalsIgnoreCase(Sales.REPORT_SALESRECORD.get().getProperty(
+                                        multi.getCurrentInstance().getType().getName() + ".Negate", "false"))
+                                        || "true".equalsIgnoreCase(Sales.REPORT_SALESRECORD.get().getProperty(
+                                                        multi.getCurrentInstance().getType().getUUID() + ".Negate",
+                                                        "false"))) {
+                            netTotal = netTotal.negate();
+                            crossTotal = crossTotal.negate();
+                        }
 
                         map.put(Column.DOCDUEDATE.getKey(), multi.getAttribute(CISales.DocumentSumAbstract.DueDate));
                         map.put(Column.CONTACTNAME.getKey(), multi.getSelect(selContactName));
@@ -422,17 +432,19 @@ public abstract class SalesRecordReport_Base
             QueryBuilder attrQueryBldr = null;
             if (InstanceUtils.isKindOf(_docInst, CISales.CreditNote)) {
                 attrQueryBldr = new QueryBuilder(CISales.CreditNote2Invoice);
-                attrQueryBldr.addWhereAttrEqValue(CISales.CreditNote2Invoice.FromLink, _docInst);
+                attrQueryBldr.addType(CISales.CreditNote2Receipt);
+                attrQueryBldr.addWhereAttrEqValue(CIERP.Document2DocumentAbstract.FromAbstractLink, _docInst);
             } else if (InstanceUtils.isKindOf(_docInst, CISales.Reminder)) {
                 attrQueryBldr = new QueryBuilder(CISales.Reminder2Invoice);
                 attrQueryBldr.addWhereAttrEqValue(CISales.Reminder2Invoice.FromLink, _docInst);
             }
             if (attrQueryBldr != null) {
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice);
+                queryBldr.addType(CISales.Receipt);
                 queryBldr.addWhereAttrInQuery(CISales.Invoice.ID,
-                                attrQueryBldr.getAttributeQuery(CISales.CreditNote2Invoice.ToLink));
+                                attrQueryBldr.getAttributeQuery(CIERP.Document2DocumentAbstract.ToAbstractLink));
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.Invoice.Date, CISales.Invoice.Name,
+                multi.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.Name,
                                 CISales.DocumentSumAbstract.StatusAbstract);
                 multi.execute();
                 boolean first = true;
@@ -452,9 +464,11 @@ public abstract class SalesRecordReport_Base
                             }
                             _values.add(map);
                         }
-                        map.put(Column.RELDATE.getKey(), multi.getAttribute(CISales.Invoice.Date));
-                        map.put(Column.RELSN.getKey(), getSerialNo(_parameter, multi.getAttribute(CISales.Invoice.Name)));
-                        map.put(Column.RELNUMBER.getKey(), getNumber(_parameter, multi.getAttribute(CISales.Invoice.Name)));
+                        map.put(Column.RELDATE.getKey(), multi.getAttribute(CISales.DocumentSumAbstract.Date));
+                        map.put(Column.RELSN.getKey(),
+                                        getSerialNo(_parameter, multi.getAttribute(CISales.DocumentSumAbstract.Name)));
+                        map.put(Column.RELNUMBER.getKey(),
+                                        getNumber(_parameter, multi.getAttribute(CISales.DocumentSumAbstract.Name)));
                         map.put(Column.RELDOCTYPE.getKey(), getDocTypeMap(_parameter).get(
                                         multi.getCurrentInstance().getType().getUUID()));
                     }
@@ -492,7 +506,7 @@ public abstract class SalesRecordReport_Base
                 }
             } else {
                 BigDecimal igv = BigDecimal.ZERO;
-                final BigDecimal unaff = BigDecimal.ZERO;
+                BigDecimal unaff = BigDecimal.ZERO;
                 BigDecimal other = BigDecimal.ZERO;
                 final Properties taxDef = PropertiesUtil.getProperties4Prefix(Sales.REPORT_SALESRECORD.get(), "tax");
                 for (final TaxEntry entry : _taxes.getEntries()) {
@@ -510,12 +524,21 @@ public abstract class SalesRecordReport_Base
                     }
                 }
                 if (BigDecimal.ZERO.compareTo(igv) < 0) {
+                    if (_netTotal.compareTo(BigDecimal.ZERO) <0) {
+                        igv = igv.negate();
+                    }
                     _map.put(Column.IGV.getKey(), igv);
                 }
                 if (BigDecimal.ZERO.compareTo(unaff) < 0) {
+                    if (_netTotal.compareTo(BigDecimal.ZERO) <0) {
+                        unaff = unaff.negate();
+                    }
                     _map.put(Column.UNAFFVAL.getKey(), unaff);
                 }
                 if (BigDecimal.ZERO.compareTo(other) < 0) {
+                    if (_netTotal.compareTo(BigDecimal.ZERO) <0) {
+                        other = other.negate();
+                    }
                     _map.put(Column.OTHERTAX.getKey(), other);
                 }
                 _map.put(Column.TAXABLEVAL.getKey(), _netTotal);
