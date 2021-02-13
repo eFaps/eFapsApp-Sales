@@ -31,15 +31,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -60,21 +51,25 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.esjp.erp.FilteredReport_Base.EnumFilterValue;
-import org.efaps.esjp.erp.FilteredReport_Base.InstanceFilterValue;
-import org.efaps.esjp.erp.FilteredReport_Base.InstanceSetFilterValue;
 import org.efaps.esjp.products.Inventory;
 import org.efaps.esjp.products.Inventory_Base.InventoryBean;
 import org.efaps.esjp.products.StorageGroup;
 import org.efaps.esjp.sales.Costs;
-import org.efaps.esjp.sales.report.ProductsTransactionSummaryReport_Base.DynProductsTransactionSummaryReport;
-import org.efaps.esjp.sales.report.ProductsTransactionSummaryReport_Base.ProdDocDisplay;
 import org.efaps.esjp.sales.report.filter.CostTypeFilterValue;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  * TODO comment!.
@@ -922,7 +917,7 @@ public abstract class ProductsTransactionSummaryReport_Base
         public BigDecimal getIncomingUnitPrice()
         {
             BigDecimal ret = null;
-            if (incomingQty != null && incomingValue != null) {
+            if (incomingValue != null && incomingQty != null && incomingQty.compareTo(BigDecimal.ZERO) != 0) {
                 ret = incomingValue.divide(incomingQty, 4, RoundingMode.HALF_UP);
             }
             return ret;
@@ -936,7 +931,7 @@ public abstract class ProductsTransactionSummaryReport_Base
         public BigDecimal getOutgoingUnitPrice()
         {
             BigDecimal ret = null;
-            if (outgoingQty != null && outgoingValue != null) {
+            if (outgoingQty != null && outgoingValue != null && outgoingQty.compareTo(BigDecimal.ZERO) != 0) {
                 ret = outgoingValue.divide(outgoingQty, 4, RoundingMode.HALF_UP);
             }
             return ret;
@@ -950,7 +945,7 @@ public abstract class ProductsTransactionSummaryReport_Base
         public BigDecimal getEndUnitPrice()
         {
             BigDecimal ret = null;
-            if (endQty != null && endValue != null) {
+            if (endQty != null && endValue != null && endQty.compareTo(BigDecimal.ZERO) != 0) {
                 ret = endValue.divide(endQty, 4, RoundingMode.HALF_UP);
             }
             return ret;
