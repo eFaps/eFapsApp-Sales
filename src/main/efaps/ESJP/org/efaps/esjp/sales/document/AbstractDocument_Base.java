@@ -735,6 +735,11 @@ public abstract class AbstractDocument_Base
                             && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
                 final List<Instance> instCallLst = new ArrayList<>();
                 instCallLst.add(instCall);
+                js.append("domConstruct.create(\"input\", {")
+                    .append(" value: \"").append(instCall.getOid()).append("\", ")
+                    .append(" name: \"derived\", ")
+                    .append(" type: \"hidden\" ")
+                    .append("}, pN);\n");
                 // if no instance was detected to copy from set the default Currency
                 js.append(updateRateFields(_parameter, null)).append("\n")
                     .append(getJavaScript4Document(_parameter, instCallLst))
