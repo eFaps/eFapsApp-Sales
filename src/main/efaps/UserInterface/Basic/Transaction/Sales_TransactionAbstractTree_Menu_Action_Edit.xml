@@ -27,6 +27,7 @@
         <name>Sales_TransactionAbstractTree_Menu_Action_Edit</name>
         <access>
             <role>Administration</role>
+            <role>ERP_DocumentAdmin</role>
         </access>
         <target>
             <form>Sales_TransactionAbstractForm</form>
