@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,11 +43,11 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.tag.Tag;
 import org.efaps.esjp.db.InstanceUtils;
-import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Naming;
@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("8e4b870d-4d52-4272-9deb-4cade067c146")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class Settlement_Base
-    extends CommonDocument
+    extends AbstractPaymentDocument
 {
 
     /**
@@ -85,7 +85,7 @@ public abstract class Settlement_Base
      */
     public Settlement_Base(final boolean _out)
     {
-        this.out = _out;
+        out = _out;
     }
 
     /**
@@ -102,6 +102,12 @@ public abstract class Settlement_Base
 
         final String[] documents = _parameter.getParameterValues("settleDocument");
         final String[] settleTotals = _parameter.getParameterValues("settleTotal");
+
+        final var payDocEval = EQL.builder().print(_parameter.getCallInstance())
+            .attribute(CISales.PaymentDocumentAbstract.RateCurrencyLink)
+            .evaluate();
+        payDocEval.next();
+        final Long payDocCurrencyId = payDocEval.get(CISales.PaymentDocumentAbstract.RateCurrencyLink);
         boolean first = true;
         if (documents != null && documents.length > 0) {
             final Map<String, Object> infoDoc = new HashMap<>();
@@ -122,20 +128,31 @@ public abstract class Settlement_Base
                                                 CISales.DocumentSumAbstract.RateCurrencyId,
                                                 CISales.DocumentSumAbstract.CurrencyId);
                                 print.execute();
+                                final var rateCurrencyId = print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+                                Object rate ;
+                                Long paymentRateCurrencyId;
+                                Long paymentCurrencyId ;
+                                if (payDocCurrencyId.equals(rateCurrencyId)) {
+                                    rate = new Object[]{1,1};
+                                    paymentRateCurrencyId = payDocCurrencyId;
+                                    paymentCurrencyId = payDocCurrencyId;
+                                } else {
+                                    rate = print.getAttribute(CISales.DocumentSumAbstract.Rate);
+                                    paymentRateCurrencyId  = print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+                                    paymentCurrencyId = print.getAttribute(CISales.DocumentSumAbstract.CurrencyId);
+                                }
+
                                 final Insert payInsert = new Insert(CISales.Payment);
                                 payInsert.add(CISales.Payment.CreateDocument, document);
                                 payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance());
                                 payInsert.add(CISales.Payment.Amount, amount4Doc);
                                 payInsert.add(CISales.Payment.Date, infoDoc.get("date"));
-                                payInsert.add(CISales.Payment.RateCurrencyLink,
-                                                print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
-                                payInsert.add(CISales.Payment.CurrencyLink,
-                                                print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-                                payInsert.add(CISales.Payment.Rate,
-                                                print.<Object>getAttribute(CISales.DocumentSumAbstract.Rate));
+                                payInsert.add(CISales.Payment.RateCurrencyLink, paymentRateCurrencyId);
+                                payInsert.add(CISales.Payment.CurrencyLink, paymentCurrencyId);
+                                payInsert.add(CISales.Payment.Rate, rate);
                                 payInsert.execute();
 
-                                final Insert transIns = new Insert(this.out ? CISales.TransactionOutbound
+                                final Insert transIns = new Insert(out ? CISales.TransactionOutbound
                                                 : CISales.TransactionInbound);
                                 transIns.add(CISales.TransactionOutbound.Amount, amount4Doc);
                                 transIns.add(CISales.TransactionOutbound.CurrencyId, infoDoc.get("currency"));
@@ -312,7 +329,7 @@ public abstract class Settlement_Base
     {
         boolean ret = false;
 
-        final String defaultAmount = this.out ? Sales.PAYMENTOUT_THRESHOLD4CREATEDOC.get()
+        final String defaultAmount = out ? Sales.PAYMENTOUT_THRESHOLD4CREATEDOC.get()
                         : Sales.PAYMENT_THRESHOLD4CREATEDOC.get();
         if (defaultAmount != null && !defaultAmount.isEmpty()) {
             final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
