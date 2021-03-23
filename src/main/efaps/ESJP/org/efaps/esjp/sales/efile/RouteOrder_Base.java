@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  *
  */
 
-package org.efaps.esjp.sales;
+package org.efaps.esjp.sales.efile;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
-@EFapsUUID("3a1d8266-8e5d-4ca4-8995-5174fdd9be94")
+@EFapsUUID("690dc0b0-c81a-422b-9e9d-6f2d3822821e")
 @EFapsApplication("eFapsApp-Sales")
-public class Contract
-    extends Contract_Base
+public abstract class RouteOrder_Base
 {
 
 }

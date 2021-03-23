@@ -15,7 +15,7 @@
  *
  */
 
-package org.efaps.esjp.sales;
+package org.efaps.esjp.sales.efile;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;

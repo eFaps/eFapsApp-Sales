@@ -31,7 +31,7 @@
             <execute method="create" program="org.efaps.esjp.sales.Contract">
                 <!-- Sales-Configuration -->
                 <property name="NumGenSystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="NumGenSystemConfigAttribute">org.efaps.sales.Contract.NumberGenerator</property>
+                <property name="NumGenSystemConfigAttribute">org.efaps.sales.efile.Contract.NumberGenerator</property>
                 <property name="StatusGroup">Sales_ContractStatus</property>
                 <property name="Status">Open</property>
             </execute>
