@@ -29,10 +29,10 @@
         <target>
             <form>Sales_RouteOrderForm</form>
             <execute method="create"
-                program="org.efaps.esjp.sales.RouteOrder">
+                program="org.efaps.esjp.sales.efile.RouteOrder">
                 <!-- Sales-Configuration -->
                 <property name="NumGenSystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="NumGenSystemConfigAttribute">org.efaps.sales.efile.RouteOrder.NumberGenerator</property>
+                <property name="NumGenSystemConfigAttribute">org.efaps.sales.RouteOrder.NumberGenerator</property>
                 <property name="StatusGroup">Sales_RouteOrderStatus</property>
                 <property name="Status">Open</property>
             </execute>
