@@ -32,6 +32,13 @@
             <sqlcolumn>LINKID1</sqlcolumn>
         </attribute>
         <attribute>
+            <name>EmployeeLink</name>
+            <type>Link</type>
+            <typelink>HumanResource_Employee</typelink>
+            <sqltable>Sales_EFileSQLTable</sqltable>
+            <sqlcolumn>LINKID2</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Status</name>
             <type>Status</type>
             <typelink>Sales_RouteOrderStatus</typelink>

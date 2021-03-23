@@ -3011,6 +3011,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ROUTEORDER_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "RouteOrder.Activate")
+                    .description("Main switch to activate RouteOrders.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute ROUTEORDER_NUMGEN = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "RouteOrder.NumberGenerator")
+                    .defaultValue(CINumGenSales.RouteOrderSequence.uuid.toString())
+                    .description("NumberGenerator for RouteOrder.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "SerialNumbers")

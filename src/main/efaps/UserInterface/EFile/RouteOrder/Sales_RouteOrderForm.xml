@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+    Copyright 2003 - 2021 The eFaps Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e3936fca-63cc-49fe-bbbd-60a95bd6b147</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_RouteOrderForm</name>
+        <field character="Group" name="dateGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
+            <property name="Required">true</property>
+        </field>
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">TREE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+        </field>
+        <field character="Group" name="modifyGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">TREE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+        </field>
+        <field character="Group" name="nameGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_CreditForm.nameGroup.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">!org.efaps.sales.RouteOrder.NumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="Width">15</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_RouteOrderForm.name4create.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">!org.efaps.sales.RouteOrder.NumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="name4edit">
+            <property name="Attribute">Name</property>
+            <property name="Width">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_RouteOrderForm.name4edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">!org.efaps.sales.RouteOrder.NumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="name4view">
+            <property name="Attribute">Name</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_RouteOrderForm.name4view.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">org.efaps.sales.RouteOrder.NumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_RouteOrderForm.name.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists">!org.efaps.sales.RouteOrder.NumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field character="Heading" name="headingContact">
+            <property name="Level">2</property>
+            <property name="Label">Sales_RouteOrderForm.headingContact.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="Attribute">ContactLink</property>
+            <property name="Label">Sales_RouteOrderForm.contact.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                method="autoComplete4Contact"
+                name="Sales_RouteOrderForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts" />
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Contact"
+                name="Sales_RouteOrderForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.contacts.Contacts" />
+        </field>
+        <field name="contact4view">
+            <property name="SelectAlternateOID">linkto[ContactLink].oid</property>
+            <property name="Select">linkto[ContactLink].attribute[Name]</property>
+            <property name="Label">Sales_RouteOrderForm.contact.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_RouteOrderForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+    </definition>
+</ui-form>
