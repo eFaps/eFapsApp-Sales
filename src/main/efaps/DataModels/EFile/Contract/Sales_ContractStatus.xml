@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2003 - 2019 The eFaps Team
+    Copyright 2003 - 2021 The eFaps Team
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,20 +16,26 @@
     limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4d30cd66-faa4-4b6c-a3b1-f7695d7911a6</uuid>
+    <uuid>4d14a1c8-baa6-4b36-be24-1bfd8a7666c1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Contract2TemplateAbstract</name>
-        <parent>Sales_Contract2ObjectAbstract</parent>
-        <purpose abstract="true"/>
-        <attribute>
-            <name>RRule</name>
-            <type>String</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
-            <sqlcolumn>STRING1</sqlcolumn>
-        </attribute>
+        <name>Sales_ContractStatus</name>
+        <parent>Sales_EFileStatus</parent>
+        <status key="Draft">
+            <description>Contract in draft.</description>
+        </status>
+        <status key="Open">
+            <description>Contract is open</description>
+        </status>
+        <status key="Closed">
+            <description>Contract is closed</description>
+        </status>
+        <status key="Canceled">
+            <description>Contract was canceled.</description>
+        </status>
     </definition>
-</datamodel-type>
+</datamodel-statusgroup>

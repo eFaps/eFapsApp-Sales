@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2019 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.efaps.util.EFapsException;
 public abstract class Contract_Base
     extends AbstractCommon
 {
+
     /**
      * Method for create a new Credit.
      *
@@ -47,6 +48,7 @@ public abstract class Contract_Base
     {
         return new Create()
         {
+
             @Override
             protected void add2basicInsert(final Parameter _parameter, final Insert _insert)
                 throws EFapsException
@@ -55,8 +57,8 @@ public abstract class Contract_Base
                 if (Sales.CONTRACT_NUMGEN.exists()) {
                     _insert.add(CISales.Contract.Name, new Naming().fromNumberGenerator(_parameter, null));
                 }
-                _insert.add(CISales.ContractAbstract.StatusAbstract, Status.find(CISales.ContractStatus,
-                                Sales.CONTRACT_STATUS4CREATE.get()));
+                _insert.add(CISales.Contract.Status,
+                                Status.find(CISales.ContractStatus, Sales.CONTRACT_STATUS4CREATE.get()));
             }
         }.execute(_parameter);
     }

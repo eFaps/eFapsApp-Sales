@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2003 - 2019 The eFaps Team
+    Copyright 2003 - 2021 The eFaps Team
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,23 +18,18 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>743b9997-c486-4ff3-a72d-0c4f740c5e5d</uuid>
+    <uuid>c043b446-6d55-472c-aaa6-1fefa7683c4b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Contract</name>
-        <parent>Sales_ContractAbstract</parent>
+        <name>Sales_Contract2InvoiceTemplate</name>
+        <parent>Sales_Contract2TemplateAbstract</parent>
         <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Sales_ContractStatus</typelink>
-            <sqltable>Sales_ContractSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_Contract.Status.RANGE_VALUE"
-                program="org.efaps.esjp.admin.datamodel.StatusValue">
-            </trigger>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_InvoiceTemplate</typelink>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
         </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_Contract.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
 </datamodel-type>

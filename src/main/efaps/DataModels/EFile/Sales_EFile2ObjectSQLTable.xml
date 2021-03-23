@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2019 The eFaps Team
+ Copyright 2003 - 2021 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Contract2ObjectSQLTable</name>
+        <name>Sales_EFile2ObjectSQLTable</name>
         <typeid-column>TYPEID</typeid-column>
         <database>
-            <table-name>T_SALESCONTRACT2OBJ</table-name>
+            <table-name>T_SALESEFILE2OBJ</table-name>
             <column name="TYPEID"       type="INTEGER"      not-null="true" />
             <column name="COMPANYID"    type="INTEGER"      not-null="true" />
             <column name="FROMID"       type="INTEGER"      not-null="true"/>
@@ -35,9 +35,9 @@
             <column name="CREATED"      type="DATETIME"     not-null="true"/>
             <column name="MODIFIER"     type="INTEGER"      not-null="true"/>
             <column name="MODIFIED"     type="DATETIME"     not-null="true"/>
-            <foreign name="T_SALESCONTRACT2OBJ_FK_COMPANYID"  key="COMPANYID" reference="T_USERABSTRACT(ID)" />
-            <foreign name="T_SALESCONTRACT2OBJ_FK_CRTR"       key="CREATOR"   reference="T_USERPERSON(ID)" />
-            <foreign name="T_SALESCONTRACT2OBJ_FK_MDFR"       key="MODIFIER"  reference="T_USERPERSON(ID)" />
+            <foreign name="T_SALESEFILE2OBJ_FK_COMPANYID"  key="COMPANYID" reference="T_USERABSTRACT(ID)" />
+            <foreign name="T_SALESEFILE2OBJ_FK_CRTR"       key="CREATOR"   reference="T_USERPERSON(ID)" />
+            <foreign name="T_SALESEFILE2OBJ_FK_MDFR"       key="MODIFIER"  reference="T_USERPERSON(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>

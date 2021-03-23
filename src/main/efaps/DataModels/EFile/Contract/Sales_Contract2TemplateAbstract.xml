@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2003 - 2019 The eFaps Team
+    Copyright 2003 - 2021 The eFaps Team
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,18 +18,18 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>c043b446-6d55-472c-aaa6-1fefa7683c4b</uuid>
+    <uuid>4d30cd66-faa4-4b6c-a3b1-f7695d7911a6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Contract2InvoiceTemplate</name>
-        <parent>Sales_Contract2TemplateAbstract</parent>
+        <name>Sales_Contract2TemplateAbstract</name>
+        <parent>Sales_Contract2ObjectAbstract</parent>
+        <purpose abstract="true"/>
         <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_InvoiceTemplate</typelink>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <name>RRule</name>
+            <type>String</type>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

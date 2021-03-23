@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2003 - 2019 The eFaps Team
+    Copyright 2003 - 2021 The eFaps Team
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,67 +16,68 @@
     limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1faa7235-d544-481e-bda2-930785700772</uuid>
+    <uuid>d16ae071-c47d-4024-b47c-77455ebcce68</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Contract2ObjectAbstract</name>
+        <name>Sales_EFile2ObjectAbstract</name>
         <purpose abstract="true" />
         <attribute>
             <name>Type</name>
             <type>Type</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>TYPEID</sqlcolumn>
         </attribute>
         <attribute>
             <name>OID</name>
             <type>OID</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>TYPEID,ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ID</name>
             <type>Long</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Company</name>
             <type>CompanyLink</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>COMPANYID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>FromLink</name>
+            <name>FromLinkAbstract</name>
             <type>Link</type>
-            <typelink>Sales_ContractAbstract</typelink>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <typelink>Sales_EFileAbstract</typelink>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>CREATOR</sqlcolumn>
         </attribute>
         <attribute>
             <name>Created</name>
             <type>Created</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>CREATED</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modifier</name>
             <type>ModifierLink</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIER</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modified</name>
             <type>Modified</type>
-            <sqltable>Sales_Contract2ObjectSQLTable</sqltable>
+            <sqltable>Sales_EFile2ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
     </definition>
