@@ -89,6 +89,7 @@
         <type>Sales_RetentionCertificate</type>
         <type>Sales_ReturnSlip</type>
         <type>Sales_ReturnUsageReport</type>
+        <type>Sales_RouteOrder</type>
         <type>Sales_ServiceOrderOutbound</type>
         <type>Sales_ServiceRequest</type>
         <type>Sales_UsageReport</type>
@@ -450,6 +451,13 @@
         </status>
 
          <status group="Sales_ProductionCostingStatus">
+            <key>Draft</key>
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_RouteOrderStatus">
             <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>

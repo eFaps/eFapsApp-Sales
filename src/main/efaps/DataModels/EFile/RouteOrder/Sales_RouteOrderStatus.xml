@@ -25,6 +25,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RouteOrderStatus</name>
         <parent>Sales_EFileStatus</parent>
+        <status key="Draft">
+            <description>RouteOrder is draft</description>
+        </status>
         <status key="Open">
             <description>RouteOrder is open</description>
         </status>

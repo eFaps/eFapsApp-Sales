@@ -3026,6 +3026,15 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute ROUTEORDER_STATUS4CREATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "RouteOrder.Status4Create")
+                    .defaultValue(CISales.RouteOrderStatus.Open.key)
+                    .description("Key of the Status for create.");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "SerialNumbers")

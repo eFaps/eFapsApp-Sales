@@ -17,12 +17,40 @@
 
 package org.efaps.esjp.sales.efile;
 
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.erp.Naming;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.util.EFapsException;
 
 @EFapsUUID("690dc0b0-c81a-422b-9e9d-6f2d3822821e")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class RouteOrder_Base
 {
 
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Create()
+        {
+
+            @Override
+            protected void add2basicInsert(final Parameter _parameter, final Insert _insert)
+                throws EFapsException
+            {
+                super.add2basicInsert(_parameter, _insert);
+                if (Sales.ROUTEORDER_NUMGEN.exists()) {
+                    _insert.add(CISales.RouteOrder.Name, new Naming().fromNumberGenerator(_parameter, null));
+                }
+                _insert.add(CISales.RouteOrder.Status,
+                                Status.find(CISales.RouteOrderStatus, Sales.ROUTEORDER_STATUS4CREATE.get()));
+            }
+        }.execute(_parameter);
+    }
 }
