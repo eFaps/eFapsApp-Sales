@@ -3029,9 +3029,8 @@ public final class Sales
     public static final StringSysConfAttribute ROUTEORDER_STATUS4CREATE = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "RouteOrder.Status4Create")
-                    .defaultValue(CISales.RouteOrderStatus.Open.key)
+                    .defaultValue(CISales.RouteOrderStatus.Draft.key)
                     .description("Key of the Status for create.");
-
 
     /** See description. */
     @EFapsSysConfAttribute
