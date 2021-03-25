@@ -15,23 +15,25 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>32b412c1-3ae0-4450-a1ec-cf46777b530e</uuid>
+    <uuid>827e8c07-030c-4ee2-b1dc-f66ba8a51a63</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RouteOrderTree</name>
+        <name>Sales_RouteOrderTree_Documents</name>
         <target>
-            <menu>Sales_RouteOrderTree_Menu</menu>
-            <form>Sales_RouteOrderForm</form>
+            <menu>Sales_RouteOrderTree_Documents_Menu</menu>
+            <table>Sales_RouteOrder2DocumentsTable</table>
+            <evaluate
+                program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">Sales_RouteOrder2Document</property>
+                <property name="LinkFrom01">FromLink</property>
+            </evaluate>
         </target>
-        <type>Sales_RouteOrder</type>
-        <childs>
-            <child>Sales_RouteOrderTree_Documents</child>
-        </childs>
         <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetMode">view</property>
     </definition>
-</ui-menu>
+</ui-command>

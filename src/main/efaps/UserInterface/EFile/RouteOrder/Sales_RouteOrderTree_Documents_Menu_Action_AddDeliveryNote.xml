@@ -15,23 +15,26 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>32b412c1-3ae0-4450-a1ec-cf46777b530e</uuid>
+    <uuid>6cbaf2d7-9905-4fe5-804a-ff156500987e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RouteOrderTree</name>
+        <name>Sales_RouteOrderTree_Documents_Menu_Action_AddDeliveryNote</name>
         <target>
-            <menu>Sales_RouteOrderTree_Menu</menu>
-            <form>Sales_RouteOrderForm</form>
+            <search>Sales_RouteOrderTree_Documents_Menu_Action_AddDeliveryNote_Search</search>
+            <execute
+                program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <!-- Sales_RouteOrder2DeliveryNote -->
+                <property name="ConnectType">e0845c6b-4a9d-4bc0-bfef-831dfeeefed4</property>
+            </execute>
         </target>
-        <type>Sales_RouteOrder</type>
-        <childs>
-            <child>Sales_RouteOrderTree_Documents</child>
-        </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="RecievingTicketStatus">Open</property>
     </definition>
-</ui-menu>
+</ui-command>

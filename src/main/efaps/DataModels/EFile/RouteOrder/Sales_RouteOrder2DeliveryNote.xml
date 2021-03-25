@@ -23,7 +23,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RouteOrder2DeliveryNote</name>
-        <parent>Sales_RouteOrder2ObjectAbstract</parent>
+        <parent>Sales_RouteOrder2Document</parent>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>

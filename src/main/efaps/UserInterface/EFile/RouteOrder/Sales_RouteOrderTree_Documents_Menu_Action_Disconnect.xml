@@ -15,23 +15,22 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>32b412c1-3ae0-4450-a1ec-cf46777b530e</uuid>
+    <uuid>0f2d1d93-919d-43a7-8bfd-2687ecaec7cb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RouteOrderTree</name>
+        <name>Sales_RouteOrderTree_Documents_Menu_Action_Disconnect</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
-            <menu>Sales_RouteOrderTree_Menu</menu>
-            <form>Sales_RouteOrderForm</form>
+            <execute
+                program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <type>Sales_RouteOrder</type>
-        <childs>
-            <child>Sales_RouteOrderTree_Documents</child>
-        </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>

@@ -131,6 +131,7 @@
             <property name="Label">Sales_RouteOrderForm.employee.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Width">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -194,6 +195,15 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="documentTable" character="Target">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_RouteOrder2DocumentsTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_RouteOrder2Document</property>
+                <property name="LinkFrom">FromLink</property>
+            </evaluate>
         </field>
     </definition>
 </ui-form>

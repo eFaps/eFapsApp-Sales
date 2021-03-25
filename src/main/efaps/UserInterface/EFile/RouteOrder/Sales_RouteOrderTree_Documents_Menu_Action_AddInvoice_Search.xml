@@ -15,23 +15,19 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<ui-search xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>32b412c1-3ae0-4450-a1ec-cf46777b530e</uuid>
+    <uuid>be92d945-3fd2-47c4-8948-c1c8807bd412</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RouteOrderTree</name>
-        <target>
-            <menu>Sales_RouteOrderTree_Menu</menu>
-            <form>Sales_RouteOrderForm</form>
-        </target>
-        <type>Sales_RouteOrder</type>
+        <name>Sales_RouteOrderTree_Documents_Menu_Action_AddInvoice_Search</name>
+        <default>
+            <command>Sales_InvoiceSearch</command>
+        </default>
         <childs>
-            <child>Sales_RouteOrderTree_Documents</child>
+            <child>Sales_InvoiceSearch</child>
         </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
     </definition>
-</ui-menu>
+</ui-search>
