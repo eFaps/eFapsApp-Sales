@@ -2744,7 +2744,11 @@ public abstract class AbstractDocument_Base
                                                    final Instance _docInst)
          throws EFapsException
     {
-        return getInstances4Derived(_parameter).contains(_docInst);
+        var isSelected =  getInstances4Derived(_parameter).contains(_docInst);
+        if (!isSelected) {
+            isSelected = _docInst.equals(_parameter.getCallInstance());
+        }
+        return isSelected;
     }
 
     /**
