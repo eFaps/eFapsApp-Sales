@@ -568,10 +568,12 @@ public abstract class ProductsTransactionSummaryReport_Base
 
             final List<ColumnBuilder<?, ?>> outgoingColumns = new ArrayList<>();
             if (ProdDocDisplay.BOTH.equals(prodDocDisplay) || ProdDocDisplay.OUTGOOING.equals(prodDocDisplay)) {
+
                 final Map<String, String> sorted = new TreeMap<>((_key0,_key1)
-                                -> DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocTypes()
-                                .get(_key0).compareTo(
-                          DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocTypes().get(_key1)));
+                                -> DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocType(_key0)
+                                .compareTo(
+                          DynProductsTransactionSummaryReport.this.dataSource.getOutgoingProdDocType(_key1)));
+
                 sorted.putAll(dataSource.getOutgoingProdDocTypes());
                 for (final Entry<String, String> entry : sorted.entrySet()) {
                     final String qtyKey = "OUTGOOING-Qty" + entry.getKey();
@@ -1133,6 +1135,12 @@ public abstract class ProductsTransactionSummaryReport_Base
         public Map<String, String> getOutgoingProdDocTypes()
         {
             return outgoingProdDocTypes;
+        }
+
+        public String getOutgoingProdDocType(final String key)
+        {
+            final String ret = outgoingProdDocTypes.get(key);
+            return ret == null ? "" : ret;
         }
     }
 }
