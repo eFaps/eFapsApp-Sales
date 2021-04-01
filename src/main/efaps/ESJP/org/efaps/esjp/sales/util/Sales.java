@@ -3034,6 +3034,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute ROUTEORDER_JASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "RouteOrder.JasperReport")
+                    .defaultValue("Sales_RouteOrder")
+                    .description("Name of the jasperReport for RouteOrder.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "SerialNumbers")

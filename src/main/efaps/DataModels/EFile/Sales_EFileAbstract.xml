@@ -108,5 +108,6 @@
             <sqltable>Sales_EFileSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
+        <store name="ERP_DocumentVFSStore"/>
     </definition>
 </datamodel-type>

@@ -26,7 +26,8 @@
         <target>
             <search>Sales_RouteOrderTree_Documents_Menu_Action_AddDeliveryNote_Search</search>
             <execute
-                program="org.efaps.esjp.common.uisearch.Connect">
+                program="org.efaps.esjp.sales.efile.RouteOrder"
+                method="connect">
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectChildAttribute">ToLink</property>
                 <!-- Sales_RouteOrder2DeliveryNote -->
