@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2021 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps"/>
-        </profiles>
         <name>Sales_UsageReportForm</name>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
@@ -38,33 +35,6 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-        </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-               method="getSalesPersonFieldValue"
-               name="Sales_UsageReportForm.salesperson.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
         </field>
         <field name="productDocumentType">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
@@ -119,6 +89,78 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_InvoiceForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="project">
+            <property name="Label">Sales_IncomingInvoiceForm.project.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Width">100</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="autoComplete4Project"
+                name="Sales_UsageReportForm.project.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="StatusGroup">Projects_ProjectServiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="MaxChoiceLength">155</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="updateField4Project"
+                name="Sales_UsageReportForm.project.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="projectData">
+            <property name="Label">Sales_IncomingInvoiceForm.projectData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2UsageReport#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2UsageReport#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2IncomingInvoice#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ProductRequest.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Width">50</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.project4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Projects-Configuration -->
+                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Width">15</property>
@@ -153,6 +195,66 @@
             <property name="Width">15</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
+        </field>
+       <field name="fabricationProcess">
+            <property name="Label">Sales_UsageReportForm.fabricationProcess.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Width">80</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.fabrication.Process"
+                method="autoComplete4Process"
+                name="Sales_ProductionReportForm.fabricationProcess.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <!-- Fabrication_Process -->
+                <property name="Type">8c225bdd-e3c6-4713-b230-e6e4e70c087e</property>
+                <property name="StatusGroup">Fabrication_ProcessStatus</property>
+                <property name="Status">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.fabrication.Process"
+                method="updateField4Process"
+                name="Sales_ProductionReportForm.fabricationProcess.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.fabricationProcesst.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="fabricationProcessData">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_UsageReportForm.fabricationProcessData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.fabricationProcessData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
+        </field>
+        <field name="fabricationProcess4View">
+            <property name="SelectAlternateOID">linkfrom[Fabrication_Process2UsageReport#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Fabrication_Process2UsageReport#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Fabrication_Process2UsageReport#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_UsageReportForm.fabricationProcess.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_UsageReportForm.fabricationProcess4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.projects.Activate</property>
+            </trigger>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -205,234 +307,6 @@
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
                 event="UI_FIELD_VALUE" >
                <!-- Sales-Configuration -->
-               <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-               <property name="Link4DefaultStorage">org.efaps.sales.UsageReport.DefaultWareHouse</property>
-            </trigger>
-        </field>
-    </definition>
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="fabrication"/>
-        </profiles>
-        <name>Sales_UsageReportForm</name>
-        <field name="dategroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
-        <field name="date">
-            <property name="Columns">12</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="Attribute">Date</property>
-            <property name="Required">true</property>
-        </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-               method="getSalesPersonFieldValue"
-               name="Sales_UsageReportForm.salesperson.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-        </field>
-        <field name="productDocumentType">
-            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_UsageReportForm.productDocumentType.Label</property>
-            <property name="UIType">DROPDOWN</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-                method="dropDown4ProdDocTypeFieldValue"
-                name="Sales_UsageReportForm.productDocumentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Sales_ProductDocumentType</property>
-                <property name="ValueSelect">attribute[OID]</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
-                <property name="OrderSelect">attribute[Name]</property>
-                <property name="Activation">OUTGOING</property>
-                <property name="SetSelected">true</property>
-                <!-- Sales-Configuration -->
-                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="DefaultLink">org.efaps.sales.UsageReport.DefaultProductDocumentType</property>
-            </trigger>
-        </field>
-        <field name="createGroup" character="Group">
-            <property name="GroupCount">2</property>
-        </field>
-        <field name="creator">
-            <property name="SelectAlternateOID">linkto[Creator].oid</property>
-            <property name="Attribute">Creator</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
-        <field name="created">
-            <property name="Attribute">Created</property>
-            <property name="ModeSearch">EDITABLE</property>
-        </field>
-        <field name="modifyGroup" character="Group">
-            <property name="GroupCount">2</property>
-        </field>
-        <field name="modifier">
-            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
-            <property name="Attribute">Modifier</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
-        <field name="modified">
-            <property name="Attribute">Modified</property>
-            <property name="ModeSearch">EDITABLE</property>
-        </field>
-        <field name="name">
-            <property name="Attribute">Name</property>
-            <property name="Width">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Required">true</property>
-        </field>
-        <field name="storageSetter">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="Label">Sales_UsageReportForm.storage.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-                method="autoComplete4Storage"
-                name="Sales_UsageReportForm.storage.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Type">Products_DynamicStorage</property>
-                <property name="StatusGroup">Products_StorageAbstractStatus</property>
-                <property name="Status">Active</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport" method="updateFields4Storage"
-                name="Sales_UsageReportForm.storage.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
-                name="Sales_UsageReportForm.storage.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="CheckCallingCommand">true</property>
-                <property name="Property">ShowStorage</property>
-            </trigger>
-        </field>
-        <field name="status">
-            <property name="Attribute">Status</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="Width">15</property>
-            <property name="ModeEdit">READONLY</property>
-            <property name="ModeView">READONLY</property>
-        </field>
-        <field name="fabricationProcess">
-            <property name="Label">Sales_UsageReportForm.fabricationProcess.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Width">80</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.fabrication.Process"
-                method="autoComplete4Process"
-                name="Sales_ProductionReportForm.fabricationProcess.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Fabrication_Process -->
-                <property name="Type">8c225bdd-e3c6-4713-b230-e6e4e70c087e</property>
-                <property name="StatusGroup">Fabrication_ProcessStatus</property>
-                <property name="Status">Open</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.fabrication.Process"
-                method="updateField4Process"
-                name="Sales_ProductionReportForm.fabricationProcess.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
-        </field>
-        <field name="fabricationProcessData">
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_UsageReportForm.fabricationProcessData.Label</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-        </field>
-        <field name="fabricationProcess4View">
-            <property name="SelectAlternateOID">linkfrom[Fabrication_Process2UsageReport#ToLink].linkto[FromLink].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Fabrication_Process2UsageReport#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Fabrication_Process2UsageReport#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_UsageReportForm.fabricationProcess.Label</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">READONLY</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="headingPositon" character="Heading">
-            <property name="Level">2</property>
-            <property name="Label">Sales_UsageReport/Position.Heading</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-        </field>
-        <field name="positionTable" character="Target">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <table>Sales_UsageReportPositionTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_UsageReportPosition</property>
-                <property name="LinkFrom">UsageReportLink</property>
-            </evaluate>
-        </field>
-        <field name="note">
-            <property name="Attribute">Note</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Rows">5</property>
-            <property name="Columns">80</property>
-        </field>
-        <field name="storageJavaScript">
-            <property name="ModePrint">NONE</property>
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">HIDDEN</property>
-            <property name="UIType">SNIPPLET</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-                method="getStorageJavaScriptUIValue"
-                name="Sales_UsageReportForm.storageJavaScript.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="propertyCheck"
-                name="Sales_UsageReportForm.storageJavaScript.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" >
-                <property name="CheckCallingCommand">true</property>
-                <property name="Property">ShowStorage</property>
-            </trigger>
-        </field>
-        <field name="javaScript">
-            <property name="ModePrint">NONE</property>
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="UIType">SNIPPLET</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-                method="getJavaScriptUIValue"
-                name="Sales_InvoiceForm.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" >
-                <!-- Sales-Configuration -->
                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                <property name="Link4DefaultStorage">org.efaps.sales.UsageReport.DefaultWareHouse</property>
             </trigger>

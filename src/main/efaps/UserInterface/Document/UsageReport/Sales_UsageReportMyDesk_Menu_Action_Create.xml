@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2021 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,47 +24,6 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps"/>
-        </profiles>
-        <name>Sales_UsageReportMyDesk_Menu_Action_Create</name>
-        <access>
-            <role>Sales_Delivery</role>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <form>Sales_UsageReportForm</form>
-            <execute program="org.efaps.esjp.sales.document.UsageReport" method="create">
-
-                <!-- Sales-Configuration -->
-                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigReport">org.efaps.sales.UsageReport.JasperReport</property>
-                <property name="JasperConfigMime">org.efaps.sales.UsageReport.Mime</property>
-                <property name="NoDataSource">true</property>
-                <property name="PositionType">Sales_UsageReportPosition</property>
-                <property name="StatusGroup">Sales_UsageReportStatus</property>
-                <property name="Status">Closed</property>
-            </execute>
-            <validate program="org.efaps.esjp.sales.document.UsageReport" method="validate">
-                <property name="Validation">POSITION</property>
-                <property name="Validation01">QUANTITYGREATERZERO</property>
-                <property name="Validation02">QUANTITYINSTOCK</property>
-            </validate>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_UsageReport</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
-        <property name="ShowStorage">true</property>
-        <property name="TargetShowFile">true</property>
-    </definition>
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="fabrication"/>
-        </profiles>
         <name>Sales_UsageReportMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Delivery</role>
@@ -77,16 +36,21 @@
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.UsageReport.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.UsageReport.Mime</property>
-                <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_UsageReportPosition</property>
                 <property name="StatusGroup">Sales_UsageReportStatus</property>
                 <property name="Status">Closed</property>
 
-                <!-- Fabrication_Process2UsageReport -->
-                <property name="ConnectType">6d84d16a-05e5-47fb-8a41-8f9c1d9b58a5</property>
-                <property name="ConnectCurrentLink">ToLink</property>
-                <property name="ConnectForeignLink">FromLink</property>
-                <property name="ConnectForeignField">fabricationProcess</property>
+                 <!-- Projects_ProjectService2UsageReport -->
+                <property name="ConnectType01">53de34d6-b8e9-4cd7-a2cd-86e0275aa7b8</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">project</property>
+
+                 <!-- Fabrication_Process2UsageReport -->
+                <property name="ConnectType02">6d84d16a-05e5-47fb-8a41-8f9c1d9b58a5</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">fabricationProcess</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.UsageReport" method="validate">
                 <property name="Validation">POSITION</property>

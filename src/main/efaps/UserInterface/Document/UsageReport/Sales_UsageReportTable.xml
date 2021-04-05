@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2021 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -34,7 +32,7 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
-         <field name="name">
+         <field name="note">
             <property name="Attribute">Note</property>
             <property name="Label">Sales_DocumentAbstract/Note.Label</property>
         </field>
@@ -45,10 +43,6 @@
             <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
-        </field>
-        <field name="vendorLink">
-            <property name="Attribute">Salesperson</property>
-            <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
         </field>
         <field name="status">
             <property name="FilterType">PICKLIST</property>
