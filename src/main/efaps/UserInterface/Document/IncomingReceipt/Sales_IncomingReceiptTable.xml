@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2013 - 2016 The eFaps Team
+ Copyright 2013 - 2021 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -78,6 +78,10 @@
             <property name="Label">Sales_DocumentAbstract/NetTotal.Label</property>
             <property name="Align">right</property>
         </field>
+        <field name="note">
+            <property name="Select">attribute[Note]</property>
+            <property name="Label">Sales_DocumentAbstract/Note.Label</property>
+        </field>
         <field name="status">
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
@@ -96,12 +100,20 @@
             <property name="Attribute">Creator</property>
             <property name="Label">Sales_DocumentAbstract/Creator.Label</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="purchaseRecord">
+            <property name="SelectAlternateOID">linkfrom[Accounting_PurchaseRecord2Document#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Accounting_PurchaseRecord2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Accounting_PurchaseRecord.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingReceiptTable.purchaseRecord.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Accounting-Configuration -->
+                <property name="SystemConfig">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
+                <property name="Attribute01">org.efaps.accounting.Activate</property>
+                <property name="Attribute02">org.efaps.accounting.PurchaseRecord.Activate</property>
+            </trigger>
         </field>
     </definition>
     <definition>
