@@ -28,22 +28,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -57,22 +47,40 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.cashflow.CashFlowCategory;
 import org.efaps.esjp.sales.cashflow.CashFlowGroup;
 import org.efaps.esjp.sales.cashflow.ICashFlowGroup;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
+import org.efaps.util.UUIDUtil;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 /**
  * Report for CashFlow.
+ *
  * @author The eFaps Team
  */
 @EFapsUUID("67b5c710-4e36-4eb2-95c0-8f04b15500ec")
@@ -192,9 +200,9 @@ public abstract class CashFlowReport_Base
                 multi2.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date);
                 multi2.execute();
                 while (multi2.next()) {
-                    final DateTime date = multi2.<DateTime>getAttribute(CISales.TransactionAbstract.Date);
+                    multi2.<DateTime>getAttribute(CISales.TransactionAbstract.Date);
                     BigDecimal amount = multi2.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                    final Instance payInst = multi2.<Instance>getSelect(selPaymentInst);
+                    multi2.<Instance>getSelect(selPaymentInst);
 
                     final boolean out = multi2.getCurrentInstance().getType().isKindOf(CISales.TransactionOutbound
                                     .getType());
@@ -202,18 +210,15 @@ public abstract class CashFlowReport_Base
                     if (out) {
                         amount = amount.negate();
                     }
-
-                    final String dateStr = "";
                 }
 
                 addProjection4Documents(_parameter, beans);
 
                 final ComparatorChain<DataBean> chain = new ComparatorChain<>();
                 chain.addComparator((_o1,
-                 _o2) -> _o1.getGroup().getWeight().compareTo(_o2.getGroup().getWeight())
-                );
+                                     _o2) -> _o1.getGroup().getWeight().compareTo(_o2.getGroup().getWeight()));
                 chain.addComparator((_o1,
-                 _o2) -> {
+                                     _o2) -> {
                     int w1 = 0;
                     int w2 = 0;
                     try {
@@ -226,14 +231,14 @@ public abstract class CashFlowReport_Base
                 });
                 if (isShowContact(_parameter)) {
                     chain.addComparator((_o1,
-                     _o2) -> _o1.getContact().compareTo(_o2.getContact()));
+                                         _o2) -> _o1.getContact().compareTo(_o2.getContact()));
                 }
                 if (isShowDocTypes(_parameter)) {
                     chain.addComparator((_o1,
-                     _o2) -> _o1.getDocType().compareTo(_o2.getDocType()));
+                                         _o2) -> _o1.getDocType().compareTo(_o2.getDocType()));
                 }
                 chain.addComparator((_o1,
-                 _o2) -> _o1.getDateGroup().compareTo(_o2.getDateGroup()));
+                                     _o2) -> _o1.getDateGroup().compareTo(_o2.getDateGroup()));
                 Collections.sort(beans, chain);
                 ret = new JRBeanCollectionDataSource(beans);
                 getFilteredReport().cache(_parameter, ret);
@@ -272,24 +277,38 @@ public abstract class CashFlowReport_Base
                 final Properties inProps = PropertiesUtil.getProperties4Prefix(props, "Projection." + group.name());
 
                 final Map<Integer, String> typesMap = analyseProperty(_parameter, inProps, "Type");
-                final Map<String, Set<String>> attr2types = new HashMap<>();
-                for (final String type : typesMap.values()) {
+
+                final Map<String, Set<String>> attr2sumTypes = new HashMap<>();
+                final Map<String, Set<String>> attr2stockTypes = new HashMap<>();
+                for (final String typeStr : typesMap.values()) {
+                    final Type type = UUIDUtil.isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr);
+                    final boolean isSum = type.isKindOf(CISales.DocumentSumAbstract);
                     final String attr = props.getProperty(type + ".FilterDate", CISales.DocumentAbstract.Date.name);
                     final Set<String> types;
-                    if (attr2types.containsKey(attr)) {
-                        types = attr2types.get(attr);
+                    if (isSum) {
+                        if (attr2sumTypes.containsKey(attr)) {
+                            types = attr2sumTypes.get(attr);
+                        } else {
+                            types = new HashSet<>();
+                            attr2sumTypes.put(attr, types);
+                        }
                     } else {
-                        types = new HashSet<>();
-                        attr2types.put(attr, types);
+                        if (attr2stockTypes.containsKey(attr)) {
+                            types = attr2stockTypes.get(attr);
+                        } else {
+                            types = new HashSet<>();
+                            attr2stockTypes.put(attr, types);
+                        }
                     }
-                    types.add(type);
+                    types.add(typeStr);
                 }
                 final DateGroup dateGroup = getDateGroup(_parameter);
                 final AbstractGroupedByDate groupedByDate = new AbstractGroupedByDate()
                 {
                 };
                 final DateTimeFormatter dateTimeFormatter = groupedByDate.getDateTimeFormatter(DateGroup.MONTH);
-                for (final Entry<String, Set<String>> entry : attr2types.entrySet()) {
+
+                for (final Entry<String, Set<String>> entry : attr2sumTypes.entrySet()) {
                     final Properties propsTmp = new Properties(props);
                     inProps.stringPropertyNames().forEach(key -> {
                         if (key.startsWith("Status")) {
@@ -298,15 +317,20 @@ public abstract class CashFlowReport_Base
                     });
 
                     final String formatStr = "%02d";
-                    final int i = 1;
+                    int i = 1;
                     for (final String type : entry.getValue()) {
                         propsTmp.put("Type" + String.format(formatStr, i), type);
+                        i++;
                     }
+                    LOG.debug("Props: {}", propsTmp);
                     final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, propsTmp);
 
                     queryBldr.addWhereAttrGreaterValue(entry.getKey(), start.withTimeAtStartOfDay().minusMinutes(1));
                     queryBldr.addWhereAttrLessValue(entry.getKey(), end.withTimeAtStartOfDay().plusDays(1));
                     final MultiPrintQuery multi = queryBldr.getPrint();
+                    final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                                    .instance();
+                    multi.addSelect(selContactInst);
                     final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
                                     .attribute(CIContacts.Contact.Name);
                     if (contact) {
@@ -326,12 +350,56 @@ public abstract class CashFlowReport_Base
                         }
                         final DateTime date = multi.getAttribute(entry.getKey());
                         final String partial = groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter);
-                        _beans.add(new DataBean()
+                        _beans.add(getDataBean()
                                         .setGroup(group)
                                         .setInstance(multi.getCurrentInstance())
                                         .setDateGroup(partial)
                                         .setAmount(amount)
-                                        .setContact(contact ? multi.getSelect(selContactName) : null));
+                                        .setContact(contact ? multi.getSelect(selContactName) : null)
+                                        .setContactInstance(multi.getSelect(selContactInst)));
+                    }
+                }
+
+                for (final Entry<String, Set<String>> entry : attr2stockTypes.entrySet()) {
+                    final Properties propsTmp = new Properties(props);
+                    inProps.stringPropertyNames().forEach(key -> {
+                        if (key.startsWith("Status")) {
+                            propsTmp.put(key, inProps.get(key));
+                        }
+                    });
+
+                    final String formatStr = "%02d";
+                    int i = 1;
+                    for (final String type : entry.getValue()) {
+                        propsTmp.put("Type" + String.format(formatStr, i), type);
+                        i++;
+                    }
+                    LOG.debug("Props: {}", propsTmp);
+                    final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, propsTmp);
+
+                    queryBldr.addWhereAttrGreaterValue(entry.getKey(), start.withTimeAtStartOfDay().minusMinutes(1));
+                    queryBldr.addWhereAttrLessValue(entry.getKey(), end.withTimeAtStartOfDay().plusDays(1));
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                                    .instance();
+                    multi.addSelect(selContactInst);
+                    final SelectBuilder selContactName = SelectBuilder.get()
+                                    .linkto(CISales.DocumentStockAbstract.Contact)
+                                    .attribute(CIContacts.Contact.Name);
+                    if (contact) {
+                        multi.addSelect(selContactName);
+                    }
+                    multi.addAttribute(entry.getKey());
+                    multi.execute();
+                    while (multi.next()) {
+                        final DateTime date = multi.getAttribute(entry.getKey());
+                        final String partial = groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter);
+                        _beans.add(getDataBean()
+                                        .setGroup(group)
+                                        .setInstance(multi.getCurrentInstance())
+                                        .setDateGroup(partial)
+                                        .setContact(contact ? multi.getSelect(selContactName) : null)
+                                        .setContactInstance(multi.getSelect(selContactInst)));
                     }
                 }
             }
@@ -366,52 +434,42 @@ public abstract class CashFlowReport_Base
             _queryBldr.addWhereAttrLessValue(CISales.TransactionAbstract.Date, end.withTimeAtStartOfDay().plusDays(1));
         }
 
-/**
-        protected void addProjection(final Parameter _parameter)
-            throws EFapsException
-        {
-            for (int i = 0; i < this.projection; i++) {
-                DateTime start = new DateTime();
-                DateTime end = new DateTime();
-                DateTime date = new DateTime();
-                switch (this.interval) {
-                    case MONTH:
-                        start = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 1)
-                                        .minusSeconds(1);
-                        end = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 2);
-                        date = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 1);
-                        break;
-                    case WEEK:
-                        start = new DateTime().withTimeAtStartOfDay().withDayOfWeek(1).plusWeeks(i + 1)
-                                        .minusSeconds(1);
-                        end = new DateTime().withTimeAtStartOfDay().withDayOfWeek(1).plusWeeks(i + 2);
-                        date = end.minusHours(1);
-                    default:
-                        break;
-                }
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.CashFlowProjected);
-                queryBldr.addWhereAttrLessValue(CISales.CashFlowProjected.Date, end);
-                queryBldr.addWhereAttrGreaterValue(CISales.CashFlowProjected.Date, start);
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.CashFlowProjected.CashFlowTypeLink)
-                                .attribute(CISales.CashFlowType.Category);
-                multi.addSelect(sel);
-                multi.addAttribute(CISales.CashFlowProjected.Amount);
-                multi.execute();
-                while (multi.next()) {
-                    final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.CashFlowProjected.Amount);
-                    final ICashFlowCategory cat = multi.<ICashFlowCategory>getSelect(sel);
-                    final Group group = getGroup(_parameter, amount.signum() < 0, null, multi.getCurrentInstance());
-                    final String dateStr = getDateStr(_parameter, date);
-                    group.add(_parameter, amount.signum() < 0, cat, dateStr, amount);
-                }
-            }
-        }
-*/
+        /**
+         * protected void addProjection(final Parameter _parameter) throws
+         * EFapsException { for (int i = 0; i < this.projection; i++) { DateTime
+         * start = new DateTime(); DateTime end = new DateTime(); DateTime date
+         * = new DateTime(); switch (this.interval) { case MONTH: start = new
+         * DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 1)
+         * .minusSeconds(1); end = new
+         * DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i +
+         * 2); date = new
+         * DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i +
+         * 1); break; case WEEK: start = new
+         * DateTime().withTimeAtStartOfDay().withDayOfWeek(1).plusWeeks(i + 1)
+         * .minusSeconds(1); end = new
+         * DateTime().withTimeAtStartOfDay().withDayOfWeek(1).plusWeeks(i + 2);
+         * date = end.minusHours(1); default: break; } final QueryBuilder
+         * queryBldr = new QueryBuilder(CISales.CashFlowProjected);
+         * queryBldr.addWhereAttrLessValue(CISales.CashFlowProjected.Date, end);
+         * queryBldr.addWhereAttrGreaterValue(CISales.CashFlowProjected.Date,
+         * start); final MultiPrintQuery multi = queryBldr.getPrint(); final
+         * SelectBuilder sel =
+         * SelectBuilder.get().linkto(CISales.CashFlowProjected.CashFlowTypeLink)
+         * .attribute(CISales.CashFlowType.Category); multi.addSelect(sel);
+         * multi.addAttribute(CISales.CashFlowProjected.Amount);
+         * multi.execute(); while (multi.next()) { final BigDecimal amount =
+         * multi.<BigDecimal>getAttribute(CISales.CashFlowProjected.Amount);
+         * final ICashFlowCategory cat =
+         * multi.<ICashFlowCategory>getSelect(sel); final Group group =
+         * getGroup(_parameter, amount.signum() < 0, null,
+         * multi.getCurrentInstance()); final String dateStr =
+         * getDateStr(_parameter, date); group.add(_parameter, amount.signum() <
+         * 0, cat, dateStr, amount); } } }
+         */
 
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
-                                          final JasperReportBuilder _builder)
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
@@ -440,10 +498,10 @@ public abstract class CashFlowReport_Base
 
             crosstab.headerCell(DynamicReports.cmp.text(getFilteredReport().getDBProperty("HeaderCell"))
                             .setStyle(DynamicReports.stl.style().setBold(true)))
-                    .rowGroups(rowGroups.toArray(new CrosstabRowGroupBuilder[rowGroups.size()]))
-                    .columnGroups(dateGroup)
-                    .measures(amountMeasure)
-                    .setDataPreSorted(true);
+                            .rowGroups(rowGroups.toArray(new CrosstabRowGroupBuilder[rowGroups.size()]))
+                            .columnGroups(dateGroup)
+                            .measures(amountMeasure)
+                            .setDataPreSorted(true);
             _builder.summary(crosstab);
         }
 
@@ -504,6 +562,11 @@ public abstract class CashFlowReport_Base
         {
             return filteredReport;
         }
+
+        protected DataBean getDataBean()
+        {
+            return new DataBean();
+        }
     }
 
     /**
@@ -515,6 +578,8 @@ public abstract class CashFlowReport_Base
 
         /** The instance. */
         private Instance instance;
+
+        private Instance contactInstance;
 
         /** The group. */
         private ICashFlowGroup group;
@@ -655,7 +720,64 @@ public abstract class CashFlowReport_Base
          */
         public BigDecimal getAmount()
         {
+            if (amount == null && InstanceUtils.isKindOf(instance, CISales.DocumentStockAbstract)) {
+                amount = evalAmount4StockDocuments();
+            }
             return amount;
+        }
+
+        protected BigDecimal evalAmount4StockDocuments()
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            try {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+                queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, instance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder prodSel = SelectBuilder.get().linkto(CISales.PositionAbstract.Product)
+                                .instance();
+                multi.addSelect(prodSel);
+                multi.addAttribute(CISales.PositionAbstract.Quantity);
+                multi.execute();
+                final List<Calculator> calculators = new ArrayList<>();
+                final ICalculatorConfig calcConfig = new ICalculatorConfig()
+                {
+
+                    @Override
+                    public String getSysConfKey4Doc(final Parameter _parameter)
+                        throws EFapsException
+                    {
+                        return "Sales_Invoice";
+                    }
+
+                    @Override
+                    public String getSysConfKey4Pos(final Parameter _parameter)
+                        throws EFapsException
+                    {
+                        return "Sales_InvoicePosition";
+                    }
+
+                    @Override
+                    public boolean priceFromUIisNet(final Parameter _parameter)
+                        throws EFapsException
+                    {
+                        return false;
+                    }
+                };
+                final Parameter parameter = ParameterUtil.instance();
+                while (multi.next()) {
+                    final Instance prodInst = multi.getSelect(prodSel);
+                    final BigDecimal quantity = multi.getAttribute(CISales.PositionAbstract.Quantity);
+                    final Calculator calc = new Calculator(parameter, null, prodInst, quantity, null,
+                                    BigDecimal.ZERO, true,
+                                    calcConfig);
+                    calculators.add(calc);
+                }
+                ret = Calculator.getNetTotal(parameter, calculators);
+            } catch (final EFapsException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return ret;
         }
 
         /**
@@ -689,6 +811,17 @@ public abstract class CashFlowReport_Base
         public DataBean setContact(final String _contact)
         {
             contact = _contact;
+            return this;
+        }
+
+        public Instance getContactInstance()
+        {
+            return contactInstance;
+        }
+
+        public DataBean setContactInstance(final Instance contactInstance)
+        {
+            this.contactInstance = contactInstance;
             return this;
         }
     }
