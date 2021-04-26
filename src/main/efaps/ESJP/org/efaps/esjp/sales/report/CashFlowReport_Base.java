@@ -481,7 +481,7 @@ public abstract class CashFlowReport_Base
 
             if (isShowContact(_parameter)) {
                 final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
-                                String.class);
+                                String.class).setHeaderWidth(200);
                 rowGroups.add(contactGroup);
             }
 
