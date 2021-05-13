@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2021 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -129,12 +129,9 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_Invoice/Status.Label</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="Label">Sales_Invoice/Note.Label</property>
         </field>
     </definition>
         <definition>
@@ -255,12 +252,9 @@
             <property name="Label">Projects_ProjectService.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+            <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="Label">Sales_Invoice/Note.Label</property>
         </field>
     </definition>
 </ui-table>
