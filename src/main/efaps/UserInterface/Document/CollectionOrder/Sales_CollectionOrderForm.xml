@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2012 The eFaps Team
+  Copyright 2003 - 2021 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -67,8 +67,21 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="statusGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
+        </field>
+        <field name="tag">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PettyCashReceiptForm.tag.Label</property>
+            <trigger program="org.efaps.esjp.common.tag.Tag"
+                method="tagFieldValue"
+                name="Sales_CollectionOrderForm.tag.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_AccountabilityTag4CollectionOrder</property>
+            </trigger>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
