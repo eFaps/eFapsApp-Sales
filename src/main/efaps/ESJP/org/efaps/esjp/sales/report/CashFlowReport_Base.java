@@ -283,7 +283,7 @@ public abstract class CashFlowReport_Base
                 for (final String typeStr : typesMap.values()) {
                     final Type type = UUIDUtil.isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr);
                     final boolean isSum = type.isKindOf(CISales.DocumentSumAbstract);
-                    final String attr = props.getProperty(type + ".FilterDate", CISales.DocumentAbstract.Date.name);
+                    final String attr = props.getProperty(typeStr + ".FilterDate", CISales.DocumentAbstract.Date.name);
                     final Set<String> types;
                     if (isSum) {
                         if (attr2sumTypes.containsKey(attr)) {
