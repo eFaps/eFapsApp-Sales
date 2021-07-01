@@ -2747,6 +2747,14 @@ public final class Sales
                     .key(Sales.BASE + "report.PaymentSumReport.ActivateContactAssigned2Employee")
                     .description("Properties 4 Products in Invoice");
 
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute REPORT_PRICELIST = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.PriceListReportWithTax.Activate")
+                    .description("Activate the  PriceListReport With Tax");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute REPORT_SALESPROD = new PropertiesSysConfAttribute()
