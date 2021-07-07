@@ -33,6 +33,7 @@
             <child>Sales_OrderOutboundTree_Position</child>
             <child>Sales_OrderOutboundTree_Doc</child>
             <child>Sales_OrderOutboundTree_Payment</child>
+            <child>Sales_OrderOutboundTree_PaymentAnalysis</child>
             <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
         <property name="Target">content</property>

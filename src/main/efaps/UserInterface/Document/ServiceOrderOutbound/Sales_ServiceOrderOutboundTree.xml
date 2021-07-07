@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2021 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,32 +15,25 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>83ff916e-52c7-44f2-bda1-d4e505565e4b</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ServiceOrderOutboundTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_ServiceOrderOutboundTree_Menu</menu>
             <form>Sales_ServiceOrderOutboundForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_ServiceOrderOutbound</type>
         <childs>
             <child>Sales_ServiceOrderOutboundTree_Position</child>
             <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_ServiceOrderOutboundTree_PaymentAnalysis</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
