@@ -39,9 +39,17 @@
                 <property name="StatusGroup">Archives_ArchiveNodeStatus</property>
                 <property name="Status">Editable</property>
             </execute>
+             <trigger event="UI_ACCESSCHECK" index="1"
+                method="configCheck"
+                name="Sales_OrderOutboundTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateFilesStructurBrowser</property>
+            </trigger>
             <trigger event="UI_ACCESSCHECK" method="checkAccess2ArchiveRoot"
                     name="Sales_OrderOutboundTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
-                    program="org.efaps.esjp.archives.Archive">
+                    program="org.efaps.esjp.archives.Archive" index="2">
                 <property name="Object2ArchiveType">Sales_OrderOutbound2ArchiveAbstract</property>
             </trigger>
         </target>

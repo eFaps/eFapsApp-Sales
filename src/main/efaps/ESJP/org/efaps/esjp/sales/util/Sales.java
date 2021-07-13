@@ -1379,6 +1379,22 @@ public final class Sales
                     .description("Configuration for the AutoComplete for Products in OrderOutbound")
                     .addDefaultValue("Type", "Products_ProductAbstract");
 
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderOutbound.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUND_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "OrderOutbound.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute ORDERINBOUND_ACTIVATE = new BooleanSysConfAttribute()

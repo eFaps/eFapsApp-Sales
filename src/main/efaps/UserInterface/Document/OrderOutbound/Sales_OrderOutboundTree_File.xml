@@ -28,13 +28,19 @@
         <name>Sales_OrderOutboundTree_File</name>
         <target>
             <menu>Sales_OrderOutboundTree_File_Menu</menu>
-            <table>Archives_ArchiveTable</table>
-            <evaluate program="org.efaps.esjp.archives.ArchiveStructurBrowser">
-                <property name="Type">Archives_ArchiveRoot</property>
-                <property name="Object2ArchiveType">Sales_OrderOutbound2ArchiveAbstract</property>
-                <property name="Child_Type">Archives_ArchiveNode</property>
-                <property name="Child_LinkFrom">ParentLink</property>
+            <table>Archives_Object2FileTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_OrderOutbound2ArchiveAbstract</property>
+                <property name="LinkFrom">FromLink</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderOutboundTree_File.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateFiles</property>
+            </trigger>
         </target>
         <!-- adding via parent due to application Dependency -->
         <parents>
@@ -42,6 +48,5 @@
         </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="TargetStructurBrowserField">name</property>
     </definition>
 </ui-command>
