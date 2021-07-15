@@ -30,7 +30,7 @@
             <role>Products_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4Date</form>
+            <form>Products_PriceListReportFilterForm</form>
             <execute method="setFilter"
                 program="org.efaps.esjp.sales.report.PriceListReportWithTax">
                 <property name="FilterKey">org.efaps.esjp.sales.report.PriceListReportWithTax.FilterKey</property>

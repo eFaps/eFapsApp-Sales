@@ -42,8 +42,14 @@
                 program="org.efaps.esjp.sales.report.PriceListReportWithTax">
                 <property name="FilterKey">org.efaps.esjp.sales.report.PriceListReportWithTax.FilterKey</property>
                 <property name="Field01">date</property>
+                <property name="Field02">barCodeType</property>
                 <property name="FilterType01">DateTime</property>
+                <property name="FilterType02">AttributeDefinition</property>
                 <property name="FilterDefault01">TODAY</property>
+                <property name="FilterDefault02">Products_AttributeDefinitionBarcodeType</property>
+                <!-- Products-Configuration -->
+                <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
+                <property name="AccessAttribute02">org.efaps.products.report.PriceListReport.ActivateBarcodes</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2"
                 method="getFilterFieldValue"
@@ -51,7 +57,12 @@
                 program="org.efaps.esjp.sales.report.PriceListReportWithTax">
                 <property name="FilterKey">org.efaps.esjp.sales.report.PriceListReportWithTax.FilterKey</property>
                 <property name="Field01">date</property>
+                <property name="Field02">barCodeType</property>
                 <property name="DBProperty01">org.efaps.esjp.products.reports.PriceListReport.date</property>
+                <property name="DBProperty02">org.efaps.esjp.products.reports.PriceListReport.barCodeType</property>
+                <!-- Products-Configuration -->
+                <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
+                <property name="AccessAttribute02">org.efaps.products.report.PriceListReport.ActivateBarcodes</property>
             </trigger>
         </field>
         <field name="PriceListReportWithTax">
