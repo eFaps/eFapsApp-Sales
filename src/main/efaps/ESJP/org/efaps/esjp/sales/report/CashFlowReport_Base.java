@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -337,16 +337,16 @@ public abstract class CashFlowReport_Base
                         multi.addSelect(selContactName);
                     }
                     multi.addAttribute(entry.getKey());
-                    multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
-                                    CISales.DocumentSumAbstract.RateNetTotal);
+                    multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
+                                    CISales.DocumentSumAbstract.NetTotal);
                     multi.execute();
                     while (multi.next()) {
                         final BigDecimal amount;
                         if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total",
                                         "NET"))) {
-                            amount = multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+                            amount = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
                         } else {
-                            amount = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                            amount = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                         }
                         final DateTime date = multi.getAttribute(entry.getKey());
                         final String partial = groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter);
@@ -380,8 +380,8 @@ public abstract class CashFlowReport_Base
                     queryBldr.addWhereAttrGreaterValue(entry.getKey(), start.withTimeAtStartOfDay().minusMinutes(1));
                     queryBldr.addWhereAttrLessValue(entry.getKey(), end.withTimeAtStartOfDay().plusDays(1));
                     final MultiPrintQuery multi = queryBldr.getPrint();
-                    final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
-                                    .instance();
+                    final SelectBuilder selContactInst = SelectBuilder.get()
+                                    .linkto(CISales.DocumentStockAbstract.Contact).instance();
                     multi.addSelect(selContactInst);
                     final SelectBuilder selContactName = SelectBuilder.get()
                                     .linkto(CISales.DocumentStockAbstract.Contact)
