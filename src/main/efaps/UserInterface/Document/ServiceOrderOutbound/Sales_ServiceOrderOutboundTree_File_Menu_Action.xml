@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2021 The eFaps Team
 
@@ -19,23 +18,15 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>83ff916e-52c7-44f2-bda1-d4e505565e4b</uuid>
+    <uuid>bae0c925-08cd-42c2-ad5d-9e7e94f24c79</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ServiceOrderOutboundTree</name>
-        <target>
-            <menu>Sales_ServiceOrderOutboundTree_Menu</menu>
-            <form>Sales_ServiceOrderOutboundForm</form>
-        </target>
-        <type>Sales_ServiceOrderOutbound</type>
+        <name>Sales_ServiceOrderOutboundTree_File_Menu_Action</name>
         <childs>
-            <child>Sales_ServiceOrderOutboundTree_Position</child>
-            <child>Sales_DocumentAbstractTree_Doc</child>
-            <child>Sales_ServiceOrderOutboundTree_PaymentAnalysis</child>
-            <child>Common_History_ObjectTree_StatusLog</child>
+            <child>Sales_ServiceOrderOutboundTree_File_Menu_Action_CreateRoot</child>
+            <child>Sales_ServiceOrderOutboundTree_File_Menu_Action_Create</child>
+            <child>Sales_ServiceOrderOutboundTree_File_Menu_Action_Disconnect</child>
         </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
     </definition>
 </ui-menu>
