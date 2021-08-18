@@ -30,7 +30,7 @@
         <target>
             <form>Sales_IncomingInvoiceForm</form>
             <execute method="create"
-                program="org.efaps.esjp.sales.document.Invoice">
+                program="org.efaps.esjp.sales.document.IncomingInvoice">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
             </execute>
             <validate
