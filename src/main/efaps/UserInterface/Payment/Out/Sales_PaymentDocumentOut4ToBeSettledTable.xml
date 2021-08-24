@@ -69,9 +69,14 @@
             <property name="Label">Sales_PaymentDocumentAbstract/RateCurrencyLink.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-         <field name="docInfo">
+        <field name="docInfo1">
             <property name="SelectAlternateOID">linkfrom[Sales_Payment#TargetDocument].linkto[CreateDocument].linkto[Salesperson].oid</property>
             <property name="MsgPhrase">Admin_User_PersonMsgPhrase</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="docInfo2">
+            <property name="Select">linkfrom[Sales_Payment#TargetDocument].linkto[CreateDocument].attribute[Name]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="FilterType">PICKLIST</property>
         </field>
