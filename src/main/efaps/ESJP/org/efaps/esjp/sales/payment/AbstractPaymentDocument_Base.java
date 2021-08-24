@@ -1,7 +1,7 @@
 //CHECKSTYLE:OFF Suppress Filelength Warning
 //CHECKSTYLE:ON
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -951,6 +951,10 @@ public abstract class AbstractPaymentDocument_Base
                     Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4CollectionOrder.getType());
                 } else if (InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
                     Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4PaymentOrder.getType());
+                }else if (InstanceUtils.isType(docInst, CISales.OrderOutbound)) {
+                    Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4OrderOutbound.getType());
+                }else if (InstanceUtils.isType(docInst, CISales.ServiceOrderOutbound)) {
+                    Tag.tagObject(_parameter, docInst, CISales.AccountabilityTag4ServiceOrderOutbound.getType());
                 }
             }
         }

@@ -31,6 +31,8 @@
             <child>Sales_ServiceOrderOutboundTree_Menu_Action_SetOpen</child>
             <child>Sales_ServiceOrderOutboundTree_Menu_Action_SetClosed</child>
             <child>Sales_ServiceOrderOutboundTree_Menu_Action_Recalculate</child>
+            <child>Sales_ServiceOrderOutboundTree_Menu_Action_SetAccountabilityTag</child>
+            <child>Sales_ServiceOrderOutboundTree_Menu_Action_RemoveAccountabilityTag</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>

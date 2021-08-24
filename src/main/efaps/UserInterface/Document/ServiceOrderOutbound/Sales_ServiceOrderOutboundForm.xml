@@ -166,8 +166,21 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="statusGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
+        </field>
+        <field name="tag">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PettyCashReceiptForm.tag.Label</property>
+            <trigger program="org.efaps.esjp.common.tag.Tag"
+                method="tagFieldValue"
+                name="Sales_ServiceOrderOutboundForm.tag.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_AccountabilityTag4ServiceOrderOutbound</property>
+            </trigger>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
