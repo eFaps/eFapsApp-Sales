@@ -61,6 +61,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
@@ -1583,7 +1584,7 @@ public abstract class AbstractProductDocument_Base
     }
 
     /**
-     * Gets the positions4 document.
+     * Gets the positions for a document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _docInst the doc inst
@@ -1596,6 +1597,7 @@ public abstract class AbstractProductDocument_Base
     {
         final List<Position> ret = new ArrayList<>();
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StoreableProductAbstract);
+        attrQueryBldr.addType(CIProducts.ProductSalesPartList);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _docInst);
@@ -1613,12 +1615,45 @@ public abstract class AbstractProductDocument_Base
         multi.setEnforceSorted(true);
         multi.execute();
         while (multi.next()) {
-            ret.add(new Position(multi.getCurrentInstance())
-                            .setProdInstance(multi.<Instance>getSelect(selProdInst))
+            final Instance prodInstance = multi.<Instance>getSelect(selProdInst);
+            if (InstanceUtils.isKindOf(prodInstance, CIProducts.ProductSalesPartList)) {
+                //replace them with the real products
+                final var quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
+                ret.addAll(getPositions4PartList(_parameter, multi.getCurrentInstance(), prodInstance, quantity));
+            } else {
+                ret.add(new Position(multi.getCurrentInstance())
+                            .setProdInstance(prodInstance)
                             .setProdName(multi.<String>getSelect(selProdName))
                             .setDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc))
                             .setQuantity(multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity))
                             .setUoM(Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))));
+            }
+        }
+        return ret;
+    }
+
+    protected List<Position> getPositions4PartList(final Parameter _parameter, final Instance positionInst,
+                                                   final Instance _partListInstance, final BigDecimal positionQuantity)
+        throws EFapsException
+    {
+        final var ret = new ArrayList<Position>();
+        final var eval = EQL.builder().print().query(CIProducts.SalesBOM)
+                        .where().attribute(CIProducts.SalesBOM.From).eq(_partListInstance)
+                        .select()
+                        .attribute(CIProducts.SalesBOM.Quantity)
+                        .linkto(CIProducts.SalesBOM.To).instance().as("PRODINST")
+                        .linkto(CIProducts.SalesBOM.To).attribute(CIProducts.ProductAbstract.Name).as("PRODNAME")
+                        .linkto(CIProducts.SalesBOM.To).attribute(CIProducts.ProductAbstract.Description).as("PRODDESC")
+                        .linkto(CIProducts.SalesBOM.To).attribute(CIProducts.ProductAbstract.DefaultUoM).as("PRODUOM")
+                        .evaluate();
+        while (eval.next()) {
+            final BigDecimal quantity = eval.get(CIProducts.SalesBOM.Quantity);
+            ret.add(new Position(positionInst)
+                            .setProdInstance(eval.get("PRODINST"))
+                            .setProdName(eval.get("PRODNAME"))
+                            .setDescr(eval.get("PRODDESC"))
+                            .setQuantity(positionQuantity.multiply(quantity))
+                            .setUoM(Dimension.getUoM(eval.get("PRODUOM"))));
         }
         return ret;
     }
