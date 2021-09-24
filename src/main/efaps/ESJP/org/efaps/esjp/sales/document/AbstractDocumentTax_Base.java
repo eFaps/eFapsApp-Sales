@@ -387,8 +387,9 @@ public abstract class AbstractDocumentTax_Base
                 final Instance taxDocInstance = multi.getSelect(selDocTaxInst);
                 final BigDecimal taxAmount = multi.getSelect(selDocTaxCrossTotal);
                 final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
-                final BigDecimal percent = new BigDecimal(100).setScale(8).divide(crossTotal, RoundingMode.HALF_UP)
-                               .multiply(taxAmount);
+                final BigDecimal percent = BigDecimal.ZERO.compareTo(crossTotal) == 0 ? BigDecimal.ZERO
+                                : new BigDecimal(100).setScale(8).divide(crossTotal, RoundingMode.HALF_UP)
+                                                .multiply(taxAmount);
                 final DocTaxInfo docTaxInfo;
                 if (mapping.containsKey(docInstance)) {
                     docTaxInfo = mapping.get(docInstance);
@@ -505,9 +506,10 @@ public abstract class AbstractDocumentTax_Base
                     tax2Amount.put(taxDocInst, taxAmount);
                     tax2RateAmount.put(taxDocInst, taxRateAmount);
                     final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
-                    final BigDecimal percent = new BigDecimal(100).setScale(8)
-                                    .divide(crossTotal, RoundingMode.HALF_UP)
-                                    .multiply(taxAmount);
+                    final BigDecimal percent = BigDecimal.ZERO.compareTo(crossTotal) == 0 ? BigDecimal.ZERO
+                                    : new BigDecimal(100).setScale(8)
+                                                    .divide(crossTotal, RoundingMode.HALF_UP)
+                                                    .multiply(taxAmount);
                     tax2Percent.put(taxDocInst, percent);
                 }
                 initialized = true;
