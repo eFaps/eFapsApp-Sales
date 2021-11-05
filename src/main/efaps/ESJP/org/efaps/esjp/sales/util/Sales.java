@@ -153,7 +153,8 @@ public final class Sales
                     .addDefaultValue(CISales.Installment.getType().getName() + ".Category",
                                     CashFlowCategory.CREDIT.name())
                     .addDefaultValue(CISales.Receipt.getType().getName() + ".Category",
-                                    CashFlowCategory.SELL.name());
+                                    CashFlowCategory.SELL.name())
+                    .addDefaultValue("Currency", "BASE");
 
     /** See description. */
     @EFapsSysConfAttribute

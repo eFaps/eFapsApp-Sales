@@ -52,6 +52,8 @@ import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
+import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
@@ -272,6 +274,16 @@ public abstract class CashFlowReport_Base
             }
 
             final Properties props = Sales.CASHFLOWREPORT_CONFIG.get();
+            final String currencyKey = props.getProperty("Currency", "BASE");
+            final CurrencyInst currencyInst;
+            if ("BASE".equals(currencyKey)) {
+                currencyInst = CurrencyInst.get(Currency.getBaseCurrency());
+            } else if (UUIDUtil.isUUID(currencyKey)) {
+                currencyInst = CurrencyInst.get(UUID.fromString(currencyKey));
+            } else {
+                currencyInst = CurrencyInst.find(currencyKey).orElse(CurrencyInst.get(Currency.getBaseCurrency()));
+            }
+
             final boolean contact = isShowContact(_parameter);
             for (final CashFlowGroup group : CashFlowGroup.values()) {
                 final Properties inProps = PropertiesUtil.getProperties4Prefix(props, "Projection." + group.name());
@@ -337,16 +349,37 @@ public abstract class CashFlowReport_Base
                         multi.addSelect(selContactName);
                     }
                     multi.addAttribute(entry.getKey());
-                    multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
-                                    CISales.DocumentSumAbstract.NetTotal);
+                    multi.addAttribute(CISales.DocumentSumAbstract.Date,
+                                    CISales.DocumentSumAbstract.CrossTotal,
+                                    CISales.DocumentSumAbstract.RateCrossTotal,
+                                    CISales.DocumentSumAbstract.NetTotal,
+                                    CISales.DocumentSumAbstract.RateNetTotal,
+                                    CISales.DocumentSumAbstract.RateCurrencyId);
                     multi.execute();
                     while (multi.next()) {
+                        final Long rateCurrencyId = multi.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+                        final boolean isNet = "NET".equals(props
+                                        .getProperty(multi.getCurrentInstance().getType().getName() + ".Total", "NET"));
                         final BigDecimal amount;
-                        if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total",
-                                        "NET"))) {
-                            amount = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
+                        // no currency conversion needed if base
+                        if (Currency.getBaseCurrency().equals(currencyInst.getInstance())) {
+                            amount = isNet ? multi.getAttribute(CISales.DocumentSumAbstract.NetTotal)
+                                            : multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+
+                        } else if (rateCurrencyId.equals(currencyInst.getInstance().getId())) {
+                            amount = isNet ? multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                            : multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                         } else {
-                            amount = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                            final BigDecimal tmpAmount = isNet
+                                            ? multi.getAttribute(CISales.DocumentSumAbstract.NetTotal)
+                                            : multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                            final Instance toCurrencyInstance = CurrencyInst.get(rateCurrencyId).getInstance();
+                            final DateTime date = multi.getAttribute(CISales.DocumentSumAbstract.Date);
+                            final java.time.LocalDate localDate = java.time.LocalDate.of(date.getYear(),
+                                            date.getMonthOfYear(), date.getDayOfMonth());
+                            amount = Currency.convert(_parameter, tmpAmount, Currency.getBaseCurrency(),
+                                            toCurrencyInstance, multi.getCurrentInstance().getType().getName(),
+                                            localDate);
                         }
                         final DateTime date = multi.getAttribute(entry.getKey());
                         final String partial = groupedByDate.getPartial(date, dateGroup).toString(dateTimeFormatter);
