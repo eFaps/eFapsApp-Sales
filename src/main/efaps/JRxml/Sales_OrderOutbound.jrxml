@@ -63,6 +63,9 @@ linkto[UoM].attribute[Name] as uoM]]>
 	<parameter name="CompanyDistrict" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Miraflores"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="CompanyLogo" class="java.lang.String">
+        <defaultValueExpression><![CDATA["JasperImage.DefaultLogo"]]></defaultValueExpression>
+    </parameter>
 	<queryString language="eFaps">
 		<![CDATA[print obj $P!{INSTANCE} select attribute[Name] as name,
 attribute[Date] as date,
@@ -142,7 +145,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 			</textField>
 			<image>
 				<reportElement x="0" y="0" width="125" height="70" uuid="6533ffd1-3cb0-422e-92f1-2e93aa5c026e"/>
-				<imageExpression><![CDATA["JasperImage.DefaultLogo"]]></imageExpression>
+				<imageExpression><![CDATA[$P{CompanyLogo}]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>
