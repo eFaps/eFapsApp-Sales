@@ -2791,6 +2791,10 @@ public final class Sales
     public static final PropertiesSysConfAttribute REPORT_SALESPROD = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesProductReport")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", "!Replaced")
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Negate", "true")
                     .description("Properties 4 Products in Invoice");
 
     /** See description. */

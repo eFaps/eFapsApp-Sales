@@ -461,6 +461,17 @@ public abstract class SalesProductReport_Base
                 } else {
                     dataSource = data;
                 }
+                if (Sales.REPORT_SALESPROD.get().stringPropertyNames().stream()
+                                .anyMatch(key -> key.endsWith(".Negate"))) {
+                    for (final DataBean bean : dataSource) {
+                        if ("true".equalsIgnoreCase(Sales.REPORT_SALESPROD.get().getProperty(
+                                        Instance.get(bean.getDocOID()).getType().getName() + ".Negate", "false"))) {
+                            bean.setPrice(bean.getPrice().negate());
+                            bean.setUnitPrice(bean.getUnitPrice().negate());
+                            bean.setQuantity(bean.getQuantity().negate());
+                        }
+                    }
+                }
                 ret = new JRBeanCollectionDataSource(dataSource);
                 getFilteredReport().cache(_parameter, ret);
             }
