@@ -64,6 +64,10 @@
             <property name="Select">linkto[Payment].linkto[CreateDocument].attribute[Name]</property>
             <property name="Label">Sales_TransactionAbstractTable.docName.Label</property>
         </field>
+        <field name="docContactName">
+            <property name="Select">linkto[Payment].linkto[CreateDocument].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_TransactionAbstractTable.docContactName.Label</property>
+        </field>
         <field name="payment">
             <property name="SelectAlternateOID">linkto[Payment].oid</property>
             <property name="Select">linkto[Payment].type.label</property>
