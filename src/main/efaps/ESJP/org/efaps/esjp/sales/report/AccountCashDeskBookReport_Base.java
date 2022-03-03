@@ -213,11 +213,12 @@ public abstract class AccountCashDeskBookReport_Base
                             .attribute(CIContacts.Contact.Name);
             if (_payDocInst != null && _payDocInst.isValid()) {
                 final PrintQuery print = new PrintQuery(_payDocInst);
-                print.addAttribute(CISales.PaymentDocumentIOAbstract.Code,
+                print.addAttribute(CISales.PaymentDocumentIOAbstract.Code, CISales.PaymentDocumentIOAbstract.Name,
                                 CISales.PaymentDocumentIOAbstract.Note);
                 print.addSelect(selContactName);
                 print.execute();
                 _bean.setTypeDoc(_payDocInst.getType().getLabel());
+                _bean.setNameDoc(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Name));
                 _bean.setVoucher(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Code));
                 _bean.setContact(print.<String>getSelect(selContactName));
                 _bean.setDescription(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Note));
@@ -284,6 +285,9 @@ public abstract class AccountCashDeskBookReport_Base
             final TextColumnBuilder<String> typeDocColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.TypeDoc"),
                             "typeDoc", DynamicReports.type.stringType());
+            final TextColumnBuilder<String> nameDocColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.NameDoc"),
+                            "nameDoc", DynamicReports.type.stringType());
             final TextColumnBuilder<String> voucherColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.Voucher"),
                             "voucher", DynamicReports.type.stringType());
@@ -318,8 +322,8 @@ public abstract class AccountCashDeskBookReport_Base
                 _builder.addColumn(linkColumn);
             }
 
-            _builder.addColumn(dateColumn, typeDocColumn, voucherColumn, typeColumn, numDocColumn, contactColumn,
-                            descriptionColumn, inColumn, outColumn, balanceColumn);
+            _builder.addColumn(dateColumn, typeDocColumn, nameDocColumn, voucherColumn, typeColumn, numDocColumn,
+                            contactColumn, descriptionColumn, inColumn, outColumn, balanceColumn);
 
             final AggregationSubtotalBuilder<BigDecimal> totalInSum = DynamicReports.sbt.sum(inColumn);
             final AggregationSubtotalBuilder<BigDecimal> totalOutSum = DynamicReports.sbt.sum(outColumn);
@@ -409,6 +413,11 @@ public abstract class AccountCashDeskBookReport_Base
          * NumberDoc of the transaction.
          */
         private String numDoc;
+
+        /**
+         *Name doc of the transaction.
+         */
+        private String nameDoc;
 
         /**
          * Contact of the transaction.
@@ -645,6 +654,18 @@ public abstract class AccountCashDeskBookReport_Base
         public void setBalance(final BigDecimal _balance)
         {
             balance = _balance;
+        }
+
+
+        public String getNameDoc()
+        {
+            return nameDoc;
+        }
+
+
+        public void setNameDoc(final String nameDoc)
+        {
+            this.nameDoc = nameDoc;
         }
     }
 }
