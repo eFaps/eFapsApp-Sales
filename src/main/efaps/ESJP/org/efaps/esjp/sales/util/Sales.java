@@ -520,6 +520,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute  DELIVERYNOTE_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute DELIVERYNOTE_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocSituationReport")
