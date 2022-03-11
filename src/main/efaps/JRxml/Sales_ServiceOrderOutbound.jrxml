@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.13.0  -->
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.11.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_ServiceOrderOutbound" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="bcc73bff-338e-4187-85e8-e651dc01b388">
 	<property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Sales"/>
 	<property name="org.efaps.eql.Version" value="2"/>
@@ -64,8 +64,8 @@ linkto[UoM].attribute[Name] as uoM]]>
 		<defaultValueExpression><![CDATA["Miraflores"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="CompanyLogo" class="java.lang.String">
-        <defaultValueExpression><![CDATA["JasperImage.DefaultLogo"]]></defaultValueExpression>
-    </parameter>
+		<defaultValueExpression><![CDATA["JasperImage.DefaultLogo"]]></defaultValueExpression>
+	</parameter>
 	<queryString language="eFaps">
 		<![CDATA[print obj $P!{INSTANCE} select attribute[Name] as name,
 attribute[Date] as date,
@@ -523,7 +523,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 						<jr:detailCell height="12">
 							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="12" uuid="afa82ee4-66a0-43bf-9f52-634bad4168c9">
+								<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="54" height="12" uuid="afa82ee4-66a0-43bf-9f52-634bad4168c9">
 									<property name="local_mesure_unitx" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.x" value="px"/>
 									<property name="local_mesure_unity" value="pixel"/>
@@ -543,11 +543,13 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 								<textFieldExpression><![CDATA[$F{rateNetPrice}]]></textFieldExpression>
 							</textField>
 							<textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToBandHeight" x="60" y="0" width="14" height="12" uuid="777eb69b-ab34-41e2-811d-a9fe1c37574a">
+								<reportElement stretchType="RelativeToBandHeight" x="54" y="0" width="20" height="12" uuid="777eb69b-ab34-41e2-811d-a9fe1c37574a">
 									<property name="local_mesure_unity" value="pixel"/>
-									<property name="com.jaspersoft.studio.unit.y" value="px"/>
 									<property name="local_mesure_unitheight" value="pixel"/>
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
+									<property name="com.jaspersoft.studio.unit.width" value="px"/>
+									<property name="com.jaspersoft.studio.unit.y" value="px"/>
+									<property name="com.jaspersoft.studio.unit.x" value="px"/>
 								</reportElement>
 								<box topPadding="0" leftPadding="2" bottomPadding="0">
 									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -565,9 +567,11 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				</jr:table>
 			</componentElement>
 		</band>
-	</detail>
-	<columnFooter>
-		<band height="72">
+		<band height="50">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="340" height="36" isPrintWhenDetailOverflows="true" uuid="c0f884d2-32ce-4b8f-8e45-376ed2671351"/>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
 			<textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="440" y="0" width="100" height="12" isPrintWhenDetailOverflows="true" uuid="eee8cff7-0d0a-4064-85f8-2da55a85dc38">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -658,10 +662,11 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				</textElement>
 				<text><![CDATA[I.G.V.:]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="340" height="36" uuid="c0f884d2-32ce-4b8f-8e45-376ed2671351"/>
-				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
-			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="37">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 		</band>
 	</columnFooter>
 </jasperReport>
