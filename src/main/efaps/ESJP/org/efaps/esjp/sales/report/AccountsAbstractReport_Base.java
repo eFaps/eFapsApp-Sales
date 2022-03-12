@@ -162,7 +162,7 @@ public abstract class AccountsAbstractReport_Base
         final Return ret = new Return();
         final String mime = getProperty(_parameter, "Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName( DBProperties.getProperty(this.getClass().getName() + ".FileName"));
+        dyRp.setFileName(DBProperties.getProperty(this.getClass().getName() + ".FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -203,11 +203,10 @@ public abstract class AccountsAbstractReport_Base
                     if (!isShowCondition()) {
                         ret.remove(GroupBy.CONDITION);
                     }
-                  // TODO
-                    //if (ReportKey.CONTACT.equals(getReportKey())) {
-                    //    ret.remove(GroupBy.ASSIGNED);
-                    //    ret.remove(GroupBy.CONTACT);
-                    //}
+                    if (this.getClass().getName().contains("Contact")) {
+                        ret.remove(GroupBy.ASSIGNED);
+                        ret.remove(GroupBy.CONTACT);
+                    }
                 } catch (final EFapsException e) {
                     LOG.error("Catched", e);
                 }
@@ -236,9 +235,11 @@ public abstract class AccountsAbstractReport_Base
     protected static abstract class AccountsAbstractDynReport
         extends AbstractDynamicReport
     {
+
         private final AccountsAbstractReport_Base filteredReport;
 
-        public AccountsAbstractDynReport(final AccountsAbstractReport_Base _filteredReport) {
+        public AccountsAbstractDynReport(final AccountsAbstractReport_Base _filteredReport)
+        {
             filteredReport = _filteredReport;
         }
 
@@ -286,7 +287,7 @@ public abstract class AccountsAbstractReport_Base
                 final Map<Instance, AbstractDataBean> beans = getBeans(_parameter, instances);
 
                 if (instance2status != null) {
-                    for (final Entry<Instance, AbstractDataBean> entry: beans.entrySet()) {
+                    for (final Entry<Instance, AbstractDataBean> entry : beans.entrySet()) {
                         final String status = instance2status.get(entry.getKey());
                         if (status != null) {
                             entry.getValue().setDocStatus(status);
@@ -446,7 +447,7 @@ public abstract class AccountsAbstractReport_Base
                     typeIds = filters.getObject();
                 }
             }
-            if (typeIds ==  null) {
+            if (typeIds == null) {
                 typeIds = getTypeIds();
             }
 
@@ -490,7 +491,8 @@ public abstract class AccountsAbstractReport_Base
             // check the list of instances with their status for the given date
             for (final Entry<Instance, Long> entry : inst2status.entrySet()) {
                 // if the status is wanted verify that it is in the report
-                // and check if the instance is part of the filterlist (if activated)
+                // and check if the instance is part of the filterlist (if
+                // activated)
                 if (statusIds.contains(entry.getValue())
                                 && (!applyFilterlist || filterlist.contains(entry.getKey()))) {
                     ret.put(entry.getKey(), Status.get(entry.getValue()).getLabel());
@@ -527,28 +529,30 @@ public abstract class AccountsAbstractReport_Base
             while (multi.next()) {
                 docInsts.add(multi.getCurrentInstance());
                 final AbstractDataBean dataBean = getDataBean(_parameter)
-                            .setDocInst(multi.getCurrentInstance())
-                            .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
-                            .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                            .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
-                            .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                            .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                            .setDocStatus(multi.<String>getSelect(selStatus))
-                            .setReportDate(reportDate);
+                                .setDocInst(multi.getCurrentInstance())
+                                .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
+                                .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
+                                .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
+                                .setDocStatus(multi.<String>getSelect(selStatus))
+                                .setReportDate(reportDate);
 
                 if (!isContactReport()) {
                     dataBean.setContactInst(multi.<Instance>getSelect(selContactInst))
-                            .setDocContactName(multi.<String>getSelect(selContactName));
+                                    .setDocContactName(multi.<String>getSelect(selContactName));
                 }
 
                 if (isCurrencyBase(_parameter)) {
                     dataBean.setCurrencyBase(true)
-                        .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
-                                    multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+                                    .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
+                                                    multi.<BigDecimal>getAttribute(
+                                                                    CISales.DocumentSumAbstract.CrossTotal));
                 } else {
                     dataBean.setRate(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
-                        .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
-                                    multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                                    .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
+                                                    multi.<BigDecimal>getAttribute(
+                                                                    CISales.DocumentSumAbstract.RateCrossTotal));
                 }
                 beans.put(dataBean.getDocInst(), dataBean);
             }
@@ -558,10 +562,10 @@ public abstract class AccountsAbstractReport_Base
         protected abstract AbstractDataBean getDataBean(final Parameter _parameter);
 
         protected abstract Properties getProperties()
-                        throws EFapsException;
+            throws EFapsException;
 
         protected abstract boolean isShowSwapInfo()
-                        throws EFapsException;
+            throws EFapsException;
 
         protected List<Long> getTypeIds()
             throws EFapsException
@@ -571,6 +575,7 @@ public abstract class AccountsAbstractReport_Base
 
         /**
          * Get a list of the types used in the report
+         *
          * @return list of types
          * @throws EFapsException
          */
@@ -584,9 +589,9 @@ public abstract class AccountsAbstractReport_Base
                                 try {
                                     return isUUID(type)
                                                     ? Type.get(UUID.fromString(type))
-                                                                    : Type.get(type);
+                                                    : Type.get(type);
                                 } catch (final CacheReloadException e) {
-                                   LOG.error("Invalid Type Definition for {}", type);
+                                    LOG.error("Invalid Type Definition for {}", type);
                                 }
                                 return null;
                             })
@@ -769,13 +774,16 @@ public abstract class AccountsAbstractReport_Base
             if (filter.containsKey("currency")) {
                 final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
                 if ("BASE".equals(currency.getKey())) {
-                    ret.add(new CurrencyInst(currency) {
+                    ret.add(new CurrencyInst(currency)
+                    {
+
                         @Override
                         public String getName()
                             throws EFapsException
                         {
                             return DBProperties.getProperty(FilteredReport.class.getName() + ".BaseCurrency");
                         }
+
                         @Override
                         public String getISOCode()
                             throws EFapsException
@@ -793,6 +801,7 @@ public abstract class AccountsAbstractReport_Base
             }
             return ret;
         }
+
         @Override
         protected void addColumnDefinition(final Parameter _parameter, final JasperReportBuilder _builder)
             throws EFapsException
@@ -949,30 +958,30 @@ public abstract class AccountsAbstractReport_Base
                             case CONTACT:
                                 _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(crossColumn));
                                 _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(payColumn));
-                                _builder.addSubtotalAtGroupFooter(contactGroup,  DynamicReports.sbt.sum(result));
+                                _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(result));
                                 break;
                             case MONTHLY:
-                                _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(crossColumn));
-                                _builder.addSubtotalAtGroupFooter(monthGroup,  DynamicReports.sbt.sum(payColumn));
+                                _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(crossColumn));
+                                _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(payColumn));
                                 _builder.addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(result));
                                 break;
                             case YEARLY:
-                                _builder.addSubtotalAtGroupFooter(yearGroup,  DynamicReports.sbt.sum(crossColumn));
+                                _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(crossColumn));
                                 _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(payColumn));
                                 _builder.addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(result));
                                 break;
                             case DAILY:
-                                _builder.addSubtotalAtGroupFooter(dayGroup,  DynamicReports.sbt.sum(crossColumn));
+                                _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.sum(crossColumn));
                                 _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.sum(payColumn));
                                 _builder.addSubtotalAtGroupFooter(dayGroup, DynamicReports.sbt.sum(result));
                                 break;
                             case DOCTYPE:
-                                _builder.addSubtotalAtGroupFooter(docTypeGroup,  DynamicReports.sbt.sum(crossColumn));
+                                _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(crossColumn));
                                 _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(payColumn));
                                 _builder.addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(result));
                                 break;
                             case CONDITION:
-                                _builder.addSubtotalAtGroupFooter(conditionGroup,  DynamicReports.sbt.sum(crossColumn));
+                                _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.sum(crossColumn));
                                 _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.sum(payColumn));
                                 _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.sum(result));
                                 break;
@@ -1052,7 +1061,8 @@ public abstract class AccountsAbstractReport_Base
                         case CONDITION:
                             _builder.groupBy(conditionGroup);
                             _builder.addSubtotalAtGroupFooter(conditionGroup, DynamicReports.sbt.text(
-                                        getFilteredReport().getLabel(_parameter, "conditionGroupTotal"), grpTtlClm));
+                                            getFilteredReport().getLabel(_parameter, "conditionGroupTotal"),
+                                            grpTtlClm));
                             break;
                         default:
                             break;
@@ -1071,7 +1081,8 @@ public abstract class AccountsAbstractReport_Base
          * @throws EFapsException on error
          */
         protected void addColumnDefinition4Minimal(final Parameter _parameter,
-                                                  final JasperReportBuilder _builder) throws EFapsException
+                                                   final JasperReportBuilder _builder)
+            throws EFapsException
         {
             final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(
                             getFilteredReport().getLabel(_parameter, "ContactName"), "docContactName",
@@ -1103,7 +1114,8 @@ public abstract class AccountsAbstractReport_Base
             _builder.addColumn(columnList.toArray(new ColumnBuilder[gridList.size()]));
         }
 
-        protected boolean isShowRevision() {
+        protected boolean isShowRevision()
+        {
             return false;
         }
     }
@@ -1160,7 +1172,7 @@ public abstract class AccountsAbstractReport_Base
         private DateTime reportDate;
 
         protected abstract Properties getProperties()
-                        throws EFapsException;
+            throws EFapsException;
 
         /**
          * Checks if is currency base.
@@ -1235,9 +1247,9 @@ public abstract class AccountsAbstractReport_Base
             } else {
                 for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                     if (cross.containsKey(currency.getInstance().getId())) {
-                        final BigDecimal crossTmp =  cross.get(currency.getInstance().getId());
+                        final BigDecimal crossTmp = cross.get(currency.getInstance().getId());
                         if (crossTmp != null) {
-                            ret.put("crossTotal_" + currency.getISOCode(),  negate ? crossTmp.negate() : crossTmp);
+                            ret.put("crossTotal_" + currency.getISOCode(), negate ? crossTmp.negate() : crossTmp);
                         }
                         final BigDecimal payTmp = payments.get(currency.getInstance().getId());
                         if (payTmp != null) {
@@ -1260,7 +1272,7 @@ public abstract class AccountsAbstractReport_Base
          * @return the data bean
          */
         public AbstractDataBean addCross(final Long _currencyId,
-                                 final BigDecimal _cross)
+                                         final BigDecimal _cross)
         {
             cross.put(_currencyId, _cross);
             return this;
