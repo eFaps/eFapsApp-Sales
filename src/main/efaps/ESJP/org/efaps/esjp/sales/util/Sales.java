@@ -307,6 +307,20 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CREDITNOTE_FILE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.ActivateFiles")
+                    .description("Activate the possiblity to upload Files");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CREDITNOTE_FILESTRBROWSER = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.ActivateFilesStructurBrowser")
+                    .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREDITNOTE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "CreditNote.CreateFromInvoiceAutoComplete")
