@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-  Copyright 2003 - 2021 The eFaps Team
+  Copyright 2003 - 2022 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@
         <childs>
             <child>Sales_ServiceOrderOutboundTree_Position</child>
             <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_ServiceOrderOutboundTree_Payment</child>
             <child>Sales_ServiceOrderOutboundTree_PaymentAnalysis</child>
             <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
