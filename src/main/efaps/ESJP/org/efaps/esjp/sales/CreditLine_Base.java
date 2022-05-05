@@ -42,6 +42,7 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.RateInfo;
@@ -85,7 +86,8 @@ public class CreditLine_Base
     public void updateCreditLine(final Parameter _parameter, final Instance _docInstance)
         throws EFapsException
     {
-        if (Sales.CREDITLINE_ACTIVATE.get()) {
+        if (Sales.CREDITLINE_ACTIVATE.get() && InstanceUtils.isValid(_docInstance)
+                        && _docInstance.getType().getStatusAttribute() != null) {
             final PrintQuery print = new PrintQuery(_docInstance);
             print.addAttribute(_docInstance.getType().getStatusAttribute());
             print.executeWithoutAccessCheck();
