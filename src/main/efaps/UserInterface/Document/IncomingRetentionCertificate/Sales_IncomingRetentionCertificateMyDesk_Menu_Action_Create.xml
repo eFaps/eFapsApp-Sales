@@ -44,6 +44,13 @@
                 <property name="ConnectCurrentLink02">FromLink</property>
                 <property name="ConnectForeignLink02">ToLink</property>
                 <property name="ConnectForeignField02">reminders</property>
+
+                <!-- Sales_IncomingRetentionCertificate2IncomingExchange -->
+                <property name="ConnectType03">ea193ef3-d882-43d5-b8ea-d3af603c74bd</property>
+                <property name="ConnectCurrentLink03">FromLink</property>
+                <property name="ConnectForeignLink03">ToLink</property>
+                <property name="ConnectForeignField03">incomingExchanges</property>
+
             </execute>
             <command>Sales_IncomingRetentionCertificate_ShowRevision</command>
         </target>

@@ -250,6 +250,24 @@
                 <property name="ExtraParameter">contact</property>
             </trigger>
         </field>
+        <field name="incomingExchanges">
+            <property name="Label">Sales_IncomingExchange.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Width">50</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate"
+                method="autoComplete4Doc"
+                name="Sales_IncomingRetentionCertificateForm.incomingExchanges.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type01">Sales_IncomingExchange</property>
+                <property name="StatusGroup01">Sales_IncomingExchangeStatus</property>
+                <property name="Status01">!Canceled</property>
+                <property name="AutoType">TOKEN</property>
+                <property name="ExtraParameter">contact</property>
+            </trigger>
+        </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>

@@ -37,6 +37,10 @@
                 <property name="ConnectParentAttribute02">FromLink</property>
                 <property name="ConnectChildAttribute02">ToLink</property>
                 <property name="ConnectChildType02">Sales_Reminder</property>
+                <property name="ConnectType03">Sales_IncomingRetentionCertificate2IncomingExchange</property>
+                <property name="ConnectCurrentLink03">FromLink</property>
+                <property name="ConnectForeignLink03">ToLink</property>
+                <property name="ConnectForeignField03">incomingExchanges</property>
             </execute>
         </target>
         <property name="Target">modal</property>
