@@ -31,6 +31,9 @@
         <childs>
             <child>Sales_OrderInboundTree_Doc</child>
             <child>Sales_OrderInboundTree_Position</child>
+            <child>Sales_OrderInboundTree_Payment</child>
+            <child>Sales_OrderInboundTree_PaymentAnalysis</child>
+            <child>Common_History_ObjectTree_StatusLog</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
