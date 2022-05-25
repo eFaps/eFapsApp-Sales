@@ -25,8 +25,15 @@
         <field character="Group" name="nameGroup">
             <property name="GroupCount">2</property>
         </field>
+        <field name="name4Create">
+            <property name="Attribute">Name</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
         <field name="date">
