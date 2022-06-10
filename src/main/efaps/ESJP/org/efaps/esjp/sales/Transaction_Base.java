@@ -519,6 +519,18 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    public Return accessCheck4EditAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance callInstance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
+        if (!InstanceUtils.isType(callInstance, CISales.AccountFundsToBeSettled)
+                        && !InstanceUtils.isType(callInstance, CISales.AccountPettyCash)) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
     /**
      * Method is called from a transaction to recalculate all values for the
      * accounts.
