@@ -523,9 +523,19 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance callInstance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
-        if (!InstanceUtils.isType(callInstance, CISales.AccountFundsToBeSettled)
-                        && !InstanceUtils.isType(callInstance, CISales.AccountPettyCash)) {
+        final Instance callInstance = _parameter.getCallInstance();
+        if (InstanceUtils.isKindOf(callInstance, CISales.TransactionAbstract)) {
+            final PrintQuery print = new PrintQuery(callInstance);
+            final SelectBuilder selAcount = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
+                            .instance();
+            print.addSelect(selAcount);
+            print.executeWithoutAccessCheck();
+            final Instance accountInst = print.getSelect(selAcount);
+            if (!InstanceUtils.isType(accountInst, CISales.AccountFundsToBeSettled)
+                            && !InstanceUtils.isType(accountInst, CISales.AccountPettyCash)) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        } else {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
