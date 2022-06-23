@@ -1556,7 +1556,9 @@ public final class Sales
                     .addDefaultValue(CISales.Exchange.getType().getName())
                     .addDefaultValue(CISales.PaymentOrder.getType().getName())
                     .addDefaultValue(CISales.IncomingDetraction.getType().getName())
-                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName());
+                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName())
+                    .addDefaultValue(CISales.OrderOutbound.getType().getName())
+                    .addDefaultValue(CISales.ServiceOrderOutbound.getType().getName());
 
     /** See description. */
     @EFapsSysConfAttribute
