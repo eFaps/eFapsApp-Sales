@@ -235,7 +235,7 @@
         <status group="Sales_FundsToBeSettledReceiptStatus">
             <key>Open</key>
             <key>Closed</key>
-            <key>Booked</key>
+            <key>Canceled</key>
         </status>
 
         <status group="Sales_FundsToBeSettledBalanceStatus">

@@ -227,22 +227,31 @@ public abstract class FundsToBeSettledBalance_Base
             // connect balance and receipts
             final MultiPrintQuery multi = new MultiPrintQuery(lstInst);
             final SelectBuilder sel = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
-            multi.addSelect(sel);
+            final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
+                            .attribute(CISales.DocumentAbstract.StatusAbstract);
+            multi.addSelect(sel, selStatus);
             multi.executeWithoutAccessCheck();
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(sel);
+                final Status currentStatus = Status.get(multi.<Long>getSelect(selStatus));
                 if (docInst != null && docInst.isValid()) {
                     Insert rel2Insert = null;
                     Status status = null;
                     if (docInst.getType().equals(CISales.FundsToBeSettledReceipt.getType())) {
-                        rel2Insert = new Insert(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
-                        status = Status.find(CISales.FundsToBeSettledReceiptStatus.Closed);
+                        if (!currentStatus.equals(Status.find(CISales.FundsToBeSettledReceiptStatus.Canceled))) {
+                            rel2Insert = new Insert(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
+                            status = Status.find(CISales.FundsToBeSettledReceiptStatus.Closed);
+                        }
                     } else if (docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
-                        rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingCreditNote);
-                        status = Status.find(CISales.IncomingCreditNoteStatus.Paid);
+                        if (!currentStatus.equals(Status.find(CISales.IncomingCreditNoteStatus.Replaced))) {
+                            rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingCreditNote);
+                            status = Status.find(CISales.IncomingCreditNoteStatus.Paid);
+                        }
                     } else if (docInst.getType().equals(CISales.IncomingInvoice.getType())) {
-                        rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingInvoice);
-                        status = Status.find(CISales.IncomingInvoiceStatus.Paid);
+                        if (!currentStatus.equals(Status.find(CISales.IncomingInvoiceStatus.Replaced))) {
+                            rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingInvoice);
+                            status = Status.find(CISales.IncomingInvoiceStatus.Paid);
+                        }
                     }
                     if (rel2Insert != null && status != null) {
                         rel2Insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, balanceInst);
