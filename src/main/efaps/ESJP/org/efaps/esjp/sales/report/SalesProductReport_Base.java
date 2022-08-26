@@ -337,13 +337,14 @@ public abstract class SalesProductReport_Base
                                 selDocStatus);
                 multi.execute();
                 while (multi.next()) {
+                    final Instance curInst = multi.getSelect(selCurInst);
                     final DateTime date = multi.<DateTime>getSelect(selDocDate);
                     final DataBean dataBean = new DataBean()
                                     .setProductInst(multi.<Instance>getSelect(selProductInst))
                                     .setProductName(multi.<String>getSelect(selProductName))
                                     .setProductDesc(multi.<String>getSelect(selProductDesc))
                                     .setProdFamInst(multi.getSelect(selProdFamInst))
-                                    .setCurrency(currencyInst.getSymbol())
+                                    .setCurrency(currencyInst == null ? CurrencyInst.get(curInst).getSymbol() : currencyInst.getSymbol())
                                     .setContactInst(multi.<Instance>getSelect(selContactInst))
                                     .setContact(multi.<String>getSelect(selContactName))
                                     .setDate(date).setDocName(multi.<String>getSelect(selDocName))
@@ -365,10 +366,10 @@ public abstract class SalesProductReport_Base
                                     .getDenominator()), 4, RoundingMode.HALF_UP);
                     dataBean.setQuantity(quantityTmp).setProductUoM(uoM.getName());
 
-                    final Instance curInst = multi.getSelect(selCurInst);
+
                     final BigDecimal unitPrice;
                     final BigDecimal price;
-                    if (currencyInst.getInstance().equals(curInst)) {
+                    if (currencyInst == null || currencyInst.getInstance().equals(curInst)) {
                         unitPrice = PriceConfig.NET.equals(priceConfig) ? multi.<BigDecimal>getAttribute(
                                         CISales.PositionSumAbstract.RateNetUnitPrice)
                                         : multi.<BigDecimal>getAttribute(
@@ -569,10 +570,10 @@ public abstract class SalesProductReport_Base
                 } else if (filter.getObject() instanceof Instance && "BASE".equals(filter.getObject().getKey())) {
                     ret = CurrencyInst.get(Currency.getBaseCurrency());
                 } else {
-                    ret = CurrencyInst.get(Currency.getBaseCurrency());
+                    ret = null;
                 }
             } else {
-                ret = CurrencyInst.get(Currency.getBaseCurrency());
+                ret = null;
             }
             return ret;
         }
