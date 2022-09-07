@@ -23,6 +23,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,7 +32,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.collections4.map.LazyMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -83,13 +86,14 @@ import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 @EFapsUUID("81ca4010-b4ef-40e5-ad0a-55b99db6b617")
 @EFapsApplication("eFapsApp-Sales")
@@ -344,7 +348,9 @@ public abstract class SalesProductReport_Base
                                     .setProductName(multi.<String>getSelect(selProductName))
                                     .setProductDesc(multi.<String>getSelect(selProductDesc))
                                     .setProdFamInst(multi.getSelect(selProdFamInst))
-                                    .setCurrency(currencyInst == null ? CurrencyInst.get(curInst).getSymbol() : currencyInst.getSymbol())
+                                    .setCurrencyInst(currencyInst == null ? CurrencyInst.get(curInst) : currencyInst)
+                                    .setCurrency(currencyInst == null ? CurrencyInst.get(curInst).getSymbol()
+                                                    : currencyInst.getSymbol())
                                     .setContactInst(multi.<Instance>getSelect(selContactInst))
                                     .setContact(multi.<String>getSelect(selContactName))
                                     .setDate(date).setDocName(multi.<String>getSelect(selDocName))
@@ -365,7 +371,6 @@ public abstract class SalesProductReport_Base
                     quantityTmp = quantityTmp.multiply(new BigDecimal(uoM.getNumerator())).divide(new BigDecimal(uoM
                                     .getDenominator()), 4, RoundingMode.HALF_UP);
                     dataBean.setQuantity(quantityTmp).setProductUoM(uoM.getName());
-
 
                     final BigDecimal unitPrice;
                     final BigDecimal price;
@@ -473,7 +478,11 @@ public abstract class SalesProductReport_Base
                         }
                     }
                 }
-                ret = new JRBeanCollectionDataSource(dataSource);
+                final Collection<Map<String, ?>> col = new ArrayList<>();
+                for (final DataBean bean : dataSource) {
+                    col.add(bean.getMap());
+                }
+                ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
             }
             return ret;
@@ -879,23 +888,42 @@ public abstract class SalesProductReport_Base
                             .getDBProperty("UnitPrice"), "unitPrice", DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<BigDecimal> discountColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Discount"), "productDiscount", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(filteredReport
-                            .getDBProperty("Price"), "price", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(filteredReport
-                            .getDBProperty("Currency"), "currency", DynamicReports.type.stringType());
 
             Collections.addAll(columns, contactColumn, linkColumn, docTypeColumn, docNameColumn, dateColumn,
                             conditionColumn, statusColumn, productFamilyColumn, productNameColumn, productDescColumn,
-                            quantityColumn, uomColumn, unitPriceColumn, discountColumn, priceColumn, currencyColumn);
-
-            if (!Sales.REPORT_SALESPROD_CONDITION.get()) {
-                columns.remove(conditionColumn);
-            }
+                            quantityColumn, uomColumn, unitPriceColumn, discountColumn);
 
             final StyleBuilder totalStyle = DynamicReports.stl.style().setHorizontalTextAlignment(
                             HorizontalTextAlignment.RIGHT).setBold(true).setPattern("#,##0.00");
             final StyleBuilder txtStyle = DynamicReports.stl.style(totalStyle).setHorizontalTextAlignment(
                             HorizontalTextAlignment.LEFT);
+
+            final List<SubtotalBuilder<?,?>> subTotals = new ArrayList<>();
+            subTotals.add(DynamicReports.sbt.sum(quantityColumn));
+
+            final boolean columnPerCurrency = evaluateCurrencyInst(_parameter) == null;
+            if (columnPerCurrency) {
+                for (final CurrencyInst curInst: CurrencyInst.getAvailable()) {
+                    final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(filteredReport
+                                    .getDBProperty("Price") + " " + curInst.getSymbol(), curInst.getISOCode(),
+                                    DynamicReports.type.bigDecimalType());
+                    columns.add(priceColumn);
+                    subTotals.add( DynamicReports.sbt.sum(priceColumn));
+                }
+            } else {
+                final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(filteredReport
+                                .getDBProperty("Price"), "price", DynamicReports.type.bigDecimalType());
+                final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(filteredReport
+                                .getDBProperty("Currency"), "currency", DynamicReports.type.stringType());
+                columns.add(priceColumn);
+                columns.add(currencyColumn);
+                subTotals.add( DynamicReports.sbt.sum(priceColumn));
+                subTotals.add(DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+            }
+
+            if (!Sales.REPORT_SALESPROD_CONDITION.get()) {
+                columns.remove(conditionColumn);
+            }
 
             final Collection<GroupBy> groupBy = evaluateGroupBy(_parameter);
             for (final GroupBy group : groupBy) {
@@ -912,14 +940,12 @@ public abstract class SalesProductReport_Base
                         final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Year = DynamicReports.sbt
                                         .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Year", quantity4Year,
                                                         price4Year), unitPriceColumn, Calculation.NOTHING)
-                                        .setStyle(
-                                                        totalStyle);
+                                        .setStyle(totalStyle);
                         columns.add(yearColumn);
+                        subTotals.add(unitPriceTotal4Year);
                         _builder.addGroup(yearGroup)
                                         .addVariable(quantity4Year, price4Year)
-                                        .addSubtotalAtGroupFooter(yearGroup, DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Year,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(yearGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4Year.setResetGroup(yearGroup);
                         price4Year.setResetGroup(yearGroup);
                         break;
@@ -937,11 +963,10 @@ public abstract class SalesProductReport_Base
                                                         Calculation.NOTHING)
                                         .setStyle(totalStyle);
                         columns.add(monthColumn);
+                        subTotals.add(unitPriceTotal4Month);
                         _builder.addGroup(monthGroup)
                                         .addVariable(quantity4Month, price4Month)
-                                        .addSubtotalAtGroupFooter(monthGroup, DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Month,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(monthGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4Month.setResetGroup(monthGroup);
                         price4Month.setResetGroup(monthGroup);
                         break;
@@ -956,11 +981,12 @@ public abstract class SalesProductReport_Base
                                                         quantity4Daily, price4Daily), unitPriceColumn,
                                                         Calculation.NOTHING)
                                         .setStyle(totalStyle);
+
+                        subTotals.add(unitPriceTotal4Daily);
+
                         _builder.addGroup(dailyGroup)
                                         .addVariable(quantity4Daily, price4Daily)
-                                        .addSubtotalAtGroupFooter(dailyGroup, DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Daily,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(dailyGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4Daily.setResetGroup(dailyGroup);
                         price4Daily.setResetGroup(dailyGroup);
                         break;
@@ -976,11 +1002,12 @@ public abstract class SalesProductReport_Base
                                                         quantity4Contact, price4Contact), unitPriceColumn,
                                                         Calculation.NOTHING)
                                         .setStyle(totalStyle);
+
+                        subTotals.add(unitPriceTotal4Contact);
+
                         _builder.addGroup(contactGroup)
                                         .addVariable(quantity4Contact, price4Contact)
-                                        .addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Contact,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(contactGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4Contact.setResetGroup(contactGroup);
                         price4Contact.setResetGroup(contactGroup);
                         break;
@@ -996,11 +1023,12 @@ public abstract class SalesProductReport_Base
                                                         quantity4DocType, price4DocType), unitPriceColumn,
                                                         Calculation.NOTHING)
                                         .setStyle(totalStyle);
+
+                        subTotals.add(unitPriceTotal4DocType);
+
                         _builder.addGroup(docTypeGroup)
                                         .addVariable(quantity4DocType, price4DocType)
-                                        .addSubtotalAtGroupFooter(docTypeGroup, DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4DocType,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(docTypeGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4DocType.setResetGroup(docTypeGroup);
                         price4DocType.setResetGroup(docTypeGroup);
                         break;
@@ -1021,11 +1049,11 @@ public abstract class SalesProductReport_Base
                         columns.remove(productNameColumn);
                         columns.remove(productDescColumn);
                         columns.add(productColumn);
+
+                        subTotals.add(unitPriceTotal4Product);
                         _builder.addGroup(productGroup)
                                         .addVariable(quantity4Product, price4Product)
-                                        .addSubtotalAtGroupFooter(productGroup, DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4Product,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(productGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4Product.setResetGroup(productGroup);
                         price4Product.setResetGroup(productGroup);
                         break;
@@ -1041,12 +1069,11 @@ public abstract class SalesProductReport_Base
                                                         quantity4FamilyGroup, price4FamilyGroup), unitPriceColumn,
                                                         Calculation.NOTHING)
                                         .setStyle(totalStyle);
+
+                        subTotals.add(unitPriceTotal4FamilyGroup);
                         _builder.addGroup(productFamilyGroup)
                                         .addVariable(quantity4FamilyGroup, price4FamilyGroup)
-                                        .addSubtotalAtGroupFooter(productFamilyGroup,
-                                                        DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn), unitPriceTotal4FamilyGroup,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(productFamilyGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4FamilyGroup.setResetGroup(productFamilyGroup);
                         price4FamilyGroup.setResetGroup(productFamilyGroup);
                         break;
@@ -1062,13 +1089,10 @@ public abstract class SalesProductReport_Base
                                                         quantity4ConditionGroup, price4ConditionGroup), unitPriceColumn,
                                                         Calculation.NOTHING)
                                         .setStyle(totalStyle);
+                        subTotals.add(unitPriceTotal4ConditionGroup);
                         _builder.addGroup(conditionGroup)
                                         .addVariable(quantity4ConditionGroup, price4ConditionGroup)
-                                        .addSubtotalAtGroupFooter(conditionGroup,
-                                                        DynamicReports.sbt.sum(quantityColumn),
-                                                        DynamicReports.sbt.sum(priceColumn),
-                                                        unitPriceTotal4ConditionGroup,
-                                                        DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                                        .addSubtotalAtGroupFooter(conditionGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
                         quantity4ConditionGroup.setResetGroup(conditionGroup);
                         price4ConditionGroup.setResetGroup(conditionGroup);
                         break;
@@ -1110,9 +1134,7 @@ public abstract class SalesProductReport_Base
                 columns.remove(productDescColumn);
             }
             _builder.addColumn(columns.toArray(new ColumnBuilder<?, ?>[columns.size()]))
-                            .addSubtotalAtSummary(DynamicReports.sbt.sum(quantityColumn),
-                                            DynamicReports.sbt.sum(priceColumn),
-                                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                            .addSubtotalAtSummary( subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
         }
 
         @Override
@@ -1204,6 +1226,9 @@ public abstract class SalesProductReport_Base
         /** The currency. */
         private String currency;
 
+        /** The currency. */
+        private CurrencyInst currencyInst;
+
         /** The contact. */
         private String contact;
 
@@ -1241,6 +1266,85 @@ public abstract class SalesProductReport_Base
 
         /** The condition. */
         private String condition;
+
+        public Map<String, ?> getMap()
+            throws EFapsException
+        {
+            final Transformer<String, Object> transformer = _input -> {
+                Object ret = null;
+                switch (_input) {
+                    case "docOID":
+                        ret = getDocOID();
+                        break;
+                    case "docName":
+                        ret = getDocName();
+                        break;
+                    case "docType":
+                        ret = getDocType();
+                        break;
+                    case "docDate":
+                        ret = getDocDate();
+                        break;
+                    case "docStatus":
+                        ret = getDocStatus();
+                        break;
+                    case "currency":
+                        ret = getCurrency();
+                        break;
+                    case "contact":
+                        ret = getContact();
+                        break;
+                    case "quantity":
+                        ret = getQuantity();
+                        break;
+                    case "unitPrice":
+                        ret = getUnitPrice();
+                        break;
+                    case "price":
+                        ret = getPrice();
+                        break;
+                    case "contactInst":
+                        ret = getContactInst();
+                        break;
+                    case "productInst":
+                        ret = getProductInst();
+                        break;
+                    case "productName":
+                        ret = getProductName();
+                        break;
+                    case "productDesc":
+                        ret = getProductDesc();
+                        break;
+                    case "prodFamInst":
+                        ret = getProdFamInst();
+                        break;
+                    case "productFamily":
+                        ret = getProductFamily();
+                        break;
+                    case "productUoM":
+                        ret = getProductUoM();
+                        break;
+                    case "productDiscount":
+                        ret = getProductDiscount();
+                        break;
+                    case "condition":
+                        ret = getCondition();
+                        break;
+                    default:
+                        try {
+                            if (_input.equals(getCurrencyInst().getISOCode())) {
+                                ret = getPrice();
+                            }
+                        } catch (final EFapsException e2) {
+                            AccountPettyCashReport_Base.LOG.error("Catched", e2);
+                        }
+                        break;
+                }
+                return ret;
+            };
+            final Map<String, Object> ret = LazyMap.lazyMap(new HashMap<String, Object>(), transformer);
+            return ret;
+        }
 
         /**
          * Gets the product desc.
@@ -1677,6 +1781,17 @@ public abstract class SalesProductReport_Base
         public DataBean setCondition(final String _condition)
         {
             condition = _condition;
+            return this;
+        }
+
+        public CurrencyInst getCurrencyInst()
+        {
+            return currencyInst;
+        }
+
+        public DataBean setCurrencyInst(final CurrencyInst currencyInst)
+        {
+            this.currencyInst = currencyInst;
             return this;
         }
     }
