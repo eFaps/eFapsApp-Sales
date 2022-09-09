@@ -1330,6 +1330,9 @@ public abstract class SalesProductReport_Base
                     case "condition":
                         ret = getCondition();
                         break;
+                    case "product":
+                        ret = getProduct();
+                        break;
                     default:
                         try {
                             if (_input.equals(getCurrencyInst().getISOCode())) {
