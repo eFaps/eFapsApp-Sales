@@ -85,9 +85,7 @@ import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -849,6 +847,7 @@ public abstract class SalesProductReport_Base
             return _parameter.getInstance() != null && _parameter.getInstance().isValid();
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
                                            final JasperReportBuilder _builder)
@@ -893,22 +892,23 @@ public abstract class SalesProductReport_Base
                             conditionColumn, statusColumn, productFamilyColumn, productNameColumn, productDescColumn,
                             quantityColumn, uomColumn, unitPriceColumn, discountColumn);
 
+            final List<TextColumnBuilder<BigDecimal>> columns4Totals = new ArrayList<>();
+            columns4Totals.add(quantityColumn);
+            columns4Totals.add(unitPriceColumn);
+
             final StyleBuilder totalStyle = DynamicReports.stl.style().setHorizontalTextAlignment(
                             HorizontalTextAlignment.RIGHT).setBold(true).setPattern("#,##0.00");
-            final StyleBuilder txtStyle = DynamicReports.stl.style(totalStyle).setHorizontalTextAlignment(
+            DynamicReports.stl.style(totalStyle).setHorizontalTextAlignment(
                             HorizontalTextAlignment.LEFT);
-
-            final List<SubtotalBuilder<?,?>> subTotals = new ArrayList<>();
-            subTotals.add(DynamicReports.sbt.sum(quantityColumn));
 
             final boolean columnPerCurrency = evaluateCurrencyInst(_parameter) == null;
             if (columnPerCurrency) {
-                for (final CurrencyInst curInst: CurrencyInst.getAvailable()) {
+                for (final CurrencyInst curInst : CurrencyInst.getAvailable()) {
                     final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(filteredReport
                                     .getDBProperty("Price") + " " + curInst.getSymbol(), curInst.getISOCode(),
                                     DynamicReports.type.bigDecimalType());
                     columns.add(priceColumn);
-                    subTotals.add( DynamicReports.sbt.sum(priceColumn));
+                    columns4Totals.add(priceColumn);
                 }
             } else {
                 final TextColumnBuilder<BigDecimal> priceColumn = DynamicReports.col.column(filteredReport
@@ -916,11 +916,9 @@ public abstract class SalesProductReport_Base
                 final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(filteredReport
                                 .getDBProperty("Currency"), "currency", DynamicReports.type.stringType());
                 columns.add(priceColumn);
+                columns4Totals.add(priceColumn);
                 columns.add(currencyColumn);
-                subTotals.add( DynamicReports.sbt.sum(priceColumn));
-                subTotals.add(DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
             }
-
             if (!Sales.REPORT_SALESPROD_CONDITION.get()) {
                 columns.remove(conditionColumn);
             }
@@ -932,174 +930,69 @@ public abstract class SalesProductReport_Base
                         final TextColumnBuilder<DateTime> yearColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Year"), "docDate", DateTimeYear.get());
                         final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4Year = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4Year = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Year = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Year", quantity4Year,
-                                                        price4Year), unitPriceColumn, Calculation.NOTHING)
-                                        .setStyle(totalStyle);
                         columns.add(yearColumn);
-                        subTotals.add(unitPriceTotal4Year);
                         _builder.addGroup(yearGroup)
-                                        .addVariable(quantity4Year, price4Year)
-                                        .addSubtotalAtGroupFooter(yearGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4Year.setResetGroup(yearGroup);
-                        price4Year.setResetGroup(yearGroup);
+                                        .addSubtotalAtGroupFooter(yearGroup, getSubtotals(columns4Totals));
                         break;
+
                     case MONTHLY:
                         final TextColumnBuilder<DateTime> monthColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Month"), "docDate", DateTimeMonth.get("MMMMM"));
                         final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4Month = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4Month = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Month = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Month",
-                                                        quantity4Month, price4Month), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
                         columns.add(monthColumn);
-                        subTotals.add(unitPriceTotal4Month);
                         _builder.addGroup(monthGroup)
-                                        .addVariable(quantity4Month, price4Month)
-                                        .addSubtotalAtGroupFooter(monthGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4Month.setResetGroup(monthGroup);
-                        price4Month.setResetGroup(monthGroup);
+                                        .addSubtotalAtGroupFooter(monthGroup, getSubtotals(columns4Totals));
                         break;
                     case DAILY:
                         final ColumnGroupBuilder dailyGroup = DynamicReports.grp.group(dateColumn).groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4Daily = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4Daily = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Daily = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Daily",
-                                                        quantity4Daily, price4Daily), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
-
-                        subTotals.add(unitPriceTotal4Daily);
-
                         _builder.addGroup(dailyGroup)
-                                        .addVariable(quantity4Daily, price4Daily)
-                                        .addSubtotalAtGroupFooter(dailyGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4Daily.setResetGroup(dailyGroup);
-                        price4Daily.setResetGroup(dailyGroup);
+                                        .addSubtotalAtGroupFooter(dailyGroup, getSubtotals(columns4Totals));
                         break;
                     case CONTACT:
                         final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn)
                                         .groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4Contact = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4Contact = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Contact = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Contact",
-                                                        quantity4Contact, price4Contact), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
-
-                        subTotals.add(unitPriceTotal4Contact);
-
                         _builder.addGroup(contactGroup)
-                                        .addVariable(quantity4Contact, price4Contact)
-                                        .addSubtotalAtGroupFooter(contactGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4Contact.setResetGroup(contactGroup);
-                        price4Contact.setResetGroup(contactGroup);
+                                        .addSubtotalAtGroupFooter(contactGroup,getSubtotals(columns4Totals));
                         break;
                     case DOCTYPE:
                         final ColumnGroupBuilder docTypeGroup = DynamicReports.grp.group(docTypeColumn)
                                         .groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4DocType = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4DocType = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4DocType = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4DocType",
-                                                        quantity4DocType, price4DocType), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
-
-                        subTotals.add(unitPriceTotal4DocType);
-
                         _builder.addGroup(docTypeGroup)
-                                        .addVariable(quantity4DocType, price4DocType)
-                                        .addSubtotalAtGroupFooter(docTypeGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4DocType.setResetGroup(docTypeGroup);
-                        price4DocType.setResetGroup(docTypeGroup);
+                                        .addSubtotalAtGroupFooter(docTypeGroup, getSubtotals(columns4Totals));
+
                         break;
                     case PRODUCT:
                         final TextColumnBuilder<String> productColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Product"), "product", DynamicReports.type.stringType());
                         final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn)
                                         .groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4Product = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4Product = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Product = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4Product",
-                                                        quantity4Product, price4Product), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
+
                         columns.remove(productNameColumn);
                         columns.remove(productDescColumn);
                         columns.add(productColumn);
 
-                        subTotals.add(unitPriceTotal4Product);
                         _builder.addGroup(productGroup)
-                                        .addVariable(quantity4Product, price4Product)
-                                        .addSubtotalAtGroupFooter(productGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4Product.setResetGroup(productGroup);
-                        price4Product.setResetGroup(productGroup);
+                                        .addSubtotalAtGroupFooter(productGroup, getSubtotals(columns4Totals));
                         break;
                     case PRODFAMILY:
                         final ColumnGroupBuilder productFamilyGroup = DynamicReports.grp.group(productFamilyColumn)
                                         .groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4FamilyGroup = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4FamilyGroup = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4FamilyGroup = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4FamilyGroup",
-                                                        quantity4FamilyGroup, price4FamilyGroup), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
 
-                        subTotals.add(unitPriceTotal4FamilyGroup);
                         _builder.addGroup(productFamilyGroup)
-                                        .addVariable(quantity4FamilyGroup, price4FamilyGroup)
-                                        .addSubtotalAtGroupFooter(productFamilyGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4FamilyGroup.setResetGroup(productFamilyGroup);
-                        price4FamilyGroup.setResetGroup(productFamilyGroup);
+                                        .addSubtotalAtGroupFooter(productFamilyGroup,getSubtotals(columns4Totals));
                         break;
                     case CONDITION:
                         final ColumnGroupBuilder conditionGroup = DynamicReports.grp.group(conditionColumn)
                                         .groupByDataType();
-                        final VariableBuilder<BigDecimal> quantity4ConditionGroup = DynamicReports.variable("quantity",
-                                        BigDecimal.class, Calculation.SUM);
-                        final VariableBuilder<BigDecimal> price4ConditionGroup = DynamicReports.variable("price",
-                                        BigDecimal.class, Calculation.SUM);
-                        final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4ConditionGroup = DynamicReports.sbt
-                                        .<BigDecimal>aggregate(new UnitPriceTotal("unitPriceTotal4ConditionGroup",
-                                                        quantity4ConditionGroup, price4ConditionGroup), unitPriceColumn,
-                                                        Calculation.NOTHING)
-                                        .setStyle(totalStyle);
-                        subTotals.add(unitPriceTotal4ConditionGroup);
+                        ;
                         _builder.addGroup(conditionGroup)
-                                        .addVariable(quantity4ConditionGroup, price4ConditionGroup)
-                                        .addSubtotalAtGroupFooter(conditionGroup, subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
-                        quantity4ConditionGroup.setResetGroup(conditionGroup);
-                        price4ConditionGroup.setResetGroup(conditionGroup);
+                                        .addSubtotalAtGroupFooter(conditionGroup, getSubtotals(columns4Totals));
                         break;
                     default:
                         break;
                 }
             }
+
             if (!getExType().equals(ExportType.HTML)) {
                 columns.remove(linkColumn);
             }
@@ -1134,7 +1027,20 @@ public abstract class SalesProductReport_Base
                 columns.remove(productDescColumn);
             }
             _builder.addColumn(columns.toArray(new ColumnBuilder<?, ?>[columns.size()]))
-                            .addSubtotalAtSummary( subTotals.toArray(new SubtotalBuilder[subTotals.size()]));
+                            .addSubtotalAtSummary(getSubtotals(columns4Totals));
+        }
+
+        protected SubtotalBuilder<?, ?>[] getSubtotals(final List<TextColumnBuilder<BigDecimal>> columns)
+        {
+            final SubtotalBuilder<?, ?>[] ret = new SubtotalBuilder<?, ?>[columns.size()];
+            for (int i = 0; i < columns.size(); i++) {
+                if ("unitPrice".equals(columns.get(i).getColumn().getComponent().getValueExpression().getName())) {
+                    ret[i] = DynamicReports.sbt.avg(columns.get(i));
+                } else {
+                    ret[i] = DynamicReports.sbt.sum(columns.get(i));
+                }
+            }
+            return ret;
         }
 
         @Override
