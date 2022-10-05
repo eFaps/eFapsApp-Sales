@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2022 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,7 +205,7 @@ public abstract class PaymentReport_Base
          */
         public DynPaymentReport(final PaymentReport_Base _paymentReport)
         {
-            this.filteredReport = _paymentReport;
+            filteredReport = _paymentReport;
         }
 
         @Override
@@ -222,6 +222,7 @@ public abstract class PaymentReport_Base
                     throw new EFapsException("JRException", e);
                 }
             } else {
+                final PayDoc payDoc = getPayDoc(_parameter);
                 final List<DataBean> beans = new ArrayList<>();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
@@ -263,13 +264,19 @@ public abstract class PaymentReport_Base
                     if (rateInfo.getRateUI().compareTo(BigDecimal.ONE) != 0) {
                         rate = rateInfo.getRateUI();
                     }
+                    BigDecimal amount = multi.getAttribute(CISales.Payment.Amount);
+                    final Instance targetDocInst = multi.getSelect(selTargetDocInst);
+                    if (payDoc.equals(PayDoc.BOTH) && InstanceUtils.isKindOf(targetDocInst,
+                                    CISales.PaymentDocumentOutAbstract)) {
+                        amount = amount.negate();
+                    }
                     final DataBean dataBean = new DataBean()
                                     .setRelInst(multi.getCurrentInstance())
                                     .setAccount(multi.getSelect(selAccount))
-                                    .setAmount(multi.getAttribute(CISales.Payment.Amount))
+                                    .setAmount(amount)
                                     .setCurrencyInst(multi.getSelect(selCurrInst))
                                     .setTargetDocDate(multi.getSelect(selTargetDocDate))
-                                    .setTargetDocInst(multi.getSelect(selTargetDocInst))
+                                    .setTargetDocInst(targetDocInst)
                                     .setTargetDocName(multi.getSelect(selTargetDocName))
                                     .setTargetDocCode(multi.getSelect(selTargetDocCode))
                                     .setCreateDocInst(multi.getSelect(selCreateDocInst))
@@ -319,7 +326,7 @@ public abstract class PaymentReport_Base
                                         final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
             final DateTime dateFrom;
             if (filterMap.containsKey("dateFrom")) {
                 dateFrom = (DateTime) filterMap.get("dateFrom");
@@ -428,7 +435,7 @@ public abstract class PaymentReport_Base
         protected Instance evaluateCurrency(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
             Instance ret = null;
             if (filterMap.containsKey("currency")) {
                 final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
@@ -449,7 +456,7 @@ public abstract class PaymentReport_Base
         protected PayDoc getPayDoc(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
 
             final PayDoc ret;
             if (filterMap.containsKey("payDoc")) {
@@ -576,7 +583,7 @@ public abstract class PaymentReport_Base
          */
         public PaymentReport_Base getFilteredReport()
         {
-            return this.filteredReport;
+            return filteredReport;
         }
     }
 
@@ -632,7 +639,7 @@ public abstract class PaymentReport_Base
          */
         public String getAccount()
         {
-            return this.account;
+            return account;
         }
 
         /**
@@ -644,9 +651,9 @@ public abstract class PaymentReport_Base
         public DataBean setAccount(final Object _account)
         {
             if (_account instanceof Collection) {
-                this.account = String.valueOf(((Collection<?>) _account).iterator().next());
+                account = String.valueOf(((Collection<?>) _account).iterator().next());
             } else {
-                this.account = String.valueOf(_account);
+                account = String.valueOf(_account);
             }
             return this;
         }
@@ -710,7 +717,7 @@ public abstract class PaymentReport_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount;
+            return amount;
         }
 
         /**
@@ -721,7 +728,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setAmount(final BigDecimal _amount)
         {
-            this.amount = _amount;
+            amount = _amount;
             return this;
         }
 
@@ -732,7 +739,7 @@ public abstract class PaymentReport_Base
          */
         public Instance getCurrencyInst()
         {
-            return this.currencyInst;
+            return currencyInst;
         }
 
         /**
@@ -743,7 +750,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setCurrencyInst(final Instance _currencyInst)
         {
-            this.currencyInst = _currencyInst;
+            currencyInst = _currencyInst;
             return this;
         }
 
@@ -754,7 +761,7 @@ public abstract class PaymentReport_Base
          */
         public Instance getRelInst()
         {
-            return this.relInst;
+            return relInst;
         }
 
         /**
@@ -765,7 +772,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setRelInst(final Instance _relInst)
         {
-            this.relInst = _relInst;
+            relInst = _relInst;
             return this;
         }
 
@@ -776,7 +783,7 @@ public abstract class PaymentReport_Base
          */
         public Instance getTargetDocInst()
         {
-            return this.targetDocInst;
+            return targetDocInst;
         }
 
         /**
@@ -787,7 +794,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setTargetDocInst(final Instance _targetDocInst)
         {
-            this.targetDocInst = _targetDocInst;
+            targetDocInst = _targetDocInst;
             return this;
         }
 
@@ -798,7 +805,7 @@ public abstract class PaymentReport_Base
          */
         public Instance getCreateDocInst()
         {
-            return this.createDocInst;
+            return createDocInst;
         }
 
         /**
@@ -809,7 +816,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setCreateDocInst(final Instance _createDocInst)
         {
-            this.createDocInst = _createDocInst;
+            createDocInst = _createDocInst;
             return this;
         }
 
@@ -820,7 +827,7 @@ public abstract class PaymentReport_Base
          */
         public String getCreateDocName()
         {
-            return this.createDocName;
+            return createDocName;
         }
 
         /**
@@ -831,7 +838,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setCreateDocName(final String _createDocName)
         {
-            this.createDocName = _createDocName;
+            createDocName = _createDocName;
             return this;
         }
 
@@ -842,7 +849,7 @@ public abstract class PaymentReport_Base
          */
         public String getCreateDocRevision()
         {
-            return this.createDocRevision;
+            return createDocRevision;
         }
 
         /**
@@ -853,7 +860,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setCreateDocRevision(final String _createDocRevision)
         {
-            this.createDocRevision = _createDocRevision;
+            createDocRevision = _createDocRevision;
             return this;
         }
 
@@ -864,7 +871,7 @@ public abstract class PaymentReport_Base
          */
         public String getCreateDocContactName()
         {
-            return this.createDocContactName;
+            return createDocContactName;
         }
 
         /**
@@ -875,7 +882,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setCreateDocContactName(final String _createDocContactName)
         {
-            this.createDocContactName = _createDocContactName;
+            createDocContactName = _createDocContactName;
             return this;
         }
 
@@ -886,7 +893,7 @@ public abstract class PaymentReport_Base
          */
         public String getTargetDocName()
         {
-            return this.targetDocName;
+            return targetDocName;
         }
 
         /**
@@ -897,7 +904,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setTargetDocName(final String _targetDocName)
         {
-            this.targetDocName = _targetDocName;
+            targetDocName = _targetDocName;
             return this;
         }
 
@@ -908,7 +915,7 @@ public abstract class PaymentReport_Base
          */
         public String getTargetDocCode()
         {
-            return this.targetDocCode;
+            return targetDocCode;
         }
 
         /**
@@ -919,7 +926,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setTargetDocCode(final String _targetDocCode)
         {
-            this.targetDocCode = _targetDocCode;
+            targetDocCode = _targetDocCode;
             return this;
         }
 
@@ -930,7 +937,7 @@ public abstract class PaymentReport_Base
          */
         public DateTime getTargetDocDate()
         {
-            return this.targetDocDate;
+            return targetDocDate;
         }
 
         /**
@@ -941,7 +948,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setTargetDocDate(final DateTime _targetDocDate)
         {
-            this.targetDocDate = _targetDocDate;
+            targetDocDate = _targetDocDate;
             return this;
         }
 
@@ -952,7 +959,7 @@ public abstract class PaymentReport_Base
          */
         public BigDecimal getRate()
         {
-            return this.rate;
+            return rate;
         }
 
         /**
@@ -962,7 +969,7 @@ public abstract class PaymentReport_Base
          */
         public DataBean setRate(final BigDecimal _rate)
         {
-            this.rate = _rate;
+            rate = _rate;
             return this;
         }
 
