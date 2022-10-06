@@ -18,6 +18,7 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.datamodel.Status;
@@ -50,6 +52,7 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
@@ -223,6 +226,7 @@ public abstract class PaymentReport_Base
                 }
             } else {
                 final PayDoc payDoc = getPayDoc(_parameter);
+                final Instance exCurrency = evaluateExchangeCurrency(_parameter);
                 final List<DataBean> beans = new ArrayList<>();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
@@ -260,9 +264,9 @@ public abstract class PaymentReport_Base
                 while (multi.next()) {
                     final Object[] rateObj = multi.getAttribute(CISales.Payment.Rate);
                     final RateInfo rateInfo = RateInfo.getRateInfo(rateObj);
-                    BigDecimal rate = null;
+                    BigDecimal rate4UI = null;
                     if (rateInfo.getRateUI().compareTo(BigDecimal.ONE) != 0) {
-                        rate = rateInfo.getRateUI();
+                        rate4UI = rateInfo.getRateUI();
                     }
                     BigDecimal amount = multi.getAttribute(CISales.Payment.Amount);
                     final Instance targetDocInst = multi.getSelect(selTargetDocInst);
@@ -270,11 +274,21 @@ public abstract class PaymentReport_Base
                                     CISales.PaymentDocumentOutAbstract)) {
                         amount = amount.negate();
                     }
+                    final Instance curInst = multi.getSelect(selCurrInst);
+                    final DateTime targetDocDate  = multi.getSelect(selTargetDocDate);
+                    if (exCurrency != null && !exCurrency.equals(curInst)) {
+                        final RateInfo rateInfo2 = new Currency().evaluateRateInfos(_parameter, targetDocDate, curInst,
+                                        exCurrency)[2];
+                        final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo2,
+                                        targetDocInst.getType().getName());
+                        amount = amount.setScale(8).divide(rate, RoundingMode.HALF_UP);
+                    }
+
                     final DataBean dataBean = new DataBean()
                                     .setRelInst(multi.getCurrentInstance())
                                     .setAccount(multi.getSelect(selAccount))
                                     .setAmount(amount)
-                                    .setCurrencyInst(multi.getSelect(selCurrInst))
+                                    .setCurrencyInst(exCurrency == null ? curInst :  exCurrency)
                                     .setTargetDocDate(multi.getSelect(selTargetDocDate))
                                     .setTargetDocInst(targetDocInst)
                                     .setTargetDocName(multi.getSelect(selTargetDocName))
@@ -283,7 +297,7 @@ public abstract class PaymentReport_Base
                                     .setCreateDocName(multi.getSelect(selCreateDocName))
                                     .setCreateDocRevision(multi.getSelect(selCreateDocRev))
                                     .setCreateDocContactName(multi.getSelect(selCreateDocContactName))
-                                    .setRate(rate);
+                                    .setRate(rate4UI);
                     beans.add(dataBean);
                     PaymentReport_Base.LOG.debug("Read {}", dataBean);
                 }
@@ -426,7 +440,7 @@ public abstract class PaymentReport_Base
         }
 
         /**
-         * Evaluate currency inst.
+         * Check for the currency used for filtering
          *
          * @param _parameter Parameter as passed by the eFaps API
          * @return the currency inst
@@ -439,6 +453,27 @@ public abstract class PaymentReport_Base
             Instance ret = null;
             if (filterMap.containsKey("currency")) {
                 final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+                if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
+                    ret = filter.getObject();
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Check for the currency used to convert/exchange currency into
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the currency inst
+         * @throws EFapsException on error
+         */
+        protected Instance evaluateExchangeCurrency(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
+            Instance ret = null;
+            if (filterMap.containsKey("exchangeCurrency")) {
+                final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("exchangeCurrency");
                 if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
                     ret = filter.getObject();
                 }
@@ -474,6 +509,7 @@ public abstract class PaymentReport_Base
             throws EFapsException
         {
             final Instance currInst = evaluateCurrency(_parameter);
+            final Instance exCurrency = evaluateExchangeCurrency(_parameter);
 
             final List<ColumnBuilder<?, ?>> targetColumns = new ArrayList<>();
             if (ExportType.HTML.equals(getExType())) {
@@ -522,7 +558,10 @@ public abstract class PaymentReport_Base
             final List<ColumnBuilder<?, ?>> columns = new ArrayList<>();
             columns.addAll(targetColumns);
             columns.addAll(createColumns);
-            Collections.addAll(columns, amountColumn, currencyColumn, rateColumn);
+            Collections.addAll(columns, amountColumn, currencyColumn);
+            if (exCurrency == null) {
+                columns.add(rateColumn);
+            }
 
             final Map<String, Object> filters = getFilteredReport().getFilterMap(_parameter);
             final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("groupBy");
@@ -536,7 +575,7 @@ public abstract class PaymentReport_Base
                             final AggregationSubtotalBuilder<BigDecimal> groupSum = DynamicReports.sbt.sum(
                                             amountColumn);
                             _builder.groupBy(contactGroup);
-                            if (InstanceUtils.isValid(currInst)) {
+                            if (InstanceUtils.isValid(currInst) || InstanceUtils.isValid(exCurrency)) {
                                 _builder.addSubtotalAtGroupFooter(contactGroup, groupSum);
                             }
                             columns.remove(createDocContactNameColumn);
@@ -548,7 +587,7 @@ public abstract class PaymentReport_Base
                             final AggregationSubtotalBuilder<BigDecimal> groupSum2 = DynamicReports.sbt.sum(
                                             amountColumn);
                             _builder.groupBy(typeGroup);
-                            if (InstanceUtils.isValid(currInst)) {
+                            if (InstanceUtils.isValid(currInst) || InstanceUtils.isValid(exCurrency)) {
                                 _builder.addSubtotalAtGroupFooter(typeGroup, groupSum2);
                             }
                             columns.remove(targetDocTypeColumn);
@@ -567,11 +606,15 @@ public abstract class PaymentReport_Base
                             .getDBProperty("TitleGroup.createDoc"),
                             createColumns.toArray(new ColumnGridComponentBuilder[createColumns.size()]));
 
-            _builder.columnGrid(targetDocTitleGroup, createDocTitleGroup, amountColumn, currencyColumn, rateColumn)
-                    .addColumn(columns.toArray(new ColumnBuilder[columns.size()]));
+            ColumnGridComponentBuilder[] colGrid = new ColumnGridComponentBuilder[] { targetDocTitleGroup,
+                            createDocTitleGroup, amountColumn, currencyColumn };
+            if (exCurrency == null) {
+                colGrid = ArrayUtils.add(colGrid, rateColumn);
+            }
+            _builder.columnGrid(colGrid)
+                            .addColumn(columns.toArray(new ColumnBuilder[columns.size()]));
 
-
-            if (InstanceUtils.isValid(currInst)) {
+            if (InstanceUtils.isValid(currInst) || InstanceUtils.isValid(exCurrency)) {
                 _builder.subtotalsAtSummary(DynamicReports.sbt.sum(amountColumn));
             }
         }
