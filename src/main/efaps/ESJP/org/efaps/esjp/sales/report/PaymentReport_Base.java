@@ -50,6 +50,8 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
@@ -104,11 +106,10 @@ public abstract class PaymentReport_Base
      */
     public enum Grouping
     {
-
-        /** The contact. */
+        DAILY,
+        MONTHLY,
+        YEARLY,
         CONTACT,
-
-        /** The type. */
         TYPE;
     }
 
@@ -308,12 +309,27 @@ public abstract class PaymentReport_Base
                     final List<Enum<?>> selected = groupBy.getObject();
                     for (final Enum<?> sel : selected) {
                         switch ((Grouping) sel) {
+                            case DAILY:
+                                chain.addComparator((_arg0, _arg1) -> _arg0.getTargetDocDate()
+                                                .compareTo(_arg1.getTargetDocDate()));
+                                break;
+                            case MONTHLY:
+                                chain.addComparator((_arg0, _arg1) -> Integer
+                                                .valueOf(_arg0.getTargetDocDate().getMonthOfYear())
+                                                .compareTo(Integer.valueOf(_arg1.getTargetDocDate().getMonthOfYear())));
+                                break;
+                            case YEARLY:
+                                chain.addComparator((_arg0, _arg1) -> Integer
+                                                .valueOf(_arg0.getTargetDocDate().getYear())
+                                                .compareTo(Integer.valueOf(_arg1.getTargetDocDate().getYear())));
+                                break;
                             case CONTACT:
                                 chain.addComparator((_arg0, _arg1) -> _arg0.getCreateDocContactName()
                                                 .compareTo(_arg1.getCreateDocContactName()));
                                 break;
                             case TYPE:
-                                chain.addComparator((_arg0, _arg1) -> _arg0.getTargetDocType().compareTo(_arg1.getTargetDocType()));
+                                chain.addComparator((_arg0, _arg1) -> _arg0.getTargetDocType()
+                                                .compareTo(_arg1.getTargetDocType()));
                                 break;
                             default:
                                 break;
@@ -569,6 +585,37 @@ public abstract class PaymentReport_Base
                 final List<Enum<?>> selected = groupBy.getObject();
                 for (final Enum<?> sel : selected) {
                     switch ((Grouping) sel) {
+                        case YEARLY:
+                            final TextColumnBuilder<DateTime> yearColumn = DynamicReports.col.column(filteredReport
+                                            .getDBProperty("Year"), "targetDocDate", DateTimeYear.get());
+                            final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
+                            final AggregationSubtotalBuilder<BigDecimal> yearGroupSum = DynamicReports.sbt.sum(
+                                            amountColumn);
+                            columns.add(yearColumn);
+                            _builder.addGroup(yearGroup)
+                                            .addSubtotalAtGroupFooter(yearGroup, yearGroupSum);
+                            break;
+
+                        case MONTHLY:
+                            final TextColumnBuilder<DateTime> monthColumn = DynamicReports.col.column(filteredReport
+                                            .getDBProperty("Month"), "targetDocDate", DateTimeMonth.get("MMMMM - YYYY"));
+                            final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn)
+                                            .groupByDataType();
+                            final AggregationSubtotalBuilder<BigDecimal> monthGroupSum = DynamicReports.sbt.sum(
+                                            amountColumn);
+                            columns.add(monthColumn);
+                            _builder.addGroup(monthGroup)
+                                            .addSubtotalAtGroupFooter(monthGroup, monthGroupSum);
+                            break;
+                        case DAILY:
+                            final ColumnGroupBuilder dailyGroup = DynamicReports.grp.group(targetDocDateColumn)
+                                            .groupByDataType();
+                            final AggregationSubtotalBuilder<BigDecimal> dailyGroupSum = DynamicReports.sbt.sum(
+                                            amountColumn);
+                            _builder.addGroup(dailyGroup).addSubtotalAtGroupFooter(dailyGroup, dailyGroupSum);
+                            columns.remove(targetDocDateColumn);
+                            targetColumns.remove(targetDocDateColumn);
+                            break;
                         case CONTACT:
                             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(createDocContactNameColumn)
                                             .groupByDataType();

@@ -934,7 +934,6 @@ public abstract class SalesProductReport_Base
                         _builder.addGroup(yearGroup)
                                         .addSubtotalAtGroupFooter(yearGroup, getSubtotals(columns4Totals));
                         break;
-
                     case MONTHLY:
                         final TextColumnBuilder<DateTime> monthColumn = DynamicReports.col.column(filteredReport
                                         .getDBProperty("Month"), "docDate", DateTimeMonth.get("MMMMM"));
