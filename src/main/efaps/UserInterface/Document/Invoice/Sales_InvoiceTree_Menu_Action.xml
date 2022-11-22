@@ -31,6 +31,7 @@
             <child>Sales_InvoiceTree_Menu_Action_Recalculate</child>
             <child>Sales_InvoiceTree_Menu_Action_SetPaid</child>
             <child>Sales_InvoiceTree_Menu_Action_SetReplaced</child>
+            <child>Sales_InvoiceTree_Menu_Action_SetFreeOfChargeTag</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>

@@ -43,6 +43,7 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
+import org.efaps.esjp.common.tag.Tag;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.taxid.Request;
 import org.efaps.esjp.contacts.taxid.TaxIdInfo;
@@ -275,5 +276,19 @@ public abstract class Invoice_Base
             ret = new TaxIdInfo().createContactFromTaxpayerDto(dto, true);
         }
         return ret;
+    }
+
+    public Return setFreeOfCharge(final Parameter _parameter)
+        throws EFapsException
+    {
+        new Tag().setTag(_parameter);
+        EQL.builder()
+            .update(_parameter.getInstance())
+            .set(CISales.Invoice.RateCrossTotal, 0)
+            .set(CISales.Invoice.RateNetTotal, 0)
+            .set(CISales.Invoice.CrossTotal, 0)
+            .set(CISales.Invoice.NetTotal, 0)
+            .execute();
+        return new Return();
     }
 }
