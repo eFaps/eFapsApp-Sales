@@ -64,5 +64,24 @@
             <property name="Select">linkto[CreateDocument].attribute[Status]</property>
             <property name="Label">Sales_Payment/Status.Label</property>
         </field>
+        <field name="hasArchives">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_AccountPettyCash2DocumentWithTransTable.hasArchives.Label</property>
+            <trigger program="org.efaps.esjp.archives.Archive"
+                method="getHasArchivesFieldValue"
+                name="Sales_PettyCashBalancePaymentTable.hasArchives.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Archives_Document2ArchiveAbstract</property>
+                <property name="LinkFrom">FromLinkAbstract</property>
+            </trigger>
+             <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PettyCashBalancePaymentTable.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.PettyCashReceipt.ActivateFiles</property>
+            </trigger>
+        </field>
     </definition>
 </ui-table>
