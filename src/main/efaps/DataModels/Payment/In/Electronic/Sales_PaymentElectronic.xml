@@ -48,5 +48,35 @@
                 <property name="Type">Sales_AttributeDefinitionPaymentElectronicType</property>
             </trigger>
         </attribute>
+        <attribute>
+            <name>ServiceProvider</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Authorization</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING2</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>OperationDateTime</name>
+            <type>DateTime</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>DATE1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>OperationId</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING3</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Info</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING4</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
