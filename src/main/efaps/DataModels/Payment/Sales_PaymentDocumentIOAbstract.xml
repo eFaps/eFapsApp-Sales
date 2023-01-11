@@ -31,5 +31,41 @@
             <sqltable>ERP_PaymentDocumentSQLTable</sqltable>
             <sqlcolumn>CONPOSID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>AbstractExtendStr1</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AbstractExtendStr2</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AbstractExtendStr3</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AbstractExtendStr4</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AbstractExtendStr5</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AbstractExtendDate1</name>
+            <type>DateTime</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>DATE1</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
