@@ -41,25 +41,25 @@
             <name>AbstractExtendStr2</name>
             <type>String</type>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>STRING1</sqlcolumn>
+            <sqlcolumn>STRING2</sqlcolumn>
         </attribute>
         <attribute>
             <name>AbstractExtendStr3</name>
             <type>String</type>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>STRING1</sqlcolumn>
+            <sqlcolumn>STRING3</sqlcolumn>
         </attribute>
         <attribute>
             <name>AbstractExtendStr4</name>
             <type>String</type>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>STRING1</sqlcolumn>
+            <sqlcolumn>STRING4</sqlcolumn>
         </attribute>
         <attribute>
             <name>AbstractExtendStr5</name>
             <type>String</type>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>STRING1</sqlcolumn>
+            <sqlcolumn>STRING5</sqlcolumn>
         </attribute>
         <attribute>
             <name>AbstractExtendDate1</name>
