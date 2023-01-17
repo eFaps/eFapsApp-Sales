@@ -43,7 +43,7 @@ import org.joda.time.LocalDate;
  * TODO comment!
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("0c3a91e2-1497-423f-ae60-a0ae94e95451")
 @EFapsApplication("eFapsApp-Sales")
@@ -83,9 +83,9 @@ public abstract class Tax_Base
                        final long _id,
                        final String _name)
     {
-        this.oid = _oid;
-        this.id = _id;
-        this.name = _name;
+        oid = _oid;
+        id = _id;
+        name = _name;
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class Tax_Base
     @Override
     public long getId()
     {
-        return this.id;
+        return id;
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class Tax_Base
     @Override
     public String getName()
     {
-        return this.name;
+        return name;
     }
 
     /**
@@ -118,7 +118,7 @@ public abstract class Tax_Base
     public TaxRate getTaxRate(final LocalDate _localDate)
     {
         TaxRate ret = null;
-        for (final Entry<DateTime, TaxRate> entry : this.rateMap.entrySet()) {
+        for (final Entry<DateTime, TaxRate> entry : rateMap.entrySet()) {
             final LocalDate validityDate = entry.getKey().toLocalDate();
             if (_localDate.isAfter(validityDate) || _localDate.isEqual(validityDate)) {
                 ret = entry.getValue();
@@ -135,7 +135,7 @@ public abstract class Tax_Base
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
-        queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, Instance.get(this.oid).getId());
+        queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, Instance.get(oid).getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
                         CISales.Tax.UUID);
@@ -149,14 +149,14 @@ public abstract class Tax_Base
             final Integer numerator = multi.<Integer>getAttribute(CISales.Tax.Numerator);
             final Integer denominator = multi.<Integer>getAttribute(CISales.Tax.Denominator);
             final DateTime validfrom = multi.<DateTime>getAttribute(CISales.Tax.ValidFrom);
-            this.rateMap.put(validfrom, new TaxRate(oidTmp, idTmp, nameTmp, uuidTmp, numerator, denominator));
+            rateMap.put(validfrom, new TaxRate(oidTmp, idTmp, nameTmp, uuidTmp, numerator, denominator));
         }
     }
 
     @Override
     public String toString()
     {
-        return new ToStringBuilder(this).append("id", this.id).append("Name", this.name).toString();
+        return new ToStringBuilder(this).append("id", id).append("Name", name).toString();
     }
 
     public static Tax get(final long _id)
@@ -222,12 +222,12 @@ public abstract class Tax_Base
                        final Integer _numerator,
                         final Integer _denominator)
         {
-            this.oid = _oid;
-            this.id = _id;
-            this.name = _name;
-            this.uuid = _uuidTmp;
-            this.numerator = _numerator;
-            this.denominator = _denominator;
+            oid = _oid;
+            id = _id;
+            name = _name;
+            uuid = _uuidTmp;
+            numerator = _numerator;
+            denominator = _denominator;
         }
 
         /**
@@ -237,7 +237,7 @@ public abstract class Tax_Base
          */
         public String getOid()
         {
-            return this.oid;
+            return oid;
         }
 
         /**
@@ -247,7 +247,7 @@ public abstract class Tax_Base
          */
         public Long getId()
         {
-            return this.id;
+            return id;
         }
 
         /**
@@ -257,7 +257,7 @@ public abstract class Tax_Base
          */
         public String getName()
         {
-            return this.name;
+            return name;
         }
 
         /**
@@ -267,7 +267,7 @@ public abstract class Tax_Base
          */
         public Integer getNumerator()
         {
-            return this.numerator;
+            return numerator;
         }
 
         /**
@@ -277,7 +277,7 @@ public abstract class Tax_Base
          */
         public Integer getDenominator()
         {
-            return this.denominator;
+            return denominator;
         }
 
         /**
@@ -287,12 +287,12 @@ public abstract class Tax_Base
          */
         public String getUuid()
         {
-            return this.uuid;
+            return uuid;
         }
 
         public static TaxRate getZeroTax()
         {
-            return new TaxRate("", new Long(1), "", "ZERO", 1, 1);
+            return new TaxRate("", Long.valueOf(1), "", "ZERO", 1, 1);
         }
     }
 }
