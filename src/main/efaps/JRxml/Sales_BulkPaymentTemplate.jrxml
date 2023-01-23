@@ -1,6 +1,6 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bottomMargin="20"
-    columnWidth="555" language="groovy" leftMargin="20"
+    columnWidth="555" language="java" leftMargin="20"
     name="Sales_BulkPaymentTemplate" pageHeight="842"
     pageWidth="595" rightMargin="20" topMargin="20"
     uuid="267d1095-5a00-461d-80a1-f8a2a1fa6d0f" whenNoDataType="AllSectionsNoDetail"
