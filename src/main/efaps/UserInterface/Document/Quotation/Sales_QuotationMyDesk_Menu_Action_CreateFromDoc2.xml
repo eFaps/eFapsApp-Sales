@@ -50,6 +50,12 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
+
+                <!-- Sales_HumanResource_Department2Quotation -->
+                <property name="ConnectType02">c2d0a8aa-0488-4efd-858b-b288664580ec</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">department</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Quotation" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>

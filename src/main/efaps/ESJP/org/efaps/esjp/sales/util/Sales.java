@@ -1347,6 +1347,12 @@ public final class Sales
                     .key(Sales.BASE + "Invoice.AssignEmployee")
                     .description("Activate the mechanism to assign employee to Invoice");
 
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICE_ASSIGNDEP = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Invoice.AssignDepartment")
+                    .description("Activate the mechanism to assign department to Invoice");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute INVOICE_PRODUCTAC = new PropertiesSysConfAttribute()
@@ -2468,6 +2474,12 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Quotation.AssignEmployee")
                     .description("Allows to assign to an Employee.");
+
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute QUOTATION_ASSIGNDEP = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Quotation.AssignDepartment")
+                    .description("Activate the mechanism to assign department to Receipt");
 
     /** See description. */
     @EFapsSysConfAttribute

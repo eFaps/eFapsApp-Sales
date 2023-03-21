@@ -37,7 +37,7 @@
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="dateGroup" character="Group">
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="date">
@@ -59,33 +59,6 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
-        </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
-               method="getSalesPersonFieldValue"
-               name="Sales_InvoiceForm.salesperson.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
         </field>
         <field name="employee">
             <property name="SelectAlternateOID">linkfrom[Sales_Employee2Invoice#ToLink].linkto[FromLink].oid</property>
@@ -110,6 +83,48 @@
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.AssignEmployee</property>
            </trigger>
+        </field>
+        <field name="department">
+            <property name="Label">Sales_InvoiceForm.department.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_InvoiceForm.department.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">HumanResource_Department</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_InvoiceForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Invoice.AssignDepartment</property>
+            </trigger>
+        </field>
+        <field name="department4View">
+            <property name="SelectAlternateOID">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_InvoiceForm.department.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_InvoiceForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Invoice.AssignDepartment</property>
+            </trigger>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -177,6 +192,9 @@
                 <property name="Default">true</property>
            </trigger>
         </field>
+
+
+
         <field name="name4create">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>

@@ -68,6 +68,12 @@
                 <property name="ConnectCurrentLink05">ToLink</property>
                 <property name="ConnectForeignLink05">FromLink</property>
                 <property name="ConnectForeignField05">project</property>
+
+                 <!-- Sales_HumanResource_Department2Invoice -->
+                <property name="ConnectType06">05389d31-6735-40a7-b917-d833829592bc</property>
+                <property name="ConnectCurrentLink06">ToLink</property>
+                <property name="ConnectForeignLink06">FromLink</property>
+                <property name="ConnectForeignField06">department</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate"/>
         </target>
