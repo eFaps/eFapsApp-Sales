@@ -408,6 +408,18 @@ public abstract class SalesProductReport_Base
 
                 sort(_parameter, data);
 
+                if (Sales.REPORT_SALESPROD.get().stringPropertyNames().stream()
+                                .anyMatch(key -> key.endsWith(".Negate"))) {
+                    for (final DataBean bean : data) {
+                        if ("true".equalsIgnoreCase(Sales.REPORT_SALESPROD.get().getProperty(
+                                        Instance.get(bean.getDocOID()).getType().getName() + ".Negate", "false"))) {
+                            bean.setPrice(bean.getPrice().negate());
+                            bean.setUnitPrice(bean.getUnitPrice().negate());
+                            bean.setQuantity(bean.getQuantity().negate());
+                        }
+                    }
+                }
+
                 final List<DataBean> dataSource;
                 if (isHideDetails(_parameter)) {
                     dataSource = new ArrayList<>();
@@ -464,17 +476,7 @@ public abstract class SalesProductReport_Base
                 } else {
                     dataSource = data;
                 }
-                if (Sales.REPORT_SALESPROD.get().stringPropertyNames().stream()
-                                .anyMatch(key -> key.endsWith(".Negate"))) {
-                    for (final DataBean bean : dataSource) {
-                        if ("true".equalsIgnoreCase(Sales.REPORT_SALESPROD.get().getProperty(
-                                        Instance.get(bean.getDocOID()).getType().getName() + ".Negate", "false"))) {
-                            bean.setPrice(bean.getPrice().negate());
-                            bean.setUnitPrice(bean.getUnitPrice().negate());
-                            bean.setQuantity(bean.getQuantity().negate());
-                        }
-                    }
-                }
+
                 final Collection<Map<String, ?>> col = new ArrayList<>();
                 for (final DataBean bean : dataSource) {
                     col.add(bean.getMap());
