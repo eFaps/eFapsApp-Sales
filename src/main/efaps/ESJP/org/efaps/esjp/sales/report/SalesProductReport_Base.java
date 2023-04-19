@@ -465,7 +465,8 @@ public abstract class SalesProductReport_Base
                             final DataBean current = added.get(criteria);
                             current.setPrice(current.getPrice().add(bean.getPrice())).setQuantity(current.getQuantity()
                                             .add(bean.getQuantity()));
-                            if (current.getPrice().compareTo(BigDecimal.ZERO) == 0) {
+                            if (current.getPrice().compareTo(BigDecimal.ZERO) == 0 ||
+                                            current.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
                                 current.setUnitPrice(BigDecimal.ZERO);
                             } else {
                                 current.setUnitPrice(current.getPrice().divide(current.getQuantity(),
