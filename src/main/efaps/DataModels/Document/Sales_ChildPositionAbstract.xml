@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2023 The eFaps Team
 
@@ -17,23 +18,19 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>376ba402-f860-4f0b-a5ee-ab4651250644</uuid>
+    <uuid>7267f421-9461-4053-9996-200b291d6c6f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AttributeDefinitionTransferReason</name>
-        <parent>ERP_AttributeDefinitionMappingAbstract</parent>
+        <name>Sales_ChildPositionAbstract</name>
+        <parent>Sales_PositionAbstract</parent>
+        <purpose abstract="true" />
         <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>ERP_AttributeDefinitionStatus</typelink>
-            <sqltable>ERP_AttributeDefinitionSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Sales_AttributeDefinitionTransferReason.Status.RANGE_VALUE"
-                event="RANGE_VALUE">
-            </trigger>
+            <name>PositionAbstractLink</name>
+            <type>Link</type>
+            <typelink>Sales_PositionAbstract</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>PARENTID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

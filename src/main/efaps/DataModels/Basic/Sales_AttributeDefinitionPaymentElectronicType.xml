@@ -24,7 +24,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AttributeDefinitionPaymentElectronicType</name>
-        <parent>Sales_AbstractAttr</parent>
+        <parent>ERP_AttributeDefinitionMappingAbstract</parent>
         <attribute>
             <name>Status</name>
             <type>Status</type>

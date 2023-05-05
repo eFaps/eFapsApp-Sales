@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,6 +41,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIMsgProducts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
@@ -140,13 +140,14 @@ public abstract class DocPositionGroupedByDate_Base
                         .attribute(CIContacts.ContactAbstract.Name);
         final SelectBuilder selProd = SelectBuilder.get().linkto(CISales.PositionAbstract.Product);
         final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
-        final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+
         final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
         final SelectBuilder selProdUoM = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.DefaultUoM);
 
         multi.addSelect(selDocInst, selDocName, selDocDate, selDocContactName,
-                        selProdInst, selProdName, selProdDescr, selProdUoM);
+                        selProdInst, selProdDescr, selProdUoM);
         multi.addAttribute(CISales.PositionAbstract.UoM, CISales.PositionAbstract.Quantity);
+        multi.addMsgPhrase(selProd, CIMsgProducts.SlugMsgPhrase);
         SelectBuilder selRateCurInst = null;
         if (showAmount) {
             selRateCurInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.RateCurrencyId).instance();
@@ -204,6 +205,9 @@ public abstract class DocPositionGroupedByDate_Base
                                     .divide(new BigDecimal(uom.getDenominator()), RoundingMode.HALF_UP);
                 }
             }
+
+            final String productName = multi.getMsgPhrase(selProd, CIMsgProducts.SlugMsgPhrase);
+
             map.put("quantity", quantity);
             map.put("uoM", uom);
             map.put("uoMStr", uoMStr);
@@ -213,9 +217,9 @@ public abstract class DocPositionGroupedByDate_Base
             map.put("contact", multi.getSelect(selDocContactName));
             map.put("partial", getPartial(date, _dateGourp).toString(dateTimeFormatter));
             map.put("type", docInst.getType().getLabel());
-            map.put("productName", multi.getSelect(selProdName));
+            map.put("productName", productName);
             map.put("productDescr", multi.getSelect(selProdDescr));
-            map.put("product", multi.getSelect(selProdName) + " - " + multi.getSelect(selProdDescr)
+            map.put("product", productName + " - " + multi.getSelect(selProdDescr)
                             + " [" + uoMStr + "]");
             map.put("productInst", multi.getSelect(selProdInst));
 
@@ -306,9 +310,7 @@ public abstract class DocPositionGroupedByDate_Base
         {
             final Map<String, Map<String, Object>> tmpMap = new HashMap<>();
             final ValueList ret = new ValueList();
-            final Iterator<Map<String, Object>> iter = iterator();
-            while (iter.hasNext()) {
-                final Map<String, Object> map = iter.next();
+            for (final Map<String, Object> map : this) {
                 String key = "";
                 for (final String keyTmp : _keys) {
                     key = key + map.get(keyTmp);
@@ -343,9 +345,7 @@ public abstract class DocPositionGroupedByDate_Base
         public Set<Instance> getDocInstances()
         {
             final Set<Instance> ret = new HashSet<>();
-            final Iterator<Map<String, Object>> iter = iterator();
-            while (iter.hasNext()) {
-                final Map<String, Object> map = iter.next();
+            for (final Map<String, Object> map : this) {
                 final Instance docInstance = (Instance) map.get("docInstance");
                 if (docInstance != null && docInstance.isValid()) {
                     ret.add(docInstance);

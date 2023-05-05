@@ -133,8 +133,52 @@
                 <property name="Attribute">org.efaps.sales.DeliveryNote.ActivateRemark</property>
             </trigger>
         </field>
+        <field name="ebillingGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Application"
+                name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK"
+                index="1">
+                <property name="Application">eFapsApp-ElectronicBilling</property>
+           </trigger>
+           <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK"
+                index="2">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
+        </field>
+        <field name="ebillingDeliveryNote">
+            <property name="SelectAlternateOID">linkfrom[EBilling_DeliveryNote#DeliveryNoteLink].oid</property>
+            <property name="MsgPhrase">EBilling_DeliveryNoteMsgPhrase</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="HRef">Tree</property>
+            <property name="Label">Sales_DeliveryNoteForm.ebillingDeliveryNote.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Application"
+                name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK"
+                index="1">
+                <property name="Application">eFapsApp-ElectronicBilling</property>
+           </trigger>
+           <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK"
+                index="2">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>

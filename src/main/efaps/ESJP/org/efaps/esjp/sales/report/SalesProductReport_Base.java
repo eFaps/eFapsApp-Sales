@@ -52,6 +52,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIMsgProducts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.eql.ClassSelect;
@@ -306,11 +307,9 @@ public abstract class SalesProductReport_Base
                                 CISales.PositionSumAbstract.UoM);
                 final SelectBuilder selCurInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.RateCurrencyId)
                                 .instance();
-                final SelectBuilder selProductInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
-                                .instance();
-                final SelectBuilder selProductName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
-                                .attribute(CIProducts.ProductAbstract.Name);
-                final SelectBuilder selProductDesc = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                final SelectBuilder selProduct = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product);
+                final SelectBuilder selProductInst = new SelectBuilder(selProduct).instance();
+                final SelectBuilder selProductDesc = new SelectBuilder(selProduct)
                                 .attribute(CIProducts.ProductAbstract.Description);
                 final SelectBuilder selProdFamInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                                 .linkto(CIProducts.ProductAbstract.ProductFamilyLink).instance();
@@ -335,15 +334,15 @@ public abstract class SalesProductReport_Base
                 }
 
                 multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName, selCurInst,
-                                selProductInst, selProductName, selProductDesc, selProdFamInst, selDocOID,
-                                selDocStatus);
+                                selProductInst, selProductDesc, selProdFamInst, selDocOID,selDocStatus);
+                multi.addMsgPhrase(selProduct, CIMsgProducts.SlugMsgPhrase);
                 multi.execute();
                 while (multi.next()) {
                     final Instance curInst = multi.getSelect(selCurInst);
                     final DateTime date = multi.<DateTime>getSelect(selDocDate);
                     final DataBean dataBean = new DataBean()
                                     .setProductInst(multi.<Instance>getSelect(selProductInst))
-                                    .setProductName(multi.<String>getSelect(selProductName))
+                                    .setProductName(multi.getMsgPhrase(selProduct, CIMsgProducts.SlugMsgPhrase))
                                     .setProductDesc(multi.<String>getSelect(selProductDesc))
                                     .setProdFamInst(multi.getSelect(selProdFamInst))
                                     .setCurrencyInst(currencyInst == null ? CurrencyInst.get(curInst) : currencyInst)
@@ -409,6 +408,18 @@ public abstract class SalesProductReport_Base
 
                 sort(_parameter, data);
 
+                if (Sales.REPORT_SALESPROD.get().stringPropertyNames().stream()
+                                .anyMatch(key -> key.endsWith(".Negate"))) {
+                    for (final DataBean bean : data) {
+                        if ("true".equalsIgnoreCase(Sales.REPORT_SALESPROD.get().getProperty(
+                                        Instance.get(bean.getDocOID()).getType().getName() + ".Negate", "false"))) {
+                            bean.setPrice(bean.getPrice().negate());
+                            bean.setUnitPrice(bean.getUnitPrice().negate());
+                            bean.setQuantity(bean.getQuantity().negate());
+                        }
+                    }
+                }
+
                 final List<DataBean> dataSource;
                 if (isHideDetails(_parameter)) {
                     dataSource = new ArrayList<>();
@@ -454,7 +465,8 @@ public abstract class SalesProductReport_Base
                             final DataBean current = added.get(criteria);
                             current.setPrice(current.getPrice().add(bean.getPrice())).setQuantity(current.getQuantity()
                                             .add(bean.getQuantity()));
-                            if (current.getPrice().compareTo(BigDecimal.ZERO) == 0) {
+                            if (current.getPrice().compareTo(BigDecimal.ZERO) == 0 ||
+                                            current.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
                                 current.setUnitPrice(BigDecimal.ZERO);
                             } else {
                                 current.setUnitPrice(current.getPrice().divide(current.getQuantity(),
@@ -465,17 +477,7 @@ public abstract class SalesProductReport_Base
                 } else {
                     dataSource = data;
                 }
-                if (Sales.REPORT_SALESPROD.get().stringPropertyNames().stream()
-                                .anyMatch(key -> key.endsWith(".Negate"))) {
-                    for (final DataBean bean : dataSource) {
-                        if ("true".equalsIgnoreCase(Sales.REPORT_SALESPROD.get().getProperty(
-                                        Instance.get(bean.getDocOID()).getType().getName() + ".Negate", "false"))) {
-                            bean.setPrice(bean.getPrice().negate());
-                            bean.setUnitPrice(bean.getUnitPrice().negate());
-                            bean.setQuantity(bean.getQuantity().negate());
-                        }
-                    }
-                }
+
                 final Collection<Map<String, ?>> col = new ArrayList<>();
                 for (final DataBean bean : dataSource) {
                     col.add(bean.getMap());
@@ -506,13 +508,12 @@ public abstract class SalesProductReport_Base
                         break;
                     case MONTHLY:
                         comparator.addComparator((_arg0, _arg1) -> Integer.valueOf(_arg0.getDocDate().getMonthOfYear())
-                                        .compareTo(Integer.valueOf(
-                                                        _arg1.getDocDate().getMonthOfYear())));
+                                        .compareTo(_arg1.getDocDate().getMonthOfYear()));
                         break;
                     case YEARLY:
                         comparator.addComparator((_arg0, _arg1) -> Integer.valueOf(_arg0.getDocDate().getYear())
-                                        .compareTo(Integer.valueOf(_arg1
-                                                        .getDocDate().getYear())));
+                                        .compareTo(_arg1
+                                                        .getDocDate().getYear()));
                         break;
                     case CONTACT:
                         comparator.addComparator((_arg0, _arg1) -> _arg0.getContact().compareTo(_arg1.getContact()));

@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
 <!-- 2015-05-19T02:12:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    bottomMargin="20" columnWidth="555" isFloatColumnFooter="true" language="groovy" leftMargin="20" name="Sales_Quotation"
+    bottomMargin="20" columnWidth="555" isFloatColumnFooter="true" language="java" leftMargin="20" name="Sales_Quotation"
     pageHeight="842" pageWidth="595" rightMargin="20" topMargin="20" uuid="0c905645-de92-4f3c-bd1f-2f55f9aea917"
     whenNoDataType="AllSectionsNoDetail"
     xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
