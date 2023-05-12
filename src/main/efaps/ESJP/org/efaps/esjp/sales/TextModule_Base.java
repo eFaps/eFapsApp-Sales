@@ -73,7 +73,7 @@ public abstract class TextModule_Base
         multi.addAttribute(CISales.TextModule.Line);
         multi.execute();
 
-        final Map<Integer, Map<String, Long>> values = new TreeMap<Integer, Map<String, Long>>();
+        final Map<Integer, Map<String, Long>> values = new TreeMap<>();
         while (multi.next()) {
             final Instance instance = multi.getCurrentInstance();
             final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TextElement);
@@ -81,7 +81,7 @@ public abstract class TextModule_Base
             final MultiPrintQuery multi2 = queryBldr2.getPrint();
             multi2.addAttribute(CISales.TextElement.ShortText);
             multi2.execute();
-            final Map<String, Long> textele = new TreeMap<String, Long>();
+            final Map<String, Long> textele = new TreeMap<>();
             while (multi2.next()) {
                 textele.put((String) multi2.getAttribute(CISales.TextElement.ShortText),
                                                                     multi2.getCurrentInstance().getId());
@@ -126,7 +126,7 @@ public abstract class TextModule_Base
         throws EFapsException
     {
         final Instance instance = _parameter.getCallInstance();
-        final Map<Integer, String> line2Text = new TreeMap<Integer, String>();
+        final Map<Integer, String> line2Text = new TreeMap<>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2TextElement);
         queryBldr.addWhereAttrEqValue(CISales.Document2TextElement.Document, instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -141,7 +141,7 @@ public abstract class TextModule_Base
             while (multi.next()) {
                 Integer line = multi.<Integer> getSelect(selLine);
                 if (line == null) {
-                    line = new Integer(multi.getInstanceList().size() + 100);
+                    line = multi.getInstanceList().size() + 100;
                 }
                 line2Text.put(line, multi.<String> getSelect(selLongText));
             }
@@ -171,7 +171,7 @@ public abstract class TextModule_Base
         final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final Type transAbstract = CISales.DocumentAbstract.getType();
-        final Map <String, Long> values = new TreeMap<String, Long>();
+        final Map <String, Long> values = new TreeMap<>();
         for (final Type child : transAbstract.getChildTypes()) {
             if (!child.isAbstract()) {
                 values.put(DBProperties.getProperty(child.getName() + ".Label"), child.getId());
@@ -215,7 +215,7 @@ public abstract class TextModule_Base
         throws EFapsException
     {
         final Type transAbstract = CISales.DocumentAbstract.getType();
-        final Map<Long, String> values = new TreeMap<Long, String>();
+        final Map<Long, String> values = new TreeMap<>();
         for (final Type child : transAbstract.getChildTypes()) {
             if (!child.isAbstract()) {
                 values.put(child.getId(), DBProperties.getProperty(child.getName() + ".Label"));
