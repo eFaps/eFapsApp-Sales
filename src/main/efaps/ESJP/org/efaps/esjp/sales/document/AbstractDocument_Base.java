@@ -2072,7 +2072,7 @@ public abstract class AbstractDocument_Base
         }
         final String type = getProperty(_parameter, "Type");
         final var serialProps = Sales.SERIALNUMBERS.get();
-        final int length = Integer.valueOf(serialProps.getProperty(type + "SuffixLength"), 6);
+        final int length = Integer.valueOf(serialProps.getProperty(type + "SuffixLength", "6"));
         final NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(length);
         nf.setMaximumIntegerDigits(length);
