@@ -3231,15 +3231,16 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "SerialNumbers")
                     .concatenate(true)
-                    .description("A mapping like: Sales_Invoice=001;002;003.");
+                    .description("A mapping like: Sales_Invoice=001;002;003\n"
+                                    + "Sales_Invoice.AssignOnStatus=Open\n"
+                                    + "Sales_Invoice.SuffixLength=6");
 
-    /** See description. */
     @EFapsSysConfAttribute
-    public static final IntegerSysConfAttribute SERIALNUMBERSUFFIXLENGTH = new IntegerSysConfAttribute()
+    public static final PropertiesSysConfAttribute SERIALNUMBERS_STATUS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "SerialNumbers.SuffixLength")
-                    .defaultValue(6)
-                    .description("Length of the number part of a Serialnumber .\"001-NNNNNN\". Default Value: 6");
+                    .key(Sales.BASE + "SerialNumbers.AssignOnStatus")
+                    .concatenate(true)
+                    .description("A mapping like: Sales_Invoice=001;002;003.");
 
     /** See description. */
     @EFapsSysConfAttribute

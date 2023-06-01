@@ -2070,7 +2070,9 @@ public abstract class AbstractDocument_Base
                 numberInt = Integer.parseInt(numTmp) + 1;
             }
         }
-        final int length = Sales.SERIALNUMBERSUFFIXLENGTH.get();
+        final String type = getProperty(_parameter, "Type");
+        final var serialProps = Sales.SERIALNUMBERS.get();
+        final int length = Integer.valueOf(serialProps.getProperty(type + "SuffixLength"), 6);
         final NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(length);
         nf.setMaximumIntegerDigits(length);
@@ -2411,14 +2413,19 @@ public abstract class AbstractDocument_Base
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
-        //first priority are values from the UserInterface
-        String ret = _parameter.getParameterValue("name4create");
-        if (StringUtils.isEmpty(ret)) {
-            ret = super.getDocName4Create(_parameter);
+        String ret = _parameter.getParameterValue("serial");
+        if (StringUtils.isNotEmpty(ret)) {
+            ret = ret + "-" + getNumberSuffix(0);
         } else {
-            final String sn = _parameter.getParameterValue("name4create_SN");
-            if (sn != null && !sn.isEmpty()) {
-                ret = sn + "-" + ret;
+            // next priority are values from the UserInterface
+            ret = _parameter.getParameterValue("name4create");
+            if (StringUtils.isEmpty(ret)) {
+                ret = super.getDocName4Create(_parameter);
+            } else {
+                final String sn = _parameter.getParameterValue("name4create_SN");
+                if (sn != null && !sn.isEmpty()) {
+                    ret = sn + "-" + ret;
+                }
             }
         }
         return ret;
@@ -2456,10 +2463,23 @@ public abstract class AbstractDocument_Base
      * @return new Name
      * @throws EFapsException on error
      */
-    protected String getDocName4Edit(final Parameter _parameter)
+    protected String getDocName4Edit(final Parameter parameter)
         throws EFapsException
     {
-        return _parameter.getParameterValue("name4edit");
+        String ret = parameter.getParameterValue("serial");
+        if (StringUtils.isNotEmpty(ret)) {
+            final String name = EQL.builder().print(parameter.getInstance())
+                            .attribute(CISales.DocumentAbstract.Name)
+                            .evaluate().get(1);
+            if (name.startsWith(ret)) {
+                ret = null;
+            } else {
+                ret = ret + "-" + getNumberSuffix(0);
+            }
+        } else {
+            ret = parameter.getParameterValue("name4edit");
+        }
+        return ret;
     }
 
     /**
@@ -2849,6 +2869,34 @@ public abstract class AbstractDocument_Base
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    public Return dropDown4Serial(final Parameter parameter)
+        throws EFapsException
+    {
+        final var ret = new Return();
+        final var values = getSerialNumbers(parameter);
+        if (TargetMode.EDIT.equals(parameter.get(ParameterValues.ACCESSMODE))) {
+            final String name = EQL.builder().print(parameter.getInstance())
+                            .attribute(CISales.DocumentAbstract.Name)
+                            .evaluate().get(1);
+            values.forEach(option -> option.setSelected(name.startsWith(option.getLabel())));
+        }
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+    public String getNumberSuffix(final int idx)
+        throws EFapsException
+    {
+        final var type = getCIType().getType().getName();
+        final var serialProps = Sales.SERIALNUMBERS.get();
+        final int length = Integer.valueOf(serialProps.getProperty(type + ".SuffixLength", "6"));
+        final NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumIntegerDigits(length);
+        nf.setMaximumIntegerDigits(length);
+        nf.setGroupingUsed(false);
+        return nf.format(idx);
     }
 
     /**
