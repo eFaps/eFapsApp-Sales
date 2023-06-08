@@ -30,6 +30,9 @@
             <parent-table>T_ERPDOC</parent-table>
             <column name="INTEGER1"      type="INTEGER"/>
             <column name="INTEGER2"      type="INTEGER"/>
+            <column name="INTEGER3"      type="INTEGER"/>
+            <column name="INTEGER4"      type="INTEGER"/>
+            <column name="INTEGER5"      type="INTEGER"/>
             <column name="STRING1"    type="STRING_SHORT" length="256"/>
             <column name="STRING2"    type="STRING_SHORT" length="256"/>
             <column name="STRING3"    type="STRING_SHORT" length="256"/>

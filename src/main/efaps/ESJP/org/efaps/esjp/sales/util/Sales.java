@@ -515,7 +515,23 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "DeliveryNote.SubContactMsgPhrase4ArrivalPoint")
                     .defaultValue(CIMsgContacts.SubContactAddressMsgPhrase.uuid.toString())
-                    .description("MsgPhrase for a sub contact applied to ArrivalPoint .");
+                    .description("MsgPhrase for a sub contact applied to ArrivalPoint.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute DELIVERYNOTE_CONTMSGPH4DP = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.ContactMsgPhrase4DeparturePoint")
+                    .defaultValue(CIMsgContacts.ContactAddressMsgPhrase.uuid.toString())
+                    .description("MsgPhrase for a contact applied to DeparturePoint .");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute DELIVERYNOTE_SUBCONTMSGPH4DP = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.SubContactMsgPhrase4DeparturePoint")
+                    .defaultValue(CIMsgContacts.SubContactAddressMsgPhrase.uuid.toString())
+                    .description("MsgPhrase for a sub contact applied to DeparturePoint.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -543,7 +559,7 @@ public final class Sales
     public static final SysConfLink DELIVERYNOTE_DEFAULTWAREHOUSE = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "DeliveryNote.DefaultWareHouse")
-                    .description("Possibility to set a default Warehouse fo0r DeliveryNote. If not set "
+                    .description("Possibility to set a default Warehouse for DeliveryNote. If not set "
                                     + "the default from Products applies.");
 
     /** See description. */
