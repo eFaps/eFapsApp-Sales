@@ -115,6 +115,7 @@ public abstract class DeliveryNote_Base
         if (arrivalPoint != null) {
             if (Instance.get(arrivalPoint).isValid()) {
                 _insert.add(CISales.DeliveryNote.ArrivalPointLink, Instance.get(arrivalPoint));
+                _insert.add(CISales.DeliveryNote.ArrivalPoint, evalAddress(Instance.get(arrivalPoint).getId()));
             } else {
                 _insert.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
             }
@@ -126,6 +127,7 @@ public abstract class DeliveryNote_Base
         if (departurePoint != null) {
             if (Instance.get(departurePoint).isValid()) {
                 _insert.add(CISales.DeliveryNote.DeparturePointLink, Instance.get(departurePoint));
+                _insert.add(CISales.DeliveryNote.DeparturePoint, evalAddress(Instance.get(departurePoint).getId()));
             } else {
                 _insert.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
             }
@@ -250,6 +252,22 @@ public abstract class DeliveryNote_Base
             _update.add(CISales.DeliveryNote.TransferReason, transferReason);
             _editDoc.getValues().put(CISales.DeliveryNote.TransferReason.name, transferReason);
         }
+    }
+
+    protected String evalAddress(final Long contactId)
+        throws EFapsException
+    {
+        String address = null;
+        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassLocation);
+        queryBldr.addWhereAttrEqValue(CIContacts.ClassLocation.ContactLink, contactId);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIContacts.ClassLocation.LocationAdressStreet, CIContacts.ClassLocation.LocationAdressCity);
+        multi.execute();
+        if (multi.next()) {
+            address = multi.getAttribute(CIContacts.ClassLocation.LocationAdressStreet) + " - "
+                            + multi.getAttribute(CIContacts.ClassLocation.LocationAdressCity);
+        }
+        return address;
     }
 
     public Return dropDown4DeparturePoint(final Parameter _parameter)

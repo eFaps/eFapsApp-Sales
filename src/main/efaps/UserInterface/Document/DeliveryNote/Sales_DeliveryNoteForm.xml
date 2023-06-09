@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright 2003 - 2020 The eFaps Team
+  Copyright 2003 - 2023 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -335,8 +335,10 @@
             <property name="Label">Sales_DeliveryNote/DeparturePoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Width">80</property>
+            <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="dropDown4DeparturePoint"
@@ -346,6 +348,20 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
+        </field>
+        <field name="departurePoint">
+            <property name="Attribute">DeparturePoint</property>
+            <property name="Label">Sales_DeliveryNote/DeparturePoint.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.departurePoint.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <!-- ElectronicBilling-Configuration -->
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
@@ -378,9 +394,25 @@
             <property name="Attribute">VehicleLink</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_DeliveryNote/VehicleLink.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.vehicleLink.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
+        </field>
+        <field name="vehicleLink4read">
+            <property name="Select">linkto[VehicleLink].attribute[Registration]</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_DeliveryNote/VehicleLink.Label</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleLink.UI_ACCESSCHECK.2"
@@ -424,12 +456,28 @@
             <property name="Label">Sales_DeliveryNote/ArrivalPoint.Label</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Width">80</property>
+            <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
+        </field>
+         <field name="arrivalPoint4read">
+            <property name="Attribute">ArrivalPoint</property>
+            <property name="Label">Sales_DeliveryNote/ArrivalPoint.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.arrivalPoint4read.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <!-- ElectronicBilling-Configuration -->
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
@@ -458,13 +506,28 @@
                 <property name="Inverse">true</property>
            </trigger>
         </field>
-          <field name="driverLink">
+        <field name="driverLink">
             <property name="Attribute">DriverLink</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_DeliveryNote/DriverLink.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.driverLink.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
+        </field>
+        <field name="driverLink4read">
+            <property name="Select">linkto[DriverLink].attribute[Name]</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="Label">Sales_DeliveryNote/DriverLink.Label</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.driverLink.UI_ACCESSCHECK.2"
@@ -507,6 +570,45 @@
                 event="UI_FIELD_UPDATE" >
                 <property name="FieldName">carrierData</property>
             </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.carrierLink.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+                <property name="Inverse">true</property>
+           </trigger>
+        </field>
+        <field name="carrierLink">
+            <property name="SelectAlternateOID">linkto[CarrierLink].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_DeliveryNote/CarrierLink.Label</property>
+            <property name="Select">linkto[CarrierLink].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Width">80</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Carrier"
+                name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Classification">Contacts_ClassCarrier</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Carrier"
+                name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                <property name="FieldName">carrierData</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.carrierLink.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
         </field>
         <field name="vehicleDriverInfo">
             <property name="Attribute">VehicleDriverInfo</property>
