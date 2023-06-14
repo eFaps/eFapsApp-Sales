@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -40,6 +41,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.db.InstanceUtils;
+import org.efaps.esjp.erp.AbstractWarning;
+import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
@@ -204,5 +207,45 @@ public abstract class CreditNote_Base
             new DocumentUpdate().updateDocument(_parameter, query.getCurrentValue());
         }
         return new Return();
+    }
+
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation()
+        {
+            @Override
+            protected List<IWarning> validate(final Parameter _parameter,
+                                              final List<IWarning> _warnings)
+                throws EFapsException
+            {
+                final List<IWarning> ret = super.validate(_parameter, _warnings);
+                ret.addAll(validateDerived(_parameter, ret));
+                return ret;
+            }
+        };
+        return validation.validate(_parameter, this);
+    }
+
+    public List<IWarning> validateDerived(final Parameter _parameter,
+                                          final List<IWarning> _warnings)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<>();
+        final String[] deriveds = _parameter.getParameterValues("derived");
+        if (ArrayUtils.isEmpty(deriveds)) {
+            ret.add(new RequiredDerivedWarning());
+        }
+        return ret;
+    }
+
+    public static class RequiredDerivedWarning
+        extends AbstractWarning
+    {
+        public RequiredDerivedWarning()
+        {
+            setError(true);
+        }
     }
 }
