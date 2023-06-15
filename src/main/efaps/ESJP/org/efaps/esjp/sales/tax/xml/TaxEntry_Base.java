@@ -31,6 +31,8 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author The eFaps Team
  */
@@ -187,6 +189,7 @@ public abstract class TaxEntry_Base
      *
      * @return value of instance variable {@link #date}
      */
+    @JsonIgnore
     public DateTime getDateTime()
     {
         return new DateTime(date);

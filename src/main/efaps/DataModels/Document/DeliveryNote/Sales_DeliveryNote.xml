@@ -68,7 +68,7 @@
             <type>Link</type>
             <typelink>Contacts_ContactAbstract</typelink>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>INTEGER2</sqlcolumn>
+            <sqlcolumn>INTEGER6</sqlcolumn>
         </attribute>
         <attribute>
             <name>ArrivalPoint</name>
