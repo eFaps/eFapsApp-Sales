@@ -59,6 +59,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.util.Sales;
@@ -115,7 +116,7 @@ public abstract class DeliveryNote_Base
         if (arrivalPoint != null) {
             if (Instance.get(arrivalPoint).isValid()) {
                 _insert.add(CISales.DeliveryNote.ArrivalPointLink, Instance.get(arrivalPoint));
-                _insert.add(CISales.DeliveryNote.ArrivalPoint, evalAddress(Instance.get(arrivalPoint).getId()));
+                _insert.add(CISales.DeliveryNote.ArrivalPoint, evalAddress(Instance.get(arrivalPoint)));
             } else {
                 _insert.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
             }
@@ -127,7 +128,7 @@ public abstract class DeliveryNote_Base
         if (departurePoint != null) {
             if (Instance.get(departurePoint).isValid()) {
                 _insert.add(CISales.DeliveryNote.DeparturePointLink, Instance.get(departurePoint));
-                _insert.add(CISales.DeliveryNote.DeparturePoint, evalAddress(Instance.get(departurePoint).getId()));
+                _insert.add(CISales.DeliveryNote.DeparturePoint, evalAddress(Instance.get(departurePoint)));
             } else {
                 _insert.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
             }
@@ -254,18 +255,32 @@ public abstract class DeliveryNote_Base
         }
     }
 
-    protected String evalAddress(final Long contactId)
+    protected String evalAddress(final Instance contactInstance)
         throws EFapsException
     {
         String address = null;
-        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassLocation);
-        queryBldr.addWhereAttrEqValue(CIContacts.ClassLocation.ContactLink, contactId);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIContacts.ClassLocation.LocationAdressStreet, CIContacts.ClassLocation.LocationAdressCity);
-        multi.execute();
-        if (multi.next()) {
-            address = multi.getAttribute(CIContacts.ClassLocation.LocationAdressStreet) + " - "
-                            + multi.getAttribute(CIContacts.ClassLocation.LocationAdressCity);
+        if (InstanceUtils.isKindOf(contactInstance, CIContacts.Contact)) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassLocation);
+            queryBldr.addWhereAttrEqValue(CIContacts.ClassLocation.ContactLink, contactInstance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIContacts.ClassLocation.LocationAdressStreet,
+                            CIContacts.ClassLocation.LocationAdressCity);
+            multi.execute();
+            if (multi.next()) {
+                address = multi.getAttribute(CIContacts.ClassLocation.LocationAdressStreet) + " - "
+                                + multi.getAttribute(CIContacts.ClassLocation.LocationAdressCity);
+            }
+        } else {
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.SubContactClassLocation);
+            queryBldr.addWhereAttrEqValue(CIContacts.SubContactClassLocation.SubContactLink, contactInstance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIContacts.SubContactClassLocation.LocationAdressStreet,
+                            CIContacts.SubContactClassLocation.LocationAdressCity);
+            multi.execute();
+            if (multi.next()) {
+                address = multi.getAttribute(CIContacts.SubContactClassLocation.LocationAdressStreet) + " - "
+                                + multi.getAttribute(CIContacts.SubContactClassLocation.LocationAdressCity);
+            }
         }
         return address;
     }
