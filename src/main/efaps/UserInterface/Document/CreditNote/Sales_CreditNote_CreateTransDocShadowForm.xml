@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2023 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>080f3bc5-041f-4143-854a-c01985e492e1</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_CreditNote_CreateTransDocShadowForm</name>
+        <field name="productDocumentType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Label">Sales_CreditNote_CreateTransDocShadowForm.productDocumentType.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
+                name="Sales_CreditNote_CreateTransDocShadowForm.documentType.UI_FIELD_VALUE"
+                    program="org.efaps.esjp.sales.document.RecievingTicket">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">OUTGOING</property>
+            </trigger>
+        </field>
+         <field name="storage">
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_CreditNote_CreateTransDocShadowForm.storage.Label</property>
+             <property name="UIType">DROPDOWN</property>
+             <trigger event="UI_FIELD_VALUE" method="getStorageFieldValueUI"
+                name="Sales_CreditNote_CreateTransDocShadowForm.storage.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.TransactionDocument">
+                   <property name="ValueSelect">oid</property>
+                   <!-- Sales-Configuration -->
+                   <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                   <property name="Link4DefaultStorage">org.efaps.sales.Receipt.DefaultWareHouse</property>
+             </trigger>
+             <trigger event="UI_FIELD_UPDATE" method="updateFields4Storage4DocShadow"
+                name="Sales_CreditNote_CreateTransDocShadowForm.storage.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.TransactionDocument"/>
+        </field>
+        <field character="Heading" name="productsHeading">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_CreditNote_CreateTransDocShadowForm.productsHeading.Heading</property>
+            <property name="Level">3</property>
+        </field>
+        <field name="products">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger event="UI_FIELD_VALUE" method="getProducts4DocShadowOutFieldValue"
+            name="Sales_CreditNote_CreateTransDocShadowForm.products.UI_FIELD_VALUE"
+            program="org.efaps.esjp.sales.document.TransactionDocument">
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

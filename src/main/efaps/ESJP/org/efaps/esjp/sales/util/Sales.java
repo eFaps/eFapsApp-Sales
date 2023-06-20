@@ -249,8 +249,8 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Costing.StorageGroup")
                     .description("Storage Group that is used as a filter for using only the transactions "
-                            + "that belong to the given StorageGroup, if not present the "
-                            + "calculation is over all Storages.");
+                                    + "that belong to the given StorageGroup, if not present the "
+                                    + "calculation is over all Storages.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -367,8 +367,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BitEnumSysConfAttribute<JasperActivation> CREDITNOTE_JASPERACTIVATION
-        = new BitEnumSysConfAttribute<JasperActivation>()
+    public static final BitEnumSysConfAttribute<JasperActivation> CREDITNOTE_JASPERACTIVATION = new BitEnumSysConfAttribute<JasperActivation>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "CreditNote.JasperActivation")
                     .clazz(JasperActivation.class)
@@ -389,6 +388,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "CreditNote.ActivateReason")
                     .description("Activate/Deactivate the mechanism to assign a Reason to CreditNote.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CREDITNOTE_TRANSDOC = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.ActivateTransDocShadow")
+                    .description("Activate the possiblity to create a TransactionDocumentShadow");
 
     /** See description. */
     @EFapsSysConfLink
@@ -564,7 +570,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  DELIVERYNOTE_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute DELIVERYNOTE_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "DeliveryNote.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
@@ -710,14 +716,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute  GOODSISSUESLIPJASPERREPORT = new StringSysConfAttribute()
+    public static final StringSysConfAttribute GOODSISSUESLIPJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "GoodsIssueSlip.JasperReport")
                     .description("Name of the jasperReport for GoodsIssueSlip.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime>  GOODSISSUESLIPMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> GOODSISSUESLIPMIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "GoodsIssueSlip.Mime")
                     .clazz(JasperMime.class)
@@ -757,15 +763,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGCREDITNOTE_FROMINCINVOICEAC
-            = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGCREDITNOTE_FROMINCINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingCreditNote.CreateFromIncomingInvoiceAutoComplete")
                     .description("Possibiloity to overwrite the configuraiton for the Automcomplete for Invoice.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGCREDITNOTE_TRANSDOC = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGCREDITNOTE_TRANSDOC = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingCreditNote.ActivateTransDocShadow")
                     .description("Activate the possiblity to create a TransactionDocumentShadow");
@@ -788,21 +793,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGCREDITNOTE_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGCREDITNOTE_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingCreditNote.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGCREDITNOTE_FILESTRBROWSER = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGCREDITNOTE_FILESTRBROWSER = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingCreditNote.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGDETRACTION_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGDETRACTION_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingDetraction.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
@@ -814,11 +819,9 @@ public final class Sales
                     .key(Sales.BASE + "IncomingDetraction.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
 
-
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGEXCHANGE_JASPERREPORT
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGEXCHANGE_JASPERREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingExchange.JasperReport")
                     .description("Name of the jasperReport for IncomingExchange.");
@@ -877,8 +880,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMORDEROUTBOUNDAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
                     .addDefaultValue("Type", CISales.OrderOutbound.uuid.toString())
@@ -897,8 +899,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMSERVORDEROUTBOUNDAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMSERVORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
@@ -917,8 +918,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMRECIEVINGTICKETAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMRECIEVINGTICKETAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromRecievingTicketAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of RecievingTicket to create "
@@ -937,8 +937,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMPRODUCTREQUESTAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMPRODUCTREQUESTAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromProductRequestAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of Product Request to create "
@@ -957,8 +956,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMSERVICEREQUESTAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICE_FROMSERVICEREQUESTAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.CreateFromServiceRequestAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of Product Request to create "
@@ -1012,21 +1010,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGINVOICE_TRANSDOC = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_TRANSDOC = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.ActivateTransDocShadow")
                     .description("Activate the possiblity to create a TransactionDocumentShadow");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGINVOICE_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGINVOICE_FILESTRBROWSER = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICE_FILESTRBROWSER = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingInvoice.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
@@ -1084,7 +1082,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGPROFSERVREC_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGPROFSERVREC_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingProfServReceipt.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
@@ -1166,8 +1164,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGRECEIPTFROMSERVORDEROUTBOUNDAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGRECEIPTFROMSERVORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingReceipt.CreateFromServiceOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
@@ -1175,7 +1172,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INCOMINGRECEIPT_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGRECEIPT_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingReceipt.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
@@ -1211,8 +1208,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGREMINDER_FROMINCINVOICEAC
-            = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGREMINDER_FROMINCINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "IncomingReminder.CreateFromIncomingInvoiceAutoComplete")
                     .description("Possibiloity to overwrite the configuraiton for the Automcomplete "
@@ -1294,8 +1290,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BitEnumSysConfAttribute<JasperActivation> INVOICE_JASPERACTIVATION
-        = new BitEnumSysConfAttribute<JasperActivation>()
+    public static final BitEnumSysConfAttribute<JasperActivation> INVOICE_JASPERACTIVATION = new BitEnumSysConfAttribute<JasperActivation>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.JasperActivation")
                     .clazz(JasperActivation.class)
@@ -1312,8 +1307,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INVOICE_FROMDELIVERYNOTEAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INVOICE_FROMDELIVERYNOTEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.CreateFromDeliveryNoteAutoComplete")
                     .addDefaultValue("Type", CISales.DeliveryNote.uuid.toString())
@@ -1326,8 +1320,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INVOICE_FROMQUOTATIONAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INVOICE_FROMQUOTATIONAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.CreateFromQuotationAutoComplete")
                     .addDefaultValue("Type", CISales.Quotation.uuid.toString())
@@ -1336,8 +1329,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INVOICE_FROMORDERINBOUNDAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INVOICE_FROMORDERINBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.CreateFromOrderInboundAutoComplete")
                     .addDefaultValue("Type", CISales.OrderInbound.uuid.toString())
@@ -1348,8 +1340,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INVOICE_FROMINVOICEAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INVOICE_FROMINVOICEAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.CreateFromInvoiceAutoComplete")
                     .addDefaultValue("Type", CISales.Invoice.uuid.toString())
@@ -1396,7 +1387,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  INVOICE_FILESTRBROWSER = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INVOICE_FILESTRBROWSER = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
@@ -1410,8 +1401,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute ORDEROUTBOUND_CREATEFROMPRODREQAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute ORDEROUTBOUND_CREATEFROMPRODREQAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderOutbound.CreateFromProductRequestAutoComplete")
                     .addDefaultValue("Type", CISales.ProductRequest.uuid.toString())
@@ -1421,8 +1411,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute ORDEROUTBOUND_CREATEFROMQUOTEREQAC
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute ORDEROUTBOUND_CREATEFROMQUOTEREQAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderOutbound.CreateFromQuoteRequestAutoComplete")
                     .addDefaultValue("Type", CISales.QuoteRequest.uuid.toString())
@@ -1473,7 +1462,6 @@ public final class Sales
                     .description("Configuration for the AutoComplete for Products in OrderOutbound")
                     .addDefaultValue("Type", "Products_ProductAbstract");
 
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute ORDEROUTBOUND_FILE = new BooleanSysConfAttribute()
@@ -1487,7 +1475,6 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "OrderOutbound.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
-
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1603,85 +1590,165 @@ public final class Sales
                                     + "OnStatusChange.Status=Open\n"
                                     + "Threshold for paid evaluation."
                                     + "TYPE.Threshold==0.05")
-                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.TargetStatus", CISales.CollectionOrderStatus.Closed.key)
-                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status01", CISales.CollectionOrderStatus.Approved.key)
-                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status02", CISales.CollectionOrderStatus.Open.key)
-                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Unpaid.TargetStatus", CISales.CollectionOrderStatus.Approved.key)
-                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Unpaid.Origin.Status01", CISales.CollectionOrderStatus.Closed.key)
-                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.TargetStatus", CISales.CreditNoteStatus.Paid.key)
-                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.Origin.Status01", CISales.CreditNoteStatus.Draft.key)
-                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.Origin.Status02", CISales.CreditNoteStatus.Open.key)
-                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Unpaid.TargetStatus", CISales.CreditNoteStatus.Open.key)
-                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Unpaid.Origin.Status01", CISales.CreditNoteStatus.Paid.key)
-                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.TargetStatus", CISales.ExchangeStatus.Closed.key)
-                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.Origin.Status01", CISales.ExchangeStatus.Draft.key)
-                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.Origin.Status02", CISales.ExchangeStatus.Open.key)
-                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Unpaid.TargetStatus", CISales.ExchangeStatus.Open.key)
-                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Unpaid.Origin.Status01", CISales.ExchangeStatus.Closed.key)
-                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.TargetStatus", CISales.IncomingCreditNoteStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingCreditNoteStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingCreditNoteStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingCreditNoteStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingCreditNoteStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.TargetStatus", CISales.IncomingExchangeStatus.Closed.key)
-                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingExchangeStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingExchangeStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingExchangeStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingExchangeStatus.Closed.key)
-                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.TargetStatus", CISales.IncomingInstallmentStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingInstallmentStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingInstallmentStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingInstallmentStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingInstallmentStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.TargetStatus", CISales.IncomingInvoiceStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingInvoiceStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingInvoiceStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingInvoiceStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingInvoiceStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Paid.TargetStatus", CISales.IncomingPerceptionCertificateStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Paid.Origin.Status", CISales.IncomingPerceptionCertificateStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingPerceptionCertificateStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Unpaid.Origin.Status", CISales.IncomingPerceptionCertificateStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.TargetStatus", CISales.IncomingProfServReceiptStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingProfServReceiptStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingProfServReceiptStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingProfServReceiptStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingProfServReceiptStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.TargetStatus", CISales.IncomingReceiptStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingReceiptStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingReceiptStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingReceiptStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingReceiptStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.TargetStatus", CISales.IncomingReminderStatus.Paid.key)
-                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.Origin.Status01", CISales.IncomingReminderStatus.Digitized.key)
-                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.Origin.Status02", CISales.IncomingReminderStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Unpaid.TargetStatus", CISales.IncomingReminderStatus.Open.key)
-                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Unpaid.Origin.Status01", CISales.IncomingReminderStatus.Paid.key)
-                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.TargetStatus", CISales.InstallmentStatus.Paid.key)
-                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.Origin.Status01", CISales.InstallmentStatus.Draft.key)
-                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.Origin.Status02", CISales.InstallmentStatus.Open.key)
-                    .addDefaultValue(CISales.Installment.getType().getName() + ".Unpaid.TargetStatus", CISales.InstallmentStatus.Open.key)
-                    .addDefaultValue(CISales.Installment.getType().getName() + ".Unpaid.Origin.Status01", CISales.InstallmentStatus.Paid.key)
-                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.TargetStatus", CISales.InvoiceStatus.Paid.key)
-                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.Origin.Status01", CISales.InvoiceStatus.Draft.key)
-                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.Origin.Status02", CISales.InvoiceStatus.Open.key)
-                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Unpaid.TargetStatus", CISales.InvoiceStatus.Open.key)
-                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Unpaid.Origin.Status01", CISales.InvoiceStatus.Paid.key)
-                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.TargetStatus", CISales.PaymentOrderStatus.Closed.key)
-                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.Origin.Status01", CISales.PaymentOrderStatus.Open.key)
-                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.Origin.Status02", CISales.PaymentOrderStatus.Approved.key)
-                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Unpaid.TargetStatus", CISales.PaymentOrderStatus.Approved.key)
-                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Unpaid.Origin.Status01", CISales.PaymentOrderStatus.Closed.key)
-                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.TargetStatus", CISales.ReceiptStatus.Paid.key)
-                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.Origin.Status01", CISales.ReceiptStatus.Draft.key)
-                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.Origin.Status02", CISales.ReceiptStatus.Open.key)
-                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Unpaid.TargetStatus", CISales.ReceiptStatus.Open.key)
-                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Unpaid.Origin.Status01", CISales.ReceiptStatus.Paid.key)
-                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.TargetStatus", CISales.ReminderStatus.Paid.key)
-                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status01", CISales.ReminderStatus.Draft.key)
-                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status02", CISales.ReminderStatus.Open.key)
-                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.TargetStatus", CISales.ReminderStatus.Open.key)
-                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.Origin.Status01", CISales.ReminderStatus.Paid.key);
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.CollectionOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.CollectionOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.CollectionOrderStatus.Open.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.CollectionOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.CollectionOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.CreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.CreditNoteStatus.Draft.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.CreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.CreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.CreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.ExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.ExchangeStatus.Draft.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.ExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.ExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.Exchange.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.ExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingCreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingCreditNoteStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingCreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingCreditNoteStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingCreditNote.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingCreditNoteStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingExchangeStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingExchangeStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingExchangeStatus.Closed.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingInstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingInstallmentStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingInstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingInstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInstallment.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingInstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingInvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingInvoiceStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingInvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingPerceptionCertificateStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Paid.Origin.Status",
+                                    CISales.IncomingPerceptionCertificateStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingPerceptionCertificate.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingPerceptionCertificateStatus.Open.key)
+                    .addDefaultValue(
+                                    CISales.IncomingPerceptionCertificate.getType().getName() + ".Unpaid.Origin.Status",
+                                    CISales.IncomingPerceptionCertificateStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingProfServReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingProfServReceiptStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingProfServReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingProfServReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingProfServReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingReceiptStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.IncomingReminderStatus.Paid.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.IncomingReminderStatus.Digitized.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.IncomingReminderStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.IncomingReminderStatus.Open.key)
+                    .addDefaultValue(CISales.IncomingReminder.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.IncomingReminderStatus.Paid.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.InstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.InstallmentStatus.Draft.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.InstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.InstallmentStatus.Open.key)
+                    .addDefaultValue(CISales.Installment.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.InstallmentStatus.Paid.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.InvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.InvoiceStatus.Draft.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.InvoiceStatus.Paid.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.PaymentOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.PaymentOrderStatus.Open.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.PaymentOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.PaymentOrderStatus.Approved.key)
+                    .addDefaultValue(CISales.PaymentOrder.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.PaymentOrderStatus.Closed.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.ReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.ReceiptStatus.Draft.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.ReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.ReceiptStatus.Open.key)
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.ReceiptStatus.Paid.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.TargetStatus",
+                                    CISales.ReminderStatus.Paid.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status01",
+                                    CISales.ReminderStatus.Draft.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Paid.Origin.Status02",
+                                    CISales.ReminderStatus.Open.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.TargetStatus",
+                                    CISales.ReminderStatus.Open.key)
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".Unpaid.Origin.Status01",
+                                    CISales.ReminderStatus.Paid.key);
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -2008,8 +2075,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTORDER_JASPERREPORT
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute PAYMENTORDER_JASPERREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PaymentOrder.JasperReport")
                     .description("Name of the jasperReport for PaymentOrder.");
@@ -2024,8 +2090,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BitEnumSysConfAttribute<JasperActivation> PAYMENTORDER_JASPERACTIVATION
-        = new BitEnumSysConfAttribute<JasperActivation>()
+    public static final BitEnumSysConfAttribute<JasperActivation> PAYMENTORDER_JASPERACTIVATION = new BitEnumSysConfAttribute<JasperActivation>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PaymentOrder.JasperActivation")
                     .clazz(JasperActivation.class)
@@ -2035,21 +2100,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  PAYMENTORDER_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENTORDER_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PaymentOrder.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  PAYMENTORDER_FILESTRBROWSER = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENTORDER_FILESTRBROWSER = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PaymentOrder.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  PAYMENTORDER_ASSIGNACTION = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PAYMENTORDER_ASSIGNACTION = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PaymentOrder.AssignAction")
                     .description("Activate the Action mechanism for PaymentOrder");
@@ -2307,7 +2372,7 @@ public final class Sales
                     .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
                     .description("UUID of the Sequence used for the Revision.");
 
-   /** See description. */
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute PETTYCASHRECEIPT_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
@@ -2336,10 +2401,9 @@ public final class Sales
                     .key(Sales.BASE + "PettyCashReceipt.ProductAutoComplete")
                     .description("Possiblity to overwrite the standart properties for Product AutoComplete.");
 
-
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute  PETTYCASHRECEIPT_FILE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PETTYCASHRECEIPT_FILE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "PettyCashReceipt.ActivateFiles")
                     .description("Activate the possiblity to upload Files");
@@ -2367,8 +2431,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PRODUCTREQUEST_AUTOCOMPLETE4PRODUCTS
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute PRODUCTREQUEST_AUTOCOMPLETE4PRODUCTS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ProductRequest.AutoComplete4Products")
                     .description("Possib ility to overwrite the dafutl Autocomplete for Products in ProductRequest.");
@@ -2535,7 +2598,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfLink
-    public static final SysConfLink  RECEIPT_DEFAULTCONDITION = new SysConfLink()
+    public static final SysConfLink RECEIPT_DEFAULTCONDITION = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Receipt.DefaultCondition")
                     .description("Set the default condition for Receipt");
@@ -2557,8 +2620,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BitEnumSysConfAttribute<JasperActivation> RECEIPT_JASPERACTIVATION
-        = new BitEnumSysConfAttribute<JasperActivation>()
+    public static final BitEnumSysConfAttribute<JasperActivation> RECEIPT_JASPERACTIVATION = new BitEnumSysConfAttribute<JasperActivation>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Receipt.JasperActivation")
                     .clazz(JasperActivation.class)
@@ -2602,8 +2664,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute RECIEVINGTICKET_FROMORDEROUTBOUNDAC
-                    = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute RECIEVINGTICKET_FROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete")
                     .description(" QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.")
@@ -2667,8 +2728,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BitEnumSysConfAttribute<JasperActivation> REMINDER_JASPERACTIVATION
-        = new BitEnumSysConfAttribute<JasperActivation>()
+    public static final BitEnumSysConfAttribute<JasperActivation> REMINDER_JASPERACTIVATION = new BitEnumSysConfAttribute<JasperActivation>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Reminder.JasperActivation")
                     .clazz(JasperActivation.class)
@@ -2935,7 +2995,6 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.PaymentSumReport.ActivateContactAssigned2Employee")
                     .description("Properties 4 Products in Invoice");
-
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -3271,8 +3330,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute SERVICEREQUEST_AUTOCOMPLETE4PRODUCTS
-        = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute SERVICEREQUEST_AUTOCOMPLETE4PRODUCTS = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ServiceRequest.AutoComplete4Products")
                     .description("Possib ility to overwrite the dafutl Autocomplete for Products in ServiceRequest.");
@@ -3350,8 +3408,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> SERVICEORDEROUTBOUND_MIME
-        = new EnumSysConfAttribute<JasperMime>()
+    public static final EnumSysConfAttribute<JasperMime> SERVICEORDEROUTBOUND_MIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ServiceOrderOutbound.Mime")
                     .clazz(JasperMime.class)
@@ -3562,11 +3619,12 @@ public final class Sales
     }
 
     /**
-    * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
-    */
+     * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
+     */
     public enum TaxPerception
-        implements IEnum
+                    implements IEnum
     {
+
         /** Cliente Normal. DEFAULT VALUE if no information available. */
         CLIENT,
         /** Cliente final. */
@@ -3585,8 +3643,9 @@ public final class Sales
      * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
      */
     public enum TaxRetention
-        implements IEnum
+                    implements IEnum
     {
+
         /** Cliente Normal. DEFAULT VALUE if no information available. */
         CLIENT,
         /** Agente de Retencion. */
@@ -3603,8 +3662,9 @@ public final class Sales
      * Enum used for a multistate for Activation in Sales_ProductDocumentType.
      */
     public enum ProdDocActivation
-        implements IBitEnum
+                    implements IBitEnum
     {
+
         /** NONE. */
         NONE,
         /** Incoming. */
@@ -3635,8 +3695,9 @@ public final class Sales
      * Enum used for a multistate for Activation in Sales_AccountCashDesk.
      */
     public enum AccountCDActivation
-        implements IBitEnum
+                    implements IBitEnum
     {
+
         /** NONE. */
         CASH,
         /** CHECK. */
@@ -3680,7 +3741,7 @@ public final class Sales
      * </ol>
      */
     public enum AccountAutomation
-        implements IEnum
+                    implements IEnum
     {
 
         /** NONE. */

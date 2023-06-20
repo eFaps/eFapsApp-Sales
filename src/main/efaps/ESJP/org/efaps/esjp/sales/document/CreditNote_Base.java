@@ -151,6 +151,17 @@ public abstract class CreditNote_Base
                         CIFormSales.Sales_CreditNoteForm.creditReason.name));
     }
 
+    public Return createTransDocShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = new TransactionDocument().createDocumentShadow(_parameter);
+        final Insert insert = new Insert(CISales.CreditNote2TransactionDocumentShadowIn);
+        insert.add(CISales.CreditNote2TransactionDocumentShadowIn.FromLink, _parameter.getInstance());
+        insert.add(CISales.CreditNote2TransactionDocumentShadowIn.ToLink, createdDoc.getInstance());
+        insert.execute();
+        return new Return();
+    }
+
     @Override
     public CIType getCIType()
         throws EFapsException
