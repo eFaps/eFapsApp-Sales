@@ -75,6 +75,11 @@
                 name="Sales_InvoiceForm.employee.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
             </trigger>
+             <trigger program="org.efaps.esjp.humanresource.Employee"
+                method="updateField4Employee"
+                name="Sales_InvoiceForm.employee.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.employee.UI_ACCESSCHECK"
