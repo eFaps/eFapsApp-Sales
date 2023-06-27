@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -174,11 +175,11 @@ public abstract class DeliveryNote_Base
         if (vehicleLink.isValid()) {
             _insert.add(CISales.DeliveryNote.VehicleLink, vehicleLink);
         }
-        final Instance driverLink =Instance.get( _parameter
+        final Instance driverLink = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.driverLink.name));
         if (driverLink.isValid()) {
             _insert.add(CISales.DeliveryNote.DriverLink, driverLink);
-         }
+        }
     }
 
     /**
@@ -209,14 +210,24 @@ public abstract class DeliveryNote_Base
         super.add2DocEdit(_parameter, _update, _editDoc);
         final String arrivalPoint = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name);
         if (arrivalPoint != null) {
-            _update.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
+            if (Instance.get(arrivalPoint).isValid()) {
+                _update.add(CISales.DeliveryNote.ArrivalPointLink, Instance.get(arrivalPoint));
+                _update.add(CISales.DeliveryNote.ArrivalPoint, evalAddress(Instance.get(arrivalPoint)));
+            } else {
+                _update.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
+            }
             _editDoc.getValues().put(CISales.DeliveryNote.ArrivalPoint.name, arrivalPoint);
         }
 
         final String departurePoint = _parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.departurePoint.name);
         if (departurePoint != null) {
-            _update.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
+            if (Instance.get(departurePoint).isValid()) {
+                _update.add(CISales.DeliveryNote.DeparturePointLink, Instance.get(departurePoint));
+                _update.add(CISales.DeliveryNote.DeparturePoint, evalAddress(Instance.get(departurePoint)));
+            } else {
+                _update.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
+            }
             _editDoc.getValues().put(CISales.DeliveryNote.DeparturePoint.name, departurePoint);
         }
 
@@ -252,6 +263,17 @@ public abstract class DeliveryNote_Base
         if (transferReason != null && !transferReason.isEmpty()) {
             _update.add(CISales.DeliveryNote.TransferReason, transferReason);
             _editDoc.getValues().put(CISales.DeliveryNote.TransferReason.name, transferReason);
+        }
+
+        final Instance vehicleLink = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleLink.name));
+        if (vehicleLink.isValid()) {
+            _update.add(CISales.DeliveryNote.VehicleLink, vehicleLink);
+        }
+        final Instance driverLink = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.driverLink.name));
+        if (driverLink.isValid()) {
+            _update.add(CISales.DeliveryNote.DriverLink, driverLink);
         }
     }
 
@@ -369,6 +391,127 @@ public abstract class DeliveryNote_Base
         Collections.sort(list, (_o1, _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
                         _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey())));
         ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    public Return arrivalPointFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final List<DropDownPosition> values = new ArrayList<>();
+
+            final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            final PrintQuery dnPrint = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DeliveryNote.Contact).instance();
+            dnPrint.addSelect(selContactInst);
+            dnPrint.executeWithoutAccessCheck();
+            final Instance contactInst = dnPrint.getSelect(selContactInst);
+
+            final PrintQuery print = new PrintQuery(contactInst);
+            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTE_CONTMSGPH4ARP.get()));
+            print.addMsgPhrase(msgPhrase);
+            print.executeWithoutAccessCheck();
+            final String address = print.getMsgPhrase(msgPhrase);
+            values.add(new DropDownPosition(contactInst.getOid(), address)
+                            .setSelected(contactInst.getId() == (Long) uiValue.getObject()));
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIContacts.Contact2SubContact);
+            attrQueryBldr.addWhereAttrEqValue(CIContacts.Contact2SubContact.From, contactInst);
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.SubContact);
+            queryBldr.addWhereAttrInQuery(CIContacts.SubContact.ID,
+                            attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIContacts.SubContact.Name);
+            final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(
+                            Sales.DELIVERYNOTE_SUBCONTMSGPH4DP.get()));
+            multi.addMsgPhrase(subMsgPhrase);
+            multi.executeWithoutAccessCheck();
+
+            while (multi.next()) {
+                final String subContactName = multi.getAttribute(CIContacts.SubContact.Name);
+                final String subAddress = multi.getMsgPhrase(subMsgPhrase);
+                final String val = subContactName + ": " + subAddress;
+                values.add(new DropDownPosition(multi.getCurrentInstance().getOid(), val)
+                                .setSelected(multi.getCurrentInstance().getId() == (Long) uiValue.getObject()));
+            }
+            ret.put(ReturnValues.VALUES, values);
+        }
+        return ret;
+    }
+
+    public Return driverLinkFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            final List<DropDownPosition> values = new ArrayList<>();
+            final PrintQuery dnPrint = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder selCarrierInst = SelectBuilder.get().linkto(CISales.DeliveryNote.CarrierLink)
+                            .instance();
+            dnPrint.addSelect(selCarrierInst);
+            dnPrint.executeWithoutAccessCheck();
+            final Instance carrierInst = dnPrint.getSelect(selCarrierInst);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassCarrier);
+            queryBldr.addWhereAttrEqValue(CIContacts.ClassCarrier.ContactLink, carrierInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            query.next();
+            // DriverSet 09ee80a0-e8c0-41d2-b272-c30a32733fea
+            final QueryBuilder driverQueryBldr = new QueryBuilder(
+                            UUID.fromString("09ee80a0-e8c0-41d2-b272-c30a32733fea"));
+            driverQueryBldr.addWhereAttrEqValue("DriverSet", query.getCurrentValue());
+            final MultiPrintQuery driverMulti = driverQueryBldr.getPrint();
+            driverMulti.addAttribute(CIContacts.AttributeAbstractClassCarrierDriver.Name,
+                            CIContacts.AttributeAbstractClassCarrierDriver.DefaultSelected);
+            driverMulti.executeWithoutAccessCheck();
+            while (driverMulti.next()) {
+                values.add(new DropDownPosition(driverMulti.getCurrentInstance().getOid(), driverMulti
+                                .getAttribute(CIContacts.AttributeAbstractClassCarrierDriver.Name))
+                                .setSelected(driverMulti.getCurrentInstance().getId() == (Long) uiValue.getObject()));
+            }
+            ret.put(ReturnValues.VALUES, values);
+        }
+        return ret;
+    }
+
+    public Return vehicleLinkFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            final List<DropDownPosition> values = new ArrayList<>();
+            final PrintQuery dnPrint = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder selCarrierInst = SelectBuilder.get().linkto(CISales.DeliveryNote.CarrierLink)
+                            .instance();
+            dnPrint.addSelect(selCarrierInst);
+            dnPrint.executeWithoutAccessCheck();
+            final Instance carrierInst = dnPrint.getSelect(selCarrierInst);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassCarrier);
+            queryBldr.addWhereAttrEqValue(CIContacts.ClassCarrier.ContactLink, carrierInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            query.next();
+            // Contact - CarrierSet
+            // d6d49ad1-dd0f-400b-a250-cd58315234fb
+            final QueryBuilder carrierQueryBldr = new QueryBuilder(
+                            UUID.fromString("d6d49ad1-dd0f-400b-a250-cd58315234fb"));
+            carrierQueryBldr.addWhereAttrEqValue("CarrierSet", query.getCurrentValue());
+            final MultiPrintQuery carrierMulti = carrierQueryBldr.getPrint();
+            carrierMulti.addAttribute(CIContacts.AttributeAbstractClassCarrier.Registration,
+                            CIContacts.AttributeAbstractClassCarrier.DefaultSelected);
+            carrierMulti.executeWithoutAccessCheck();
+            while (carrierMulti.next()) {
+                values.add(new DropDownPosition(carrierMulti.getCurrentInstance().getOid(), carrierMulti
+                                .getAttribute(CIContacts.AttributeAbstractClassCarrier.Registration))
+                                .setSelected(carrierMulti.getCurrentInstance().getId() == (Long) uiValue.getObject()));
+            }
+            ret.put(ReturnValues.VALUES, values);
+        }
         return ret;
     }
 

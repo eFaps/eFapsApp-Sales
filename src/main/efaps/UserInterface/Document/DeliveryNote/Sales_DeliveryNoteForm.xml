@@ -398,6 +398,11 @@
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_DeliveryNote/VehicleLink.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="vehicleLinkFieldValue"
+                name="Sales_DeliveryNoteForm.vehicleLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleLink.UI_ACCESSCHECK.2"
@@ -461,6 +466,11 @@
             <property name="Width">80</property>
             <property name="Required">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="arrivalPointFieldValue"
+                name="Sales_DeliveryNoteForm.arrivalPoint.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
@@ -514,6 +524,11 @@
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_DeliveryNote/DriverLink.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="driverLinkFieldValue"
+                name="Sales_DeliveryNoteForm.driverLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.driverLink.UI_ACCESSCHECK.2"
