@@ -49,6 +49,12 @@
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">employee</property>
+
+                <!-- Sales_HumanResource_Department2Invoice -->
+                <property name="ConnectType03">05389d31-6735-40a7-b917-d833829592bc</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">department</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"

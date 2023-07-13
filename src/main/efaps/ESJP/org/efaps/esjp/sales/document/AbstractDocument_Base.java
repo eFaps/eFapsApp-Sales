@@ -174,7 +174,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CALCULATOR_KEY,
-                        new ArrayList<Calculator>());
+                        new ArrayList<>());
         return new Return();
     }
 
@@ -1497,12 +1497,10 @@ public abstract class AbstractDocument_Base
             final long selectedUoM;
             if (dUoMId == null) {
                 selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
+            } else if (Dimension.getUoM(dUoMId).getDimension().equals(Dimension.get(dimId))) {
+                selectedUoM = dUoMId;
             } else {
-                if (Dimension.getUoM(dUoMId).getDimension().equals(Dimension.get(dimId))) {
-                    selectedUoM = dUoMId;
-                } else {
-                    selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
-                }
+                selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
             }
             _map.put("uoM", getUoMFieldStr(selectedUoM, dimId));
             _map.put("productDesc", StringEscapeUtils.escapeEcmaScript(desc));
@@ -2072,7 +2070,7 @@ public abstract class AbstractDocument_Base
         }
         final String type = getProperty(_parameter, "Type");
         final var serialProps = Sales.SERIALNUMBERS.get();
-        final int length = Integer.valueOf(serialProps.getProperty(type + "SuffixLength", "6"));
+        final int length = Integer.valueOf(serialProps.getProperty(type + ".SuffixLength", "6"));
         final NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(length);
         nf.setMaximumIntegerDigits(length);
