@@ -494,6 +494,16 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DELIVERYNOTE_FROMPRODREQAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.CreateFromProductRequestAutoComplete")
+                    .description("AutoComplete and Activation for Create from ProductRequest for DeliveryNote.")
+                    .addDefaultValue("Type", CISales.ProductRequest.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.ProductRequestStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.ProductRequestStatus.Open.key);
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute DELIVERYNOTE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "DeliveryNote.JasperReport")
