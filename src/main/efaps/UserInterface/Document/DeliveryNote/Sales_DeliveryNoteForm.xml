@@ -57,18 +57,49 @@
             <property name="Label">Sales_DeliveryNote/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="getNameWithSerialFieldValue"
-                name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
+                name="Sales_DeliveryNoteForm.name4create.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_DeliveryNote</property>
                 <property name="Type01">Sales_ReturnSlip</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="updateFields4Name"
-                name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
+                name="Sales_DeliveryNoteForm.name4create.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_DeliveryNote</property>
                 <property name="Type01">Sales_ReturnSlip</property>
             </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.name4create.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+                <property name="Inverse">true</property>
+           </trigger>
+        </field>
+         <field name="serial">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_DeliveryNote/Name.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="dropDown4Serial"
+                name="Sales_DeliveryNoteForm.serial.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_DeliveryNote</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.serial.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+           </trigger>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
