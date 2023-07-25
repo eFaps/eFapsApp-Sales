@@ -15,25 +15,26 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b6187e38-31af-4e51-acf8-5490add5294f</uuid>
+    <uuid>8c3530ee-07b3-47c7-b16d-04a60efde2e7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DeliveryNoteTree_Menu_Action_SetClosed</name>
+        <name>Sales_DeliveryNoteTree_Menu_Action_SetOpen</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Closed</property>
+            <execute method="setStatus"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Open</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_DeliveryNoteTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                name="Sales_DeliveryNoteTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status">Draft</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

@@ -45,6 +45,7 @@
         <type>Sales_GoodsIssueSlip</type>
 
         <status group="Sales_DeliveryNoteStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
         </status>

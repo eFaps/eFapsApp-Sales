@@ -592,6 +592,13 @@ public final class Sales
                     .key(Sales.BASE + "DeliveryNote.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
 
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute DELIVERYNOTE_STATUS4CREATE = new StringSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "DeliveryNote.Status4Create")
+                    .defaultValue("Open")
+                    .description("Key of the Status for create.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()

@@ -25,8 +25,9 @@
         <name>Sales_DeliveryNoteTree_Menu_Action</name>
         <childs>
             <child>Sales_DeliveryNoteTree_Menu_Action_Edit</child>
-            <child>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</child>
+            <child>Sales_DeliveryNoteTree_Menu_Action_SetOpen</child>
             <child>Sales_DeliveryNoteTree_Menu_Action_SetClosed</child>
+            <child>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</child>
             <child>Sales_DeliveryNoteTree_Menu_Action_CreateInvoice</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
             <child>ERP_DocumentAbstractTree_Action_Checkout</child>

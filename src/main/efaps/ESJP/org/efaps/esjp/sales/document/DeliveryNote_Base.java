@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.common.MsgPhrase;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -542,34 +543,7 @@ public abstract class DeliveryNote_Base
         // if departurePoint is an instance --> use instances also
         final String departurePoint = parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.departurePoint.name);
         if (Instance.get(departurePoint).isValid()) {
-            final StringBuilder js = new StringBuilder();
-            js.append("eFapsSetFieldValue(0,'").append(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name)
-                .append("', new Array('")
-                .append(_contactInstance.getOid()).append("'")
-                .append(",'").append(_contactInstance.getOid()).append("','")
-            .append(StringEscapeUtils.escapeEcmaScript(address)).append("'");
-
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CIContacts.Contact2SubContact);
-            attrQueryBldr.addWhereAttrEqValue(CIContacts.Contact2SubContact.From, _contactInstance);
-            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.SubContact);
-            queryBldr.addWhereAttrInQuery(CIContacts.SubContact.ID,
-                            attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIContacts.SubContact.Name);
-            final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(
-                            Sales.DELIVERYNOTE_SUBCONTMSGPH4DP.get()));
-            multi.addMsgPhrase(subMsgPhrase);
-            multi.execute();
-
-            while (multi.next()) {
-                final String subContactName = multi.getAttribute(CIContacts.SubContact.Name);
-                final String subAddress = multi.getMsgPhrase(subMsgPhrase);
-                final String val = subContactName + ": " + subAddress;
-                js.append(",'").append(multi.getCurrentInstance().getOid()).append("','")
-                .append(StringEscapeUtils.escapeEcmaScript(val)).append("'");
-            }
-            js.append(")); ");
-            InterfaceUtils.appendScript4FieldUpdate(_map, js);
+            InterfaceUtils.appendScript4FieldUpdate(_map, getArrivalPointScript(_contactInstance, address));
         } else {
             _map.put(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, address);
         }
@@ -595,6 +569,41 @@ public abstract class DeliveryNote_Base
     }
 
 
+    protected StringBuilder getArrivalPointScript(final Instance contactInstance,
+                                                  final String address)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        js.append("eFapsSetFieldValue(0,'").append(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name)
+                        .append("', new Array('")
+                        .append(contactInstance.getOid()).append("'")
+                        .append(",'").append(contactInstance.getOid()).append("','")
+                        .append(StringEscapeUtils.escapeEcmaScript(address)).append("'");
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIContacts.Contact2SubContact);
+        attrQueryBldr.addWhereAttrEqValue(CIContacts.Contact2SubContact.From, contactInstance);
+        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.SubContact);
+        queryBldr.addWhereAttrInQuery(CIContacts.SubContact.ID,
+                        attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIContacts.SubContact.Name);
+        final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(
+                        Sales.DELIVERYNOTE_SUBCONTMSGPH4DP.get()));
+        multi.addMsgPhrase(subMsgPhrase);
+        multi.execute();
+
+        while (multi.next()) {
+            final String subContactName = multi.getAttribute(CIContacts.SubContact.Name);
+            final String subAddress = multi.getMsgPhrase(subMsgPhrase);
+            final String val = subContactName + ": " + subAddress;
+            js.append(",'").append(multi.getCurrentInstance().getOid()).append("','")
+                            .append(StringEscapeUtils.escapeEcmaScript(val)).append("'");
+        }
+        js.append(")); ");
+        return js;
+    }
+
+
     @Override
     protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
                                                            final List<Instance> _instances,
@@ -607,8 +616,13 @@ public abstract class DeliveryNote_Base
         print.addMsgPhrase(msgPhrase);
         print.execute();
         final String adress = print.getMsgPhrase(msgPhrase);
-        ret.append(getSetFieldValue(0, CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress));
-
+        final var eBillingConfig = SystemConfiguration.get(UUID.fromString("451e21b9-27ff-4378-adfa-a578a9ba0b51"));
+        if (eBillingConfig != null && eBillingConfig
+                        .getAttributeValueAsBoolean("org.efaps.electronicbilling.DeliveryNote.Activate")) {
+            ret.append(getArrivalPointScript(_contactInstance, adress));
+        } else {
+            ret.append(getSetFieldValue(0, CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress));
+        }
         if (Sales.DELIVERYNOTE_FROMINVOICEAC.exists()) {
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter,
                             Sales.DELIVERYNOTE_FROMINVOICEAC.get());

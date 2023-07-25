@@ -330,6 +330,11 @@ public abstract class AbstractProductDocument_Base
                 super.add2MainUpdate(_parameter, _update);
                 addStatus2DocEdit(_parameter, _update, _editDoc);
                 add2DocEdit(_parameter, _update, _editDoc);
+                final String name = getDocName4Edit(_parameter);
+                if (name != null) {
+                    _update.add(CISales.DocumentSumAbstract.Name, name);
+                    _editDoc.getValues().put(CISales.DocumentSumAbstract.Name.name, name);
+                }
             }
         };
         final List<FieldTable> fieldTables = new ArrayList<>();

@@ -52,6 +52,7 @@
         <type>Products_TransactionOutbound</type>
 
         <status group="Sales_DeliveryNoteStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>

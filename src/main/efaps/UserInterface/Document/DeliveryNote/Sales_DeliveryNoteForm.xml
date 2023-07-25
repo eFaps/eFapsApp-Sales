@@ -86,6 +86,7 @@
             <property name="Label">Sales_DeliveryNote/Name.Label</property>
             <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="dropDown4Serial"
                 name="Sales_DeliveryNoteForm.serial.UI_FIELD_VALUE"
@@ -101,11 +102,25 @@
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
         </field>
+        <field name="name4View">
+            <property name="Attribute">Name</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Required">true</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DeliveryNoteForm.name.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- ElectronicBilling-Configuration -->
+                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+                <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
+                <property name="Inverse">true</property>
+           </trigger>
         </field>
         <field name="productDocumentType">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
@@ -118,6 +133,7 @@
             <property name="Label">Sales_DeliveryNoteForm.productDocumentType.Label</property>
             <property name="UIType">DROPDOWN</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_DeliveryNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -131,6 +147,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">TransferReason</property>
+            <property name="Required">true</property>
         </field>
         <field name="remark">
             <property name="Attribute">Remark</property>
@@ -194,6 +211,7 @@
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="creator">
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
@@ -201,13 +219,16 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifier">
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
@@ -215,10 +236,12 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
          <field name="headingProject" character="Heading">
             <property name="Level">2</property>
@@ -338,6 +361,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Width">80</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="departurePointFieldValue"
                 name="Sales_DeliveryNoteForm.departurePoint.UI_FIELD_UPDATE"
@@ -427,6 +451,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
+            <property name="Required">true</property>
             <property name="Label">Sales_DeliveryNote/VehicleLink.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
@@ -553,6 +578,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
+            <property name="Required">true</property>
             <property name="Label">Sales_DeliveryNote/DriverLink.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
