@@ -181,6 +181,9 @@ public abstract class DeliveryNote_Base
         if (driverLink.isValid()) {
             _insert.add(CISales.DeliveryNote.DriverLink, driverLink);
         }
+
+        final var crossWeight = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.crossWeight.name);
+        _insert.add(CISales.DeliveryNote.CrossWeight, crossWeight);
     }
 
     /**
@@ -276,7 +279,11 @@ public abstract class DeliveryNote_Base
         if (driverLink.isValid()) {
             _update.add(CISales.DeliveryNote.DriverLink, driverLink);
         }
+
+        final var crossWeight = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.crossWeight.name);
+        _update.add(CISales.DeliveryNote.CrossWeight, crossWeight);
     }
+
 
     protected String evalAddress(final Instance contactInstance)
         throws EFapsException

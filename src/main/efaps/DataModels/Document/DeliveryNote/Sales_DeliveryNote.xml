@@ -115,6 +115,12 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>INTEGER5</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>CrossWeight</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>DECIMAL1</sqlcolumn>
+        </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_DeliveryNote.ACCESSCHECK" event="ACCESSCHECK" />
     </definition>
