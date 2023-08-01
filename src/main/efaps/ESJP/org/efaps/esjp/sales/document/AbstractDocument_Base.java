@@ -97,6 +97,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
@@ -706,8 +707,7 @@ public abstract class AbstractDocument_Base
                     final Instance instance = instances.get(0);
                     // in case of copy check if it is really a copy (meaning the same type will be created)
                     final Object object = _parameter.get(ParameterValues.CLASS);
-                    if (copy && object instanceof UIForm) {
-                        final UIForm uiForm = (UIForm) object;
+                    if (copy && object instanceof final UIForm uiForm) {
                         final Type type = uiForm.getCommand().getTargetCreateType();
                         if (type != null && !instance.getType().equals(type)) {
                             copy = false;
@@ -2895,6 +2895,16 @@ public abstract class AbstractDocument_Base
         nf.setMaximumIntegerDigits(length);
         nf.setGroupingUsed(false);
         return nf.format(idx);
+    }
+
+    protected void afterCreate(final Parameter parameter,
+                               final Instance instanec)
+        throws EFapsException
+    {
+        for (final IOnCreateDocument listener : Listener.get().<IOnCreateDocument>invoke(
+                        IOnCreateDocument.class)) {
+            listener.afterCreate(parameter, instanec);
+        }
     }
 
     /**

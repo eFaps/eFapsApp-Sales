@@ -47,7 +47,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
@@ -70,7 +69,6 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERP.DocTypeActivation;
 import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
@@ -426,11 +424,6 @@ public abstract class AbstractDocumentSum_Base
         insert.execute();
 
         createdDoc.setInstance(insert.getInstance());
-        // call possible listeners
-        for (final IOnCreateDocument listener : Listener.get().<IOnCreateDocument>invoke(
-                        IOnCreateDocument.class)) {
-            listener.afterCreate(_parameter, createdDoc);
-        }
         return createdDoc;
     }
 

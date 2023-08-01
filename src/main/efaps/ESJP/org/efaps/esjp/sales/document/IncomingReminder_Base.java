@@ -59,6 +59,7 @@ public abstract class IncomingReminder_Base
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 

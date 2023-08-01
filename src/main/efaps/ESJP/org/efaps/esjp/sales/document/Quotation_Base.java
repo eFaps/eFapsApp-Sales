@@ -60,6 +60,7 @@ public abstract class Quotation_Base
             ret.put(ReturnValues.TRUE, true);
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        afterCreate(_parameter, createdDoc.getInstance());
         return ret;
     }
 

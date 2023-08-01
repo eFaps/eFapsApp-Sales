@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2023 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ package org.efaps.esjp.sales.listener;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.common.listener.ITypedClass;
-import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
+import org.efaps.db.Instance;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.sales.CreditLine;
 import org.efaps.esjp.sales.util.Sales;
@@ -37,19 +36,13 @@ public abstract class OnCreateDocument4CreditLine_Base
 {
 
     @Override
-    public void afterCreate(final Parameter _parameter, final CreatedDoc _createdDoc)
+    public void afterCreate(final Parameter parameter,
+                            final Instance docInstance)
         throws EFapsException
     {
         if (Sales.CREDITLINE_ACTIVATE.get()) {
-            new CreditLine().updateCreditLine(_parameter, _createdDoc.getInstance());
+            new CreditLine().updateCreditLine(parameter, docInstance);
         }
-    }
-
-    @Override
-    public CharSequence getJavaScript4Doc(final ITypedClass _typeClass, final Parameter _parameter)
-        throws EFapsException
-    {
-        return "";
     }
 
     @Override

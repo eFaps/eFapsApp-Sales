@@ -61,6 +61,7 @@ public abstract class AcquisitionCosting_Base
         final List<Instance> derived = connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         connect2RecievingTicket(_parameter, createdDoc, derived);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 

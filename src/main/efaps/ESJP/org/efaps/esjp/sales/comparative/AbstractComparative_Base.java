@@ -29,7 +29,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -41,7 +40,6 @@ import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -99,12 +97,6 @@ public abstract class AbstractComparative_Base
         add2DocCreate(_parameter, insert, ret);
         insert.execute();
         ret.setInstance(insert.getInstance());
-
-        // call possible listeners
-        for (final IOnCreateDocument listener : Listener.get().<IOnCreateDocument>invoke(
-                        IOnCreateDocument.class)) {
-            listener.afterCreate(_parameter, ret);
-        }
         return ret;
     }
 
@@ -234,7 +226,7 @@ public abstract class AbstractComparative_Base
             values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
                             AbstractComparative_Base.REQKEY);
         } else {
-            values = new HashMap<Instance, String>();
+            values = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(AbstractComparative_Base.REQKEY, values);
 
             final List<Instance> detailInst = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);

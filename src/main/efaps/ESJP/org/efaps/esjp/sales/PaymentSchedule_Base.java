@@ -71,6 +71,7 @@ public abstract class PaymentSchedule_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 
@@ -184,7 +185,7 @@ public abstract class PaymentSchedule_Base
         queryBldr.addWhereAttrEqValue(CISales.PaymentSchedulePosition.PaymentSchedule, _editDoc.getInstance());
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
-        final Set<Instance> delIns = new HashSet<Instance>();
+        final Set<Instance> delIns = new HashSet<>();
         while (query.next()) {
             final Instance inst = query.getCurrentValue();
             if (!_editDoc.getPositions().contains(inst)) {
@@ -229,6 +230,7 @@ public abstract class PaymentSchedule_Base
             _parameter.put(ParameterValues.PARAMETERS, parameters);
             final CreatedDoc createdDoc = createDoc(_parameter);
             createPositions(_parameter, createdDoc);
+            afterCreate(_parameter, createdDoc.getInstance());
         }
         Context.getThreadContext().removeSessionAttribute("internalAmounts");
         return new Return();
@@ -321,10 +323,8 @@ public abstract class PaymentSchedule_Base
             if (multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
                             .equals(multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink))) {
                 rate = ((BigDecimal) rateObjDoc[0]).divide((BigDecimal) rateObjDoc[1], 12, BigDecimal.ROUND_HALF_UP);
-            } else {
-                if (!multi.<Long>getAttribute(CISales.Payment.CurrencyLink).equals(baseCurLink.getId())) {
-                    rate = ((BigDecimal) rateObj[1]).divide((BigDecimal) rateObj[0], 12, BigDecimal.ROUND_HALF_UP);
-                }
+            } else if (!multi.<Long>getAttribute(CISales.Payment.CurrencyLink).equals(baseCurLink.getId())) {
+                rate = ((BigDecimal) rateObj[1]).divide((BigDecimal) rateObj[0], 12, BigDecimal.ROUND_HALF_UP);
             }
             ret = ret.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
         }

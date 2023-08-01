@@ -45,6 +45,7 @@ public abstract class CostSheet_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 }

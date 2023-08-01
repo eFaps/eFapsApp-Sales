@@ -90,6 +90,7 @@ public abstract class Invoice_Base
             }
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        afterCreate(_parameter, createdDoc.getInstance());
         return ret;
     }
 

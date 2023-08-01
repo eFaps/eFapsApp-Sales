@@ -80,6 +80,7 @@ public abstract class CreditNote_Base
                 ret.put(ReturnValues.TRUE, true);
             }
         }
+        afterCreate(_parameter, createdDoc.getInstance());
         return ret;
     }
 

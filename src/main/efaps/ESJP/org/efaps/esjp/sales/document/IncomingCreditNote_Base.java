@@ -78,6 +78,7 @@ public abstract class IncomingCreditNote_Base
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 
@@ -98,6 +99,7 @@ public abstract class IncomingCreditNote_Base
         connect2Object(_parameter, createdDoc);
         connect2Account(_parameter, createdDoc);
         createTransaction(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 

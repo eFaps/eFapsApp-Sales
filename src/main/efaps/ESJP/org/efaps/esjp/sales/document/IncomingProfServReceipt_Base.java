@@ -89,6 +89,7 @@ public abstract class IncomingProfServReceipt_Base
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         createUpdateTaxDoc(_parameter, createdDoc, false);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 

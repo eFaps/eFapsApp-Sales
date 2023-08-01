@@ -73,6 +73,7 @@ public abstract class Reminder_Base
             }
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        afterCreate(_parameter, createdDoc.getInstance());
         return ret;
     }
 

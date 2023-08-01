@@ -81,6 +81,7 @@ public abstract class FundsToBeSettledReceipt_Base
         connect2Account(_parameter, createdDoc);
         createTransaction(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 
@@ -417,7 +418,7 @@ public abstract class FundsToBeSettledReceipt_Base
                                 DBProperties.getProperty(FundsToBeSettledReceipt.class.getName()
                                                 + ".NONEPosition.Label"));
                 _values.add(0, ddPos);
-            };
+            }
         }.getOptionListFieldValue(_parameter);
     }
 

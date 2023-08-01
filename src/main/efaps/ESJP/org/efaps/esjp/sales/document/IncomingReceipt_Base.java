@@ -69,6 +69,7 @@ public abstract class IncomingReceipt_Base
         incomingReceiptCreateTransaction(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 

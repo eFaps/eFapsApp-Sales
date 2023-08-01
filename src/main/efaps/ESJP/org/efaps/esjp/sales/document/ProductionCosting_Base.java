@@ -72,6 +72,7 @@ public abstract class ProductionCosting_Base
         final List<Instance> derived = connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         connect2ProductionReport(_parameter, createdDoc, derived);
+        afterCreate(_parameter, createdDoc.getInstance());
         return new Return();
     }
 
@@ -144,11 +145,11 @@ public abstract class ProductionCosting_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> list = new ArrayList<>();
         final List<Calculator> calcList = analyseTable(_parameter, null);
         int i = 0;
         for (final Calculator cal : calcList) {
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<>();
             _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
             add2Map4UpdateField(_parameter, map, calcList, cal, i == 0);
             list.add(map);
@@ -189,7 +190,7 @@ public abstract class ProductionCosting_Base
                     }
                 }
                 return ret;
-            };
+            }
         }.validate(_parameter, this);
     }
 

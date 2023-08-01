@@ -106,6 +106,7 @@ public abstract class IncomingInvoice_Base
         connect2Object(_parameter, createdDoc);
         createUpdateTaxDoc(_parameter, createdDoc, false);
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        afterCreate(_parameter, createdDoc.getInstance());
         return ret;
     }
 

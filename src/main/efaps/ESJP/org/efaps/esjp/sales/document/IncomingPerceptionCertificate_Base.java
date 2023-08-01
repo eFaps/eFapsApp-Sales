@@ -70,7 +70,8 @@ public abstract class IncomingPerceptionCertificate_Base
         final BigDecimal perception = parseBigDecimal(_parameter
                         .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name));
         if (perception.compareTo(BigDecimal.ZERO) > 0) {
-            createDoc(_parameter);
+            final var createdDoc = createDoc(_parameter);
+            afterCreate(_parameter, createdDoc.getInstance());
         }
         return new Return();
     }

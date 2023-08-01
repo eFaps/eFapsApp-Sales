@@ -21,9 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import net.fortuna.ical4j.model.Recur;
-import net.fortuna.ical4j.model.Recur.Frequency;
-
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -46,6 +43,9 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.Recur.Frequency;
+
 @EFapsUUID("b5c1b7e2-d567-4fa7-a1af-5c4f614481e2")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class Template_Base
@@ -67,7 +67,7 @@ public abstract class Template_Base
 
     public void run()
     {
-        final Recur recur = new Recur.Builder()
+        new Recur.Builder()
                         .frequency(Frequency.MONTHLY)
                         .build();
     }
@@ -179,6 +179,7 @@ public abstract class Template_Base
             createPositions(_parameter, createdDoc);
             connect2Derived(_parameter, createdDoc);
             connect2Object(_parameter, createdDoc);
+            afterCreate(_parameter, createdDoc.getInstance());
             return new Return();
         }
 
