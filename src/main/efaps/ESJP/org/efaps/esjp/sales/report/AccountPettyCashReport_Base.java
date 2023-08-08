@@ -23,21 +23,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.comparators.ComparatorChain;
@@ -73,6 +62,18 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  * Report used to analyze Petty Cash.
@@ -254,7 +255,7 @@ public abstract class AccountPettyCashReport_Base
                     datasource.add(bean);
                 }
                 final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
-                chain.addComparator((_o1, _o2) -> _o1.getPettyCash().compareTo(_o2.getPettyCash()));
+                chain.addComparator(Comparator.comparing(DocumentBean::getPettyCash));
                 if (isGroup(_parameter)) {
                     chain.addComparator((_o1, _o2) -> {
                         int ret1 = 0;
@@ -266,8 +267,8 @@ public abstract class AccountPettyCashReport_Base
                         return ret1;
                     });
                 }
-                chain.addComparator((_o1, _o2) -> _o1.getOfficial().compareTo(_o2.getOfficial()));
-                chain.addComparator((_o1, _o2) -> _o1.getAction().compareTo(_o2.getAction()));
+                chain.addComparator(Comparator.comparing(DocumentBean::getOfficial));
+                chain.addComparator(Comparator.comparing(DocumentBean::getAction));
                 Collections.sort(datasource, chain);
 
                 final Collection<Map<String, ?>> col = new ArrayList<>();
@@ -341,7 +342,9 @@ public abstract class AccountPettyCashReport_Base
             final TextColumnBuilder<String> employeeColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.Employee"), "employee",
                             DynamicReports.type.stringType()).setWidth(150);
-
+            final TextColumnBuilder<String> detailsColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.Details"), "details",
+                            DynamicReports.type.stringType()).setWidth(150);
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
                             DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".Column.Date"), "date",
                             DateTimeDate.get());
@@ -372,6 +375,7 @@ public abstract class AccountPettyCashReport_Base
                 if (Sales.PETTYCASHRECEIPT_ASSIGNEMPLOYEE.get()) {
                     _builder.addColumn(employeeColumn);
                 }
+                _builder.addColumn(detailsColumn);
             }
             for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                 final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(currency.getName(),
@@ -525,6 +529,8 @@ public abstract class AccountPettyCashReport_Base
         /** The base net. */
         private BigDecimal baseNet;
 
+        private String details;
+
         /**
          * Getter method for the instance variable {@link #pettyCash}.
          *
@@ -647,6 +653,13 @@ public abstract class AccountPettyCashReport_Base
                     case "employee":
                         ret = getEmployee();
                         break;
+                    case "details":
+                        try {
+                            ret = getDetails();
+                        } catch (final EFapsException e) {
+                            AccountPettyCashReport_Base.LOG.error("Catched", e);
+                        }
+                        break;
                     default:
                         try {
                             if (_input.equals(CurrencyInst.get(getCurrencyInstance()).getISOCode())) {
@@ -659,7 +672,7 @@ public abstract class AccountPettyCashReport_Base
                 }
                 return ret;
             };
-            final Map<String, Object> ret = LazyMap.lazyMap(new HashMap<String, Object>(), transformer);
+            final Map<String, Object> ret = LazyMap.lazyMap(new HashMap<>(), transformer);
             return ret;
         }
 
@@ -1027,6 +1040,28 @@ public abstract class AccountPettyCashReport_Base
         {
             employee = _employee;
             return this;
+        }
+
+        public String getDetails()
+            throws EFapsException
+        {
+            if (details == null) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+                queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, instance);
+                queryBldr.addOrderByAttributeAsc(CISales.PositionAbstract.PositionNumber);
+                final MultiPrintQuery print = queryBldr.getPrint();
+                print.addAttribute(CISales.PositionAbstract.ProductDesc);
+                print.executeWithoutAccessCheck();
+                if (print.next()) {
+                    details = print.getAttribute(CISales.PositionAbstract.ProductDesc);
+                } else {
+                    details = "";
+                }
+                if (print.next()) {
+                    details = details + " ...";
+                }
+            }
+            return details;
         }
 
         @Override
