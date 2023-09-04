@@ -38,6 +38,12 @@
                 <property name="Type02">Sales_FundsToBeSettledReceipt</property>
                 <property name="StatusGroup02">Sales_FundsToBeSettledReceiptStatus</property>
                 <property name="Status02">!Canceled</property>
+                <property name="Type03">Sales_IncomingInvoice</property>
+                <property name="StatusGroup03">Sales_IncomingInvoiceStatus</property>
+                <property name="Status03">!Replaced</property>
+                <property name="Type04">Sales_IncomingProfServReceipt</property>
+                <property name="StatusGroup04">Sales_IncomingProfServReceiptStatus</property>
+                <property name="Status04">!Canceled</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
