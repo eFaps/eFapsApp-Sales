@@ -689,6 +689,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute FUNDSTOBESETTLED_LATEBALANCETRANS = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "FundsToBeSettled.LateBalanceTransaction")
+                    .description("If set to true the transaction for the balance is done with the PaymentDoc.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPT_REVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "FundsToBeSettledReceipt.RevisionSequence")

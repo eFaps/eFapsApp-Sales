@@ -48,6 +48,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -1135,10 +1136,8 @@ public abstract class Account_Base
                         amount = BigDecimal.ZERO;
                     }
                 }
-            } else {
-                if (CISales.TransactionOutbound.getType().equals(multi.getCurrentInstance().getType())) {
-                    amount = amount.negate();
-                }
+            } else if (CISales.TransactionOutbound.getType().equals(multi.getCurrentInstance().getType())) {
+                amount = amount.negate();
             }
             ret = ret.add(amount);
         }
@@ -1384,11 +1383,13 @@ public abstract class Account_Base
         return ret;
     }
 
-    public void lateTransaction4PettyCashBalance(final Parameter _parameter,
-                                                 final Instance... _paymentInstances)
+    public void lateTransaction4Balance(final Parameter _parameter,
+                                        final CIType balance2collection,
+                                        final CIType balance2payment,
+                                        final Instance... _paymentInstances)
         throws EFapsException
     {
-        final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<>(Arrays.asList( _paymentInstances)));
+        final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<>(Arrays.asList(_paymentInstances)));
         final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
         final SelectBuilder selDocDate = SelectBuilder.get().linkto(CISales.Payment.CreateDocument)
                         .attribute(CIERP.DocumentAbstract.Date);
@@ -1396,17 +1397,18 @@ public abstract class Account_Base
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
             final Instance docInst = multi.getSelect(selDocInst);
-            if (InstanceUtils.isType(docInst, CISales.CollectionOrder) || InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
+            if (InstanceUtils.isType(docInst, CISales.CollectionOrder)
+                            || InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
                 final PrintQuery print = new PrintQuery(docInst);
                 final SelectBuilder selBalanceInst = InstanceUtils.isType(docInst, CISales.CollectionOrder)
-                            ? SelectBuilder.get()
-                                .linkfrom(CISales.PettyCashBalance2CollectionOrder.ToLink)
-                                .linkto(CISales.PettyCashBalance2CollectionOrder.FromLink)
-                                .instance()
-                            : SelectBuilder.get()
-                                .linkfrom(CISales.PettyCashBalance2PaymentOrder.ToLink)
-                                .linkto(CISales.PettyCashBalance2PaymentOrder.FromLink)
-                                .instance();
+                                ? SelectBuilder.get()
+                                                .linkfrom(balance2collection.getType().getName(), "ToLink")
+                                                .linkto("FromLink")
+                                                .instance()
+                                : SelectBuilder.get()
+                                                .linkfrom(balance2payment.getType().getName(), "ToLink")
+                                                .linkto("FromLink")
+                                                .instance();
 
                 print.addSelect(selBalanceInst);
                 print.executeWithoutAccessCheck();
@@ -1418,9 +1420,11 @@ public abstract class Account_Base
                         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                         queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, balance);
                         queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, balance);
-                        queryBldr.addWhereAttrEqValue(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+                        queryBldr.addWhereAttrEqValue(CISales.Payment.Status,
+                                        Status.find(CISales.PaymentStatus.Pending));
                         final MultiPrintQuery paymentMulti = queryBldr.getPrint();
-                        paymentMulti.addAttribute(CISales.Payment.AccountLink, CISales.Payment.Amount, CISales.Payment.CurrencyLink);
+                        paymentMulti.addAttribute(CISales.Payment.AccountLink, CISales.Payment.Amount,
+                                        CISales.Payment.CurrencyLink);
                         paymentMulti.executeWithoutAccessCheck();
                         while (paymentMulti.next()) {
                             final Insert transIns;
@@ -1432,12 +1436,14 @@ public abstract class Account_Base
                             transIns.add(CISales.TransactionAbstract.CurrencyId,
                                             paymentMulti.<Long>getAttribute(CISales.Payment.CurrencyLink));
                             transIns.add(CISales.TransactionAbstract.Payment, paymentMulti.getCurrentInstance());
-                            transIns.add(CISales.TransactionAbstract.Amount, paymentMulti.<BigDecimal>getAttribute(CISales.Payment.Amount));
-                            transIns.add(CISales.TransactionAbstract.Account, paymentMulti.<Long>getAttribute(CISales.Payment.AccountLink));
+                            transIns.add(CISales.TransactionAbstract.Amount,
+                                            paymentMulti.<BigDecimal>getAttribute(CISales.Payment.Amount));
+                            transIns.add(CISales.TransactionAbstract.Account,
+                                            paymentMulti.<Long>getAttribute(CISales.Payment.AccountLink));
                             transIns.add(CISales.TransactionAbstract.Date, multi.<DateTime>getSelect(selDocDate));
                             transIns.execute();
 
-                            final Update update = new Update( paymentMulti.getCurrentInstance());
+                            final Update update = new Update(paymentMulti.getCurrentInstance());
                             update.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Executed));
                             update.executeWithoutTrigger();
                         }
@@ -1446,5 +1452,4 @@ public abstract class Account_Base
             }
         }
     }
-
 }

@@ -1693,12 +1693,10 @@ public abstract class AbstractPaymentDocument_Base
         final BigDecimal pos4Doc = getSum4Positions(_parameter, true);
         if (amount4Doc.compareTo(pos4Doc) == 0) {
             html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentCorrect"));
+        } else if (amount4Doc.compareTo(pos4Doc) == 1) {
+            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentPositive"));
         } else {
-            if (amount4Doc.compareTo(pos4Doc) == 1) {
-                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentPositive"));
-            } else {
-                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentNegative"));
-            }
+            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentNegative"));
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
         ret.put(ReturnValues.TRUE, true);
@@ -1898,6 +1896,7 @@ public abstract class AbstractPaymentDocument_Base
         inverseTransactions(_parameter, _parameter.getInstance(), true);
         reverseStatus4CreateDocument(_parameter, _parameter.getInstance());
         inverseTransaction4PettyCashBalance(_parameter);
+        inverseTransaction4FundsToBeSettledBalance(_parameter);
         return new StatusValue().setStatus(_parameter);
     }
 
@@ -1924,6 +1923,46 @@ public abstract class AbstractPaymentDocument_Base
                                     .linkfrom(CISales.PettyCashBalance2PaymentOrder.ToLink)
                                     .linkto(CISales.PettyCashBalance2PaymentOrder.FromLink)
                                     .instance();
+
+                    print.addSelect(selBalanceInst);
+                    print.executeWithoutAccessCheck();
+                    final Object balance = print.getSelect(selBalanceInst);
+                    if (balance != null) {
+                        if (balance instanceof List) {
+                            LOG.error("Why the ..... is this a List???");
+                        } else {
+                            inverseTransactions(_parameter, (Instance) balance, true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected void inverseTransaction4FundsToBeSettledBalance(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (Sales.FUNDSTOBESETTLED_LATEBALANCETRANS.get()) {
+            final QueryBuilder queryBldr1 = new QueryBuilder(CISales.Payment);
+            queryBldr1.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance());
+            final MultiPrintQuery multi = queryBldr1.getPrint();
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
+            multi.addSelect(selDocInst);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                if (InstanceUtils.isType(docInst, CISales.CollectionOrder)
+                                || InstanceUtils.isType(docInst, CISales.PaymentOrder)) {
+                    final PrintQuery print = new PrintQuery(docInst);
+                    final SelectBuilder selBalanceInst = InstanceUtils.isType(docInst, CISales.CollectionOrder)
+                                    ? SelectBuilder.get()
+                                                    .linkfrom(CISales.FundsToBeSettledBalance2CollectionOrder.ToLink)
+                                                    .linkto(CISales.FundsToBeSettledBalance2CollectionOrder.FromLink)
+                                                    .instance()
+                                    : SelectBuilder.get()
+                                                    .linkfrom(CISales.FundsToBeSettledBalance2PaymentOrder.ToLink)
+                                                    .linkto(CISales.FundsToBeSettledBalance2PaymentOrder.FromLink)
+                                                    .instance();
 
                     print.addSelect(selBalanceInst);
                     print.executeWithoutAccessCheck();
@@ -2248,22 +2287,20 @@ public abstract class AbstractPaymentDocument_Base
                                 ? BigDecimal.ZERO.toString()
                                 : NumberFormatter.get().getTwoDigitsFormatter().format(amountDueConverted));
                 pay = amountDue;
+            } else if (amount2Pay.compareTo(pay) != 0) {
+                _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
+                                _restAmount == null
+                                                ? BigDecimal.ZERO.toString()
+                                                : NumberFormatter.get().getTwoDigitsFormatter().format(
+                                                                amountDueConverted));
+                pay = amountDue;
             } else {
-                if (amount2Pay.compareTo(pay) != 0) {
-                    _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
-                                    _restAmount == null
-                                                    ? BigDecimal.ZERO.toString()
-                                                    : NumberFormatter.get().getTwoDigitsFormatter().format(
-                                                                    amountDueConverted));
-                    pay = amountDue;
-                } else {
-                    _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
-                                    _restAmount == null
-                                                    ? BigDecimal.ZERO.toString()
-                                                    : NumberFormatter.get().getTwoDigitsFormatter().format(
-                                                                    _restAmount));
-                    pay = restAmountConverted;
-                }
+                _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
+                                _restAmount == null
+                                                ? BigDecimal.ZERO.toString()
+                                                : NumberFormatter.get().getTwoDigitsFormatter().format(
+                                                                _restAmount));
+                pay = restAmountConverted;
             }
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmountDesc.name,
                             NumberFormatter.get().getTwoDigitsFormatter().format(amount2Pay.subtract(pay)));

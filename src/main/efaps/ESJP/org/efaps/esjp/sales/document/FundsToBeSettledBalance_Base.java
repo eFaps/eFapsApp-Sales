@@ -271,28 +271,40 @@ public abstract class FundsToBeSettledBalance_Base
                 update.execute();
             }
 
+
             final Insert payInsert = new Insert(CISales.Payment);
             payInsert.add(CISales.Payment.Date, new DateTime());
             payInsert.add(CISales.Payment.CreateDocument, balanceInst);
             payInsert.add(CISales.Payment.TargetDocument, balanceInst);
+
+            if ( Sales.FUNDSTOBESETTLED_LATEBALANCETRANS.get()) {
+                payInsert.add(CISales.Payment.AccountLink, inst.getId());
+                payInsert.add(CISales.Payment.CurrencyLink, curId);
+                payInsert.add(CISales.Payment.Amount, difference.abs());
+                payInsert.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Pending));
+            } else {
+                payInsert.add(CISales.Payment.Status, Status.find(CISales.PaymentStatus.Executed));
+            }
             payInsert.execute();
 
-            final CIType type;
-            if (difference.compareTo(BigDecimal.ZERO) < 0) {
-                type = CISales.TransactionOutbound;
-            } else {
-                type = CISales.TransactionInbound;
-            }
+            if (!Sales.FUNDSTOBESETTLED_LATEBALANCETRANS.get()) {
+                final CIType type;
+                if (difference.compareTo(BigDecimal.ZERO) < 0) {
+                    type = CISales.TransactionOutbound;
+                } else {
+                    type = CISales.TransactionInbound;
+                }
 
-            final Insert transInsert = new Insert(type);
-            transInsert.add(CISales.TransactionAbstract.Amount, difference.abs());
-            transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
-            transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
-            transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
-            transInsert.add(CISales.TransactionAbstract.Description, DBProperties.getProperty(
-                            "org.efaps.esjp.sales.Account_Base.Transaction.FundsToBeSettledBalance"));
-            transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
-            transInsert.execute();
+                final Insert transInsert = new Insert(type);
+                transInsert.add(CISales.TransactionAbstract.Amount, difference.abs());
+                transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
+                transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
+                transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
+                transInsert.add(CISales.TransactionAbstract.Description, DBProperties.getProperty(
+                                "org.efaps.esjp.sales.Account_Base.Transaction.FundsToBeSettledBalance"));
+                transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
+                transInsert.execute();
+            }
         }
         return ret;
     }

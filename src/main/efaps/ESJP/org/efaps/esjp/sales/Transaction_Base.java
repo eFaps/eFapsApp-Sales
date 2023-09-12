@@ -196,7 +196,12 @@ public abstract class Transaction_Base
                 ret = transIns.getInstance();
                 // if late transaction is activated -> check if a transaction for Petty Cash must be done
                 if (Sales.PETTYCASH_LATEBALANCETRANS.get()) {
-                    new Account().lateTransaction4PettyCashBalance(_parameter, _paymentInstance);
+                    new Account().lateTransaction4Balance(_parameter, CISales.PettyCashBalance2CollectionOrder,
+                                    CISales.PettyCashBalance2PaymentOrder, _paymentInstance);
+                }
+                if (Sales.FUNDSTOBESETTLED_LATEBALANCETRANS.get()) {
+                    new Account().lateTransaction4Balance(_parameter, CISales.FundsToBeSettledBalance2CollectionOrder,
+                                    CISales.FundsToBeSettledBalance2PaymentOrder,_paymentInstance);
                 }
             } else {
                 final Update update = new Update(_paymentInstance);
@@ -672,7 +677,7 @@ public abstract class Transaction_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        Long currencyId = Long.valueOf(0);
+        Long currencyId = (long) 0;
         final String currencyType = (String) properties.get("CurrencyType");
         final String currId = (String) properties.get("CurrencyId");
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
@@ -779,7 +784,7 @@ public abstract class Transaction_Base
             }
         }
 
-        Long currId = Long.valueOf(0);
+        Long currId = (long) 0;
         if (!_currencyId.isEmpty() && _currencyId != null) {
             currId = Long.parseLong(_currencyId);
         }
