@@ -1306,6 +1306,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICE_ACTIVATEMANUALNAME = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Invoice.ActivateManualNaming")
+                    .defaultValue(false)
+                    .description("Activate the mechanism to manually set the name of an Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute INVOICE_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.JasperReport")
@@ -2641,6 +2649,14 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Receipt.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Receipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECEIPT_ACTIVATEMANUALNAME = new BooleanSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Receipt.ActivateManualNaming")
+                    .defaultValue(false)
+                    .description("Activate the mechanism to manually set the name of an Receipt");
 
     /** See description. */
     @EFapsSysConfLink
