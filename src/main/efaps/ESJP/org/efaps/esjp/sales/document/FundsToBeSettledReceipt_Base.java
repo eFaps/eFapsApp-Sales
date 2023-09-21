@@ -45,6 +45,8 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
@@ -279,6 +281,22 @@ public abstract class FundsToBeSettledReceipt_Base
         updateTransaction(_parameter, editDoc);
         return new Return();
     }
+
+    public Return getJavaScriptUIValue4Receipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder js = new StringBuilder().append("query(\".eFapsPickerLink\").forEach(function(node) {")
+                        .append("node.style.display='none';")
+                        .append("});");
+        final StringBuilder bldr = InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY)
+                        .append(getSetFieldReadOnlyScript(_parameter,
+                                        CIFormSales.Sales_FundsToBeSettledReceiptForm.contact.name,
+                                        CIFormSales.Sales_FundsToBeSettledReceiptForm.name4create.name));
+        ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, bldr, true, 1500));
+        return ret;
+    }
+
     /**
      * @param _parameter parameter as passed by the eFaps API
      * @return Return contiaining javascript

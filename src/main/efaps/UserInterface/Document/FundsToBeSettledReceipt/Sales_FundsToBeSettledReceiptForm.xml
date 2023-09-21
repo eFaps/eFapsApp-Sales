@@ -456,6 +456,17 @@
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_FundsToBeSettledReceiptForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
         </field>
+        <field name="javaScript2">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="getJavaScriptUIValue4Receipt"
+                name="Sales_FundsToBeSettledReceiptForm.javaScript2.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
