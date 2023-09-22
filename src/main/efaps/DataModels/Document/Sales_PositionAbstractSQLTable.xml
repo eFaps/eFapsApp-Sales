@@ -39,6 +39,8 @@
             <column name="PARENTID"        type="INTEGER" />
             <foreign name="T_SALESPOS_DOCID"               key="DOCID"           reference="T_ERPDOC(ID)"/>
             <foreign name="T_SALESPOS_PROD"                key="PROD"            reference="T_PRODPRODUCT(ID)"/>
+            <index  name="T_SALESPOS_INDEX_TYPEID" columns="TYPEID"/>
+            <index  name="T_SALESPOS_INDEX_DOCIDTYPEID" columns="DOCID,TYPEID"/>
         </database>
     </definition>
 </datamodel-sqltable>
