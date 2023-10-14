@@ -16,7 +16,6 @@
  */
 package org.efaps.esjp.sales.listener;
 
-import java.text.NumberFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +28,8 @@ import org.efaps.db.Instance;
 import org.efaps.eql.EQL;
 import org.efaps.eql2.StmtFlag;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.erp.SerialNumbers;
+import org.efaps.esjp.erp.util.ERP;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,8 @@ public class OnStatusChange4DocumentName
                               final Long statusId)
         throws EFapsException
     {
-        final var properties = Sales.SERIALNUMBERS.get();
+        LOG.info("Updateing document Name");
+        final var properties = ERP.SERIALNUMBERS.get();
         final var type = instance.getType().getName();
         final var statusKey = properties.getProperty(type + ".AssignOnStatus");
         if (statusKey != null) {
@@ -89,34 +90,10 @@ public class OnStatusChange4DocumentName
                 final Matcher suffixMatcher = SUFFIXPATTERN.matcher(name);
                 suffixMatcher.find();
                 if (Integer.parseInt(suffixMatcher.group()) == 0) {
-                    Integer numberInt = 1;
-                    final var eval = EQL.builder().print().query(type)
-                                    .where()
-                                    .attribute(CISales.DocumentAbstract.Name).like(serial + "%")
-                                    .select()
-                                    .attribute(CISales.DocumentAbstract.Name)
-                                    .orderBy("1", true)
-                                    .limit(1)
-                                    .evaluate();
-                    if (eval.next()) {
-                        final Matcher matcher = SUFFIXPATTERN.matcher(eval.get(CISales.DocumentAbstract.Name));
-                        if (matcher.find()) {
-                            final String numTmp = matcher.group();
-                            numberInt = Integer.parseInt(numTmp) + 1;
-                        }
-                    }
-
-                    final var serialProps = Sales.SERIALNUMBERS.get();
-                    final int length = Integer.valueOf(serialProps.getProperty(type + ".SuffixLength", "6"));
-                    final NumberFormat nf = NumberFormat.getInstance();
-                    nf.setMinimumIntegerDigits(length);
-                    nf.setMaximumIntegerDigits(length);
-                    nf.setGroupingUsed(false);
-                    final var number = nf.format(numberInt);
-
+                    final var serialNumber =  SerialNumbers.getNext(type, serial);
                     EQL.builder().with(StmtFlag.TRIGGEROFF)
                                     .update(instance)
-                                    .set(CISales.DocumentAbstract.Name, serial + "-" + number)
+                                    .set(CISales.DocumentAbstract.Name, serialNumber)
                                     .execute();
                 }
             }

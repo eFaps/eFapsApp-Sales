@@ -98,6 +98,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
+import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
@@ -2069,7 +2070,7 @@ public abstract class AbstractDocument_Base
             }
         }
         final String type = getProperty(_parameter, "Type");
-        final var serialProps = Sales.SERIALNUMBERS.get();
+        final var serialProps = ERP.SERIALNUMBERS.get();
         final int length = Integer.valueOf(serialProps.getProperty(type + ".SuffixLength", "6"));
         final NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(length);
@@ -2158,7 +2159,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final String type = getProperty(_parameter, "Type");
-        final Properties properties = Sales.SERIALNUMBERS.get();
+        final Properties properties = ERP.SERIALNUMBERS.get();
         final String serialStr = properties.getProperty(type, "001");
         final List<DropDownPosition> ret = new ArrayList<>();
         final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
@@ -2888,7 +2889,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final var type = getCIType().getType().getName();
-        final var serialProps = Sales.SERIALNUMBERS.get();
+        final var serialProps = ERP.SERIALNUMBERS.get();
         final int length = Integer.valueOf(serialProps.getProperty(type + ".SuffixLength", "6"));
         final NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(length);

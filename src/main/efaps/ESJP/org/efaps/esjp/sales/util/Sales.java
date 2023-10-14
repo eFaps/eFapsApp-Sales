@@ -3364,20 +3364,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()
-                    .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "SerialNumbers")
-                    .addDefaultValue("Sales_Invoice", "F001")
-                    .addDefaultValue("Sales_Invoice.AssignOnStatus", "Open")
-                    .addDefaultValue("Sales_Receipt", "B001")
-                    .addDefaultValue("Sales_Receipt.AssignOnStatus", "Open")
-                    .concatenate(true)
-                    .description("A mapping like: Sales_Invoice=001;002;003\n"
-                                    + "Sales_Invoice.AssignOnStatus=Open\n"
-                                    + "Sales_Invoice.SuffixLength=6");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute SERVICEREQUEST_ASSDEP = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "ServiceRequest.AssignDepartment")
