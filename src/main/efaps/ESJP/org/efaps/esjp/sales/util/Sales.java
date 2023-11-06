@@ -136,6 +136,21 @@ public final class Sales
                     .concatenate(true)
                     .description("Configuration for Calculators.");
 
+
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CALCULATOR_CONFIG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Calculator.Config")
+                    .addDefaultValue("NetPriceScale", "4")
+                    .addDefaultValue("TaxScale", "2")
+                    .addDefaultValue("TaxCalcFlow", "RoundSum")
+                    .addDefaultValue("CrossPriceScale", "4")
+                    .addDefaultValue("CrossTotalFlow", "SumCrossPrice")
+                    .description("Configuration for Calculators.\n"
+                                    + "TaxCalcFlow: RoundSum, SumRound\n"
+                                    + "CrossTotalFlow: NetTotalPlusTax, SumCrossPrice");
+
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PARTIALCONFIG = new PropertiesSysConfAttribute()
