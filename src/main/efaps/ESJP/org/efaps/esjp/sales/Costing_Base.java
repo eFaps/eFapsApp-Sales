@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2022 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@ package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +34,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -54,6 +57,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -348,9 +352,12 @@ public abstract class Costing_Base
                         Costing_Base.LOG.debug("Adding Instance for Update: {}", penultimate);
                     }
                 }
+                Context.save();
             }
-            final int maxTrans = getMaxTransaction();
 
+            Costing_Base.LOG.debug("Did Step 1");
+            final int maxTrans = getMaxTransaction();
+            /**
             // check for new transactions and add the costing for them
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.CostingAbstract);
             attrQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, _currencyInstance);
@@ -364,7 +371,68 @@ public abstract class Costing_Base
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
             final InstanceQuery query = queryBldr.getQuery();
             query.setLimit(maxTrans + 5);
-            final MultiPrintQuery multi = new MultiPrintQuery(query.executeWithoutAccessCheck());
+            List<Instance> insts = query.executeWithoutAccessCheck();
+            **/
+
+            final StringBuilder cmd = new StringBuilder();
+            cmd.append("select T0.ID, T0.TYPEID ")
+                .append(" FROM ").append(CIProducts.TransactionInOutAbstract.getType().getMainTable().getSqlTable())
+                    .append(" T0 ")
+                .append(" where  T0.TYPEID in (");
+            boolean first  = true;
+            for (final Type childType : CIProducts.TransactionInOutAbstract.getType().getChildTypes()) {
+                if (first) {
+                    first = false;
+                } else {
+                    cmd.append(",");
+                }
+                cmd.append(childType.getId());
+            }
+            cmd.append(")")
+                .append(" AND T0.COMPANYID =").append(Context.getThreadContext().getCompany().getId())
+                .append(" AND NOT EXISTS (")
+                .append(" SELECT ")
+                .append(" FROM ").append( CIProducts.CostingAbstract.getType().getMainTable().getSqlTable())
+                    .append(" T2 ")
+                .append(" WHERE T2.transid = T0.ID")
+                .append(" AND T2.CURRENCYID = ").append(_currencyInstance.getId())
+                .append(" AND T2.TYPEID in (");
+            first  = true;
+            for (final Type childType : CIProducts.CostingAbstract.getType().getChildTypes()) {
+                if (first) {
+                    first = false;
+                } else {
+                    cmd.append(",");
+                }
+                cmd.append(childType.getId());
+            }
+            cmd.append("))").append("order by T0.DATE asc, T0.POS asc limit ").append(maxTrans + 5);
+            LOG.info("CMD: {}", cmd);
+
+            final List<Instance> insts = new ArrayList<>();
+            ConnectionResource con = null;
+            try {
+                con = Context.getThreadContext().getConnectionResource();
+                Statement stmt = null;
+                try {
+                    stmt = con.createStatement();
+                    final ResultSet rs = stmt.executeQuery(cmd.toString());
+                    while (rs.next()) {
+                        final Long id = rs.getLong(1);
+                        final Long typeId = rs.getLong(2);
+                        insts.add(Instance.get(Type.get(typeId), id));
+                    }
+                    rs.close();
+                } finally {
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                }
+            } catch (final SQLException e) {
+                LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            }
+
+            final MultiPrintQuery multi = new MultiPrintQuery(insts);
             final SelectBuilder selDocInst = new SelectBuilder()
                             .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
             final SelectBuilder selProdInst = new SelectBuilder()
@@ -376,6 +444,8 @@ public abstract class Costing_Base
             final Set<TransCosting> costingTmp = new LinkedHashSet<>();
             int count = 0;
             while (multi.next()) {
+              Costing_Base.LOG.debug("Itter A: {}", multi.getCurrentInstance());
+
                 final TransCosting transCost = getTransCosting()
                             .setTransactionInstance(multi.getCurrentInstance())
                             .setDocInstance(multi.<Instance>getSelect(selDocInst))
@@ -577,11 +647,9 @@ public abstract class Costing_Base
             }
         }
 
-        final Iterator<TransCosting> iter = tcList.iterator();
         TransCosting prev = null;
         boolean forceCostFromDoc = false;
-        while (iter.hasNext()) {
-            final TransCosting current = iter.next();
+        for (final TransCosting current : tcList) {
             Costing_Base.LOG.debug("Verify TransactionCosting: {}", current);
             if (prev != null) {
                 boolean update = false;
@@ -651,23 +719,21 @@ public abstract class Costing_Base
                     current.updateCosting();
                     Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
                 }
-            } else {
-                // if the current was marked for update (happens only if it also
-                // was the first ever)
-                if (!current.isUpToDate() && !current.isOutBound()) {
-                    final BigDecimal cost = current.getCostFromDocument();
-                    if (current.getCost().compareTo(cost) != 0) {
-                        current.setCost(cost);
-                        current.setResult(cost);
-                        // if the first has its cost from doc changed, the rest
-                        // must be checked also
-                        forceCostFromDoc = true;
-                    }
-                    current.updateCosting();
-                    Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
-                } else if (!current.isUpToDate()) {
-                    current.updateCosting();
+            } else // if the current was marked for update (happens only if it also
+            // was the first ever)
+            if (!current.isUpToDate() && !current.isOutBound()) {
+                final BigDecimal cost = current.getCostFromDocument();
+                if (current.getCost().compareTo(cost) != 0) {
+                    current.setCost(cost);
+                    current.setResult(cost);
+                    // if the first has its cost from doc changed, the rest
+                    // must be checked also
+                    forceCostFromDoc = true;
                 }
+                current.updateCosting();
+                Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
+            } else if (!current.isUpToDate()) {
+                current.updateCosting();
             }
             prev = current;
             ret.add(current);
@@ -916,10 +982,10 @@ public abstract class Costing_Base
                                 _currencyInstance);
                 final RateInfo rateInfo = rateInfos[2];
                 final CostingInfo info = new CostingInfo().setQuantity(quantity)
-                                .setCost(cost.setScale(8, RoundingMode.HALF_UP)
-                                                .divide(rateInfo.getRate(), RoundingMode.HALF_UP))
-                                .setResult(result.setScale(8, RoundingMode.HALF_UP)
-                                                .divide(rateInfo.getRate(), RoundingMode.HALF_UP));
+                                .setCost(cost.setScale(8, BigDecimal.ROUND_HALF_UP)
+                                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP))
+                                .setResult(result.setScale(8, BigDecimal.ROUND_HALF_UP)
+                                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP));
                 ret.put(transactionInst, info);
             }
         }
@@ -1080,7 +1146,7 @@ public abstract class Costing_Base
          */
         public Instance getInstance()
         {
-            return instance;
+            return this.instance;
         }
 
         /**
@@ -1091,7 +1157,7 @@ public abstract class Costing_Base
          */
         public CostingInfo setInstance(final Instance _instance)
         {
-            instance = _instance;
+            this.instance = _instance;
             return this;
         }
 
@@ -1102,7 +1168,7 @@ public abstract class Costing_Base
          */
         public BigDecimal getCost()
         {
-            return cost;
+            return this.cost;
         }
 
         /**
@@ -1113,7 +1179,7 @@ public abstract class Costing_Base
          */
         public CostingInfo setCost(final BigDecimal _cost)
         {
-            cost = _cost;
+            this.cost = _cost;
             return this;
         }
 
@@ -1124,7 +1190,7 @@ public abstract class Costing_Base
          */
         public BigDecimal getResult()
         {
-            return result;
+            return this.result;
         }
 
         /**
@@ -1135,7 +1201,7 @@ public abstract class Costing_Base
          */
         public CostingInfo setResult(final BigDecimal _result)
         {
-            result = _result;
+            this.result = _result;
             return this;
         }
 
@@ -1146,7 +1212,7 @@ public abstract class Costing_Base
          */
         public BigDecimal getQuantity()
         {
-            return quantity;
+            return this.quantity;
         }
 
         /**
@@ -1157,7 +1223,7 @@ public abstract class Costing_Base
          */
         public CostingInfo setQuantity(final BigDecimal _quantity)
         {
-            quantity = _quantity;
+            this.quantity = _quantity;
             return this;
         }
     }
@@ -1264,12 +1330,12 @@ public abstract class Costing_Base
             final PrintQuery print = new PrintQuery(getCostingInstance());
             print.addSelect(selTransInst, selProdInst, selDate, selQuantity, selDocInst, selPos);
             print.executeWithoutAccessCheck();
-            productInstance = print.<Instance>getSelect(selProdInst);
-            docInstance = print.<Instance>getSelect(selDocInst);
-            date = print.<DateTime>getSelect(selDate);
-            transactionInstance = print.<Instance>getSelect(selTransInst);
-            transactionQuantity = print.<BigDecimal>getSelect(selQuantity);
-            position = print.<Integer>getSelect(selPos);
+            this.productInstance = print.<Instance>getSelect(selProdInst);
+            this.docInstance = print.<Instance>getSelect(selDocInst);
+            this.date = print.<DateTime>getSelect(selDate);
+            this.transactionInstance = print.<Instance>getSelect(selTransInst);
+            this.transactionQuantity = print.<BigDecimal>getSelect(selQuantity);
+            this.position = print.<Integer>getSelect(selPos);
         }
 
         /**
@@ -1280,8 +1346,8 @@ public abstract class Costing_Base
         protected void initCosting()
             throws EFapsException
         {
-            if (!initCosting) {
-                initCosting = true;
+            if (!this.initCosting) {
+                this.initCosting = true;
                 final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
                 queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
                 queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink,
@@ -1292,12 +1358,12 @@ public abstract class Costing_Base
                                 CIProducts.CostingAbstract.State);
                 multi.executeWithoutAccessCheck();
                 if (multi.next()) {
-                    upToDate = multi.getAttribute(CIProducts.Costing.UpToDate);
-                    cost = multi.getAttribute(CIProducts.Costing.Cost);
-                    costingQuantity = multi.getAttribute(CIProducts.Costing.Quantity);
-                    result = multi.getAttribute(CIProducts.Costing.Result);
-                    costingState = multi.getAttribute(CIProducts.CostingAbstract.State);
-                    costingInstance = multi.getCurrentInstance();
+                    this.upToDate = multi.getAttribute(CIProducts.Costing.UpToDate);
+                    this.cost = multi.getAttribute(CIProducts.Costing.Cost);
+                    this.costingQuantity = multi.getAttribute(CIProducts.Costing.Quantity);
+                    this.result = multi.getAttribute(CIProducts.Costing.Result);
+                    this.costingState = multi.getAttribute(CIProducts.CostingAbstract.State);
+                    this.costingInstance = multi.getCurrentInstance();
                 }
             }
         }
@@ -1362,7 +1428,7 @@ public abstract class Costing_Base
          */
         public TransCosting setCostingInstance(final Instance _costingInstance)
         {
-            costingInstance = _costingInstance;
+            this.costingInstance = _costingInstance;
             return this;
         }
 
@@ -1375,10 +1441,10 @@ public abstract class Costing_Base
         public Instance getTransactionInstance()
             throws EFapsException
         {
-            if (transactionInstance == null) {
+            if (this.transactionInstance == null) {
                 initTransaction();
             }
-            return transactionInstance;
+            return this.transactionInstance;
         }
 
         /**
@@ -1390,7 +1456,7 @@ public abstract class Costing_Base
          */
         public TransCosting setTransactionInstance(final Instance _transactionInstance)
         {
-            transactionInstance = _transactionInstance;
+            this.transactionInstance = _transactionInstance;
             return this;
         }
 
@@ -1402,10 +1468,10 @@ public abstract class Costing_Base
          */
         public Instance getCostingInstance() throws EFapsException
         {
-            if (costingInstance == null) {
+            if (this.costingInstance == null) {
                 initCosting();
             }
-            return costingInstance;
+            return this.costingInstance;
         }
 
         /**
@@ -1417,10 +1483,10 @@ public abstract class Costing_Base
         public Instance getProductInstance()
             throws EFapsException
         {
-            if (productInstance == null) {
+            if (this.productInstance == null) {
                 initTransaction();
             }
-            return productInstance;
+            return this.productInstance;
         }
 
         /**
@@ -1432,7 +1498,7 @@ public abstract class Costing_Base
          */
         public TransCosting setProductInstance(final Instance _productInstance)
         {
-            productInstance = _productInstance;
+            this.productInstance = _productInstance;
             return this;
         }
 
@@ -1445,10 +1511,10 @@ public abstract class Costing_Base
         public DateTime getDate()
             throws EFapsException
         {
-            if (productInstance == null) {
+            if (this.productInstance == null) {
                 initTransaction();
             }
-            return date;
+            return this.date;
         }
 
         /**
@@ -1459,7 +1525,7 @@ public abstract class Costing_Base
          */
         public TransCosting setDate(final DateTime _date)
         {
-            date = _date;
+            this.date = _date;
             return this;
         }
 
@@ -1472,14 +1538,14 @@ public abstract class Costing_Base
         public BigDecimal getTransactionQuantity()
             throws EFapsException
         {
-            if (transactionInstance == null) {
+            if (this.transactionInstance == null) {
                 initTransaction();
             }
             final BigDecimal ret;
-            if (transactionInstance.getType().isKindOf(CIProducts.TransactionOutbound.getType())) {
-                ret = transactionQuantity.negate();
+            if (this.transactionInstance.getType().isKindOf(CIProducts.TransactionOutbound.getType())) {
+                ret = this.transactionQuantity.negate();
             } else {
-                ret = transactionQuantity;
+                ret = this.transactionQuantity;
             }
             return ret;
         }
@@ -1491,7 +1557,7 @@ public abstract class Costing_Base
          */
         public boolean isOutBound()
         {
-            return transactionInstance.getType().isKindOf(CIProducts.TransactionOutbound.getType());
+            return this.transactionInstance.getType().isKindOf(CIProducts.TransactionOutbound.getType());
         }
 
         /**
@@ -1503,7 +1569,7 @@ public abstract class Costing_Base
          */
         public TransCosting setTransactionQuantity(final BigDecimal _transactionQuantity)
         {
-            transactionQuantity = _transactionQuantity;
+            this.transactionQuantity = _transactionQuantity;
             return this;
         }
 
@@ -1516,10 +1582,10 @@ public abstract class Costing_Base
         public BigDecimal getCostingQuantity()
             throws EFapsException
         {
-            if (costingQuantity == null) {
+            if (this.costingQuantity == null) {
                 initCosting();
             }
-            return costingQuantity;
+            return this.costingQuantity;
         }
 
         /**
@@ -1542,7 +1608,7 @@ public abstract class Costing_Base
          */
         public TransCosting setCostingQuantity(final BigDecimal _costingQuantity)
         {
-            costingQuantity = _costingQuantity;
+            this.costingQuantity = _costingQuantity;
             return this;
         }
 
@@ -1555,7 +1621,7 @@ public abstract class Costing_Base
         public BigDecimal getCost() throws EFapsException
         {
             initCosting();
-            return cost;
+            return this.cost;
         }
 
         /**
@@ -1603,7 +1669,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             if (CostingState.ACTIVE.equals(getCostingState())) {
-                cost = _cost;
+                this.cost = _cost;
             }
             return this;
         }
@@ -1616,10 +1682,10 @@ public abstract class Costing_Base
         public BigDecimal getResult()
         {
             final BigDecimal ret;
-            if (BigDecimal.ZERO.compareTo(result) > 0) {
+            if (BigDecimal.ZERO.compareTo(this.result) > 0) {
                 ret = BigDecimal.ZERO;
             } else {
-                ret = result;
+                ret = this.result;
             }
             return ret;
         }
@@ -1635,7 +1701,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             if (CostingState.ACTIVE.equals(getCostingState())) {
-                result = _result;
+                this.result = _result;
             }
             return this;
         }
@@ -1649,10 +1715,10 @@ public abstract class Costing_Base
         public Instance getDocInstance()
             throws EFapsException
         {
-            if (docInstance == null) {
+            if (this.docInstance == null) {
                 initTransaction();
             }
-            return docInstance;
+            return this.docInstance;
         }
 
         /**
@@ -1663,7 +1729,7 @@ public abstract class Costing_Base
          */
         public TransCosting setDocInstance(final Instance _docInstance)
         {
-            docInstance = _docInstance;
+            this.docInstance = _docInstance;
             return this;
         }
 
@@ -1676,10 +1742,10 @@ public abstract class Costing_Base
         public boolean isUpToDate()
             throws EFapsException
         {
-            if (upToDate == null) {
+            if (this.upToDate == null) {
                 initCosting();
             }
-            return upToDate;
+            return this.upToDate;
         }
 
         /**
@@ -1690,7 +1756,7 @@ public abstract class Costing_Base
          */
         public TransCosting setUpToDate(final boolean _upToDate)
         {
-            upToDate = _upToDate;
+            this.upToDate = _upToDate;
             return this;
         }
 
@@ -1703,10 +1769,10 @@ public abstract class Costing_Base
         public Integer getPosition()
             throws EFapsException
         {
-            if (position == null) {
+            if (this.position == null) {
                 initTransaction();
             }
-            return position;
+            return this.position;
         }
 
         /**
@@ -1717,7 +1783,7 @@ public abstract class Costing_Base
          */
         public TransCosting setPosition(final Integer _position)
         {
-            position = _position;
+            this.position = _position;
             return this;
         }
 
@@ -1728,7 +1794,7 @@ public abstract class Costing_Base
          */
         public Instance getCurrencyInstance()
         {
-            return currencyInstance;
+            return this.currencyInstance;
         }
 
         /**
@@ -1739,7 +1805,7 @@ public abstract class Costing_Base
          */
         public TransCosting setCurrencyInstance(final Instance _currencyInstance)
         {
-            currencyInstance = _currencyInstance;
+            this.currencyInstance = _currencyInstance;
             return this;
         }
 
@@ -1753,7 +1819,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             initCosting();
-            return costingState;
+            return this.costingState;
         }
 
         /**
@@ -1764,7 +1830,7 @@ public abstract class Costing_Base
          */
         public TransCosting setCostingState(final CostingState _costingState)
         {
-            costingState = _costingState;
+            this.costingState = _costingState;
             return this;
         }
 
@@ -1826,8 +1892,8 @@ public abstract class Costing_Base
         public CostDoc(final Instance _docInst,
                        final Instance _productInst)
         {
-            baseDocInst = _docInst;
-            productInst = _productInst;
+            this.baseDocInst = _docInst;
+            this.productInst = _productInst;
         }
 
         /**
@@ -1838,8 +1904,8 @@ public abstract class Costing_Base
         protected void init()
             throws EFapsException
         {
-            if (!initialized) {
-                initialized = true;
+            if (!this.initialized) {
+                this.initialized = true;
                 // if the transaction was canceled do not search for cost, it must be inherited
                 boolean found = isCanceledTransaction(getBaseDocInst());
                 if (!found) {
@@ -2306,7 +2372,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             init();
-            return cost;
+            return this.cost;
         }
 
         /**
@@ -2369,7 +2435,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             init();
-            return baseDocInst;
+            return this.baseDocInst;
         }
 
         /**
@@ -2380,7 +2446,7 @@ public abstract class Costing_Base
          */
         public CostDoc setBaseDocInst(final Instance _docInst)
         {
-            baseDocInst = _docInst;
+            this.baseDocInst = _docInst;
             return this;
         }
 
@@ -2394,7 +2460,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             init();
-            return productInst;
+            return this.productInst;
         }
 
         /**
@@ -2405,7 +2471,7 @@ public abstract class Costing_Base
          */
         public CostDoc setProductInst(final Instance _productInst)
         {
-            productInst = _productInst;
+            this.productInst = _productInst;
             return this;
         }
 
@@ -2417,7 +2483,7 @@ public abstract class Costing_Base
          */
         public CostDoc setCost(final BigDecimal _cost)
         {
-            cost = _cost;
+            this.cost = _cost;
             return this;
         }
 
@@ -2431,7 +2497,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             init();
-            return costDocInst;
+            return this.costDocInst;
         }
 
         /**
@@ -2442,7 +2508,7 @@ public abstract class Costing_Base
          */
         public CostDoc setCostDocInst(final Instance _costDocInst)
         {
-            costDocInst = _costDocInst;
+            this.costDocInst = _costDocInst;
             return this;
         }
 
@@ -2456,7 +2522,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             init();
-            return rateCost;
+            return this.rateCost;
         }
 
         /**
@@ -2467,7 +2533,7 @@ public abstract class Costing_Base
          */
         public CostDoc setRateCost(final BigDecimal _rateCost)
         {
-            rateCost = _rateCost;
+            this.rateCost = _rateCost;
             return this;
         }
 
@@ -2481,7 +2547,7 @@ public abstract class Costing_Base
             throws EFapsException
         {
             init();
-            return rateCurrencyInstance;
+            return this.rateCurrencyInstance;
         }
 
         /**
@@ -2492,7 +2558,7 @@ public abstract class Costing_Base
          */
         public CostDoc setRateCurrencyInstance(final Instance _rateCurrencyInstance)
         {
-            rateCurrencyInstance = _rateCurrencyInstance;
+            this.rateCurrencyInstance = _rateCurrencyInstance;
             return this;
         }
 
@@ -2503,7 +2569,7 @@ public abstract class Costing_Base
          */
         public String getComment()
         {
-            return comment;
+            return this.comment;
         }
 
         /**
@@ -2513,7 +2579,7 @@ public abstract class Costing_Base
          */
         public void setComment(final String _comment)
         {
-            comment = _comment;
+            this.comment = _comment;
         }
     }
 }
