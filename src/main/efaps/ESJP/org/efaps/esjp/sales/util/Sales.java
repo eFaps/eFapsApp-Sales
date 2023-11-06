@@ -136,7 +136,6 @@ public final class Sales
                     .concatenate(true)
                     .description("Configuration for Calculators.");
 
-
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CALCULATOR_CONFIG = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
@@ -149,7 +148,6 @@ public final class Sales
                     .description("Configuration for Calculators.\n"
                                     + "TaxCalcFlow: RoundSum, SumRound\n"
                                     + "CrossTotalFlow: NetTotalPlusTax, SumCrossPrice");
-
 
     /** See description. */
     @EFapsSysConfAttribute
