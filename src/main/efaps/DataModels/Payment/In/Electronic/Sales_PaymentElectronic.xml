@@ -78,5 +78,23 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>STRING4</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>CardNumber</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING5</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CardLabel</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING6</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>EquipmentIdent</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING7</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

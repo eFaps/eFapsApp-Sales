@@ -77,7 +77,7 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>STRING4</sqlcolumn>
         </attribute>
-         <attribute>
+        <attribute>
             <name>CardNumber</name>
             <type>String</type>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>

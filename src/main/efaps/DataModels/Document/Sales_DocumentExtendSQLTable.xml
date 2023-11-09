@@ -39,6 +39,8 @@
             <column name="STRING3"    type="STRING_SHORT" length="256"/>
             <column name="STRING4"    type="STRING_SHORT" length="256"/>
             <column name="STRING5"    type="STRING_SHORT" length="256"/>
+            <column name="STRING6"    type="STRING_SHORT" length="256"/>
+            <column name="STRING7"    type="STRING_SHORT" length="256"/>
             <column name="DATE1"      type="DATETIME" />
             <column name="DECIMAL1"   type="DECIMAL"  scale="4" length="6"/>
         </database>
