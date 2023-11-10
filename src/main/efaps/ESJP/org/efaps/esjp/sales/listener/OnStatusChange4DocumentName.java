@@ -73,7 +73,7 @@ public class OnStatusChange4DocumentName
                               final Long statusId)
         throws EFapsException
     {
-        LOG.info("Updateing document Name");
+        LOG.debug("Updateing document Name");
         final var properties = ERP.SERIALNUMBERS.get();
         final var type = instance.getType().getName();
         final var statusKey = properties.getProperty(type + ".AssignOnStatus");
@@ -95,6 +95,7 @@ public class OnStatusChange4DocumentName
                                     .update(instance)
                                     .set(CISales.DocumentAbstract.Name, serialNumber)
                                     .execute();
+                    LOG.debug("Updated document Name {} for inst: {}", serialNumber, instance);
                 }
             }
         }
