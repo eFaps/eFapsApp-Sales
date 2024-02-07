@@ -169,6 +169,11 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>org.efaps</groupId>
+            <artifactId>efaps-abacus</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.efaps.apps</groupId>
             <artifactId>products</artifactId>
             <version>${efaps.app.dependencies}</version>
