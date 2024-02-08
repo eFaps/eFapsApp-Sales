@@ -34,7 +34,7 @@ public class CalculatorConfig
     implements IConfig
 {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Costing.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CalculatorConfig.class);
 
     @Override
     public int getCrossPriceScale()
