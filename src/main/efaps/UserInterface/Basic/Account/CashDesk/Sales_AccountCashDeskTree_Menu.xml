@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d253e3bf-44b2-43f5-afb7-d795737fbc8a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountCashDeskTree_Menu</name>

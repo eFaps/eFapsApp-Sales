@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>43b59556-8d83-41d0-9486-517e79dfcb2a</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ComparativeDocTree_Dimension_Menu</name>

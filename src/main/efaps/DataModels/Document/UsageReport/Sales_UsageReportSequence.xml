@@ -22,7 +22,7 @@
 --><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>1fa9433d-1708-4b08-b140-952bf16a663e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10273 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_UsageReportSequence</name>

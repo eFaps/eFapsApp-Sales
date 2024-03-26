@@ -23,7 +23,7 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5fe738c1-43aa-492b-8bcb-0179998a7665</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CostSheetMyDesk_Menu_Action_CreateFromDoc2</name>

@@ -25,7 +25,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ed1a9917-6a6d-4a5c-8bc7-aba73dbdfa9c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashBalance2PettyCashReceipt</name>

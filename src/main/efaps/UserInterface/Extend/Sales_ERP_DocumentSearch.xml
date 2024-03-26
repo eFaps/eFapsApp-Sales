@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>be8c5ccb-ef6f-4e46-b022-5e3cad033a61</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ERP_DocumentSearch</name>

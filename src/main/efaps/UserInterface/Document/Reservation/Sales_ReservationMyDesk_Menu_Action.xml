@@ -28,7 +28,7 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3fa33fc6-1d46-4ea7-89d0-c33611e98a13</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReservationMyDesk_Menu_Action</name>

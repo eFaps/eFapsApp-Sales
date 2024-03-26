@@ -28,7 +28,7 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8ec8f98a-b9d7-47e0-9092-c527736dbc46</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CostSheetTree_Menu_Action</name>

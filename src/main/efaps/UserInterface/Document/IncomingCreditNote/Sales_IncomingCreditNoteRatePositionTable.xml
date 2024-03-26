@@ -22,7 +22,7 @@
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ed9b4472-bf91-4742-a591-b36c27d85ebf</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingCreditNoteRatePositionTable</name>

@@ -22,7 +22,7 @@
 --><help-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7a568a19-b6cb-40d8-adbf-b6e2e250d68e</uuid>
     <file-application>eFaps-Sales</file-application>
-    <file-revision>$Rev: 6408 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Showentryofgoods_Sales</name>

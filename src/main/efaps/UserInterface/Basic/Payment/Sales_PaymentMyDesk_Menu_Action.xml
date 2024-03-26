@@ -28,7 +28,7 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>01e1dc41-25c6-4835-ad24-86d4b79ef105</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentMyDesk_Menu_Action</name>

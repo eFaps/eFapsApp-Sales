@@ -22,7 +22,7 @@
 --><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fe8cef47-1325-4c87-835d-be3a81189085</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10177 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuoteRequestSequence</name>

@@ -18,7 +18,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b2899914-b634-4c37-8300-419e62b401ac</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5760 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentSchedule</name>

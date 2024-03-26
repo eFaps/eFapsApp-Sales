@@ -28,7 +28,7 @@
            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fb536de4-f525-45c3-ba9e-d07bbe4bc934</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting_Search</name>

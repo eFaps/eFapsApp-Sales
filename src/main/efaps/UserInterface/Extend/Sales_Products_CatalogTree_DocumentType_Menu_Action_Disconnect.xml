@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0e165da3-9f84-408f-b24d-00afafa69cf1</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10165 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_CatalogTree_DocumentType_Menu_Action_Disconnect</name>

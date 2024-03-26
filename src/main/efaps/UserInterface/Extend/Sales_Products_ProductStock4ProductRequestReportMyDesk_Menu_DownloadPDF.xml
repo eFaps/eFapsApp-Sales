@@ -24,7 +24,7 @@
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>70d4910e-35ca-4636-95e8-8ff90f4d27af</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 261 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadPDF</name>

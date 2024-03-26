@@ -26,7 +26,7 @@
 
     <uuid>c9590212-6192-41d7-b606-550338a0d431</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8747 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentSchedulePayMyDesk</name>

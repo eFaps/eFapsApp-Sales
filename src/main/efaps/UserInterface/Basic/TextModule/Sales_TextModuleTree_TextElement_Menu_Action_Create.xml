@@ -28,7 +28,7 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>658d7393-8985-4d26-b72c-43e79b7c08e5</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TextModuleTree_TextElement_Menu_Action_Create</name>

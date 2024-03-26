@@ -29,7 +29,7 @@
 
     <uuid>fc4a1bb8-0f1f-4e1e-96da-4e7ef517cb60</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReminderTree_Position</name>

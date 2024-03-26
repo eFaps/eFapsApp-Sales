@@ -24,7 +24,7 @@
               xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9dc79e45-a9b2-45b8-acd0-3f6d01b6c477</uuid>
     <file-application>eFaps-Sales</file-application>
-    <file-revision>$Rev: 6408 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Ticket_Sales</name>

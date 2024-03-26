@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5ef8dcba-cd6c-4778-b8cd-ca10a501d208</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10116 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReminderStatus</name>

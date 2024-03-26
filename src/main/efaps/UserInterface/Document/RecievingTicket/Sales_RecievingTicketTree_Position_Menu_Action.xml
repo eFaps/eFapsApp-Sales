@@ -28,7 +28,7 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>34e02efa-2b54-4149-b704-9d92afa8598c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RecievingTicketTree_Position_Menu_Action</name>

@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0188c5b3-ed54-4e08-9fab-4c4f6d587379</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <description>Role that a User of a PettyCash must have to actually have access to it.</description>
     <definition>
         <version-expression>(version==latest)</version-expression>

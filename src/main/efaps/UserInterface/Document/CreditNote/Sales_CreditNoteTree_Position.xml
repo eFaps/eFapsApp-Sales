@@ -29,7 +29,7 @@
 
     <uuid>dd62b921-b36e-4775-b03a-142ebd4485d1</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditNoteTree_Position</name>

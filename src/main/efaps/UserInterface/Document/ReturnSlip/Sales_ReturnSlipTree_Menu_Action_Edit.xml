@@ -28,7 +28,7 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9e3b3e3a-b8b6-4cd2-a1da-dc5ad33f1ab7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipTree_Menu_Action_Edit</name>

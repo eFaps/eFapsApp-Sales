@@ -22,7 +22,7 @@
 --><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d7e3e088-4dea-43eb-8b09-710605405092</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10177 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderOutboundSequence</name>

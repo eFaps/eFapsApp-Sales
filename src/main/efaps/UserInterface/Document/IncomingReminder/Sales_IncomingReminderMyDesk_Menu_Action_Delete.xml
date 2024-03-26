@@ -23,7 +23,7 @@
 
     <uuid>0a74cd43-878e-4dfc-b622-c33ac8e60c22</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10116 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReminderMyDesk_Menu_Action_Delete</name>

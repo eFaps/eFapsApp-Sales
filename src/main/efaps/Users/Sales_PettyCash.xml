@@ -27,7 +27,7 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>bfb313f1-db28-4f0f-9b47-ddd28e2c99e7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <description>Role for the Administration of PettyCash</description>
     <definition>
         <version-expression>(version==latest)</version-expression>

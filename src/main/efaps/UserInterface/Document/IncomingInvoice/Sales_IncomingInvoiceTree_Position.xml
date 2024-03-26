@@ -23,7 +23,7 @@
 
     <uuid>09deacd0-732c-4eca-ad8a-fe18a4938ef0</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceTree_Position</name>

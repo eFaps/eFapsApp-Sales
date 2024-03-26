@@ -23,7 +23,7 @@
 
     <uuid>d2c0bcb6-eb84-4cd5-9599-402cedfb9ab6</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingCreditNoteMyDesk</name>

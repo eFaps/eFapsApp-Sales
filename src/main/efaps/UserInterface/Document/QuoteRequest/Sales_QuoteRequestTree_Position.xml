@@ -25,7 +25,7 @@
 
     <uuid>f603f609-5aeb-461e-9603-d18da15f2035</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuoteRequestTree_Position</name>

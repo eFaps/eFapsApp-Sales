@@ -25,7 +25,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>968d9eaa-4374-4601-b6e6-14f78bf3d4da</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 828 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundTree_Menu_Action_SetCanceled</name>

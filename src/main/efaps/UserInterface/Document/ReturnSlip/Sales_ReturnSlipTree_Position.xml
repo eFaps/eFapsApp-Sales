@@ -29,7 +29,7 @@
 
     <uuid>5956e898-e1f8-4777-95d7-e139a074c889</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipTree_Position</name>

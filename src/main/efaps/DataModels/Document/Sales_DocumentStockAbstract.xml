@@ -28,7 +28,7 @@
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e3bd6bce-801d-4482-9285-97c5104ef0d8</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <description>Abstract type for Documeent that have the only porpuse to document stock movements.</description>
     <definition>
         <version-expression>(version==latest)</version-expression>

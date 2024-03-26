@@ -23,7 +23,7 @@
 
     <uuid>05ed4e04-5f37-48a6-aeb5-2617712aca58</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingCreditNoteMyDesk_Menu_Action_Delete</name>

@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>29f4045c-1546-47d5-a7da-23079b0d5959</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9028 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentAbstractTree_FromDoc</name>

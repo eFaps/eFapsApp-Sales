@@ -23,7 +23,7 @@
 
     <uuid>44521189-665b-4ccf-b54c-f05efa55e242</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderTree_Payment</name>

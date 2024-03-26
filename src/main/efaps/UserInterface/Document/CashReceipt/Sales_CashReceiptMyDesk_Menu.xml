@@ -29,7 +29,7 @@
 
   <uuid>3b12cb31-8547-495a-96aa-9e4f57aa7fd1</uuid>
   <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 207 $</file-revision>
+  
 
   <definition>
     <version-expression>(version==latest)</version-expression>

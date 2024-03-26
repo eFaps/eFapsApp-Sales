@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>91670190-de64-4c2e-939b-806e7813d88d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 14271 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_BulkPaymentDetractionDefinition</name>

@@ -29,7 +29,7 @@
 
     <uuid>e3e623db-e96e-4ad3-8808-230337db2344</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_UsageReportMyDesk</name>

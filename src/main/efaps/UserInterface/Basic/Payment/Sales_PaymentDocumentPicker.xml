@@ -27,7 +27,7 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9fc91ff2-3eee-4bda-993a-6251905dcbb0</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 821 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentPicker</name>

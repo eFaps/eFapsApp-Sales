@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7290d880-dd96-4b2e-b4ba-7767d28d519f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 13209 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundRatePositionTable</name>

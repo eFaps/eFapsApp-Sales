@@ -15,7 +15,7 @@
 --><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>cd5e0153-fcc4-44e1-b55f-bfc12a29d6d3</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 391 $</file-revision>
+    
 
     <definition>
         <version-expression>(version==latest)</version-expression>

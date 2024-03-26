@@ -26,7 +26,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
   <uuid>8b88b261-4b2f-40cb-9259-f0aed51fc13f</uuid>
   <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 5313 $</file-revision>
+  
 
   <definition>
     <version-expression>(version==latest)</version-expression>

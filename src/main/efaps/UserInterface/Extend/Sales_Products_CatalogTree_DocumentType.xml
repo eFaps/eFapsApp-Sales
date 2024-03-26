@@ -22,7 +22,7 @@
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d8ebc551-dc0d-4e52-8ebe-8d6e267272ff</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10166 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_CatalogTree_DocumentType</name>

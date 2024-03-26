@@ -25,7 +25,7 @@
 
     <uuid>ba221165-01ba-4027-a630-529025c43029</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditTree_Payment</name>

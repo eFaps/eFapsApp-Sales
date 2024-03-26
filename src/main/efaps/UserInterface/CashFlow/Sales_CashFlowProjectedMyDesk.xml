@@ -25,7 +25,7 @@
 
     <uuid>8dc1dd60-792d-429d-952b-1e38c47512fd</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CashFlowProjectedMyDesk</name>

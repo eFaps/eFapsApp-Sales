@@ -23,7 +23,7 @@
 
     <uuid>716ab706-c9fd-4b88-afd0-bf215293aeef</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductRequestTree_Position</name>

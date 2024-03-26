@@ -23,7 +23,7 @@
 
     <uuid>7850f821-3f7a-4b33-b3ec-188e5698a014</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CostSheetTree_Position</name>

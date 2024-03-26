@@ -23,7 +23,7 @@
 
     <uuid>fd0347aa-841d-4d99-82bc-0a7544c62035</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProfServRetentionCertificateMyDesk_Menu_Action_Delete</name>

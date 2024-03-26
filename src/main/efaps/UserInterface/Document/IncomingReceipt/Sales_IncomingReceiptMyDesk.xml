@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d1ad1a77-c256-40c1-b3c9-c2768a80a608</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8332 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReceiptMyDesk</name>

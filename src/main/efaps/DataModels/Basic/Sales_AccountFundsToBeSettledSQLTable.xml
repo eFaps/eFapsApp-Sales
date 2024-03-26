@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8113ce37-27e8-4a0f-93b0-9a014fa78d15</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 6775 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledSQLTable</name>

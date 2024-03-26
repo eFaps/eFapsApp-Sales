@@ -22,7 +22,7 @@
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6b333389-406b-4280-8ff9-5732abe36400</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 6383 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Document2FromDocumentTable</name>

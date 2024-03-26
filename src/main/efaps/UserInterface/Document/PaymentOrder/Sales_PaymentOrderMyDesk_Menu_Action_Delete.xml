@@ -22,7 +22,7 @@
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b12d9e47-3b41-4d85-9e4a-2e8c514c3e76</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5742 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderMyDesk_Menu_Action_Delete</name>

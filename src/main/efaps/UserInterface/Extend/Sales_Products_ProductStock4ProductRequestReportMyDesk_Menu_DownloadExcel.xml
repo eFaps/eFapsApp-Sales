@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8c5ea7ef-4279-4dcd-80b2-983e75620589</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 261 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadExcel</name>

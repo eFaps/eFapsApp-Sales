@@ -22,7 +22,7 @@
 --><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
   <uuid>413b2b68-b1e4-45c5-834f-8734d5e01f27</uuid>
   <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 206 $</file-revision>
+  
 
   <definition>
 

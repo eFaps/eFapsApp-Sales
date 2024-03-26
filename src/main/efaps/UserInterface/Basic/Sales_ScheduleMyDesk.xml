@@ -28,7 +28,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
 
     <uuid>a0a02c3e-2435-4a75-9eed-9276b43f1cec</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 6534 $</file-revision>
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ScheduleMyDesk</name>
