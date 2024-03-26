@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright 2003 - 2023 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6afcb18c-f73f-41b8-aed0-820eb6ff8294</uuid>
@@ -73,7 +75,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.name4create.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -97,7 +100,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.serial.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -116,7 +120,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.name.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -157,7 +162,8 @@
                 method="configCheck"
                 name="Sales_OrderInboundForm.remark.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.DeliveryNote.ActivateRemark</property>
             </trigger>
@@ -177,7 +183,8 @@
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK"
                 index="2">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -204,7 +211,8 @@
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK"
                 index="2">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -250,7 +258,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -278,7 +287,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -292,7 +302,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -310,7 +321,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.project4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -379,7 +391,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -404,7 +417,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -418,7 +432,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.departurePoint.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -439,7 +454,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleBrand.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -463,7 +479,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleLink.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -478,7 +495,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleLink.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -506,7 +524,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -531,7 +550,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -545,7 +565,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.arrivalPoint4read.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -566,7 +587,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleLicencePlate.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -590,7 +612,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.driverLink.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -604,7 +627,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.driverLink.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -616,7 +640,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.carrierGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -646,7 +671,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.carrierLink.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -677,7 +703,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.carrierLink.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
            </trigger>
@@ -698,7 +725,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.vehicleDriverInfo.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK">
-                <!-- ElectronicBilling-Configuration -->
+                
+
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.DeliveryNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -780,7 +808,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.crossWeight.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-               <!-- Sales-Configuration -->
+               
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.DeliveryNote.ManualCrossWeight</property>
            </trigger>
@@ -795,7 +824,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.invoice.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromInvoiceAutoComplete</property>
            </trigger>
@@ -810,7 +840,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.receipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromReceiptAutoComplete</property>
            </trigger>
@@ -825,7 +856,8 @@
                 method="configCheck"
                 name="Sales_DeliveryNoteForm.orderInbound.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists">org.efaps.sales.DeliveryNote.CreateFromOrderInboundAutoComplete</property>
            </trigger>
@@ -858,7 +890,8 @@
                 method="getJavaScriptUIValue"
                 name="Sales_DeliveryNoteForm.javaScript.UI_Field_Value"
                 event="UI_FIELD_VALUE" >
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Link4DefaultStorage">org.efaps.sales.DeliveryNote.DefaultWareHouse</property>
             </trigger>

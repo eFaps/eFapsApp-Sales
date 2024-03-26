@@ -1,25 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev: 10192 $
- Last Changed:    $Date: 2013-09-12 18:25:20 -0500 (jue, 12 sep 2013) $
- Last Changed By: $Author: m.aranya@moxter.net $
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a805c01a-c00c-4f95-aac7-995a4f03b85c</uuid>
@@ -41,7 +38,8 @@
                 <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
                 <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
                 <property name="Status">Open</property>
-                 <!-- Sales_ActionDefinitionFundsToBeSettledReceipt2Document -->
+                 
+
                 <property name="ConnectType">bc3d67e8-2a81-473d-9b45-15380fef53ef</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
@@ -84,12 +82,14 @@
                 <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
                 <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
                 <property name="Status">Open</property>
-                 <!-- Sales_ActionDefinitionFundsToBeSettledReceipt2Document -->
+                 
+
                 <property name="ConnectType">bc3d67e8-2a81-473d-9b45-15380fef53ef</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">action</property>
-                <!-- Projects_ProjectService2FundsToBeSettledReceipt -->
+                
+
                 <property name="ConnectType01">2edaa579-cae0-49bd-8760-a10dbc2c6e88</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
@@ -133,18 +133,21 @@
                 <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
                 <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
                 <property name="Status">Open</property>
-                 <!-- Sales_ActionDefinitionFundsToBeSettledReceipt2Document -->
+                 
+
                 <property name="ConnectType">bc3d67e8-2a81-473d-9b45-15380fef53ef</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">action</property>
-                <!-- Projects_ProjectService2FundsToBeSettledReceipt -->
+                
+
                 <property name="ConnectType01">2edaa579-cae0-49bd-8760-a10dbc2c6e88</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">project</property>
 
-                <!-- Sales_HumanResource_Department2FundsToBeSettledReceipt -->
+                
+
                 <property name="ConnectType02">daf273fb-7045-459d-a69d-006dcf388fb0</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>

@@ -1,20 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2015 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>93f1014f-0acf-44dc-8a2d-f5ebc3895233</uuid>
@@ -39,25 +41,29 @@
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingInvoice">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
 
-                 <!-- Sales_IncomingInvoice2RecievingTicket -->
+                 
+
                 <property name="ConnectType">a5d2c2c5-a272-49e8-8b15-5174ac0f6a4a</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">recievingTickets</property>
 
-                <!-- Sales_OrderOutbound2IncomingInvoice -->
+                
+
                 <property name="ConnectType01">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">orderOutbounds</property>
 
-                <!-- Sales_ServiceOrderOutbound2IncomingInvoice -->
+                
+
                 <property name="ConnectType02">7803f494-c41f-4f71-8ae9-a37fa6d19fa2</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">serviceOrderOutbounds</property>
 
-                <!-- Sales_ChannelPurchaseCondition2IncomingInvoice -->
+                
+
                 <property name="ConnectType03">61b4d934-1f8f-4d6d-af05-d21d0bc73bcd</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
@@ -75,7 +81,8 @@
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_OrderOutboundMyDesk_Menu_Action_CreateIncomingInvoice.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromOrderOutbound</property>
             </trigger>
@@ -116,37 +123,43 @@
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingInvoice">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
 
-                <!-- Sales_IncomingInvoice2RecievingTicket -->
+                
+
                 <property name="ConnectType">a5d2c2c5-a272-49e8-8b15-5174ac0f6a4a</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">recievingTickets</property>
 
-                <!-- Sales_OrderOutbound2IncomingInvoice -->
+                
+
                 <property name="ConnectType01">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">orderOutbounds</property>
 
-                <!-- Projects_ProjectService2IncomingInvoice -->
+                
+
                 <property name="ConnectType02">006219c0-4197-4584-9073-dd10aeca9edc</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">project</property>
 
-                <!-- Sales_HumanResource_Department2IncomingInvoice -->
+                
+
                 <property name="ConnectType03">3daec8e6-f8f6-4cfc-9d0a-c6c967f97228</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">department</property>
 
-                <!-- Sales_ServiceOrderOutbound2IncomingInvoice -->
+                
+
                 <property name="ConnectType04">7803f494-c41f-4f71-8ae9-a37fa6d19fa2</property>
                 <property name="ConnectCurrentLink04">ToLink</property>
                 <property name="ConnectForeignLink04">FromLink</property>
                 <property name="ConnectForeignField04">serviceOrderOutbounds</property>
 
-                <!-- Sales_ChannelPurchaseCondition2IncomingInvoice -->
+                
+
                 <property name="ConnectType05">61b4d934-1f8f-4d6d-af05-d21d0bc73bcd</property>
                 <property name="ConnectCurrentLink05">ToLink</property>
                 <property name="ConnectForeignLink05">FromLink</property>
@@ -164,7 +177,8 @@
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_OrderOutboundMyDesk_Menu_Action_CreateIncomingInvoice.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromOrderOutbound</property>
             </trigger>
@@ -205,31 +219,36 @@
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingInvoice">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
 
-                <!-- Sales_IncomingInvoice2RecievingTicket -->
+                
+
                 <property name="ConnectType">a5d2c2c5-a272-49e8-8b15-5174ac0f6a4a</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">recievingTickets</property>
 
-                <!-- Sales_OrderOutbound2IncomingInvoice -->
+                
+
                 <property name="ConnectType01">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">orderOutbounds</property>
 
-                <!-- Projects_ProjectService2IncomingInvoice -->
+                
+
                 <property name="ConnectType02">006219c0-4197-4584-9073-dd10aeca9edc</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">project</property>
 
-                <!-- Sales_HumanResource_Department2IncomingInvoice -->
+                
+
                 <property name="ConnectType03">3daec8e6-f8f6-4cfc-9d0a-c6c967f97228</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">department</property>
 
-                <!-- Sales_ServiceOrderOutbound2IncomingInvoice -->
+                
+
                 <property name="ConnectType04">7803f494-c41f-4f71-8ae9-a37fa6d19fa2</property>
                 <property name="ConnectCurrentLink04">ToLink</property>
                 <property name="ConnectForeignLink04">FromLink</property>
@@ -247,7 +266,8 @@
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_OrderOutboundMyDesk_Menu_Action_CreateIncomingInvoice.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromOrderOutbound</property>
             </trigger>

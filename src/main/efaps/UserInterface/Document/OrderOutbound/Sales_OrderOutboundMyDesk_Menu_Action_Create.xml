@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2020 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -35,24 +36,28 @@
                 <property name="StatusGroup">Sales_OrderOutboundStatus</property>
                 <property name="Status">Draft</property>
 
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.OrderOutbound.JasperReport</property>
                 <property name="NoDataSource">true</property>
 
-                <!-- Sales_ChannelPurchaseCondition2OrderOutbound -->
+                
+
                 <property name="ConnectType01">498557bd-6747-4991-8a12-6a581e96218c</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
 
-                <!-- Sales_Employee2OrderOutbound -->
+                
+
                 <property name="ConnectType02">dfe94d47-2813-4070-8e77-512128e2c2fd</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">employee</property>
 
-                <!-- Projects_ProjectService2OrderOutbound -->
+                
+
                 <property name="ConnectType03">79b7bc09-4d46-48ee-9cba-e794a67df34e</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
@@ -65,7 +70,8 @@
                 <property name="Validation03">DUPLICATEDPOSITION</property>
             </validate>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_OrderOutbound</property>
         <property name="TargetMode">create</property>

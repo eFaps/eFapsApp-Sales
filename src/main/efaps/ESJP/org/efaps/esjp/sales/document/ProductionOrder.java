@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright © 2003 - 2024 The eFaps Team (-)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Revision:        $Rev: 8342 $
- * Last Changed:    $Date: 2012-12-11 09:42:17 -0500 (mar, 11 dic 2012) $
- * Last Changed By: $Author: jan@moxter.net $
  */
-
-
 package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.program.esjp.EFapsApplication;

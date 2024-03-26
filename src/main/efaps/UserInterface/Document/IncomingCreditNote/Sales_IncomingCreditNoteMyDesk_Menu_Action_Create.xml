@@ -1,25 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2013 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>7d1b3613-9bf2-4c1f-a279-2a23b7ca939c</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -35,7 +32,8 @@
             <role>Sales_Admin</role>
             <role>Sales_IncomingDocument</role>
         </access>
-        <!-- target definitions -->
+        
+
         <target>
             <form>Sales_IncomingCreditNoteForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingCreditNote">
@@ -46,7 +44,8 @@
                 <property name="NAME_ValidateContact">true</property>
             </validate>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingCreditNote</property>
         <property name="TargetMode">create</property>
@@ -66,12 +65,14 @@
             <role>Sales_Admin</role>
             <role>Sales_IncomingDocument</role>
         </access>
-        <!-- target definitions -->
+        
+
         <target>
             <form>Sales_IncomingCreditNoteForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingCreditNote">
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
-                <!-- Projects_ProjectService2IncomingCreditNote -->
+                
+
                 <property name="ConnectType">6d4934b5-ea8a-4926-9643-c29fb12776d6</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
@@ -82,7 +83,8 @@
                 <property name="NAME_ValidateContact">true</property>
             </validate>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingCreditNote</property>
         <property name="TargetMode">create</property>

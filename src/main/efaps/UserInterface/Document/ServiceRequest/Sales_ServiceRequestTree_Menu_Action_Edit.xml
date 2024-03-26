@@ -1,21 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>1f7a0e99-daf8-4d59-9ac7-8df42b947413</uuid>
@@ -30,12 +31,14 @@
         <target>
             <form>Sales_ServiceRequestForm</form>
             <execute program="org.efaps.esjp.sales.document.ServiceRequest" method="edit">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.ServiceRequest.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.ServiceRequest.Mime</property>
 
-                <!-- Sales_HumanResource_Department2ServiceRequest -->
+                
+
                 <property name="ConnectType01">b2c99ab0-b47b-4023-b19e-ec5c6195cbae</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
@@ -46,7 +49,8 @@
                 <property name="Status">Draft</property>
             </trigger>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">600</property>

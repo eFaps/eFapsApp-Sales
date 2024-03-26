@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright 2003 - 2021 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -42,7 +44,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
                 <property name="Inverse">true</property>
@@ -55,7 +58,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
            </trigger>
@@ -86,7 +90,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
            </trigger>
@@ -138,7 +143,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.AssignEmployee</property>
            </trigger>
@@ -199,7 +205,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -226,7 +233,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -240,7 +248,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -258,7 +267,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -321,7 +331,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.condition.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateCondition</property>
            </trigger>
@@ -335,7 +346,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.condition4View.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateCondition</property>
            </trigger>
@@ -533,7 +545,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.commentsHeading.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateComment</property>
            </trigger>
@@ -552,7 +565,8 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.comments.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateComment</property>
            </trigger>

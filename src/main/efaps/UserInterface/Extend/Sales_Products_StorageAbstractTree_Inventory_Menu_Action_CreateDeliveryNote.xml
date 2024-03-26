@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-  Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>daaa2340-74af-4414-999d-19ecffa4c5e4</uuid>
@@ -36,7 +38,8 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.DeliveryNote.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.DeliveryNote.Mime</property>
@@ -79,11 +82,13 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.DeliveryNote.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.DeliveryNote.Mime</property>
-                <!-- Projects_ProjectService2DeliveryNote -->
+                
+
                 <property name="ConnectType">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>

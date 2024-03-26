@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-  Copyright 2003 - 2018 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c0a8e020-7dfa-4969-8e17-af2864912a01</uuid>
@@ -53,7 +55,8 @@
                 <property name="FilterDefault06">-</property>
                 <property name="FilterDefault07">-</property>
                 <property name="FilterDefault08">org.efaps.esjp.sales.report.PaymentReport_Base$Grouping</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentReport</property>
             </trigger>
@@ -76,7 +79,8 @@
                 <property name="DBProperty06">org.efaps.esjp.sales.report.PaymentReport.currency</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.PaymentReport.exchangeCurrency</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.PaymentReport.groupBy</property>
-                 <!-- Sales-Configuration -->
+                 
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentReport</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
@@ -88,7 +92,8 @@
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_PaymentReportForm.salesReport.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.PaymentReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.PaymentReport.FilterKey</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.PaymentReport</property>
             </trigger>

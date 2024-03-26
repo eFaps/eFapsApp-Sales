@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2003 - 2019 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
-
 -->
+
+
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3c8335a0-9dab-4c04-8923-ec6cf34396bb</uuid>
@@ -89,7 +90,8 @@
                 method="configCheck"
                 name="Sales_ServiceRequestForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.ServiceRequest.AssignEmployee</property>
            </trigger>
@@ -135,7 +137,8 @@
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.ServiceRequest.AssignDepartment</property>
             </trigger>
@@ -157,7 +160,8 @@
             </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.ServiceRequest.AssignDepartment</property>
             </trigger>
@@ -173,7 +177,8 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.ServiceRequest.AssignDepartment</property>
             </trigger>
@@ -185,7 +190,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -215,7 +221,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -229,7 +236,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -246,7 +254,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_ServiceRequestForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>

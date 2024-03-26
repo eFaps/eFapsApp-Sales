@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2020 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
+
 
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -32,43 +34,50 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
-                <!-- Sales_Invoice2DeliveryNote -->
+                
+
                 <property name="ConnectType">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">deliveryNotes</property>
 
-                <!-- Sales_ChannelCondition2Invoice -->
+                
+
                 <property name="ConnectType01">74552bef-1282-4be2-af52-2fa914ddaa17</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
 
-                 <!-- Sales_OrderInbound2Invoice -->
+                 
+
                 <property name="ConnectType02">14e0b68c-2a1d-4c22-81f0-d9539e8e21be</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">orderInbound</property>
 
-                <!-- Sales_Employee2Invoice -->
+                
+
                 <property name="ConnectType03">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">employee</property>
 
-                <!-- Projects_ProjectService2Invoice -->
+                
+
                 <property name="ConnectType04">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
                 <property name="ConnectCurrentLink04">ToLink</property>
                 <property name="ConnectForeignLink04">FromLink</property>
                 <property name="ConnectForeignField04">project</property>
 
-                <!-- Sales_HumanResource_Department2Invoice -->
+                
+
                 <property name="ConnectType05">05389d31-6735-40a7-b917-d833829592bc</property>
                 <property name="ConnectCurrentLink05">ToLink</property>
                 <property name="ConnectForeignLink05">FromLink</property>

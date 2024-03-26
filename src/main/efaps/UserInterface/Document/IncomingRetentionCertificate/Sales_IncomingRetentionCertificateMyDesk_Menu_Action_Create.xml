@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4930aa91-aee0-44dc-96cc-39cc96f544fd</uuid>
@@ -33,19 +35,22 @@
             <execute program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="create">
                 <property name="StatusGroup">Sales_IncomingRetentionCertificateStatus</property>
                 <property name="Status">Open</property>
-                 <!-- Sales_IncomingRetentionCertificate2Invoice -->
+                 
+
                 <property name="ConnectType01">d47eec30-cc74-429f-8d05-ce05781691b1</property>
                 <property name="ConnectCurrentLink01">FromLink</property>
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">invoices</property>
 
-                <!-- Sales_IncomingRetentionCertificate2Reminder -->
+                
+
                 <property name="ConnectType02">4762baf3-c774-4616-a7a2-b321008cfb2e</property>
                 <property name="ConnectCurrentLink02">FromLink</property>
                 <property name="ConnectForeignLink02">ToLink</property>
                 <property name="ConnectForeignField02">reminders</property>
 
-                <!-- Sales_IncomingRetentionCertificate2IncomingExchange -->
+                
+
                 <property name="ConnectType03">ea193ef3-d882-43d5-b8ea-d3af603c74bd</property>
                 <property name="ConnectCurrentLink03">FromLink</property>
                 <property name="ConnectForeignLink03">ToLink</property>

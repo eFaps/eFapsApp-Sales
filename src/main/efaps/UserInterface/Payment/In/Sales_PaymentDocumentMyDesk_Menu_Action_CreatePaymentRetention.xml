@@ -1,20 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7251b039-d671-436b-bbb8-06786f85dee6</uuid>
@@ -36,7 +38,8 @@
             <validate method="validatePaymentDocument4Positions"
                 program="org.efaps.esjp.sales.payment.PaymentRetention"
                 index="0">
-                 <!-- Sales-Configuration -->
+                 
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.payment.in.Retention.PayableDocuments</property>
             </validate>
@@ -46,13 +49,15 @@
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentRetention.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.payment.in.Retention.Activate</property>
                 <property name="Default">true</property>
             </trigger>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentRetention</property>
         <property name="TargetMode">create</property>

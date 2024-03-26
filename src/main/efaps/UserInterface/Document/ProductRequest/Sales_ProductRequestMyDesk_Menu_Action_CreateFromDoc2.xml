@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-    Copyright 2003 - 2019 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,8 @@
     limitations under the License.
 
 -->
+
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ad47e9b5-4fb2-41de-801f-44747ac02a9f</uuid>
@@ -32,24 +34,28 @@
                 <property name="PositionType">Sales_ProductRequestPosition</property>
                 <property name="StatusGroup">Sales_ProductRequestStatus</property>
                 <property name="Status">Draft</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.ProductRequest.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.ProductRequest.Mime</property>
 
-                <!-- Sales_HumanResource_Department2ProductRequest -->
+                
+
                 <property name="ConnectType01">88b37def-9a59-4fa9-957a-1a1e04c4214b</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">department</property>
 
-                <!-- Sales_Employee2ProductRequest -->
+                
+
                 <property name="ConnectType02">8a5a4efe-1d2f-4774-9e7b-3d7ff7ef92e2</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">employee</property>
 
-                 <!-- Projects_ProjectService2ProductRequest -->
+                 
+
                 <property name="ConnectType03">50be3a47-d1aa-4b4d-b3dd-7d50d44c6e66</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>

@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-  Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>33e7f3f7-b391-42e7-9587-05f8db4ff2b9</uuid>
@@ -84,7 +86,8 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">INCOMING</property>
-                 <!-- Sales-Configuration -->
+                 
+
                 <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="DefaultLink">org.efaps.sales.ProductionReport.DefaultProductDocumentType</property>
             </trigger>
@@ -174,7 +177,8 @@
                 method="configCheck"
                 name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Products-Configuration -->
+                
+
                 <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
                 <property name="Attribute">org.efaps.products.ActivateIndividual</property>
             </trigger>
@@ -197,7 +201,8 @@
                 method="getJavaScriptUIValue"
                 name="Sales_ProductionReportForm.javaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" >
-                 <!-- Sales-Configuration -->
+                 
+
                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                <property name="Link4DefaultStorage">org.efaps.sales.ProductionReport.DefaultWareHouse</property>
             </trigger>
@@ -285,7 +290,8 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">INCOMING</property>
-                 <!-- Sales-Configuration -->
+                 
+
                 <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="DefaultLink">org.efaps.sales.ProductionReport.DefaultProductDocumentType</property>
             </trigger>
@@ -367,7 +373,8 @@
                 method="autoComplete4Process"
                 name="Sales_ProductionReportForm.fabricationProcess.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Fabrication_Process -->
+                
+
                 <property name="Type">8c225bdd-e3c6-4713-b230-e6e4e70c087e</property>
                 <property name="StatusGroup">Fabrication_ProcessStatus</property>
                 <property name="Status">Open</property>
@@ -420,7 +427,8 @@
                 method="configCheck"
                 name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Products-Configuration -->
+                
+
                 <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
                 <property name="Attribute">org.efaps.products.ActivateIndividual</property>
             </trigger>
@@ -443,7 +451,8 @@
                 method="getJavaScriptUIValue"
                 name="Sales_ProductionReportForm.javaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" >
-               <!-- Sales-Configuration -->
+               
+
                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                <property name="Link4DefaultStorage">org.efaps.sales.ProductionReport.DefaultWareHouse</property>
             </trigger>

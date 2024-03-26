@@ -1,21 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f9563de2-bbdf-4919-ae43-c77a93964416</uuid>
@@ -35,7 +36,8 @@
             <form>Sales_IncomingProfServReceiptForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingProfServReceipt">
                 <property name="PositionType">Sales_IncomingProfServReceiptPosition</property>
-                <!-- Sales_ChannelPurchaseCondition2IncomingProfServReceipt -->
+                
+
                 <property name="ConnectType01">de220004-b947-4d46-b1fd-ed159cce8fa8</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
@@ -75,13 +77,15 @@
             <form>Sales_IncomingProfServReceiptForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingProfServReceipt">
                 <property name="PositionType">Sales_IncomingProfServReceiptPosition</property>
-                <!-- Projects_ProjectService2IncomingProfServReceipt -->
+                
+
                 <property name="ConnectType01">bdcec976-a7f4-4833-85e0-cb77038d0690</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">project</property>
 
-                <!-- Sales_ChannelPurchaseCondition2IncomingProfServReceipt -->
+                
+
                 <property name="ConnectType02">de220004-b947-4d46-b1fd-ed159cce8fa8</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>

@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a0eb1a65-48ba-46df-a2fe-e15f8cc5af02</uuid>
@@ -40,19 +42,22 @@
                 <property name="StatusGroup">Sales_QuotationStatus</property>
                 <property name="Status">Draft</property>
 
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Quotation.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.Quotation.Mime</property>
                 <property name="NoDataSource">true</property>
 
-                <!-- Sales_ChannelSalesCondition2Quotation -->
+                
+
                 <property name="ConnectType01">9bb9efae-e3c9-4b68-908b-4b80b821643c</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
 
-                <!-- Sales_HumanResource_Department2Quotation -->
+                
+
                 <property name="ConnectType02">c2d0a8aa-0488-4efd-858b-b288664580ec</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
@@ -92,19 +97,22 @@
                 <property name="StatusGroup">Sales_QuotationStatus</property>
                 <property name="Status">Draft</property>
 
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Quotation.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.Quotation.Mime</property>
                 <property name="NoDataSource">true</property>
 
-                <!-- Sales_ChannelSalesCondition2Quotation -->
+                
+
                 <property name="ConnectType01">9bb9efae-e3c9-4b68-908b-4b80b821643c</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">condition</property>
 
-                <!-- Sales_Employee2Quotation -->
+                
+
                 <property name="ConnectType02">7407dfa9-b35e-4240-92d7-19463ad88af0</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>

@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
+
 
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -36,22 +38,26 @@
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
                 <property name="PositionType">Sales_CreditNotePosition</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.CreditNote.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.CreditNote.Mime</property>
 
-                <!-- Sales_CreditNote2Invoice -->
+                
+
                 <property name="ConnectType">cc71f437-46ac-4db0-b53c-ad94b7ae36d9</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">invoices</property>
-                <!-- Sales_CreditNote2Receipt -->
+                
+
                 <property name="ConnectType01">1549a387-2c28-4880-804d-61694f2df6e0</property>
                 <property name="ConnectCurrentLink01">FromLink</property>
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">receipts</property>
-                <!-- Sales_Employee2CreditNote -->
+                
+
                 <property name="ConnectType02">ac678c74-06bd-41f6-b0de-23657b00c79f</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
@@ -88,24 +94,28 @@
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
                 <property name="PositionType">Sales_CreditNotePosition</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.CreditNote.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.CreditNote.Mime</property>
 
-                <!-- Sales_CreditNote2Invoice -->
+                
+
                 <property name="ConnectType">cc71f437-46ac-4db0-b53c-ad94b7ae36d9</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">invoices</property>
 
-                <!-- Sales_CreditNote2Receipt -->
+                
+
                 <property name="ConnectType01">1549a387-2c28-4880-804d-61694f2df6e0</property>
                 <property name="ConnectCurrentLink01">FromLink</property>
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">receipts</property>
 
-                <!-- Projects_ProjectService2CreditNote -->
+                
+
                 <property name="ConnectType02">d9d8ce4c-03ff-467f-9863-9976033ff1a9</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>

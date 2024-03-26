@@ -1,25 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 8122 $
- Last Changed:    $Date: 2012-10-26 17:16:27 -0500 (vie, 26 oct 2012) $
- Last Changed By: $Author: jan@moxter.net $
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>aa2b0f54-cac4-4227-ac00-207f2c65b5d4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     
@@ -29,7 +26,8 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
+        
+
         <target>
             <form>Sales_PaymentCheckWithOutDocForm</form>
             <execute method="addDoc2PaymentDoc" program="org.efaps.esjp.sales.payment.PaymentCheck">
@@ -38,7 +36,8 @@
             </execute>
             <validate program="org.efaps.esjp.sales.payment.PaymentCheck" method="validatePaymentDocument"/>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">600</property>

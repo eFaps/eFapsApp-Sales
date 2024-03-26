@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
-  Copyright 2003 - 2015 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
+
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -33,7 +35,8 @@
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromOrderOutboundAutoComplete</property>
             </trigger>
@@ -45,7 +48,8 @@
                 method="configCheck"
                 name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromOrderOutbound</property>
            </trigger>
@@ -58,7 +62,8 @@
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete</property>
             </trigger>
@@ -70,7 +75,8 @@
                 method="configCheck"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromServiceOrderOutbound</property>
            </trigger>
@@ -83,7 +89,8 @@
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.recievingTicket.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromRecievingTicketAutoComplete</property>
             </trigger>
@@ -95,7 +102,8 @@
                 method="configCheck"
                 name="Sales_IncomingInvoice_SelectDocForm.recievingTicket.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromRecievingTicket</property>
            </trigger>
@@ -108,7 +116,8 @@
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.productRequest.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromProductRequestAutoComplete</property>
             </trigger>
@@ -120,7 +129,8 @@
                 method="configCheck"
                 name="Sales_IncomingInvoice_SelectDocForm.productRequest.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromProductRequest</property>
            </trigger>
@@ -133,7 +143,8 @@
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceRequest.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromServiceRequestAutoComplete</property>
             </trigger>
@@ -145,7 +156,8 @@
                 method="configCheck"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceRequest.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
+                
+
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromServiceRequest</property>
            </trigger>

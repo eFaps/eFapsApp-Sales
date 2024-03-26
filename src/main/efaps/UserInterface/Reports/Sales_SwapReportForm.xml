@@ -1,20 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2016 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>02b8fee6-4552-47e9-99ab-8f9fdad114a5</uuid>
@@ -37,7 +39,8 @@
                 <property name="FilterDefault01">MONTHS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">false</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.SwapReport</property>
             </trigger>
@@ -50,7 +53,8 @@
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SwapReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SwapReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.SwapReport.transpose</property>
-                 <!-- Sales-Configuration -->
+                 
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.SwapReport</property>
             </trigger>
@@ -61,7 +65,8 @@
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_SwapReportForm.salesReport.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.SwapReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.SwapReport.FilterKey</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.report.SwapReport</property>
             </trigger>

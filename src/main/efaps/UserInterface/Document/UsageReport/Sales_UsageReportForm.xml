@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright 2003 - 2021 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -56,7 +58,8 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">OUTGOING</property>
                 <property name="SetSelected">true</property>
-                <!-- Sales-Configuration -->
+                
+
                 <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="DefaultLink">org.efaps.sales.UsageReport.DefaultProductDocumentType</property>
             </trigger>
@@ -97,7 +100,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -124,7 +128,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -138,7 +143,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -156,7 +162,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.project4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Projects-Configuration -->
+                
+
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -208,7 +215,8 @@
                 method="autoComplete4Process"
                 name="Sales_ProductionReportForm.fabricationProcess.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <!-- Fabrication_Process -->
+                
+
                 <property name="Type">8c225bdd-e3c6-4713-b230-e6e4e70c087e</property>
                 <property name="StatusGroup">Fabrication_ProcessStatus</property>
                 <property name="Status">Open</property>
@@ -220,7 +228,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.fabricationProcesst.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Fabrication-Configuration -->
+                
+
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -234,7 +243,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.fabricationProcessData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Fabrication-Configuration -->
+                
+
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -251,7 +261,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_UsageReportForm.fabricationProcess4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Fabrication-Configuration -->
+                
+
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -306,7 +317,8 @@
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
                 event="UI_FIELD_VALUE" >
-               <!-- Sales-Configuration -->
+               
+
                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                <property name="Link4DefaultStorage">org.efaps.sales.UsageReport.DefaultWareHouse</property>
             </trigger>

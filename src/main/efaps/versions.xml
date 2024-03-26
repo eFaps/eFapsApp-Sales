@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
-  Copyright 2003 - 2013 The eFaps Team
+    Copyright © 2003 - 2024 The eFaps Team (-)
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
+
+
+
 <install xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <application>eFapsApp-Sales</application>
@@ -95,86 +92,116 @@
 
 
         UIUpdate update = new UIUpdate();
-        <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
+        
+
         update.add2Menu("70b1b5b6-11e5-4b05-ab5d-da6a25612234", "87001cc3-c45c-44de-b8f1-776df507f268", 2);
 
-        <!-- connect the Sales_ContactTree_Documents command to the tree menu from contacts -->
+        
+
         update.add2Menu("cc930e6c-4ed6-467e-a5d6-10f460c13118", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
-        <!-- connect the Sales_ContactTree_PaymentDocuments command to the tree menu from contacts -->
+        
+
         update.add2Menu("318f81cf-483d-4076-8244-7b64adb88ee5", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
-        <!-- connect the Sales_Products_ProductTree_SalesReport  to Products_ProductTree -->
+        
+
         update.add2Menu("c6cec8fb-4f34-423d-a7cd-8bf0f136bfbf", "6de24737-8943-4258-9ef4-cc768136e266", -1);
 
-        <!-- connect the Sales_Contacts_ContactTree_SalesReport  to Contacts_ContactTree -->
+        
+
         update.add2Menu("0e0034e1-24e1-4219-9457-7bc5372616e9", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
-        <!-- connect the Sales_ERP_DocumentTypeTree_Document_Menu_Action_AddExisting  to ERP_DocumentTypeTree_Document_Menu_Action -->
+        
+
         update.add2Menu("38138df5-aa40-4a53-b960-26376d4aff3d", "32af8b50-83f2-4e75-87d7-3642e28c1b92", -1);
 
-        <!-- Sales_ProductDocumentTypeMyDesk_Menu_Action_Create to ERP_DocumentTypeMyDesk_Menu_Action -->
+        
+
         update.add2Menu("4a5634f9-0413-4cb8-a009-0c04ca1ce84c", "31c9a626-f6a9-4d23-9eaf-053276f0d910", -1);
 
-        <!-- Sales_Products_Kardex_OfficialReport to Products_KardexMyDesk -->
+        
+
         update.add2Menu("3460a573-b8fd-4010-b2b1-d093d1aacee8", "9800bc8a-3d9c-41ca-86d7-bdc0bc96c2e8", -1);
 
-        <!-- Sales_Products_Kardex_OfficialMultipleReport to Products_KardexMyDesk -->
+        
+
         update.add2Menu("3fbbdcd3-5661-4778-bcd2-c7c02138dd66", "9800bc8a-3d9c-41ca-86d7-bdc0bc96c2e8", -1);
 
-        <!-- Sales_Products_CatalogTree_DocumentType to Products_CatalogTree -->
+        
+
         update.add2Menu("d8ebc551-dc0d-4e52-8ebe-8d6e267272ff", "f5c8e12a-8509-447d-a9df-82b88c505e22", -1);
 
-        <!-- Sales_Products_StorageAbstractTree_Inventory_Menu_Action_CreateDeliverynote to Products_StorageAbstractTree_Inventory_Menu_Action -->
+        
+
         update.add2Menu("daaa2340-74af-4414-999d-19ecffa4c5e4", "a84b5926-9b31-4016-85ea-3b12b4d31c55", -1);
-        <!-- Sales_Products_StorageAbstractTree_Inventory_Menu_Action_CreateDeliverynote to Products_StorageAbstractTree_InventoryIndividual_Menu_Action -->
+        
+
         update.add2Menu("daaa2340-74af-4414-999d-19ecffa4c5e4", "654dd4b3-129d-485f-90b4-af111547e41b", -1);
 
-        <!-- Sales_TransactionDocumentAbstractMyDesk to Products_Product_MyDesk -->
+        
+
         update.add2Menu("ca7eef58-f4a4-4c68-b356-f7bcdd843710", "246542fc-173b-48ec-8cc4-9b635920dc9a", -1);
 
-        <!-- connect the Sales_Products_ProductStock4ProductRequestReportMyDesk to Products_MyDesk -->
+        
+
         update.add2Menu("3e3e1b63-e6be-44c1-a0f8-47caf61a2f36", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
 
-        <!-- connect the Sales_Contacts_ContactTree_Channels to Contacts_ContactTree -->
+        
+
         update.add2Menu("29288ed8-e0b8-4e12-b4be-51b788be3c71", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
-        <!-- Sales_sales, Admin_Help_MainMenu -->
+        
+
         update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
 
 
-        <!-- Sales_InvoiceMyDesk_Menu_Action_Copy, Sales_InvoiceMyDesk_Menu_Action -->
+        
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
 
-        <!-- Define attribute definition -->
-        <!-- connect the Sales_AttributeDefinitionAbstractMyDesk_Menu_Action  to  ERP_AttributeDefinitionMyDesk_Menu-->
+        
+
+        
+
         update.add2Menu("4920c757-2e10-49e3-b15c-25c7fb0a56fd", "69e0b34a-2483-4662-9a45-1ce5d4e420e6", -1);
 
-        <!-- connect Sales_ActionDefinitionMyDesk_Menu_Action  to  ERP_ActionDefinitionMyDesk_Menu-->
+        
+
         update.add2Menu("79b31e5c-5ab0-4f8d-896f-35e60c58dc01", "7432b23b-a2b7-4f2f-aed9-d0ceef9c9a89", -1);
 
-        <!-- connect Sales_HumanResource_EmployeeTree_Documents_Menu_Action_AddInvoice  to  HumanResource_EmployeeTree_Documents_Menu_Action-->
+        
+
         update.add2Menu("3054f9ee-567e-40af-9158-4c00e6a4bd6c", "f0666e18-5d1c-43c3-ac8b-dcc61da3bd4e", -1);
-        <!-- connect Sales_HumanResource_EmployeeTree_Documents_Menu_Action_AddReceipt  to  HumanResource_EmployeeTree_Documents_Menu_Action-->
+        
+
         update.add2Menu("a17a0046-62b0-4b30-a5c2-80e7b7d52eca", "f0666e18-5d1c-43c3-ac8b-dcc61da3bd4e", -1);
 
-        <!-- add to Sales_Admin role -->
+        
+
         rolUp = new RoleUpdate("d9ef697d-8910-4eaf-bf3b-bfe9e834314e");
-        <!-- ERP_AttributeDefinitionMyDesk -->
+        
+
         rolUp.addUI("1c506850-7e64-439f-ad65-9c82dc762db8");
-        <!-- ERP_Common_SearchMyDesk -->
+        
+
         rolUp.addUI("7a067a21-383c-4563-8ebe-a07338df705d");
-        <!-- ERP_DocumentSearch -->
+        
+
         rolUp.addUI("f6bdcbcd-5c2d-4e70-a279-6528d41d4c13");
 
-        <!-- add to Sales_IncomingDocument role -->
+        
+
         RoleUpdate rolUp = new RoleUpdate("b9a41c56-25aa-4ca9-a15c-0c5b54fa325a");
-        <!-- Products_ProductTree_PricelistPurchase -->
+        
+
         rolUp.addUI("ed6138a9-3b59-4c52-a690-6607ca566d79");
-        <!-- Contacts_ContactTree -->
+        
+
         rolUp.addUI("e1944ac8-4007-476c-a5c8-2bfbdb2b79f9");
-        <!-- Contacts_ContactTree_Contact2SubContact -->
+        
+
         rolUp.addUI("842b8168-4099-4072-b407-b067d028ecd2");
 
     </script>
