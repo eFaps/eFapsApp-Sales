@@ -71,7 +71,7 @@
                 method="getTypeFieldValue"
                 name="Sales_AccountsPayableReportFilterForm.type.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.AccountsPayableReport">
-                
+
 
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.AccountsPayableReport</property>
@@ -91,6 +91,17 @@
                 method="autoComplete4Contact"
                 name="Sales_AccountsPayableReportFilterForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.contacts.Contacts" />
+        </field>
+        <field name="analysisType">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="Label">org.efaps.esjp.sales.report.AccountsPayableReport.analysisType</property>
+            <trigger event="UI_FIELD_VALUE"
+                method="getEnumFieldValue"
+                name="Sales_AccountsPayableReportFilterForm.analysisType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.AccountsPayableReport">
+                <property name="Enum">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$AnalysisType</property>
+            </trigger>
         </field>
         <field name="includePaid">
             <property name="ModeEdit">EDITABLE</property>

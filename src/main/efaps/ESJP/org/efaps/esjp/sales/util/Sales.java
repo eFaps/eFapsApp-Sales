@@ -160,9 +160,10 @@ public final class Sales
                     .addDefaultValue("TaxCalcFlow", "RoundSum")
                     .addDefaultValue("CrossPriceScale", "4")
                     .addDefaultValue("CrossTotalFlow", "SumCrossPrice")
-                    .description("Configuration for Calculators.\n"
-                                    + "TaxCalcFlow: RoundSum, SumRound\n"
-                                    + "CrossTotalFlow: NetTotalPlusTax, SumCrossPrice");
+                    .description("""
+                                    Configuration for Calculators.
+                                    TaxCalcFlow: RoundSum, SumRound
+                                    CrossTotalFlow: NetTotalPlusTax, SumCrossPrice""");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -170,13 +171,15 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Config4Partial")
                     .concatenate(true)
-                    .description("Configuration for Partial. e.g:\n"
-                                    + "CREATETYPE.CREATEFROMTYPE.RelationType=RELTYPE\n"
-                                    + "RELTYPE.RelationOriginLink=Link to Origin Type\n"
-                                    + "RELTYPE.RelationPartialLink=Link to Partial Type\n"
-                                    + "Sales_DeliveryNote.Sales_Invoice.RelationType=Sales_Invoice2DeliveryNote\n"
-                                    + "Sales_Invoice2DeliveryNote.RelationOriginLink=FromLink\n"
-                                    + "Sales_Invoice2DeliveryNote.RelationPartialLink=ToLink\n");
+                    .description("""
+                                    Configuration for Partial. e.g:
+                                    CREATETYPE.CREATEFROMTYPE.RelationType=RELTYPE
+                                    RELTYPE.RelationOriginLink=Link to Origin Type
+                                    RELTYPE.RelationPartialLink=Link to Partial Type
+                                    Sales_DeliveryNote.Sales_Invoice.RelationType=Sales_Invoice2DeliveryNote
+                                    Sales_Invoice2DeliveryNote.RelationOriginLink=FromLink
+                                    Sales_Invoice2DeliveryNote.RelationPartialLink=ToLink
+                                    """);
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -211,9 +214,10 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Config4Comparator")
                     .concatenate(true)
-                    .description("Configuration for Comparator. e.g. Default.Deviation4Quantity=0.01\n"
-                                    + "Sales_OrderOutbound.Deviation4Net=0.01\n"
-                                    + "Sales_OrderOutbound.EvaluateRateCurrency=true");
+                    .description("""
+                                    Configuration for Comparator. e.g. Default.Deviation4Quantity=0.01
+                                    Sales_OrderOutbound.Deviation4Net=0.01
+                                    Sales_OrderOutbound.EvaluateRateCurrency=true""");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -276,9 +280,10 @@ public final class Sales
     public static final SysConfLink COSTINGSTORAGEGROUP = new SysConfLink()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Costing.StorageGroup")
-                    .description("Storage Group that is used as a filter for using only the transactions "
-                                    + "that belong to the given StorageGroup, if not present the "
-                                    + "calculation is over all Storages.");
+                    .description("""
+                                    Storage Group that is used as a filter for using only the transactions \
+                                    that belong to the given StorageGroup, if not present the \
+                                    calculation is over all Storages.""");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -664,19 +669,20 @@ public final class Sales
     public static final PropertiesSysConfAttribute DOCVSDOCREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocVsDocReport")
-                    .description("Properties to configure the DocVsDocReport."
-                                    + "VersusNN=KEY\n"
-                                    + "KEY.Label= Boleta vs. Guia de Remision\n"
-                                    + "KEY.Criteria=DateAfter|Relation\n"
-                                    + "KEY.left.TypeNN=Sales_Receipt\n"
-                                    + "KEY.left.StatusGroupNN=Sales_ReceiptStatus\n"
-                                    + "KEY.left.StatusNN=Draft\n"
-                                    + "KEY.right.TypeNN=Sales_DeliveryNote\n"
-                                    + "KEY.right.StatusGroupNN=Sales_DeliveryNoteStatus\n"
-                                    + "KEY.right.StatusNN=Open\n"
-                                    + "KEY.relation.TypeNN=Sales_Receipt2DeliveryNote\n"
-                                    + "KEY.relation.LeftAttributeNN=FromLink\n"
-                                    + "KEY.relation.RightAttributeNN=ToLink");
+                    .description("""
+                                    Properties to configure the DocVsDocReport.\
+                                    VersusNN=KEY
+                                    KEY.Label= Boleta vs. Guia de Remision
+                                    KEY.Criteria=DateAfter|Relation
+                                    KEY.left.TypeNN=Sales_Receipt
+                                    KEY.left.StatusGroupNN=Sales_ReceiptStatus
+                                    KEY.left.StatusNN=Draft
+                                    KEY.right.TypeNN=Sales_DeliveryNote
+                                    KEY.right.StatusGroupNN=Sales_DeliveryNoteStatus
+                                    KEY.right.StatusNN=Open
+                                    KEY.relation.TypeNN=Sales_Receipt2DeliveryNote
+                                    KEY.relation.LeftAttributeNN=FromLink
+                                    KEY.relation.RightAttributeNN=ToLink""");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1380,10 +1386,11 @@ public final class Sales
                     .addDefaultValue("Type", CISales.DeliveryNote.uuid.toString())
                     .addDefaultValue("StatusGroup", CISales.DeliveryNoteStatus.getType().getName())
                     .addDefaultValue("Status", "Open")
-                    .description("Config for a QueryBuilder for Autocomplete and Query of DeliveryNote to create "
-                                    + "Invoice from.\n"
-                                    + "AutoType=TOKEN\n"
-                                    + "ExtraParameter=deliveryNote");
+                    .description("""
+                                    Config for a QueryBuilder for Autocomplete and Query of DeliveryNote to create \
+                                    Invoice from.
+                                    AutoType=TOKEN
+                                    ExtraParameter=deliveryNote""");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -1642,21 +1649,22 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.Rules")
                     .concatenate(true)
-                    .description("Config for Paid/Unpaid evaluation.\n"
-                                    + "TYPE.Paid.TargetStatus=STATUS\n"
-                                    + "TYPE.Paid.Origin.StatusNN=STATUS\n"
-                                    + "TYPE.Unpaid.TargetStatus=STATUS\n"
-                                    + "TYPE.Unpaid.Origin.StatusNN=STATUS.\n"
-                                    + "Evaluation of paid with currency is per payment or with totals"
-                                    + "TYPE.PerPayment=true/false\n"
-                                    + "Permited Status for Swap Paid evaluation."
-                                    + "TYPE.Swap.Status4ToNN=STATUS\n"
-                                    + "TYPE.Swap.Status4FromNN=STATUS\n"
-                                    + "To activate the listener to evaluate on status change:"
-                                    + "OnStatusChange.StatusGroup=Sales_IncomingExchangeStatus\n"
-                                    + "OnStatusChange.Status=Open\n"
-                                    + "Threshold for paid evaluation."
-                                    + "TYPE.Threshold==0.05")
+                    .description("""
+                                    Config for Paid/Unpaid evaluation.
+                                    TYPE.Paid.TargetStatus=STATUS
+                                    TYPE.Paid.Origin.StatusNN=STATUS
+                                    TYPE.Unpaid.TargetStatus=STATUS
+                                    TYPE.Unpaid.Origin.StatusNN=STATUS.
+                                    Evaluation of paid with currency is per payment or with totals\
+                                    TYPE.PerPayment=true/false
+                                    Permited Status for Swap Paid evaluation.\
+                                    TYPE.Swap.Status4ToNN=STATUS
+                                    TYPE.Swap.Status4FromNN=STATUS
+                                    To activate the listener to evaluate on status change:\
+                                    OnStatusChange.StatusGroup=Sales_IncomingExchangeStatus
+                                    OnStatusChange.Status=Open
+                                    Threshold for paid evaluation.\
+                                    TYPE.Threshold==0.05""")
                     .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.TargetStatus",
                                     CISales.CollectionOrderStatus.Closed.key)
                     .addDefaultValue(CISales.CollectionOrder.getType().getName() + ".Paid.Origin.Status01",
@@ -2282,7 +2290,6 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "payment.out.Detraction.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
-
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -2936,22 +2943,32 @@ public final class Sales
                     .addDefaultValue("Type01", CISales.IncomingInvoice.getType().getName())
                     .addDefaultValue("Type02", CISales.IncomingReceipt.getType().getName())
                     .addDefaultValue("Type03", CISales.IncomingReminder.getType().getName())
-                    .addDefaultValue("StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
-                    .addDefaultValue("Status01", CISales.IncomingInvoiceStatus.Open.key)
-                    .addDefaultValue("StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
-                    .addDefaultValue("Status02", CISales.IncomingReceiptStatus.Open.key)
-                    .addDefaultValue("StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
-                    .addDefaultValue("Status03", CISales.IncomingReminderStatus.Open.key)
-                    .addDefaultValue("PAID.Type01", CISales.IncomingInvoice.getType().getName())
-                    .addDefaultValue("PAID.Type02", CISales.IncomingReceipt.getType().getName())
-                    .addDefaultValue("PAID.Type03", CISales.IncomingReminder.getType().getName())
+                    .addDefaultValue("PENDING.StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status01", CISales.IncomingInvoiceStatus.Open.key)
+                    .addDefaultValue("PENDING.StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status02", CISales.IncomingReceiptStatus.Open.key)
+                    .addDefaultValue("PENDING.StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status03", CISales.IncomingReminderStatus.Open.key)
                     .addDefaultValue("PAID.StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
                     .addDefaultValue("PAID.Status01", "!" + CISales.IncomingInvoiceStatus.Replaced.key)
                     .addDefaultValue("PAID.StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
                     .addDefaultValue("PAID.Status02", "!" + CISales.IncomingReceiptStatus.Replaced.key)
                     .addDefaultValue("PAID.StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
                     .addDefaultValue("PAID.Status03", "!" + CISales.IncomingReminderStatus.Replaced.key)
-                    .description("Properties for AccountsPayable Report.");
+                    .addDefaultValue("BOTH.StatusGroup01", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status01", "!" + CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue("BOTH.StatusGroup02", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status02", "!" + CISales.IncomingReceiptStatus.Replaced.key)
+                    .addDefaultValue("BOTH.StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status03", "!" + CISales.IncomingReminderStatus.Replaced.key)
+                    .description("""
+                                    Properties for AccountsPayable Report.
+                                    List of Types
+                                    Status Filter for:
+                                    PENDING.
+                                    PAID.
+                                    BOTH.
+                                    """);
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -2975,18 +2992,14 @@ public final class Sales
                     .addDefaultValue("Type02", CISales.Receipt.getType().getName())
                     .addDefaultValue("Type03", CISales.Reminder.getType().getName())
                     .addDefaultValue("Type04", CISales.IncomingExchange.getType().getName())
-                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
-                    .addDefaultValue("Status01", CISales.InvoiceStatus.Open.key)
-                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
-                    .addDefaultValue("Status02", CISales.ReceiptStatus.Open.key)
-                    .addDefaultValue("StatusGroup03", CISales.ReminderStatus.getType().getName())
-                    .addDefaultValue("Status03", CISales.ReminderStatus.Open.key)
-                    .addDefaultValue("StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
-                    .addDefaultValue("Status04", CISales.IncomingExchangeStatus.Open.key)
-                    .addDefaultValue("PAID.Type01", CISales.Invoice.getType().getName())
-                    .addDefaultValue("PAID.Type02", CISales.Receipt.getType().getName())
-                    .addDefaultValue("PAID.Type03", CISales.Reminder.getType().getName())
-                    .addDefaultValue("PAID.Type04", CISales.IncomingExchange.getType().getName())
+                    .addDefaultValue("PENDING.StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status01", CISales.InvoiceStatus.Open.key)
+                    .addDefaultValue("PENDING.StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status02", CISales.ReceiptStatus.Open.key)
+                    .addDefaultValue("PENDING.StatusGroup03", CISales.ReminderStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status03", CISales.ReminderStatus.Open.key)
+                    .addDefaultValue("PENDING.StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
+                    .addDefaultValue("PENDING.Status04", CISales.IncomingExchangeStatus.Open.key)
                     .addDefaultValue("PAID.StatusGroup01", CISales.InvoiceStatus.getType().getName())
                     .addDefaultValue("PAID.Status01", "!" + CISales.InvoiceStatus.Replaced.key)
                     .addDefaultValue("PAID.StatusGroup02", CISales.ReceiptStatus.getType().getName())
@@ -2995,7 +3008,22 @@ public final class Sales
                     .addDefaultValue("PAID.Status03", "!" + CISales.ReminderStatus.Replaced.key)
                     .addDefaultValue("PAID.StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
                     .addDefaultValue("PAID.Status04", "!" + CISales.IncomingExchangeStatus.Canceled.key)
-                    .description("Properties for AccountsRecievable Report.");
+                    .addDefaultValue("BOTH.StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status01", "!" + CISales.InvoiceStatus.Replaced.key)
+                    .addDefaultValue("BOTH.StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status02", "!" + CISales.ReceiptStatus.Replaced.key)
+                    .addDefaultValue("BOTH.StatusGroup03", CISales.ReminderStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status03", "!" + CISales.ReminderStatus.Replaced.key)
+                    .addDefaultValue("BOTH.StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
+                    .addDefaultValue("BOTH.Status04", "!" + CISales.IncomingExchangeStatus.Canceled.key)
+                    .description("""
+                                    Properties for AccountsRecievable Report.
+                                    List of Types
+                                    Status Filter for:
+                                    PENDING.
+                                    PAID.
+                                    BOTH.
+                                    """);
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -3138,10 +3166,11 @@ public final class Sales
     public static final PropertiesSysConfAttribute REPORT_SALESRECORD = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.SalesRecordReport")
-                    .description("Properties for SalesRecordReport. \n"
-                                    + "QueryBuilder definition\n"
-                                    + "TYPE.Negate=true"
-                                    + "tax.UUID=IGV|OTHER|UNAFF")
+                    .description("""
+                                    Properties for SalesRecordReport.\s
+                                    QueryBuilder definition
+                                    TYPE.Negate=true\
+                                    tax.UUID=IGV|OTHER|UNAFF""")
                     .addDefaultValue("Type01", CISales.Invoice.getType().getName())
                     .addDefaultValue("Type02", CISales.Receipt.getType().getName())
                     .addDefaultValue("Type03", CISales.CreditNote.getType().getName())
@@ -3510,11 +3539,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Config4Swap")
                     .concatenate(true)
-                    .description("Configuration for Swap. e.g.\n"
-                                    + "TYPE.Type=TYPE\n"
-                                    + "TYPE.StatusGroup=STATUSTYPE\n"
-                                    + "TYPE.Status=STATUSKEY\n"
-                                    + "TYPE.Filter4Contact=true\n");
+                    .description("""
+                                    Configuration for Swap. e.g.
+                                    TYPE.Type=TYPE
+                                    TYPE.StatusGroup=STATUSTYPE
+                                    TYPE.Status=STATUSKEY
+                                    TYPE.Filter4Contact=true
+                                    """);
 
     /** See description. */
     @EFapsSysConfAttribute

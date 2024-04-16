@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -131,6 +132,11 @@ public abstract class AccountsAbstractReport_Base
         MANAGEMENT,
         /** Contact related. */
         MINIMAL;
+    }
+
+    public enum AnalysisType
+    {
+        PENDING, PAID, BOTH, SHORTPAID
     }
 
     /**
@@ -263,12 +269,6 @@ public abstract class AccountsAbstractReport_Base
             } else {
                 final ReportType reportType = getReportType(_parameter);
 
-                final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-
-                final boolean includePaid = filter.containsKey("includePaid")
-                                ? (boolean) filter.get("includePaid")
-                                : false;
-
                 final DateTime reportDate = getReportDate(_parameter);
                 Map<Instance, String> instance2status = null;
                 final List<Instance> instances;
@@ -276,8 +276,7 @@ public abstract class AccountsAbstractReport_Base
                     instance2status = calculate4Date(_parameter);
                     instances = new ArrayList<>(instance2status.keySet());
                 } else {
-                    final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, getProperties(),
-                                    includePaid ? "PAID" : null);
+                    final QueryBuilder queryBldr = getQueryBlrd(_parameter);
                     add2QueryBuilder(_parameter, queryBldr);
                     queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
                     instances = queryBldr.getQuery().execute();
@@ -305,7 +304,7 @@ public abstract class AccountsAbstractReport_Base
                             final StringBuilder fromStr = new StringBuilder();
                             final StringBuilder toStr = new StringBuilder();
                             for (final SwapInfo swapInfo : swapInfos) {
-                                if (swapInfo.getSwapDate().isBefore(reportDate)) {
+                                if (swapInfo.getSwapDate() != null && swapInfo.getSwapDate().isBefore(reportDate)) {
                                     if (swapInfo.isFrom()) {
                                         if (fromStr.length() > 0) {
                                             fromStr.append(", ");
@@ -336,10 +335,18 @@ public abstract class AccountsAbstractReport_Base
 
                 sort(_parameter, dataSource);
 
+                final AnalysisType analysisType = getAnalysisType(_parameter);
                 final Collection<Map<String, ?>> col = new ArrayList<>();
                 for (final AbstractDataBean bean : dataSource) {
-                    col.add(bean.getMap(getFilteredReport().isShowCondition(),
-                                    getFilteredReport().isShowAssigned(), isShowSwapInfo()));
+                    final Map<String, ?> row = bean.getMap(getFilteredReport().isShowCondition(),
+                                    getFilteredReport().isShowAssigned(), isShowSwapInfo());
+                    if (AnalysisType.SHORTPAID.equals(analysisType)) {
+                        if (bean.isShortPayed()) {
+                            col.add(row);
+                        }
+                    } else {
+                        col.add(row);
+                    }
                 }
                 if (ReportType.MINIMAL.equals(reportType)) {
                     final Collection<Map<String, ?>> col2 = new ArrayList<>();
@@ -368,6 +375,33 @@ public abstract class AccountsAbstractReport_Base
                     ret = new JRMapCollectionDataSource(col);
                 }
                 getFilteredReport().cache(_parameter, ret);
+            }
+            return ret;
+        }
+
+        protected QueryBuilder getQueryBlrd(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            QueryBuilder ret = null;
+            if (filter.containsKey("type")) {
+                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+                final Set<Long> typeids = filters.getObject();
+                for (final Long typeId : typeids) {
+                    if (ret == null) {
+                        ret = new QueryBuilder(Type.get(typeId));
+                    } else {
+                        ret.addType(Type.get(typeId));
+                    }
+                }
+            } else {
+                for (final Type type : getTypes()) {
+                    if (ret == null) {
+                        ret = new QueryBuilder(type);
+                    } else {
+                        ret.addType(type);
+                    }
+                }
             }
             return ret;
         }
@@ -405,27 +439,23 @@ public abstract class AccountsAbstractReport_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currency);
                 }
             }
+            // add the status filter depending on the selected analysisType
+            final AnalysisType analysisType = getAnalysisType(_parameter);
+            final String prefix = analysisType == AnalysisType.SHORTPAID ? AnalysisType.PAID.name()
+                            : analysisType.name();
+            final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(), prefix);
+            final Set<Long> statusIds = getFilteredReport().getStatusListFromProperties(_parameter, properties)
+                            .stream()
+                            .map(Status::getId)
+                            .collect(Collectors.toSet());
+            _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusIds.toArray());
 
-            if (filter.containsKey("type")) {
-                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
-                final Set<Long> typeids = filters.getObject();
-                if (!typeids.isEmpty()) {
-                    _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, typeids.toArray());
-                }
-            }
-            final CIAttribute dateAttr;
-            switch (getFilterDate(_parameter)) {
-                case CREATED:
-                    dateAttr = CISales.DocumentSumAbstract.Created;
-                    break;
-                case DUEDATE:
-                    dateAttr = CISales.DocumentSumAbstract.DueDate;
-                    break;
-                case DATE:
-                default:
-                    dateAttr = CISales.DocumentSumAbstract.Date;
-                    break;
-            }
+            final CIAttribute dateAttr = switch (getFilterDate(_parameter)) {
+                case CREATED -> CISales.DocumentSumAbstract.Created;
+                case DUEDATE -> CISales.DocumentSumAbstract.DueDate;
+                case DATE -> CISales.DocumentSumAbstract.Date;
+                default -> CISales.DocumentSumAbstract.Date;
+            };
             _queryBldr.addWhereAttrGreaterValue(dateAttr, dateFrom.withTimeAtStartOfDay().minusMinutes(1));
             _queryBldr.addWhereAttrLessValue(dateAttr, dateTo.plusDays(1).withTimeAtStartOfDay());
         }
@@ -457,7 +487,7 @@ public abstract class AccountsAbstractReport_Base
             LOG.debug("Found {} for inst2status", inst2status.size());
 
             // prepare the additional filters to be applied
-            final Set<Instance> filterlist = new HashSet<Instance>();
+            final Set<Instance> filterlist = new HashSet<>();
             boolean applyFilterlist = false;
             if (filter.containsKey("contact") || filter.containsKey("currency")) {
                 applyFilterlist = true;
@@ -482,7 +512,7 @@ public abstract class AccountsAbstractReport_Base
             // get a Set of status that are included in the report
             final Set<Long> statusIds = getFilteredReport().getStatusListFromProperties(_parameter, getProperties())
                             .stream()
-                            .map(status -> status.getId())
+                            .map(Status::getId)
                             .collect(Collectors.toSet());
 
             LOG.debug("Checking agains statusSet {}", statusIds);
@@ -501,7 +531,8 @@ public abstract class AccountsAbstractReport_Base
             return ret;
         }
 
-        protected Map<Instance, AbstractDataBean> getBeans(final Parameter _parameter, final List<Instance> _instances)
+        protected Map<Instance, AbstractDataBean> getBeans(final Parameter _parameter,
+                                                           final List<Instance> _instances)
             throws EFapsException
         {
             final Map<Instance, AbstractDataBean> beans = new HashMap<>();
@@ -598,13 +629,13 @@ public abstract class AccountsAbstractReport_Base
                             .collect(Collectors.toList());
         }
 
-        protected void sort(final Parameter _parameter, final List<AbstractDataBean> _dataSource)
+        protected void sort(final Parameter _parameter,
+                            final List<AbstractDataBean> _dataSource)
             throws EFapsException
         {
             final ReportType reportType = getReportType(_parameter);
             if (ReportType.MINIMAL.equals(reportType)) {
-                Collections.sort(_dataSource, (_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                _o2.getDocContactName()));
+                Collections.sort(_dataSource, Comparator.comparing(AbstractDataBean::getDocContactName));
             } else {
                 final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
                 final FilterDate filterDate = getFilterDate(_parameter);
@@ -615,7 +646,8 @@ public abstract class AccountsAbstractReport_Base
                     for (final Enum<?> sel : selected) {
                         switch ((GroupBy) sel) {
                             case ASSIGNED:
-                                chain.addComparator((_o1, _o2) -> {
+                                chain.addComparator((_o1,
+                                                     _o2) -> {
                                     int ret1 = 0;
                                     try {
                                         ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
@@ -626,13 +658,13 @@ public abstract class AccountsAbstractReport_Base
                                 });
                                 break;
                             case CONTACT:
-                                chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                                _o2.getDocContactName()));
+                                chain.addComparator(Comparator.comparing(AbstractDataBean::getDocContactName));
                                 break;
                             case DAILY:
                             case MONTHLY:
                             case YEARLY:
-                                chain.addComparator((_o1, _o2) -> {
+                                chain.addComparator((_o1,
+                                                     _o2) -> {
                                     final int ret1;
                                     switch (filterDate) {
                                         case CREATED:
@@ -654,20 +686,21 @@ public abstract class AccountsAbstractReport_Base
                                 });
                                 break;
                             case DOCTYPE:
-                                chain.addComparator((_o1, _o2) -> _o1.getDocInst().getType().getLabel().compareTo(
-                                                _o2.getDocInst().getType().getLabel()));
+                                chain.addComparator((_o1,
+                                                     _o2) -> _o1.getDocInst().getType().getLabel().compareTo(
+                                                                     _o2.getDocInst().getType().getLabel()));
                                 break;
                             case CONDITION:
-                                chain.addComparator((_o1, _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
+                                chain.addComparator(Comparator.comparing(AbstractDataBean::getCondition));
                                 break;
                             default:
-                                chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                                _o2.getDocContactName()));
+                                chain.addComparator(Comparator.comparing(AbstractDataBean::getDocContactName));
                                 break;
                         }
                     }
                 }
-                chain.addComparator((_o1, _o2) -> {
+                chain.addComparator((_o1,
+                                     _o2) -> {
                     final int ret1;
                     switch (filterDate) {
                         case CREATED:
@@ -706,6 +739,20 @@ public abstract class AccountsAbstractReport_Base
                 ret = (ReportType) filterValue.getObject();
             } else {
                 ret = ReportType.STANDARD;
+            }
+            return ret;
+        }
+
+        protected AnalysisType getAnalysisType(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+            final AnalysisType ret;
+            if (filterMap.containsKey("analysisType")) {
+                final EnumFilterValue filterValue = (EnumFilterValue) filterMap.get("analysisType");
+                ret = (AnalysisType) filterValue.getObject();
+            } else {
+                ret = AnalysisType.PENDING;
             }
             return ret;
         }
@@ -802,7 +849,8 @@ public abstract class AccountsAbstractReport_Base
         }
 
         @Override
-        protected void addColumnDefinition(final Parameter _parameter, final JasperReportBuilder _builder)
+        protected void addColumnDefinition(final Parameter _parameter,
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
             final ReportType reportType = getReportType(_parameter);
@@ -813,20 +861,12 @@ public abstract class AccountsAbstractReport_Base
                 final GroupByFilterValue groupBy = (GroupByFilterValue) filterMap.get("groupBy");
                 final List<Enum<?>> selected = groupBy == null ? new ArrayList<>() : groupBy.getObject();
 
-                final String filter;
-                switch (getFilterDate(_parameter)) {
-                    case CREATED:
-                        filter = "docCreated";
-                        break;
-                    case DUEDATE:
-                        filter = "docDueDate";
-                        break;
-                    case DATE:
-                    default:
-                        filter = "docDate";
-                        break;
-                }
-
+                final String filter = switch (getFilterDate(_parameter)) {
+                    case CREATED -> "docCreated";
+                    case DUEDATE -> "docDueDate";
+                    case DATE -> "docDate";
+                    default -> "docDate";
+                };
                 final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(
                                 getFilteredReport().getLabel(_parameter, "FilterDate1"), filter,
                                 DateTimeMonth.get());
@@ -1173,6 +1213,18 @@ public abstract class AccountsAbstractReport_Base
         protected abstract Properties getProperties()
             throws EFapsException;
 
+        private boolean shortPayed;
+
+        public boolean isShortPayed()
+        {
+            return shortPayed;
+        }
+
+        public void setShortPayed(boolean shortPayed)
+        {
+            this.shortPayed = shortPayed;
+        }
+
         /**
          * Checks if is currency base.
          *
@@ -1243,6 +1295,9 @@ public abstract class AccountsAbstractReport_Base
                 if (payTmp != null) {
                     ret.put("payed_BASE", negate ? payTmp.negate() : payTmp);
                 }
+                if (crossTmp != null && payTmp != null) {
+                    setShortPayed(crossTmp.subtract(payTmp).compareTo(BigDecimal.ZERO) != 0);
+                }
             } else {
                 for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                     if (cross.containsKey(currency.getInstance().getId())) {
@@ -1253,6 +1308,9 @@ public abstract class AccountsAbstractReport_Base
                         final BigDecimal payTmp = payments.get(currency.getInstance().getId());
                         if (payTmp != null) {
                             ret.put("payed_" + currency.getISOCode(), negate ? payTmp.negate() : payTmp);
+                        }
+                        if (crossTmp != null && payTmp != null) {
+                            setShortPayed(crossTmp.subtract(payTmp).compareTo(BigDecimal.ZERO) != 0);
                         }
                         if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
                             ret.put("rate_" + currency.getISOCode(), currency.isInvert() ? getRate()[1] : getRate()[0]);

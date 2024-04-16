@@ -40,7 +40,7 @@
                 <property name="Field04">filterDate</property>
                 <property name="Field05">type</property>
                 <property name="Field06">contact</property>
-                <property name="Field07">includePaid</property>
+                <property name="Field07">analysisType</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">groupBy</property>
                 <property name="Field10">reportType</property>
@@ -50,17 +50,17 @@
                 <property name="FilterType04">Enum</property>
                 <property name="FilterType05">Type</property>
                 <property name="FilterType06">Instance</property>
-                <property name="FilterType07">Boolean</property>
+                <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Currency</property>
                 <property name="FilterType09">GroupBy</property>
                 <property name="FilterType10">Enum</property>
-                <property name="FilterDefault01">YEARS:-10</property>
+                <property name="FilterDefault01">YEARS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">TODAY</property>
                 <property name="FilterDefault04">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$FilterDate</property>
                 <property name="FilterDefault05">ALL</property>
                 <property name="FilterDefault06" />
-                <property name="FilterDefault07">false</property>
+                <property name="FilterDefault07">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$AnalysisType</property>
                 <property name="FilterDefault08" />
                 <property name="FilterDefault09">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$GroupBy</property>
                 <property name="FilterDefault10">org.efaps.esjp.sales.report.AccountsAbstractReport_Base$ReportType</property>
@@ -77,7 +77,7 @@
                 <property name="Field04">filterDate</property>
                 <property name="Field05">type</property>
                 <property name="Field06">contact</property>
-                <property name="Field07">includePaid</property>
+                <property name="Field07">analysisType</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">groupBy</property>
                 <property name="Field10">reportType</property>
@@ -87,7 +87,7 @@
                 <property name="DBProperty04">org.efaps.esjp.sales.report.AccountsPayableReport.filterDate</property>
                 <property name="DBProperty05">org.efaps.esjp.sales.report.AccountsPayableReport.type</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.AccountsPayableReport.contact</property>
-                <property name="DBProperty07">org.efaps.esjp.sales.report.AccountsPayableReport.includePaid</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.AccountsPayableReport.analysisType</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.AccountsPayableReport.currency</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.AccountsPayableReport.groupBy</property>
                 <property name="DBProperty10">org.efaps.esjp.sales.report.AccountsPayableReport.reportType</property>
