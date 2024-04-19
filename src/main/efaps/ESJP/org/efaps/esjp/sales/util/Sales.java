@@ -2961,6 +2961,7 @@ public final class Sales
                     .addDefaultValue("BOTH.Status02", "!" + CISales.IncomingReceiptStatus.Replaced.key)
                     .addDefaultValue("BOTH.StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
                     .addDefaultValue("BOTH.Status03", "!" + CISales.IncomingReminderStatus.Replaced.key)
+                    .addDefaultValue("ShortPayed.Threshold", "0.01")
                     .description("""
                                     Properties for AccountsPayable Report.
                                     List of Types
@@ -2968,6 +2969,10 @@ public final class Sales
                                     PENDING.
                                     PAID.
                                     BOTH.
+                                    Type.Negate=true
+                                    ShortPayed.Threshold=0.01
+                                    ShortPayed.PEN.Threshold=0.01
+                                    ShortPayed.USD.Threshold=0.01
                                     """);
 
     /** See description. */
@@ -3016,6 +3021,7 @@ public final class Sales
                     .addDefaultValue("BOTH.Status03", "!" + CISales.ReminderStatus.Replaced.key)
                     .addDefaultValue("BOTH.StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
                     .addDefaultValue("BOTH.Status04", "!" + CISales.IncomingExchangeStatus.Canceled.key)
+                    .addDefaultValue("ShortPayed.Threshold", "0.01")
                     .description("""
                                     Properties for AccountsRecievable Report.
                                     List of Types
@@ -3023,6 +3029,10 @@ public final class Sales
                                     PENDING.
                                     PAID.
                                     BOTH.
+                                    Type.Negate=true
+                                    ShortPayed.Threshold=0.01
+                                    ShortPayed.PEN.Threshold=0.01
+                                    ShortPayed.USD.Threshold=0.01
                                     """);
 
     /** See description. */

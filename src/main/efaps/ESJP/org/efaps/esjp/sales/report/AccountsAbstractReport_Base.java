@@ -1295,9 +1295,7 @@ public abstract class AccountsAbstractReport_Base
                 if (payTmp != null) {
                     ret.put("payed_BASE", negate ? payTmp.negate() : payTmp);
                 }
-                if (crossTmp != null && payTmp != null) {
-                    setShortPayed(crossTmp.subtract(payTmp).compareTo(BigDecimal.ZERO) != 0);
-                }
+                evalShortPaid(crossTmp, payTmp, CurrencyInst.get(Currency.getBaseCurrency()).getISOCode());
             } else {
                 for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                     if (cross.containsKey(currency.getInstance().getId())) {
@@ -1309,9 +1307,7 @@ public abstract class AccountsAbstractReport_Base
                         if (payTmp != null) {
                             ret.put("payed_" + currency.getISOCode(), negate ? payTmp.negate() : payTmp);
                         }
-                        if (crossTmp != null && payTmp != null) {
-                            setShortPayed(crossTmp.subtract(payTmp).compareTo(BigDecimal.ZERO) != 0);
-                        }
+                        evalShortPaid(crossTmp, payTmp, currency.getISOCode());
                         if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
                             ret.put("rate_" + currency.getISOCode(), currency.isInvert() ? getRate()[1] : getRate()[0]);
                         }
@@ -1319,6 +1315,23 @@ public abstract class AccountsAbstractReport_Base
                 }
             }
             return ret;
+        }
+
+        protected void evalShortPaid(final BigDecimal crossAmount,
+                                     final BigDecimal paymentAmount,
+                                     final String currencyISOCode)
+            throws EFapsException
+        {
+            if (crossAmount != null && paymentAmount != null) {
+                BigDecimal threshold;
+                final String specificKey = "ShortPayed" + currencyISOCode + "Threshold";
+                if (getProperties().containsKey(specificKey)) {
+                    threshold = new BigDecimal(getProperties().getProperty(specificKey));
+                } else {
+                    threshold = new BigDecimal(getProperties().getProperty("ShortPayed.Threshold", "0"));
+                }
+                setShortPayed(crossAmount.subtract(paymentAmount).abs().compareTo(threshold) > 0);
+            }
         }
 
         /**
