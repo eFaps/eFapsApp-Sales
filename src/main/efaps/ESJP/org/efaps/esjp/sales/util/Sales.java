@@ -429,6 +429,13 @@ public final class Sales
                     .key(Sales.BASE + "CreditNote.ActivateTransDocShadow")
                     .description("Activate the possiblity to create a TransactionDocumentShadow");
 
+    @EFapsSysConfLink
+    public static final SysConfLink CREDITNOTE_DEFAULTPRODDOCTYPE = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.DefaultProductDocumentType")
+                    .description("Possibility to set a default Product Document Type for "
+                                    + "CreditNote-TransDocShadow. ");
+
     /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink DEFAULTCURRENCY4DOC = new SysConfLink()
@@ -1465,6 +1472,13 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Invoice.ActivateFilesStructurBrowser")
                     .description("Activate the possiblity to upload Files incl. FolderStructure");
+
+    @EFapsSysConfLink
+    public static final SysConfLink INVOICE_DEFAULTPRODDOCTYPE = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Invoice.DefaultProductDocumentType")
+                    .description("Possibility to set a default Product Document Type for "
+                                    + "Invoice-TransDocShadow. ");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -2758,6 +2772,13 @@ public final class Sales
                     .addDefaultValue("Validation01", "QUANTITYGREATERZERO")
                     .addDefaultValue("Validation02", "AMOUNTGREATERZERO")
                     .description("Configuration Properties to activate validations.");
+
+    @EFapsSysConfLink
+    public static final SysConfLink RECEIPT_DEFAULTPRODDOCTYPE = new SysConfLink()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "Receipt.DefaultProductDocumentType")
+                    .description("Possibility to set a default Product Document Type for "
+                                    + "Receipt-TransDocShadow. ");
 
     /** See description. */
     @EFapsSysConfAttribute
