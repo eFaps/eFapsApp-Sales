@@ -47,6 +47,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.admin.datamodel.StatusValue;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
@@ -504,9 +505,7 @@ public abstract class TransactionDocument_Base
         if (Products.ACTIVATEINDIVIDUAL.get()) {
             final List<Position> replacement = new ArrayList<>();
             final Map<Instance, Set<IndividualWithQuantity>> map = getProduct2IndividualMap(_parameter);
-            final Iterator<Position> iter = ret.iterator();
-            while (iter.hasNext()) {
-                final Position pos = iter.next();
+            for (Position pos : ret) {
                 final PrintQuery print = new PrintQuery(pos.getProdInstance());
                 print.addAttribute(CIProducts.ProductAbstract.Individual);
                 print.execute();
@@ -621,6 +620,10 @@ public abstract class TransactionDocument_Base
         insert.add(CISales.TransactionDocumentAbstract.Date, _date);
         insert.add(CISales.TransactionDocumentAbstract.StatusAbstract,
                         Status.find(CISales.TransactionDocumentStatus.Open));
+        final Instance contactInstance = Instance.get(_parameter.getParameterValue("contact"));
+        if (InstanceUtils.isKindOf(contactInstance, CIContacts.ContactAbstract)) {
+            insert.add(CISales.TransactionDocumentAbstract.Contact, contactInstance);
+        }
         insert.execute();
         return insert.getInstance();
     }
