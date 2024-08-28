@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
     Copyright © 2003 - 2024 The eFaps Team (-)
 
@@ -16,21 +15,21 @@
     limitations under the License.
 
 -->
-
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>cc71f437-46ac-4db0-b53c-ad94b7ae36d9</uuid>
+    <uuid>e9338375-c413-41ef-9100-588bde1cbbb4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditNote2Invoice</name>
-        <parent>Sales_CreditNote2DocumentAbstract</parent>
-        <attribute>
-            <name>ToLink</name>
+        <name>Sales_CreditNote2DocumentAbstract</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
+        <purpose abstract="true"/>
+         <attribute>
+            <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_Invoice</typelink>
+            <typelink>Sales_CreditNote</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

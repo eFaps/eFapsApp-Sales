@@ -25,14 +25,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditNote2Receipt</name>
-        <parent>Sales_Document2DocumentAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_CreditNote</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
+        <parent>Sales_CreditNote2DocumentAbstract</parent>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
