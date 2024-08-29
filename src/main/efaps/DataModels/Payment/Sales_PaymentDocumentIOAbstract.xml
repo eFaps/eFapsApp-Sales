@@ -63,6 +63,18 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>STRING5</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>AbstractExtendStr6</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING5</sqlcolumn>
+        </attribute>
+         <attribute>
+            <name>AbstractExtendStr7</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING5</sqlcolumn>
+        </attribute>
         <attribute>
             <name>AbstractExtendDate1</name>
             <type>DateTime</type>
