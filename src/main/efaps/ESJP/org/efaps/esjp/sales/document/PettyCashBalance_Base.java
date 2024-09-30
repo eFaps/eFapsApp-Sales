@@ -427,6 +427,17 @@ public abstract class PettyCashBalance_Base
                 ParameterUtil.setProperty(parameter, "JasperConfigMime", Sales.PAYMENTORDER_MIME.getKey());
                 createReport(parameter, createdDoc);
             }
+
+            if (CISales.CollectionOrder.getType().equals(type)
+                            && Sales.COLLECTIONORDER_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+                final CreatedDoc createdDoc = new CreatedDoc();
+                createdDoc.setInstance(insert.getInstance());
+                final Parameter parameter = ParameterUtil.clone(_parameter);
+                ParameterUtil.setProperty(parameter, "JasperConfig", Sales.SYSCONFUUID.toString());
+                ParameterUtil.setProperty(parameter, "JasperConfigReport", Sales.COLLECTIONORDER_JASPERREPORT.getKey());
+                ParameterUtil.setProperty(parameter, "JasperConfigMime", Sales.COLLECTIONORDER_MIME.getKey());
+                createReport(parameter, createdDoc);
+            }
         }
         return new Return();
     }

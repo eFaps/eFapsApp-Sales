@@ -30,8 +30,9 @@
         <target>
             <form>Sales_CollectionOrderForm</form>
              <execute method="edit" program="org.efaps.esjp.sales.document.CollectionOrder">
-                 
-
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.CollectionOrder.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.CollectionOrder.Mime</property>
                 <property name="ConnectType">7e1a28d0-bfe7-432b-afe0-c6da3a540208</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>

@@ -24,6 +24,8 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -49,11 +51,12 @@ public abstract class CollectionOrder_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
-
-        final File file = createReport(_parameter, createdDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.COLLECTIONORDER_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+            final File file = createReport(_parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return ret;
@@ -70,13 +73,15 @@ public abstract class CollectionOrder_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final EditedDoc editDoc = editDoc(_parameter);
-        updateConnection2Object(_parameter, editDoc);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updateConnection2Object(_parameter, editedDoc);
 
-        final File file = createReport(_parameter, editDoc);
-        if (file != null) {
-            ret.put(ReturnValues.VALUES, file);
-            ret.put(ReturnValues.TRUE, true);
+        if (Sales.COLLECTIONORDER_JASPERACTIVATION.get().contains(JasperActivation.ONEDIT)) {
+            final File file = createReport(_parameter, editedDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
         return ret;
     }

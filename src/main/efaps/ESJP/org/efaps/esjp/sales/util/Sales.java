@@ -242,6 +242,31 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute COLLECTIONORDER_JASPERREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CollectionOrder.JasperReport")
+                    .description("Name of the jasperReport for PaymentOrder.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> COLLECTIONORDER_MIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CollectionOrder.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for PaymentOrder");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BitEnumSysConfAttribute<JasperActivation> COLLECTIONORDER_JASPERACTIVATION = new BitEnumSysConfAttribute<JasperActivation>()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CollectionOrder.JasperActivation")
+                    .clazz(JasperActivation.class)
+                    .addDefaultValue(JasperActivation.ONCREATE)
+                    .addDefaultValue(JasperActivation.ONEDIT)
+                    .description("Activation of Jasperreport Creation");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute COSTINGACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Costing.Activate")
