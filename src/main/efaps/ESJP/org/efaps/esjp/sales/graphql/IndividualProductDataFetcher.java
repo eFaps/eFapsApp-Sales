@@ -18,9 +18,7 @@ package org.efaps.esjp.sales.graphql;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -66,48 +64,49 @@ public class IndividualProductDataFetcher
                             .attribute(CISales.PositionSumAbstract.PositionNumber)
                             .linkto(CISales.PositionSumAbstract.Product).instance().as("prodInstance")
                             .linkto(CISales.PositionSumAbstract.Product)
-                            .attribute(CIProducts.ProductAbstract.Individual).as("prodIndividual")
+                            .attribute(CIProducts.ProductAbstract.Individual).as("prodIndividualFlag")
 
                             .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                             .linkfrom(CISales.Document2TransactionDocumentShadowAbstract.FromAbstractLink)
                             .linkto(CISales.Document2TransactionDocumentShadowAbstract.ToAbstractLink)
                             .linkfrom(CIProducts.TransactionIndividualAbstract.Document)
-                            .attribute(CIProducts.TransactionIndividualAbstract.ID)
-                            .as("transId")
-
-                            .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                            .linkfrom(CISales.Document2TransactionDocumentShadowAbstract.FromAbstractLink)
-                            .linkto(CISales.Document2TransactionDocumentShadowAbstract.ToAbstractLink)
-                            .linkfrom(CIProducts.TransactionIndividualAbstract.Document)
-                            .linkto(CIProducts.TransactionIndividualAbstract.Product).instance()
-                            .as("individualInstances")
+                            .instance()
+                            .as("transInst")
                             .evaluate();
             if (eval.next()) {
-                final ProductIndividual ind = eval.get("prodIndividual");
-                LOG.info("    Product has individual: {}", ind);
+                final ProductIndividual ind = eval.get("prodIndividualFlag");
+                LOG.info("    Product has individual flag: {}", ind);
                 if (!ProductIndividual.NONE.equals(ind)) {
-                    final Object individualInstances = eval.get("individualInstances");
-                    LOG.info("    Related individual Products: {}", individualInstances);
-                    if (individualInstances != null && individualInstances instanceof List) {
-                        @SuppressWarnings("unchecked") final var instances = ((List<Instance>) individualInstances)
-                                        .stream().filter(Objects::nonNull)
-                                        .toList();
-                        if (instances.size() == 1) {
-                            final var print = EQL.builder().print(instances.get(0));
-                            addSelect4Field(environment, print);
-                            values = evaluate(environment, print);
-                        } else if (instances.size() > 1) {
-                            final Map<Long, Instance> treeMap = new TreeMap<>();
-                            final var transactionIds = eval.<List<Long>>get("transId");
-                            final var instIter = instances.iterator();
-                            for (final var transactionId :  transactionIds) {
-                                treeMap.put(transactionId, instIter.next());
-                            }
+                    final var transactionInsts = eval.<List<Instance>>get("transInst");
+                    if (transactionInsts != null && transactionInsts instanceof List) {
+                        Instance transactionInst;
+                        if (transactionInsts.size() == 1) {
+                            LOG.info("Single transaction: {}", transactionInsts.get(0).getOid());
+                            transactionInst = transactionInsts.get(0);
+                        } else {
+                            final var sortedTransactionInsts = transactionInsts.stream()
+                                            .sorted((inst1,
+                                                     inst2) -> Long.valueOf(inst1.getId()).compareTo(inst2.getId()))
+                                            .toList();
+                            LOG.info("Sorted transactions: {}", sortedTransactionInsts);
                             final Integer positionNumber = eval.get(CISales.PositionSumAbstract.PositionNumber);
-                            final var inst = treeMap.values().stream().toList().get(positionNumber - 1);
-                            final var print = EQL.builder().print(inst);
-                            addSelect4Field(environment, print);
-                            values = evaluate(environment, print);
+                            LOG.info("Selected positionNumber: {}", positionNumber);
+                            final var inst = sortedTransactionInsts.get(positionNumber - 1);
+                            LOG.info("Selected transaction-oid: {}", inst.getOid());
+                            transactionInst = inst;
+                        }
+                        if (InstanceUtils.isValid(transactionInst)) {
+                            final var transactionEval = EQL.builder()
+                                            .print(transactionInst)
+                                            .linkto(CIProducts.TransactionIndividualAbstract.Product)
+                                            .instance().as("individualProdInst")
+                                            .evaluate();
+                            if (transactionEval.next()) {
+                                final var print = EQL.builder()
+                                                .print(transactionEval.<Instance>get("individualProdInst"));
+                                addSelect4FieldOnProduct(environment, print);
+                                values = evaluate(environment, print);
+                            }
                         }
                     }
                 }
@@ -116,8 +115,8 @@ public class IndividualProductDataFetcher
         return values;
     }
 
-    protected void addSelect4Field(final DataFetchingEnvironment environment,
-                                   final Print print)
+    protected void addSelect4FieldOnProduct(final DataFetchingEnvironment environment,
+                                            final Print print)
     {
         final GraphQLNamedType objectType = (GraphQLNamedType) environment.getFieldType();
         LOG.info("    objectType: {}", objectType);
