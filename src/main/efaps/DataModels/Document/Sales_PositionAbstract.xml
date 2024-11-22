@@ -58,6 +58,13 @@
             <sqlcolumn>POS</sqlcolumn>
         </attribute>
         <attribute>
+            <name>ParentPositionAbstractLink</name>
+            <type>Link</type>
+            <typelink>Sales_PositionAbstract</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>PARENTID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Product</name>
             <type>Link</type>
             <typelink>Products_ProductAbstract</typelink>
