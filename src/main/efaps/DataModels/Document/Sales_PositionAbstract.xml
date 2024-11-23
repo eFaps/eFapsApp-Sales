@@ -100,5 +100,12 @@
             <sqltable>Sales_PositionAbstractSQLTable</sqltable>
             <sqlcolumn>REMARK</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>BOMAbstractLink</name>
+            <type>Link</type>
+            <typelink>Products_BOMAbstract</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>BOMID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

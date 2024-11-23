@@ -91,14 +91,16 @@ public class PaymentDataFetcher
             final var evaluator = print.evaluate();
             data = getValueMap(keyMapping, evaluator, keys);
         } else if (paymentInsts != null) {
+            final List<Map<String, Object>> values = new ArrayList<>();
             final var typeGroups = paymentInsts.stream().collect(Collectors.groupingBy(Instance::getType));
             for (final var entry : typeGroups.entrySet()) {
                 final var print = EQL.builder()
                                 .print(entry.getValue().stream().toArray(Instance[]::new));
                 addSelects(print, entry.getKey());
                 final var evaluator = print.evaluate();
-                data = getValueMaps(keyMapping, evaluator, keys);
+                values.addAll(getValueMaps(keyMapping, evaluator, keys));
             }
+            data = values;
         } else {
             // todo
         }
