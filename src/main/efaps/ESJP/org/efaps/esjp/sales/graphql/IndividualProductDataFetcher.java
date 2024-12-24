@@ -52,7 +52,7 @@ public class IndividualProductDataFetcher
     public Object get(final DataFetchingEnvironment environment)
         throws Exception
     {
-        Map<String, Object> values = null;
+        Map<String, Object> values = new HashMap<>();
 
         LOG.info("Running IndividualDataFetcher with: {}", environment);
         final Map<String, Object> source = environment.getSource();
@@ -60,6 +60,36 @@ public class IndividualProductDataFetcher
 
         final Instance positionInstance = (Instance) source.get("currentInstance");
         if (InstanceUtils.isKindOf(positionInstance, CISales.PositionSumAbstract)) {
+            final var docEval = EQL.builder()
+                            .print(positionInstance)
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink).instance().as("docInstance")
+                            .evaluate();
+            final Instance docInstance = docEval.get("docInstance");
+            LOG.info("    found doc: {}", docInstance);
+
+            final var posEval = EQL.builder().print()
+                            .query(CISales.PositionSumAbstract)
+                            .where()
+                            .attribute(CISales.PositionSumAbstract.DocumentAbstractLink).eq(docInstance)
+                            .select()
+                            .attribute(CISales.PositionSumAbstract.PositionNumber)
+                            .linkto(CISales.PositionSumAbstract.Product).instance().as("prodInstance")
+                            .linkto(CISales.PositionSumAbstract.Product)
+                            .attribute(CIProducts.ProductAbstract.Individual).as("prodIndividualFlag")
+                            .orderBy(CISales.PositionSumAbstract.PositionNumber)
+                            .evaluate();
+            final Map<Integer, Integer> indexMapping = new HashMap<>();
+            var index = 0;
+            while (posEval.next()) {
+                final ProductIndividual ind = posEval.get("prodIndividualFlag");
+                if (!ProductIndividual.NONE.equals(ind)) {
+                    final Integer positionNumber = posEval.get(CISales.PositionSumAbstract.PositionNumber);
+                    indexMapping.put(positionNumber, index);
+                    index++;
+                }
+            }
+            LOG.info("    indexMapping: {}", indexMapping);
+
             final var eval = EQL.builder().print(positionInstance)
                             .attribute(CISales.PositionSumAbstract.PositionNumber)
                             .linkto(CISales.PositionSumAbstract.Product).instance().as("prodInstance")
@@ -73,8 +103,10 @@ public class IndividualProductDataFetcher
                             .instance()
                             .as("transInst")
                             .evaluate();
-            if (eval.next()) {
+
+            while (eval.next()) {
                 final ProductIndividual ind = eval.get("prodIndividualFlag");
+                final Integer positionNumber = eval.get(CISales.PositionSumAbstract.PositionNumber);
                 LOG.info("    Product has individual flag: {}", ind);
                 if (!ProductIndividual.NONE.equals(ind)) {
                     final var transactionInsts = eval.<List<Instance>>get("transInst");
@@ -89,9 +121,8 @@ public class IndividualProductDataFetcher
                                                      inst2) -> Long.valueOf(inst1.getId()).compareTo(inst2.getId()))
                                             .toList();
                             LOG.info("Sorted transactions: {}", sortedTransactionInsts);
-                            final Integer positionNumber = eval.get(CISales.PositionSumAbstract.PositionNumber);
                             LOG.info("Selected positionNumber: {}", positionNumber);
-                            final var inst = sortedTransactionInsts.get(positionNumber - 1);
+                            final var inst = sortedTransactionInsts.get(indexMapping.get(positionNumber));
                             LOG.info("Selected transaction-oid: {}", inst.getOid());
                             transactionInst = inst;
                         }
