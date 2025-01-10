@@ -21,12 +21,9 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>66b2580d-b076-4791-b47c-09dd2c475f40</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RetentionCertificateDocumentSelectForm</name>
-        
-
         <field character="Target" name="documents">
             <property name="HideLabel">true</property>
             <property name="TargetShowCheckBoxes">true</property>
@@ -34,7 +31,7 @@
             <table>Sales_RetentionCertificateDocumentSelectTable</table>
             <evaluate method="documentMultiPrint"
                 program="org.efaps.esjp.sales.document.RetentionCertificate">
-                <property name="Type">Sales_IncomingRetention</property>
+                <property name="Type">Sales_PaymentRetentionOut</property>
             </evaluate>
         </field>
     </definition>

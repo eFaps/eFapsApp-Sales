@@ -47,6 +47,7 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
+import org.efaps.esjp.sales.report.RetentionReport_Base.DocumentBean;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -203,43 +204,18 @@ public abstract class RetentionReport_Base
             analyzePayments(_parameter, inst2bean);
 
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<>();
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        return Integer.valueOf(_o1.getDate().getYear())
-                                        .compareTo(Integer.valueOf(_o2.getDate().getYear()));
-                    }
-                }
+            chain.addComparator((_o1,
+             _o2) -> Integer.valueOf(_o1.getDate().getYear())
+                            .compareTo(_o2.getDate().getYear())
             );
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        return Integer.valueOf(_o1.getDate().getMonthOfYear())
-                                        .compareTo(Integer.valueOf(_o2.getDate().getMonthOfYear()));
-                    }
-                }
+            chain.addComparator((_o1,
+             _o2) -> Integer.valueOf(_o1.getDate().getMonthOfYear())
+                            .compareTo(_o2.getDate().getMonthOfYear())
             );
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        return _o1.getContactName().compareTo(_o2.getContactName());
-                    }
-                }
+            chain.addComparator(Comparator.comparing(DocumentBean::getContactName)
             );
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        return _o1.getDate().compareTo(_o2.getDate());
-                    }
-                }
+            chain.addComparator((_o1,
+             _o2) -> _o1.getDate().compareTo(_o2.getDate())
             );
             Collections.sort(datasource, chain);
 
@@ -878,9 +854,9 @@ public abstract class RetentionReport_Base
         {
             if (_retentionRet != null && _retentionRet.isValid()) {
                 final SelectBuilder selStatusRetCer = new SelectBuilder()
-                                .linkfrom(CISales.RetentionCertificate2IncomingRetention,
-                                                CISales.RetentionCertificate2IncomingRetention.ToLink)
-                                .linkto(CISales.RetentionCertificate2IncomingRetention.FromLink)
+                                .linkfrom(CISales.RetentionCertificate2PaymentRetentionOut,
+                                                CISales.RetentionCertificate2PaymentRetentionOut.ToLink)
+                                .linkto(CISales.RetentionCertificate2PaymentRetentionOut.FromLink)
                                 .attribute(CISales.RetentionCertificate.Status);
 
                 final PrintQuery print = new PrintQuery(_retentionRet);

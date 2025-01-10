@@ -21,37 +21,34 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>43376e69-87a9-41e9-990c-ae5740dbc214</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificate2IncomingRetentionTable</name>
-        
-
+        <name>Sales_RetentionCertificate2PaymentRetentionOutTable</name>
         <field name="name">
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[Name]</property>
-            <property name="Label">Sales_IncomingRetention/Name.Label</property>
+            <property name="Label">Sales_PaymentRetentionOut/Name.Label</property>
         </field>
         <field name="contact">
             <property name="Select">linkto[ToLink].linkto[Contact].attribute[Name]</property>
-            <property name="Label">Sales_IncomingRetention/Contact.Label</property>
+            <property name="Label">Sales_PaymentRetentionOut/Contact.Label</property>
         </field>
         <field name="date">
             <property name="Select">linkto[ToLink].attribute[Date]</property>
-            <property name="Label">Sales_IncomingRetention/Date.Label</property>
+            <property name="Label">Sales_PaymentRetentionOut/Date.Label</property>
         </field>
         <field name="status">
             <property name="Select">linkto[ToLink].attribute[StatusAbstract]</property>
-            <property name="Label">Sales_IncomingRetention/StatusAbstract.Label</property>
+            <property name="Label">Sales_PaymentRetentionOut/StatusAbstract.Label</property>
         </field>
         <field name="rateCrossTotal">
-            <property name="Select">linkto[ToLink].attribute[RateCrossTotal]</property>
-            <property name="Label">Sales_IncomingRetention/RateCrossTotal.Label</property>
+            <property name="Select">linkto[ToLink].attribute[Amount]</property>
+            <property name="Label">Sales_PaymentRetentionOut/Amount.Label</property>
         </field>
         <field name="rateCurrencyLink">
-            <property name="Select">linkto[ToLink].linkto[RateCurrencyId].attribute[Name]</property>
-            <property name="Label">Sales_IncomingRetention/RateCurrencyId.Label</property>
+            <property name="Select">linkto[ToLink].linkto[RateCurrencyLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentRetentionOut/RateCurrencyLink.Label</property>
         </field>
     </definition>
 </ui-table>

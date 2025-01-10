@@ -182,11 +182,11 @@ public abstract class RetentionCertificateReport_Base
             final DRDataSource dataSource = new DRDataSource("type", "name", "date", "rateNetTotal", "rateCrossTotal",
                             "rateCurrency", "taxAmount");
 
-            final QueryBuilder attQueryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-            attQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink,
+            final QueryBuilder attQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+            attQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink,
                             getInstances(_parameter));
             final AttributeQuery attQuery = attQueryBldr
-                            .getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink);
+                            .getAttributeQuery(CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
 
             final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingRetention2IncomingInvoice);
             relAttrQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention2IncomingInvoice.FromLink, attQuery);

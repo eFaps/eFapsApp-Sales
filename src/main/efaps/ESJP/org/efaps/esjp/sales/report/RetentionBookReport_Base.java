@@ -149,16 +149,16 @@ public abstract class RetentionBookReport_Base
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
 
-            final QueryBuilder relQueryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-            relQueryBldr.addWhereAttrInQuery(CISales.RetentionCertificate2IncomingRetention.FromLink,
+            final QueryBuilder relQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+            relQueryBldr.addWhereAttrInQuery(CISales.RetentionCertificate2PaymentRetentionOut.FromLink,
                             queryBldr.getAttributeQuery("ID"));
 
             final MultiPrintQuery multi = relQueryBldr.getPrint();
             final SelectBuilder selCert = SelectBuilder.get().linkto(
-                            CISales.RetentionCertificate2IncomingRetention.FromLink);
+                            CISales.RetentionCertificate2PaymentRetentionOut.FromLink);
             final SelectBuilder selCertName = new SelectBuilder(selCert).attribute(CISales.RetentionCertificate.Name);
             final SelectBuilder selRet = SelectBuilder.get().linkto(
-                            CISales.RetentionCertificate2IncomingRetention.ToLink);
+                            CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
             final SelectBuilder selCertAmount = new SelectBuilder(selRet)
                             .attribute(CISales.IncomingRetention.CrossTotal);
 

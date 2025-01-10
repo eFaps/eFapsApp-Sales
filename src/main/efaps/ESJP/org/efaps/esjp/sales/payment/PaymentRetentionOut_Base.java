@@ -30,16 +30,13 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
-import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
-import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -191,13 +188,14 @@ public abstract class PaymentRetentionOut_Base
 
         js.append(getTableRemoveScript(_parameter, "paymentTable", false, false))
                             .append(getTableAddNewRowsScript(_parameter, "paymentTable", values,
-                                            null, false, false, new HashSet<String>()));
+                                            null, false, false, new HashSet<>()));
         js.append(getSetFieldValue(0, "amount",  NumberFormatter.get().getTwoDigitsFormatter().format(total)))
                         .append(getSetFieldValue(0, "total4DiscountPay",
                                         NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO)));
         return js;
     }
 
+    /**
     @Override
     public Return getJavaScriptUIValue(final Parameter _parameter)
         throws EFapsException
@@ -217,7 +215,7 @@ public abstract class PaymentRetentionOut_Base
         }
         ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 1500));
         return ret;
-    }
+    }**/
 
     @Override
     public CIType getCIType()

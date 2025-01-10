@@ -96,9 +96,9 @@ public abstract class RetentionCertificate_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                                CISales.RetentionCertificate2IncomingRetention.ToLink);
+                                CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
 
                 final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate);
@@ -106,9 +106,9 @@ public abstract class RetentionCertificate_Base
                 final AttributeQuery attrQuery2 = attrQueryBldr2
                                 .getAttributeQuery(CISales.RetentionCertificate.Contact);
 
-                final QueryBuilder attrQueryBldr3 = new QueryBuilder(CISales.IncomingRetention);
-                attrQueryBldr3.addWhereAttrInQuery(CISales.IncomingRetention.Contact, attrQuery2);
-                final AttributeQuery attrQuery3 = attrQueryBldr3.getAttributeQuery(CISales.IncomingRetention.ID);
+                final QueryBuilder attrQueryBldr3 = new QueryBuilder(CISales.PaymentRetentionOut);
+                attrQueryBldr3.addWhereAttrInQuery(CISales.PaymentRetentionOut.Contact, attrQuery2);
+                final AttributeQuery attrQuery3 = attrQueryBldr3.getAttributeQuery(CISales.PaymentRetentionOut.ID);
 
                 _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery3);
             }
@@ -156,7 +156,7 @@ public abstract class RetentionCertificate_Base
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         final SelectBuilder selCInst = SelectBuilder.get()
-                        .linkto(CISales.RetentionCertificate2IncomingRetention.FromLink)
+                        .linkto(CISales.RetentionCertificate2PaymentRetentionOut.FromLink)
                         .instance();
         print.addSelect(selCInst);
         print.execute();
@@ -185,11 +185,11 @@ public abstract class RetentionCertificate_Base
                              final Instance _certInst)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink, _certInst);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, _certInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2IncomingRetention.ToLink)
-                        .attribute(CISales.IncomingRetention.CrossTotal);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2PaymentRetentionOut.ToLink)
+                        .attribute(CISales.PaymentRetentionOut.Amount);
         multi.addSelect(sel);
         multi.execute();
         BigDecimal total = BigDecimal.ZERO;
@@ -226,10 +226,10 @@ public abstract class RetentionCertificate_Base
     public Return updateRelatedDocuments(final Parameter _parameter)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink, _parameter.getInstance());
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, _parameter.getInstance());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2IncomingRetention.ToLink)
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2PaymentRetentionOut.ToLink)
                         .instance();
         multi.addSelect(sel);
         multi.execute();

@@ -62,6 +62,7 @@ import org.jfree.util.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
+
 /**
  * @author The eFaps Team
  */
@@ -918,13 +919,13 @@ public abstract class DocPaymentInfo_Base
         certQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate.Status,
                         Status.find(CISales.RetentionCertificateStatus.Closed));
 
-        final QueryBuilder certQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-        certQueryBldr2.addWhereAttrInQuery(CISales.RetentionCertificate2IncomingRetention.FromLink,
+        final QueryBuilder certQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+        certQueryBldr2.addWhereAttrInQuery(CISales.RetentionCertificate2PaymentRetentionOut.FromLink,
                         certQueryBldr.getAttributeQuery(CISales.RetentionCertificate.ID));
 
         final QueryBuilder retQueryBldr = new QueryBuilder(CISales.IncomingRetention);
         retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
-                        certQueryBldr2.getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink));
+                        certQueryBldr2.getAttributeQuery(CISales.RetentionCertificate2PaymentRetentionOut.ToLink));
         retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
                         attrTaxQueryBldr2.getAttributeQuery(CISales.IncomingRetention2IncomingInvoice.FromLink));
         final MultiPrintQuery retMulti = retQueryBldr.getPrint();

@@ -16,11 +16,10 @@
     limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f7f1c7fa-e648-433b-ad10-3dc48e6cc88e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentRetentionOut</name>
@@ -31,7 +30,8 @@
             <typelink>Sales_PaymentRetentionOutStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_PaymentRetentionOut.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue"/>
+            <trigger event="RANGE_VALUE" name="Sales_PaymentRetentionOut.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue"/>
         </attribute>
     </definition>
 </datamodel-type>

@@ -21,7 +21,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>07441741-2db0-41cb-821e-60724e847bbb</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
+
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RetentionCertificateTree_Retention</name>
@@ -31,14 +31,12 @@
         </access>
         <target>
             <menu>Sales_RetentionCertificateTree_Retention_Menu</menu>
-            <table>Sales_RetentionCertificate2IncomingRetentionTable</table>
+            <table>Sales_RetentionCertificate2PaymentRetentionOutTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_RetentionCertificate2IncomingRetention</property>
+                <property name="Type">Sales_RetentionCertificate2PaymentRetentionOut</property>
                 <property name="LinkFrom">FromLink</property>
             </evaluate>
         </target>
-        
-
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetMode">view</property>
