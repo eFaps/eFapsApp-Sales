@@ -26,6 +26,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.eql.EQL;
 import org.efaps.eql.builder.Print;
+import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CILoyalty;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.graphql.BaseDataFetcher;
@@ -78,7 +80,8 @@ public class PaymentDataFetcher
         }
         final var keys = new String[] { "type", "name", "amount", "authorization", "cardLabel", "cardNumber",
                         "equipmentIdent", "info", "operationDateTime", "operationId", "serviceProvider",
-                        "ePaymentTypeValue", "ePaymentTypeDesc", "ePaymentTypeKey" };
+                        "ePaymentTypeValue", "ePaymentTypeDesc", "ePaymentTypeKey",
+                        "pointsAmount", "pointsPaymentTypeValue", "pointsPaymentTypeDesc", "pointsPaymentTypeKey"};
 
         LOG.info("graphTypeName {}", graphType);
         final var keyMapping = getKeyMapping(environment, graphType, keys);
@@ -134,7 +137,20 @@ public class PaymentDataFetcher
                             .linkto(CISales.PaymentElectronic.ElectronicPaymentType)
                             .attribute(CISales.AttributeDefinitionPaymentElectronicType.MappingKey)
                             .as("ePaymentTypeKey");
-
+        } else if (type.equals(CILoyalty.PaymentPoints.getType())) {
+            print.attribute(CILoyalty.PaymentPoints.Authorization).as("authorization")
+                            .attribute(CILoyalty.PaymentPoints.Info).as("info")
+                            .attribute(CILoyalty.PaymentPoints.PointsAmount).as("pointsAmount")
+                            .attribute(CILoyalty.PaymentPoints.OperationId).as("operationId")
+                            .linkto(CILoyalty.PaymentPoints.PointsTypeLink)
+                            .attribute(CIERP.AttributeDefinitionMappingAbstract.Value)
+                            .as("pointsPaymentTypeValue")
+                            .linkto(CILoyalty.PaymentPoints.PointsTypeLink)
+                            .attribute(CIERP.AttributeDefinitionMappingAbstract.Description)
+                            .as("pointsPaymentTypeDesc")
+                            .linkto(CILoyalty.PaymentPoints.PointsTypeLink)
+                            .attribute(CIERP.AttributeDefinitionMappingAbstract.MappingKey)
+                            .as("pointsPaymentTypeKey");
         } else if (CISales.PaymentCard.getType().equals(type)) {
             print.attribute(CISales.PaymentCard.Authorization).as("authorization")
                             .attribute(CISales.PaymentCard.CardNumber).as("cardNumber")

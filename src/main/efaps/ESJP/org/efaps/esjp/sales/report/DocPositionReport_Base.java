@@ -63,6 +63,8 @@ import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
@@ -90,6 +92,9 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 public abstract class DocPositionReport_Base
     extends FilteredReport
 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DocPositionReport.class);
+
     /**
      * The Enum DateConfig.
      *
@@ -99,7 +104,7 @@ public abstract class DocPositionReport_Base
     {
         /** None. */
         NONE,
-        /** Group by Document Contact.*/
+        /** Group by Document Contact. */
         DOCCONTACT,
         /** Group by Product Producer. */
         PRODPRODUCER,
@@ -182,6 +187,7 @@ public abstract class DocPositionReport_Base
 
             final DocPositionGroupedByDate ds = new DocPositionGroupedByDate()
             {
+
                 final SelectBuilder selPOSDetails = SelectBuilder.get()
                                 .linkto(CISales.PositionAbstract.DocumentAbstractLink)
                                 .linkfrom("POS_Balance2Document", "ToLink")
@@ -199,7 +205,8 @@ public abstract class DocPositionReport_Base
                 }
 
                 @Override
-                protected void add2Print(final Parameter _parameter, final MultiPrintQuery _multi)
+                protected void add2Print(final Parameter _parameter,
+                                         final MultiPrintQuery _multi)
                     throws EFapsException
                 {
                     super.add2Print(_parameter, _multi);
@@ -209,7 +216,8 @@ public abstract class DocPositionReport_Base
                 }
 
                 @Override
-                protected void add2RowMap(final Parameter _parameter, final MultiPrintQuery _multi,
+                protected void add2RowMap(final Parameter _parameter,
+                                          final MultiPrintQuery _multi,
                                           final Map<String, Object> _map)
                     throws EFapsException
                 {
@@ -257,11 +265,11 @@ public abstract class DocPositionReport_Base
                 while (!finisched && counter < 5) {
                     finisched = true;
                     final List<Map<String, Object>> tmpList = new ArrayList<>();
-                    for (final Map<String, Object> value  : valueList) {
+                    for (final Map<String, Object> value : valueList) {
                         final Instance prodInst = (Instance) value.get("productInst");
                         final BigDecimal quantity = (BigDecimal) value.get("quantity");
-                        final UoM uom  = (UoM) value.get("uoM");
-                        final BOM bom  = new BOM();
+                        final UoM uom = (UoM) value.get("uoM");
+                        final BOM bom = new BOM();
                         final List<ProductBOMBean> prodBeans = bom.getBOMProducts(_parameter, prodInst, quantity, uom);
                         if (prodBeans.isEmpty()) {
                             tmpList.add(value);
@@ -275,7 +283,7 @@ public abstract class DocPositionReport_Base
                                 newmap.put("quantity", bean.getQuantity());
                                 newmap.put("uoM", bean.getUoM());
                                 newmap.put("product", bean.getName() + " - " + bean.getDescription()
-                                            + " [" + bean.getUoM().getName() + "]");
+                                                + " [" + bean.getUoM().getName() + "]");
                                 newmap.put("productInst", bean.getInstance());
                                 tmpList.add(newmap);
                             }
@@ -289,14 +297,16 @@ public abstract class DocPositionReport_Base
             final ContactGroup contactGroup = evaluateContactGroup(_parameter);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
                             || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
-                for (final Map<String, Object> value  : valueList) {
+                for (final Map<String, Object> value : valueList) {
                     final Instance prodInst = (Instance) value.get("productInst");
                     final CachedPrintQuery print = CachedPrintQuery.get4Request(prodInst);
                     final SelectBuilder selContactName = ContactGroup.PRODPRODUCER.equals(contactGroup)
                                     ? SelectBuilder.get().linkfrom(CIProducts.Product2Producer.From).linkto(
-                                            CIProducts.Product2Producer.To).attribute(CIContacts.ContactAbstract.Name)
+                                                    CIProducts.Product2Producer.To)
+                                                    .attribute(CIContacts.ContactAbstract.Name)
                                     : SelectBuilder.get().linkfrom(CIProducts.Product2Supplier.From).linkto(
-                                            CIProducts.Product2Supplier.To).attribute(CIContacts.ContactAbstract.Name);
+                                                    CIProducts.Product2Supplier.To)
+                                                    .attribute(CIContacts.ContactAbstract.Name);
                     print.addSelect(selContactName);
                     print.executeWithoutAccessCheck();
                     value.put("contact", print.getSelect(selContactName));
@@ -345,8 +355,9 @@ public abstract class DocPositionReport_Base
         throws EFapsException
     {
         final Map<String, Object> filterMap = getFilterMap(_parameter);
-        // if sums are shown and only one currency should be shown filter the positions by it
-        if (_queryBldr.getType().isCIType(CISales.PositionSumAbstract) &&  filterMap.containsKey("currency")) {
+        // if sums are shown and only one currency should be shown filter the
+        // positions by it
+        if (_queryBldr.getType().isCIType(CISales.PositionSumAbstract) && filterMap.containsKey("currency")) {
             final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
             if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
                 _queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.RateCurrencyId, filter.getObject());
@@ -469,30 +480,37 @@ public abstract class DocPositionReport_Base
                 final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
                     chain.addComparator((_o1,
-                     _o2) -> String.valueOf(_o1.get("contact")).compareTo(String.valueOf(_o2.get("contact"))));
+                                         _o2) -> String.valueOf(_o1.get("contact"))
+                                                         .compareTo(String.valueOf(_o2.get("contact"))));
                 }
                 final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
                 if (BooleanUtils.isTrue((Boolean) filterMap.get("typeGroup"))) {
                     chain.addComparator((_o1,
-                     _o2) -> String.valueOf(_o1.get("type")).compareTo(String.valueOf(_o2.get("type"))));
+                                         _o2) -> String.valueOf(_o1.get("type"))
+                                                         .compareTo(String.valueOf(_o2.get("type"))));
                 }
                 if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
                     chain.addComparator((_o1,
-                     _o2) -> String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName"))));
+                                         _o2) -> String.valueOf(_o1.get("docName"))
+                                                         .compareTo(String.valueOf(_o2.get("docName"))));
                 }
                 if (BooleanUtils.isTrue((Boolean) filterMap.get("posDetails"))) {
                     chain.addComparator((_o1,
-                     _o2) -> String.valueOf(_o1.get("posDetails")).compareTo(String.valueOf(_o2.get("posDetails"))));
+                                         _o2) -> String.valueOf(_o1.get("posDetails"))
+                                                         .compareTo(String.valueOf(_o2.get("posDetails"))));
                 }
                 chain.addComparator((_o1,
-                 _o2) -> String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName"))));
+                                     _o2) -> String.valueOf(_o1.get("productName"))
+                                                     .compareTo(String.valueOf(_o2.get("productName"))));
                 chain.addComparator((_o1,
-                 _o2) -> String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial"))));
+                                     _o2) -> String.valueOf(_o1.get("partial"))
+                                                     .compareTo(String.valueOf(_o2.get("partial"))));
 
                 Collections.sort(values, chain);
 
                 // it must be ensured that the first product has information for
-                // all used partial so it is garantized that the columns are in order
+                // all used partial so it is garantized that the columns are in
+                // order
                 final Set<String> partials = new TreeSet<>();
                 for (final Map<String, Object> value : values) {
                     partials.add((String) value.get("partial"));
@@ -530,7 +548,7 @@ public abstract class DocPositionReport_Base
 
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
-                                          final JasperReportBuilder _builder)
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
             final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
@@ -604,8 +622,8 @@ public abstract class DocPositionReport_Base
                     if (!base) {
                         for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                             final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                        currency.getSymbol(),
-                                        currency.getISOCode(), BigDecimal.class, Calculation.SUM);
+                                            currency.getSymbol(),
+                                            currency.getISOCode(), BigDecimal.class, Calculation.SUM);
                             measureGrpBldrs.add(amountMeasure);
                             addUnitPrice(_parameter, currency.getSymbol()
                                             + " " + filteredReport.getDBProperty("unitPriceLabel"),
@@ -690,7 +708,7 @@ public abstract class DocPositionReport_Base
             throws EFapsException
         {
             final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-            if (filterMap.containsKey("unitPrice") &&  BooleanUtils.isTrue((Boolean) filterMap.get("unitPrice"))) {
+            if (filterMap.containsKey("unitPrice") && BooleanUtils.isTrue((Boolean) filterMap.get("unitPrice"))) {
                 final CrosstabVariableBuilder<BigDecimal> unitPriceVariable = DynamicReports.ctab.variable(
                                 new UnitPriceExpression(_key), Calculation.NOTHING);
                 _variableGrpBldrs.add(unitPriceVariable);
@@ -755,6 +773,8 @@ public abstract class DocPositionReport_Base
         {
             final BigDecimal quantity = _reportParameters.getValue("quantity");
             final BigDecimal amount = _reportParameters.getValue(amountField);
+            LOG.info("Evaluating unitprice for field: {} with quantity: {} and amount {}", amountField, quantity,
+                            amount);
             return amount.divide(quantity, 2, RoundingMode.HALF_UP);
         }
     }
@@ -767,6 +787,7 @@ public abstract class DocPositionReport_Base
     public static class UnitPriceMessuredExpression
         extends AbstractSimpleExpression<BigDecimal>
     {
+
         /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
 
