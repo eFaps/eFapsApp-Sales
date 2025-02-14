@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -120,7 +119,7 @@ public class IndividualProductDataFetcher
                                             .sorted((inst1,
                                                      inst2) -> Long.valueOf(inst1.getId()).compareTo(inst2.getId()))
                                             .toList();
-                            LOG.info("Sorted transactions: {}", sortedTransactionInsts);
+                            LOG.info("Sorted transactions: {}", sortedTransactionInsts.stream().map(Instance::getOid).toList());
                             LOG.info("Selected positionNumber: {}", positionNumber);
                             final var inst = sortedTransactionInsts.get(indexMapping.get(positionNumber));
                             LOG.info("Selected transaction-oid: {}", inst.getOid());
