@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ce2d12c0-7d9e-4a99-b336-0840c4b392dd</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentExportReport</name>
+        <target>
+            <form>Sales_PaymentExportReportForm</form>
+             <execute method="create4Jasper" program="org.efaps.esjp.common.jasperreport.StandartReport">
+                <property name="JasperReport">Sales_PaymentExportReport</property>
+                <property name="Mime">xlsx</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="TargetShowFile">true</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
+    </definition>
+</ui-command>

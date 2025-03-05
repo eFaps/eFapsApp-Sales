@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><ui-form xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4174fcc0-330d-495e-8c30-a78f096b22cf</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentExportReportForm</name>
+        <field name="para_STARTDATE">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">Sales_PaymentExportReportForm.startDate.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getDefault4DateFieldValue"
+                name="Sales_PaymentExportReportForm.date.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.common.uiform.Field"/>
+        </field>
+        <field name="para_ENDDATE">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">Sales_PaymentExportReportForm.endDate.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getDefault4DateFieldValue"
+                name="Sales_PaymentExportReportForm.date.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.common.uiform.Field"/>
+        </field>
+    </definition>
+</ui-form>
