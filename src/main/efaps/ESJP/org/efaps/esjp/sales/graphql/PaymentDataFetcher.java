@@ -78,7 +78,8 @@ public class PaymentDataFetcher
         } else {
             graphType = (GraphQLNamedType) environment.getFieldType();
         }
-        final var keys = new String[] { "type", "name", "amount", "authorization", "cardLabel", "cardNumber",
+        final var keys = new String[] { "type", "name", "amount", "currencyId",
+                        "authorization", "cardLabel", "cardNumber",
                         "equipmentIdent", "info", "operationDateTime", "operationId", "serviceProvider",
                         "ePaymentTypeValue", "ePaymentTypeDesc", "ePaymentTypeKey",
                         "pointsAmount", "pointsPaymentTypeValue", "pointsPaymentTypeDesc", "pointsPaymentTypeKey"};
@@ -117,7 +118,8 @@ public class PaymentDataFetcher
     {
         print.type().label().as("type")
                         .attribute(CISales.PaymentDocumentIOAbstract.Name).as("name")
-                        .attribute(CISales.PaymentDocumentIOAbstract.Amount).as("amount");
+                        .attribute(CISales.PaymentDocumentIOAbstract.Amount).as("amount")
+                        .attribute(CISales.PaymentDocumentIOAbstract.RateCurrencyLink).as("currencyId");
 
         if (CISales.PaymentElectronic.getType().equals(type)) {
             print.attribute(CISales.PaymentElectronic.Authorization).as("authorization")
