@@ -65,7 +65,7 @@ public class CalculatorService
         throws EFapsException
     {
         if (InstanceUtils.isKindOf(docInst, CISales.DocumentSumAbstract)) {
-            final var parameter = ParameterUtil.instance();
+            ParameterUtil.instance();
 
             final var taxMap = new HashMap<String, Tax>();
             final var calcDoc = new Document();
@@ -77,7 +77,7 @@ public class CalculatorService
                             .evaluate();
             docEval.next();
             final var date = docEval.get(CISales.DocumentSumAbstract.Date);
-            final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.toDateTime(date));
+
             final var rateObj = docEval.get(CISales.DocumentSumAbstract.Rate);
             final var rateCurrency = CurrencyInst.get(docEval.<Long>get(CISales.DocumentSumAbstract.RateCurrencyId));
             final var currency = CurrencyInst.get(docEval.<Long>get(CISales.DocumentSumAbstract.CurrencyId));
@@ -94,9 +94,7 @@ public class CalculatorService
 
             while (posEval.next()) {
                 final Instance prodInst = posEval.get("productInst");
-                final var posKey = posEval.inst().getType().getName();
-                final var prodPrice = new PriceUtil().getPrice(parameter, dateTime, prodInst,
-                                CIProducts.ProductPricelistRetail.uuid, posKey, false);
+                final var netUnitPrice = evalNetUnitPrice(date, posEval.inst(), prodInst);
                 final var taxCatId = posEval.<Long>get("taxCat");
 
                 final List<ITax> taxes = TaxCat_Base.get(taxCatId).getTaxes().stream()
@@ -117,7 +115,7 @@ public class CalculatorService
                                 .toList();
 
                 calcDoc.addPosition(new Position()
-                                .setNetUnitPrice(prodPrice.getCurrentPrice())
+                                .setNetUnitPrice(netUnitPrice)
                                 .setTaxes(taxes)
                                 .setIndex(posEval.get(CISales.PositionSumAbstract.PositionNumber))
                                 .setQuantity(posEval.get(CISales.PositionSumAbstract.Quantity))
@@ -170,9 +168,19 @@ public class CalculatorService
                                     .execute();
                 }
             }
-
         }
+    }
 
+    protected BigDecimal evalNetUnitPrice(final Object dateObject,
+                                          final Instance positionInst,
+                                          final Instance productInst)
+        throws EFapsException
+    {
+        final var parameter = ParameterUtil.instance();
+        final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.toDateTime(dateObject));
+        final var posKey = positionInst.getType().getName();
+        return new PriceUtil().getPrice(parameter, dateTime, productInst,
+                        CIProducts.ProductPricelistRetail.uuid, posKey, false).getCurrentPrice();
     }
 
     public IDocument calculate(final IDocument document)
