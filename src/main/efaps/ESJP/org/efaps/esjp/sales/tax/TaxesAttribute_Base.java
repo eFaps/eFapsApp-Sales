@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.IJaxb;
-import org.efaps.admin.datamodel.ui.UIValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -55,15 +55,14 @@ public abstract class TaxesAttribute_Base
      * {@inheritDoc}
      */
     @Override
-    public String getUISnipplet(final TargetMode _mode,
-                                final UIValue _value)
+    public String getUISnipplet(final TargetMode mode,
+                                final IUIValue value)
         throws EFapsException
     {
         final String ret;
-        if (_value.getDbValue() == null) {
+        if (value.getObject() == null) {
             ret = "";
-        } else if (_value.getDbValue() instanceof Taxes) {
-            final Taxes taxes = (Taxes) _value.getDbValue();
+        } else if (value.getObject() instanceof final Taxes taxes) {
             final StringBuilder html = new StringBuilder();
             boolean first = true;
             for (final TaxEntry entry : taxes.getEntries()) {
@@ -73,11 +72,11 @@ public abstract class TaxesAttribute_Base
                     html.append("<br/>");
                 }
                 final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
-                html.append(getLabel(_value.getAttribute(), tax.getName(), entry.getAmount(), entry.getCurrencyUUID()));
+                html.append(getLabel(value.getAttribute(), tax.getName(), entry.getAmount(), entry.getCurrencyUUID()));
             }
             ret = html.toString();
         } else {
-            ret = _value.getDbValue().toString();
+            ret = value.getObject().toString();
         }
         return ret;
     }
@@ -105,9 +104,9 @@ public abstract class TaxesAttribute_Base
     }
 
     /**
-     * @param _attribute    Atribute
-     * @param _name         Name of the Tax
-     * @param _amount       Amnount
+     * @param _attribute Atribute
+     * @param _name Name of the Tax
+     * @param _amount Amnount
      * @param _currencyUUID UUID of the Currency
      * @return label for UserInterface
      * @throws EFapsException on error
