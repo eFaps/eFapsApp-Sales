@@ -16,6 +16,8 @@
 package org.efaps.esjp.sales.graphql;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,7 +54,7 @@ public class PaymentDataFetcher
         throws Exception
     {
         final Map<String, Object> source = environment.getSource();
-        LOG.info("Executing PaymentDataFetcher for {}", source);
+        LOG.debug("Executing PaymentDataFetcher for {}", source);
         Instance paymentInst = null;
         List<Instance> paymentInsts = null;
         if (source != null) {
@@ -72,21 +74,22 @@ public class PaymentDataFetcher
                 }
             }
         }
+        LOG.info("paymentInsts {}", paymentInsts);
         final GraphQLNamedType graphType;
         if (environment.getFieldType() instanceof GraphQLList) {
             graphType = (GraphQLNamedType) ((GraphQLList) environment.getFieldType()).getWrappedType();
         } else {
             graphType = (GraphQLNamedType) environment.getFieldType();
         }
-        final var keys = new String[] { "type", "name", "amount", "currencyId", "rate",
+        final var keys = new String[] { "id", "type", "name", "amount", "currencyId", "rate",
                         "authorization", "cardLabel", "cardNumber",
                         "equipmentIdent", "info", "operationDateTime", "operationId", "serviceProvider",
                         "ePaymentTypeValue", "ePaymentTypeDesc", "ePaymentTypeKey",
                         "pointsAmount", "pointsPaymentTypeValue", "pointsPaymentTypeDesc", "pointsPaymentTypeKey"};
 
-        LOG.info("graphTypeName {}", graphType);
+        LOG.debug("graphTypeName {}", graphType);
         final var keyMapping = getKeyMapping(environment, graphType, keys);
-        LOG.info("keyMapping {}", keyMapping);
+        LOG.debug("keyMapping {}", keyMapping);
         Object data = null;
         if (InstanceUtils.isKindOf(paymentInst, CISales.PaymentDocumentIOAbstract)) {
             final var print = EQL.builder()
@@ -104,6 +107,24 @@ public class PaymentDataFetcher
                 final var evaluator = print.evaluate();
                 values.addAll(getValueMaps(keyMapping, evaluator, keys));
             }
+            final var comparator = (Comparator<Map<String, Object>>) (arg0,
+                                               arg1) -> {
+                                                final Long long0;
+                                                if (arg0 != null && arg0.containsKey("id")) {
+                                                    long0 = (Long) arg0.get("id");
+                                                } else {
+                                                    long0 = 0L;
+                                                }
+                                                final Long long1;
+                                                if (arg1 != null && arg1.containsKey("id")) {
+                                                    long1 = (Long) arg1.get("id");
+                                                } else {
+                                                    long1 = 0L;
+                                                }
+                                                return long0.compareTo(long1);
+                                            };
+            Collections.sort(values, comparator);
+            LOG.debug("values {}", values);
             data = values;
         } else {
             // todo
@@ -117,6 +138,7 @@ public class PaymentDataFetcher
                            final Type type)
     {
         print.type().label().as("type")
+                        .attribute(CISales.PaymentDocumentIOAbstract.ID).as("id")
                         .attribute(CISales.PaymentDocumentIOAbstract.Name).as("name")
                         .attribute(CISales.PaymentDocumentIOAbstract.Amount).as("amount")
                         .attribute(CISales.PaymentDocumentIOAbstract.RateCurrencyLink).as("currencyId")
