@@ -80,25 +80,6 @@
         <url>http://efaps.googlecode.com/svn/eFaps-WebApp-Install</url>
     </scm>
 
-    <!-- Distribution Repository -->
-    <distributionManagement>
-        <site>
-            <id>efaps</id>
-            <name>Maven eFaps Plug-In Site</name>
-            <url>svn:https://eFaps.googlecode.com/svn/site/eFaps-WebApp-Install</url>
-        </site>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
  <!-- ************************************************************************
   * Project itself
   ************************************************************************* -->
