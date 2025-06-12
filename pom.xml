@@ -27,7 +27,7 @@
     </parent>
     <packaging>jar</packaging>
     <groupId>org.efaps.apps</groupId>
-    <artifactId>sales</artifactId>
+    <artifactId>efaps-app-sales</artifactId>
     <name>eFaps ERP Sales Module</name>
     <description>
     </description>
