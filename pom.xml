@@ -156,12 +156,12 @@
         </dependency>
         <dependency>
             <groupId>org.efaps.apps</groupId>
-            <artifactId>products</artifactId>
+            <artifactId>efaps-app-products</artifactId>
             <version>${efaps.app.dependencies}</version>
         </dependency>
         <dependency>
             <groupId>org.efaps.apps</groupId>
-            <artifactId>archives</artifactId>
+            <artifactId>efaps-app-archives</artifactId>
             <version>${efaps.app.dependencies}</version>
         </dependency>
         <dependency>
