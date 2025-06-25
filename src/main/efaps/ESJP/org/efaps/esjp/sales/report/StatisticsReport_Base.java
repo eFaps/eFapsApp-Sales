@@ -17,17 +17,24 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Person;
+import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -35,10 +42,14 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
@@ -67,6 +78,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @EFapsApplication("eFapsApp-Sales")
 public abstract class StatisticsReport_Base
     extends FilteredReport
+    implements IFilteredReportProvider
 {
 
     /**
@@ -178,11 +190,102 @@ public abstract class StatisticsReport_Base
      * @return the report
      * @throws EFapsException on error
      */
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    @Override
+    public AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynStatisticsReport(this);
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ValueDto> getFilters()
+    {
+        ZoneId zoneId = ZoneId.systemDefault();
+        try {
+            clearCache(ParameterUtil.instance());
+            zoneId = Context.getThreadContext().getZoneId();
+        } catch (final EFapsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        final var filterMap = getFilterMap();
+        String dateFromValue = null;
+        String dateToValue = null;
+        String reportTypeValue=  null;
+        String dateGroupValue = null;
+        Boolean showStatusValue = false;
+
+        if (filterMap != null && filterMap.containsKey("dateFrom")) {
+            dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
+        } else {
+            dateFromValue = LocalDate.now(zoneId).toString();
+        }
+
+        if (filterMap != null && filterMap.containsKey("dateTo")) {
+            dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
+        } else {
+            dateToValue = LocalDate.now(zoneId).toString();
+        }
+
+        if (filterMap != null && filterMap.containsKey("reportType")) {
+            reportTypeValue =  (String) filterMap.get("reportType");
+        } else {
+            reportTypeValue = ReportType.TYPE.name();
+        }
+
+        if (filterMap != null && filterMap.containsKey("dateGroup")) {
+            dateGroupValue = (String) filterMap.get("dateGroup");
+        } else {
+            dateGroupValue = DateGroup.NONE.name();
+        }
+
+        if (filterMap != null && filterMap.containsKey("showStatus")) {
+            showStatusValue = BooleanUtils.toBoolean((String) filterMap.get("showStatus"));
+        }
+
+        final var dateFrom = ValueDto.builder()
+                        .withName("dateFrom")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateFrom"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true)
+                        .withValue(dateFromValue)
+                        .build();
+        final var dateTo = ValueDto.builder()
+                        .withName("dateTo")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateTo"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true)
+                        .withValue(dateToValue)
+                        .build();
+
+        final var reportType = ValueDto.builder()
+                        .withName("reportType")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.reportType"))
+                        .withType(ValueType.RADIO)
+                        .withValue(reportTypeValue)
+                        .withOptions(getOptions(ReportType.class))
+                        .build();
+
+        final var showStatus = ValueDto.builder()
+                        .withName("showStatus")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.showStatus"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.StatisticsReport.showStatus"))
+                        .withValue(showStatusValue)
+                        .build();
+
+        final var dateGroup = ValueDto.builder()
+                        .withName("dateGroup")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateGroup"))
+                        .withType(ValueType.RADIO)
+                        .withValue(dateGroupValue)
+                        .withOptions(getOptions(DateGroup.class))
+                        .build();
+
+        return Arrays.asList(dateFrom, dateTo, reportType, showStatus, dateGroup);
+    }
+
 
     /**
      * The Class DynStatisticsReport.
@@ -405,7 +508,14 @@ public abstract class StatisticsReport_Base
             final ReportType ret;
             final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
             if (filterMap.containsKey("reportType") && filterMap.get("reportType") != null) {
-                ret = (ReportType) ((EnumFilterValue) filterMap.get("reportType")).getObject();
+                final var value = filterMap.get("reportType");
+                if (value instanceof final EnumFilterValue enumFilterValue) {
+                    ret = (ReportType) enumFilterValue.getObject();
+                } else if (value instanceof final String enumStrValue) {
+                    ret = EnumUtils.getEnumIgnoreCase(ReportType.class, enumStrValue);
+                } else {
+                    ret = ReportType.TYPE;
+                }
             } else {
                 ret = ReportType.TYPE;
             }
@@ -425,7 +535,14 @@ public abstract class StatisticsReport_Base
             final DateGroup ret;
             final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
             if (filterMap.containsKey("dateGroup") && filterMap.get("dateGroup") != null) {
-                ret = (DateGroup) ((EnumFilterValue) filterMap.get("dateGroup")).getObject();
+                final var value = filterMap.get("dateGroup");
+                if (value instanceof final EnumFilterValue enumFilterValue) {
+                    ret = (DateGroup) enumFilterValue.getObject();
+                } else if (value instanceof final String enumStrValue) {
+                    ret = EnumUtils.getEnumIgnoreCase(DateGroup.class, enumStrValue);
+                } else {
+                    ret = DateGroup.NONE;
+                }
             } else {
                 ret = DateGroup.NONE;
             }
@@ -442,8 +559,17 @@ public abstract class StatisticsReport_Base
         protected boolean isShowStatus(final Parameter _parameter)
             throws EFapsException
         {
+            boolean ret = false;
             final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-            return (Boolean) filterMap.get("showStatus");
+            if (filterMap.containsKey("showStatus")) {
+                if (filterMap.get("showStatus") instanceof final Boolean booleanValue) {
+                    ret = booleanValue;
+                }
+                if (filterMap.get("showStatus") instanceof final String strValue) {
+                    ret = BooleanUtils.toBoolean(strValue);
+                }
+            }
+            return ret;
         }
     }
 

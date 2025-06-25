@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
     Copyright © 2003 - 2024 The eFaps Team (-)
 
@@ -16,22 +15,14 @@
     limitations under the License.
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-module xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a7cac19d-505f-4495-8e69-1db2863948a4</uuid>
+    <uuid>d9c7decf-a7e3-4c59-93ae-2c9b675e2049</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_StatisticsReportMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_StatisticsReportMyDesk_Menu</menu>
-            <form>Sales_StatisticsReportForm</form>
-            <module>Sales_StatisticsReportModule</module>
-        </target>
-        <property name="Target">content</property>
+        <name>Sales_StatisticsReportModule</name>
+        <property name="ModuleKey">FilteredReport</property>
+        <property name="FilteredReport">org.efaps.esjp.sales.report.StatisticsReport</property>
     </definition>
-</ui-command>
+</ui-module>
