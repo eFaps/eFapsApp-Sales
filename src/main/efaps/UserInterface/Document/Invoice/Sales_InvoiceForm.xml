@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-form xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -86,8 +83,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.AssignEmployee</property>
            </trigger>
@@ -112,8 +107,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.AssignDepartment</property>
             </trigger>
@@ -130,14 +123,13 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.department.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.AssignDepartment</property>
             </trigger>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="creator">
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
@@ -145,13 +137,16 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifier">
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
@@ -159,10 +154,12 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="ebillingGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -196,8 +193,6 @@
                 name="Sales_InvoiceForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK"
                 index="2">
-                
-
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.Invoice.Activate</property>
                 <property name="Default">true</property>
@@ -220,8 +215,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.serial.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.electronicbilling.Invoice.ActivateManualNaming</property>
                 <property name="Inverse">true</property>
@@ -239,8 +232,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.name4create.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.electronicbilling.Invoice.ActivateManualNaming</property>
             </trigger>
@@ -256,8 +247,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.name4edit.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.electronicbilling.Invoice.ActivateManualNaming</property>
             </trigger>
@@ -291,8 +280,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -322,8 +309,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -337,8 +322,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -356,8 +339,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_InvoiceForm.project4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -422,8 +403,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.condition.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.ActivateCondition</property>
            </trigger>
@@ -437,8 +416,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.condition4View.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.ActivateCondition</property>
            </trigger>
@@ -503,6 +480,14 @@
                 <property name="Type">Sales_InvoicePosition</property>
                 <property name="LinkFrom">Invoice</property>
             </evaluate>
+        </field>
+        <field name="headingFooter" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_InvoiceForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
@@ -654,8 +639,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.deliveryNotes.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists">org.efaps.sales.Invoice.CreateFromDeliveryNoteAutoComplete</property>
            </trigger>
@@ -670,8 +653,6 @@
                 method="configCheck"
                 name="Sales_InvoiceForm.orderInbound.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists">org.efaps.sales.Invoice.CreateFromOrderInboundAutoComplete</property>
            </trigger>
@@ -700,6 +681,10 @@
                 method="executeCalculatorOnScript"
                 name="Sales_InvoiceForm.executeCalculator.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
     </definition>
 </ui-form>

@@ -1797,18 +1797,44 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final List<Calculator> ret = new ArrayList<>();
-        final String[] quantities = _parameter.getParameterValues("quantity");
+
+        final List<String[]> allParameters = new ArrayList<>();
+        String[] quantities = _parameter.getParameterValues("quantity");
+        allParameters.add(quantities);
         String[] discounts = _parameter.getParameterValues("discount");
+        allParameters.add(discounts);
         String[] unitPrices = getUnitPricesFromUI(_parameter);
-        if (unitPrices == null && quantities != null) {
-            unitPrices = new String[quantities.length];
-            Arrays.fill(unitPrices, "");
+        allParameters.add(unitPrices);
+        String[] oids = _parameter.getParameterValues("product");
+        allParameters.add(oids);
+
+        allParameters.sort((a1,
+                            a2) -> {
+            final var s1 = a1 == null ? 0 : a1.length;
+            final var s2 = a2 == null ? 0 : a2.length;
+            return s2 - s1;
+        });
+        if (allParameters.get(0) == null) {
+            return ret;
         }
-        if (discounts == null && quantities != null) {
-            discounts = new String[quantities.length];
+        final var  maxLength = allParameters.get(0).length;
+        if (quantities == null) {
+            quantities = new String[maxLength];
+            Arrays.fill(quantities, "");
+        }
+        if (discounts == null) {
+            discounts = new String[maxLength];
             Arrays.fill(discounts, "");
         }
-        final String[] oids = _parameter.getParameterValues("product");
+        if (unitPrices == null) {
+            unitPrices = new String[maxLength];
+            Arrays.fill(unitPrices, "");
+        }
+        if (oids == null) {
+            oids = new String[maxLength];
+            Arrays.fill(oids, "");
+        }
+
         final boolean withoutTax = "true".equals(_parameter.getParameterValue("withoutVAT"));
 
         final List<Calculator> oldCalcs = (List<Calculator>) Context.getThreadContext().getSessionAttribute(
