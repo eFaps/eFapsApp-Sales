@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.EnumUtils;
-import org.efaps.abacus.api.IConfig;
 import org.efaps.abacus.api.ITax;
 import org.efaps.abacus.api.TaxType;
+import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -34,7 +35,10 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.db.InstanceUtils;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
@@ -44,6 +48,7 @@ import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.UUIDUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +59,23 @@ public class CalculatorService
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(CalculatorService.class);
+
+    private CalculatorConfig config;
+
+    public CalculatorService()
+    {
+        this(new CalculatorConfig(null));
+    }
+
+    public CalculatorService(final String typeKey)
+    {
+        this(new CalculatorConfig(typeKey));
+    }
+
+    public CalculatorService(final CalculatorConfig config)
+    {
+        this.config = config;
+    }
 
     public void recalculate(final String oid)
         throws EFapsException
@@ -78,7 +100,7 @@ public class CalculatorService
             docEval.next();
             final var date = docEval.get(CISales.DocumentSumAbstract.Date);
 
-            final var rateObj = docEval.get(CISales.DocumentSumAbstract.Rate);
+            final Object[] rateObj = docEval.get(CISales.DocumentSumAbstract.Rate);
             final var rateCurrency = CurrencyInst.get(docEval.<Long>get(CISales.DocumentSumAbstract.RateCurrencyId));
             final var currency = CurrencyInst.get(docEval.<Long>get(CISales.DocumentSumAbstract.CurrencyId));
 
@@ -125,9 +147,11 @@ public class CalculatorService
             LOG.info("Result: {}", result);
             EQL.builder().update(docInst)
                             .set(CISales.DocumentSumAbstract.RateNetTotal, result.getNetTotal())
-                            .set(CISales.DocumentSumAbstract.NetTotal, convert(result.getNetTotal(), rateObj))
+                            .set(CISales.DocumentSumAbstract.NetTotal,
+                                            convert(result.getNetTotal(), rateObj, currency.getInstance()))
                             .set(CISales.DocumentSumAbstract.RateCrossTotal, result.getCrossTotal())
-                            .set(CISales.DocumentSumAbstract.CrossTotal, convert(result.getCrossTotal(), rateObj))
+                            .set(CISales.DocumentSumAbstract.CrossTotal,
+                                            convert(result.getCrossTotal(), rateObj, currency.getInstance()))
                             .set(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO)
                             .set(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO)
                             .set(CISales.DocumentSumAbstract.Rate, rateObj)
@@ -147,15 +171,17 @@ public class CalculatorService
                                 .evaluate();
                 if (eval.next()) {
                     EQL.builder().update(eval.inst())
-                                    .set(CISales.PositionSumAbstract.CrossPrice, convert(pos.getCrossPrice(), rateObj))
+                                    .set(CISales.PositionSumAbstract.CrossPrice,
+                                                    convert(pos.getCrossPrice(), rateObj, currency.getInstance()))
                                     .set(CISales.PositionSumAbstract.CrossUnitPrice,
-                                                    convert(pos.getCrossUnitPrice(), rateObj))
+                                                    convert(pos.getCrossUnitPrice(), rateObj, currency.getInstance()))
                                     .set(CISales.PositionSumAbstract.Discount, BigDecimal.ZERO)
                                     .set(CISales.PositionSumAbstract.DiscountNetUnitPrice,
-                                                    convert(pos.getNetPrice(), rateObj))
-                                    .set(CISales.PositionSumAbstract.NetPrice, convert(pos.getNetPrice(), rateObj))
+                                                    convert(pos.getNetPrice(), rateObj, currency.getInstance()))
+                                    .set(CISales.PositionSumAbstract.NetPrice,
+                                                    convert(pos.getNetPrice(), rateObj, currency.getInstance()))
                                     .set(CISales.PositionSumAbstract.NetUnitPrice,
-                                                    convert(pos.getNetUnitPrice(), rateObj))
+                                                    convert(pos.getNetUnitPrice(), rateObj, currency.getInstance()))
                                     .set(CISales.PositionSumAbstract.RateNetUnitPrice, pos.getNetUnitPrice())
                                     .set(CISales.PositionSumAbstract.RateCrossPrice, pos.getCrossPrice())
                                     .set(CISales.PositionSumAbstract.RateCrossUnitPrice, pos.getCrossUnitPrice())
@@ -178,9 +204,8 @@ public class CalculatorService
     {
         final var parameter = ParameterUtil.instance();
         final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.toDateTime(dateObject));
-        final var posKey = positionInst.getType().getName();
-        return new PriceUtil().getPrice(parameter, dateTime, productInst,
-                        CIProducts.ProductPricelistRetail.uuid, posKey, false).getCurrentPrice();
+        ParameterUtil.setParameterValues(parameter, "date_eFapsDate", dateTime.toString());
+        return evalPriceFromDB(parameter, productInst).getCurrentPrice();
     }
 
     public IDocument calculate(final IDocument document)
@@ -190,15 +215,24 @@ public class CalculatorService
         return document;
     }
 
-    protected IConfig getConfig()
+    public CalculatorConfig getConfig()
     {
-        return new CalculatorConfig();
+        return config;
+    }
+
+    public void setConfig(final CalculatorConfig config)
+    {
+        this.config = config;
     }
 
     protected BigDecimal convert(final BigDecimal rateAmount,
-                                 final Object rateObj)
+                                 final Object[] rateObj,
+                                 final Instance targetCurrenycInstance)
+        throws EFapsException
     {
-        return rateAmount;
+        final var rateInfo = RateInfo.getRateInfo(rateObj);
+        return Currency.convertToCurrency(ParameterUtil.instance(), rateAmount, rateInfo, getConfig().getTypeKey(),
+                        targetCurrenycInstance);
     }
 
     protected Taxes toTaxes(final List<ITax> taxes,
@@ -219,7 +253,40 @@ public class CalculatorService
         return result;
     }
 
-    protected String getTaxKey(final Tax tax)
+    public ProductPrice evalPriceFromDB(final Parameter parameter,
+                                        final Instance productInstance)
+        throws EFapsException
+    {
+        final ProductPrice ret;
+        final String setting = getConfig().getPriceEvaluation();
+        ret = switch (setting) {
+            case "Latest" -> new PriceUtil().getLatestPrice(parameter, productInstance, getPriceEvalType(),
+                            true, false);
+            case "Latest4Contact" -> new PriceUtil().getLatestPrice(parameter, productInstance, getPriceEvalType(),
+                            true, true);
+            case "PriceList" ->
+                new PriceUtil().getPrice(parameter, productInstance.getOid(), getConfig().getPriceList(),
+                                getConfig().getTypeKey());
+            default -> new PriceUtil().getPrice(parameter, productInstance.getOid(), getConfig().getPriceList(),
+                            getConfig().getTypeKey());
+        };
+        return ret;
+    }
+
+    protected Type getPriceEvalType()
+        throws EFapsException
+    {
+        final String typeStr = CISales.DocumentSumAbstract.getType().getUUID().toString();
+        final Type ret;
+        if (UUIDUtil.isUUID(typeStr)) {
+            ret = Type.get(UUID.fromString(typeStr));
+        } else {
+            ret = Type.get(typeStr);
+        }
+        return ret;
+    }
+
+    public static String getTaxKey(final Tax tax)
         throws EFapsException
     {
         return tax.getTaxCat().getUuid() + ":" + tax.getUUID();

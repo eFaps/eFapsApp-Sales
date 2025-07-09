@@ -17,8 +17,6 @@
 
 -->
 
-
-
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4697ba69-bd21-49f9-8b99-6f8eb35e7b90</uuid>
@@ -54,8 +52,6 @@
                 method="autoComplete4Product"
                 name="Sales_InvoicePositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                
-
                 <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="PropertiesConfigAttribute">org.efaps.sales.Invoice.ProductAutoComplete</property>
                 <property name="ExtraParameter">contact</property>

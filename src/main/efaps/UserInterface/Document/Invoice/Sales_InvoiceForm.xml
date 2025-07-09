@@ -173,6 +173,7 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="ebillingInvoice">
             <property name="SelectAlternateOID">linkfrom[EBilling_Invoice#InvoiceLink].oid</property>
@@ -436,6 +437,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="rateCurrencyFieldValueUI"
                 name="Sales_InvoiceForm.currencyId.UI_FIELD_VALUE"
@@ -480,7 +482,39 @@
                 <property name="Type">Sales_InvoicePosition</property>
                 <property name="LinkFrom">Invoice</property>
             </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
+        <field name="restPositionTable4View" character="Target">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_InvoicePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_InvoicePosition</property>
+                <property name="LinkFrom">Invoice</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_InvoiceForm.restPositionTable4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="restPositionTable4Edit" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <table>Sales_InvoiceRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_InvoicePosition</property>
+                <property name="LinkFrom">Invoice</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_InvoiceForm.restPositionTable4Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+
         <field name="headingFooter" character="Heading">
             <property name="Level">2</property>
             <property name="ModeCreate">READONLY</property>

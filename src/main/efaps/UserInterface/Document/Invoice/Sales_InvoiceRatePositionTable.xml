@@ -22,7 +22,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>17e6c4ea-f6dc-4a18-9aa2-69dbcb921737</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoiceRatePositionTable</name>
@@ -35,18 +34,51 @@
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_InvoicePosition/Quantity.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Quantity"
+                name="Sales_InvoicePositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_InvoicePosition/Product.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="autoComplete4Product"
+                name="Sales_InvoicePositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.Invoice.ProductAutoComplete</property>
+                <property name="ExtraParameter">contact</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Product"
+                name="Sales_InvoicePositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
-            <property name="Label">Sales_InvoiceRatePositionTable.productDesc.Label</property>
+            <property name="Label">Sales_InvoicePositionTable.productDesc.Label</property>
             <property name="Width">10</property>
+        </field>
+       <field name="uoM">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">UoM</property>
+            <property name="Label">Sales_InvoicePosition/UoM.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Uom" name="Sales_InvoicePositionTable.uom.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="uom4View">
             <property name="ModeCreate">NONE</property>
@@ -55,29 +87,61 @@
             <property name="Label">Sales_InvoicePosition/UoM.Label</property>
         </field>
         <field name="rateNetUnitPrice">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">RateNetUnitPrice</property>
-            <property name="Label">Sales_InvoicePosition/RateNetUnitPrice.Label</property>
-            <property name="Align">right</property>
+            <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_InvoicePositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
+        </field>
+        <field name="rateNetUnitPrice4Read">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Attribute">RateNetUnitPrice</property>
+            <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_InvoicePositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="discount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Discount</property>
             <property name="Label">Sales_InvoicePosition/Discount.Label</property>
             <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Discount"
+                name="Sales_InvoicePositionTable.discount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateDiscountNetUnitPrice">
+            <property name="ModeCreate">READONLY</property>
             <property name="Attribute">RateDiscountNetUnitPrice</property>
-            <property name="Label">Sales_InvoicePosition/RateDiscountNetUnitPrice.Label</property>
+            <property name="Label">Sales_InvoicePosition/DiscountNetUnitPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateNetPrice">
+            <property name="ModeCreate">READONLY</property>
             <property name="Attribute">RateNetPrice</property>
-            <property name="Label">Sales_InvoicePosition/RateNetPrice.Label</property>
+            <property name="Label">Sales_InvoicePosition/NetPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateCrossPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Attribute">RateCrossPrice</property>
-            <property name="Label">Sales_InvoicePosition/RateCrossPrice.Label</property>
+            <property name="Label">Sales_InvoicePosition/CrossPrice.Label</property>
             <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4CrossPrice"
+                name="Sales_InvoicePositionTable.crossPrice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
     </definition>
 </ui-table>

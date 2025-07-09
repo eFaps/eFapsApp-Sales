@@ -15,14 +15,19 @@
  */
 package org.efaps.esjp.sales;
 
+import java.util.UUID;
+
 import org.apache.commons.lang3.EnumUtils;
 import org.efaps.abacus.api.CrossTotalFlow;
 import org.efaps.abacus.api.IConfig;
 import org.efaps.abacus.api.TaxCalcFlow;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
+import org.efaps.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +38,13 @@ public class CalculatorConfig
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(CalculatorConfig.class);
+
+    private final String typeKey;
+
+    public CalculatorConfig(final String typeKey)
+    {
+        this.typeKey = typeKey;
+    }
 
     @Override
     public int getCrossPriceScale()
@@ -62,6 +74,42 @@ public class CalculatorConfig
     public int getTaxScale()
     {
         return getInt("TaxScale", 2);
+    }
+
+    public String getPriceEvaluation()
+    {
+        return "PriceList";
+    }
+
+    public String getTypeKey()
+    {
+        return typeKey;
+    }
+
+    public UUID getPriceList()
+        throws EFapsException
+    {
+        final String value = getString("PriceList", CIProducts.ProductPricelistRetail.uuid.toString());
+        final UUID ret;
+        if (UUIDUtil.isUUID(value)) {
+            ret = UUID.fromString(value);
+        } else {
+            ret = Type.get(value).getUUID();
+        }
+        return ret;
+    }
+
+    private String getString(final String key,
+                             final String defaultValue)
+    {
+        try {
+            final var properties = Sales.CALCULATOR_CONFIG.get();
+            return properties.getProperty(key, String.valueOf(defaultValue));
+
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return defaultValue;
     }
 
     private Integer getInt(final String key,

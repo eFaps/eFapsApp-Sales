@@ -162,6 +162,50 @@ public abstract class AbstractDocument_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDocument.class);
 
+
+    protected <T> T getValue(final Parameter parameter,
+                             final String key)
+    {
+        return getValue(parameter, key, 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> T getValue(final Parameter parameter,
+                             final String key,
+                             final int index)
+    {
+        T ret = null;
+        final Map<String, Object> payload = (Map<String, Object>) parameter.get(ParameterValues.PAYLOAD);
+        if (payload != null) {
+            final var content = payload.get(key);
+            if (content instanceof final List list) {
+                if (index < list.size()) {
+                    ret = (T) list.get(index);
+                }
+            } else {
+                ret = (T) content;
+            }
+        }
+        return ret;
+    }
+
+    protected BigDecimal evalBigDecimal(final Parameter parameter,
+                                        final String key,
+                                        final int index)
+    {
+        final var value = getValue(parameter, key, index);
+        final BigDecimal ret;
+        if (value != null && value instanceof final String str && StringUtils.isNotEmpty(str)) {
+            ret = new BigDecimal(str);
+        } else if (value != null && value instanceof final Integer integer) {
+            ret = new BigDecimal(integer);
+        } else {
+            ret = BigDecimal.ZERO;//
+        }
+        return ret;
+    }
+
+
     /**
      * Method must be called on opening the form containing positions to
      * initialise a new positions calculator cache!
@@ -2410,18 +2454,26 @@ public abstract class AbstractDocument_Base
      * @return Object
      * @throws EFapsException on error.
      */
-    protected Object[] getRateObject(final Parameter _parameter)
+    protected Object[] getRateObject(final Parameter parameter)
         throws EFapsException
     {
+        if (isRest()) {
+            final var dateStr = this.<String>getValue(parameter, "date");
+            final int selectedCurrency = getValue(parameter, "rateCurrencyId");
+            final var curInst = CurrencyInst.get(Long.valueOf(selectedCurrency)).getInstance();
+            final var rateInfo = new Currency().evaluateRateInfo(parameter, dateStr, curInst);
+            return RateInfo.getRateObject(parameter, rateInfo, getCIType().getType().getName());
+        }
+
         BigDecimal rate = BigDecimal.ONE;
         try {
-            if (_parameter.getParameterValue("rate") != null) {
-                rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(null).parse(_parameter.getParameterValue("rate"));
+            if (parameter.getParameterValue("rate") != null) {
+                rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(null).parse(parameter.getParameterValue("rate"));
             }
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
-        final boolean rInv = "true".equalsIgnoreCase(_parameter.getParameterValue("rate" + RateUI.INVERTEDSUFFIX));
+        final boolean rInv = "true".equalsIgnoreCase(parameter.getParameterValue("rate" + RateUI.INVERTEDSUFFIX));
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
     }
 
