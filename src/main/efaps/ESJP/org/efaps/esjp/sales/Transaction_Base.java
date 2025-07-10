@@ -65,7 +65,6 @@ import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.payment.TransferDocument;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.Table;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -706,7 +705,7 @@ public abstract class Transaction_Base
                         .append("';");
         final List<Map<String, String>> list = new ArrayList<>();
         final Map<String, String> map = new HashMap<>();
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), html.toString());
+        map.put("eFapsFieldUpdateJS", html.toString());
         list.add(map);
         ret.put(ReturnValues.VALUES, list);
         return ret;

@@ -38,7 +38,6 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -119,8 +118,8 @@ public abstract class Credit_Base
     {
         final Return ret = new Return();
         final StringBuilder js = new StringBuilder();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> values = new TreeMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> values = new TreeMap<>();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String val = (String) properties.get("ValidationType");
         if (val != null && val.equals("Employee")) {
@@ -129,7 +128,7 @@ public abstract class Credit_Base
         } else if (val != null && val.equals("Contact")) {
             js.append(getSetFieldValue(0, "employee", "")).append(getSetFieldValue(0, "employeeAutoComplete", ""));
         }
-        values.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        values.put("eFapsFieldUpdateJS", js.toString());
         list.add(values);
         ret.put(ReturnValues.VALUES, list);
         return ret;
@@ -210,8 +209,8 @@ public abstract class Credit_Base
         final DecimalFormat fomatter = NumberFormatter.get().getFrmt4Total(CISales.Installment.getType());
         final String installAmountStr = fomatter.format(installAmmount);
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> values = new TreeMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> values = new TreeMap<>();
         values.put(CIFormSales.Sales_Credit_CreateInstallmentsForm.installmentAmount.name, installAmountStr);
         list.add(values);
         ret.put(ReturnValues.VALUES, list);

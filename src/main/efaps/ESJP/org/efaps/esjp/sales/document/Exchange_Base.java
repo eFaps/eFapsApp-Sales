@@ -21,7 +21,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,6 @@ import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -248,11 +246,9 @@ public abstract class Exchange_Base
                     exchangeMap.put(createdDoc.getInstance(), (BigDecimal) NumberFormatter.get().getFormatter().parse(
                                     crossAr[i]));
                 }
-                final Iterator<Entry<Instance, BigDecimal>> exchangeIter = exchangeMap.entrySet().iterator();
                 int start = 0;
                 BigDecimal missing = null;
-                while (exchangeIter.hasNext()) {
-                    final Entry<Instance, BigDecimal> entry = exchangeIter.next();
+                for (Entry<Instance, BigDecimal> entry : exchangeMap.entrySet()) {
                     BigDecimal currentTotal = BigDecimal.ZERO;
                     for (int i = start; i < docOids.length; i++) {
                         final Instance docInst = Instance.get(docOids[i]);
@@ -394,7 +390,7 @@ public abstract class Exchange_Base
                 .append(getTableAddNewRowsScript(_parameter, "exchangeTable", strValues, null));
             final List<Map<String, Object>> values = new ArrayList<>();
             final Map<String, Object> map = new HashMap<>();
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            map.put("eFapsFieldUpdateJS", js.toString());
             map.put(CIFormSales.Sales_ExchangeCreateCalculatedForm.exchangeTotal.name, total.toString());
             values.add(map);
             ret.put(ReturnValues.VALUES, values);

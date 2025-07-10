@@ -55,7 +55,6 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -526,8 +525,8 @@ public abstract class Payment_Base
             print.addAttribute(CISales.DocumentAbstract.Name);
             if (print.execute()) {
                 final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
-                map.put(EFapsKey.PICKER_VALUE.getKey(), name);
-                map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), getOpenAmount4Picker(_parameter));
+                map.put("eFapsPickerValue4Field", name);
+                map.put("eFapsPickerJavaScript", getOpenAmount4Picker(_parameter));
                 map.put("createdocument", viewOid.getOid());
             }
         }

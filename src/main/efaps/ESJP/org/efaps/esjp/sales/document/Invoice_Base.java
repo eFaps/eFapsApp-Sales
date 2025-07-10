@@ -48,7 +48,6 @@ import org.efaps.esjp.contacts.taxid.TaxIdInfo;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -200,18 +199,18 @@ public abstract class Invoice_Base
             final String taxId = eval.get("taxId");
 
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), taxId);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), taxId + " - " + name);
+            map.put("eFapsAutoCompleteKEY", oid);
+            map.put("eFapsAutoCompleteVALUE", taxId);
+            map.put("eFapsAutoCompleteCHOICE", taxId + " - " + name);
             list.add(map);
         }
         Collections.sort(list, (_o1,
-                                _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()).compareTo(
-                                                _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey())));
+                                _o2) -> _o1.get("eFapsAutoCompleteCHOICE").compareTo(
+                                                _o2.get("eFapsAutoCompleteCHOICE")));
         if (list.isEmpty() && input.matches("^\\d{11}")) {
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), input);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), input + " - " + "Buscar en linea");
+            map.put("eFapsAutoCompleteVALUE", input);
+            map.put("eFapsAutoCompleteCHOICE", input + " - " + "Buscar en linea");
             list.add(map);
         }
 
@@ -255,7 +254,7 @@ public abstract class Invoice_Base
                 }
             }
         }
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(),
+        map.put("eFapsFieldUpdateJS",
                         "document.getElementsByName('info')[0].innerHTML=\"" + info + "\";");
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);

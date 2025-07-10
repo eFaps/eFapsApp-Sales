@@ -94,7 +94,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -897,7 +896,7 @@ public abstract class AbstractDocumentSum_Base
                                             parameter.getParameterValue("rateCurrencyId")))
                             .append(addAdditionalFields4CurrencyUpdate(parameter, calculators));
 
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            map.put("eFapsFieldUpdateJS", js.toString());
             list.add(map);
         }
 
@@ -982,7 +981,7 @@ public abstract class AbstractDocumentSum_Base
                         .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
                                         Boolean.toString(rateInfo.isInvert())));
 
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        map.put("eFapsFieldUpdateJS", js.toString());
         new Channel().add2FieldUpdateMap4Condition(_parameter, map);
         list.add(map);
         final Return retVal = new Return();
@@ -1053,7 +1052,7 @@ public abstract class AbstractDocumentSum_Base
                                         Boolean.toString(rateInfo.isInvert())))
                         .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
 
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        map.put("eFapsFieldUpdateJS", js.toString());
         list.add(map);
 
         final Return retVal = new Return();
@@ -1316,7 +1315,7 @@ public abstract class AbstractDocumentSum_Base
                         .getValue(AbstractDocument_Base.CALCULATORS_VALUE);
         @SuppressWarnings("unchecked") final Map<String, String> oidMap = (Map<String, String>) _parameter
                         .get(ParameterValues.OIDMAP4UI);
-        final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());
+        final String[] rowKeys = _parameter.getParameterValues("eFapsTRID");
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();

@@ -125,7 +125,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.AccountAutomation;
 import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
 import org.efaps.esjp.ui.html.HtmlTable;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -593,7 +592,7 @@ public abstract class AbstractPaymentDocument_Base
         sums.add(getSumUpdateMap(_parameter, values, false));
         js.append(getSetFieldValuesScript(_parameter, sums, null));
         js.append(getTableAddNewRowsScript(_parameter, "paymentTable", values, null));
-        map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), js.toString());
+        map.put("eFapsPickerJavaScript", js.toString());
         return retVal;
     }
 
@@ -782,7 +781,7 @@ public abstract class AbstractPaymentDocument_Base
                 docInfo.getRateInfo4Target().setSaleRateUI(rateUI);
 
                 final Map<String, Object> posMap = getPositionUpdateMap(_parameter, docInfo, false);
-                posMap.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
+                posMap.put("eFapsFieldUseIndex", selected);
                 list.add(posMap);
                 list.add(getSumUpdateMap(_parameter, list, true));
             } catch (final ParseException e) {
@@ -807,7 +806,7 @@ public abstract class AbstractPaymentDocument_Base
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Map<String, Object> map = getPositionUpdateMap(_parameter, docInstance, false);
-        map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
+        map.put("eFapsFieldUseIndex", selected);
         map.putAll(getSumUpdateMap(_parameter, Arrays.<Map<String, Object>>asList(new Map[]{ map }), true));
         list.add(map);
         final Return retVal = new Return();
@@ -1212,9 +1211,9 @@ public abstract class AbstractPaymentDocument_Base
                 choice.append(" - ").append(revision);
             }
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+            map.put("eFapsAutoCompleteKEY", oid);
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", choice.toString());
             list.add(map);
         }
 
@@ -1623,7 +1622,7 @@ public abstract class AbstractPaymentDocument_Base
         final StringBuilder js = new StringBuilder();
         js.append(getTableRemoveScript(_parameter, getTableName(_parameter)));
 
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        map.put("eFapsFieldUpdateJS", js.toString());
         list.add(map);
 
         final Return retVal = new Return();
@@ -2543,9 +2542,9 @@ public abstract class AbstractPaymentDocument_Base
                         }
 
                         final Map<String, String> map = new HashMap<>();
-                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
-                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                        map.put("eFapsAutoCompleteKEY", multi.getCurrentInstance().getOid());
+                        map.put("eFapsAutoCompleteVALUE", name);
+                        map.put("eFapsAutoCompleteCHOICE", choice.toString());
                         tmpMap.put(multi.getCurrentInstance().getOid(), map);
                     }
                     list.addAll(tmpMap.values());

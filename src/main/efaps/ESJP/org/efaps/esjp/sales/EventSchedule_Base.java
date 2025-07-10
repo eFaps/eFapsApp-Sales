@@ -49,7 +49,6 @@ import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocumentSum;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -135,9 +134,9 @@ public abstract class EventSchedule_Base
                 choice.append(rateCurrSymbol + getTotalFmtStr(total));
 
                 final Map<String, String> map = new HashMap<>();
-                map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                map.put("eFapsAutoCompleteKEY", oid);
+                map.put("eFapsAutoCompleteVALUE", name);
+                map.put("eFapsAutoCompleteCHOICE", choice.toString());
                 tmpMap.put(name, map);
             }
         }
@@ -415,7 +414,7 @@ public abstract class EventSchedule_Base
 
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
                             .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
-                                            script, false, false, new HashSet<String>()));
+                                            script, false, false, new HashSet<>()));
 
         } else if (Display.HIDDEN.equals(fieldValue.getDisplay())) {
 
@@ -479,7 +478,7 @@ public abstract class EventSchedule_Base
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
                                 .append(getTableAddNewRowsScript(_parameter, "positionTable", valuesTmp.values(),
                                                 getOnCompleteScript(_parameter, null),
-                                                false, false, new HashSet<String>()));
+                                                false, false, new HashSet<>()));
             }
 
         }

@@ -43,7 +43,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -137,7 +136,7 @@ public abstract class PaymentSchedule_Base
     {
         @SuppressWarnings("unchecked")
         final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
-        final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());
+        final String[] rowKeys = _parameter.getParameterValues("eFapsTRID");
 
         for (int i = 0; i < rowKeys.length; i++) {
             final Instance inst = Instance.get(oidMap.get(rowKeys[i]));

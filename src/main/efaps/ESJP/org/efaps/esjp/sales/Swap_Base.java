@@ -75,7 +75,6 @@ import org.efaps.esjp.sales.document.Validation;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -140,9 +139,9 @@ public abstract class Swap_Base
                 choice = choice + " - " + multi.getSelect(selContactName);
             }
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), choice);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            map.put("eFapsAutoCompleteKEY", multi.getAttribute(key).toString());
+            map.put("eFapsAutoCompleteVALUE", choice);
+            map.put("eFapsAutoCompleteCHOICE", choice);
             tmpMap.put(choice, map);
         }
         list.addAll(tmpMap.values());
@@ -273,7 +272,7 @@ public abstract class Swap_Base
         sums.add(getSumUpdateMap(_parameter, values, false));
         js.append(getSetFieldValuesScript(_parameter, sums, null));
         js.append(getTableAddNewRowsScript(_parameter, "swapTable", values, null));
-        map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), js.toString());
+        map.put("eFapsPickerJavaScript", js.toString());
         return retVal;
     }
 
@@ -291,11 +290,11 @@ public abstract class Swap_Base
         final Instance docInst = Instance.get(_parameter.getParameterValues("document")[idx]);
         if (docInst.isValid()) {
             map.putAll(getPositionUpdateMap4Doc(_parameter, docInst, false));
-            map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), idx);
+            map.put("eFapsFieldUseIndex", idx);
         }
         values.add(map);
         final Map<String, Object> sum = getSumUpdateMap(_parameter, values, true);
-        sum.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), 0);
+        sum.put("eFapsFieldUseIndex", 0);
         values.add(sum);
         return new Return().put(ReturnValues.VALUES, values);
     }
@@ -426,10 +425,10 @@ public abstract class Swap_Base
                     docInfo.setRateCurrencyInstance(docInfo.getTargetInfo().getCurrencyInstance());
                 }
                 final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, true);
-                map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
+                map.put("eFapsFieldUseIndex", selected);
                 list.add(map);
                 final Map<String, Object> sum = getSumUpdateMap(_parameter, list, true);
-                sum.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), 0);
+                sum.put("eFapsFieldUseIndex", 0);
                 list.add(sum);
             } catch (final ParseException e) {
                 Swap_Base.LOG.error("Catched ParseException", e);
@@ -490,11 +489,11 @@ public abstract class Swap_Base
                 }
 
                 final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, false);
-                map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
+                map.put("eFapsFieldUseIndex", selected);
                 list.add(map);
 
                 final Map<String, Object> sum = getSumUpdateMap(_parameter, list, true);
-                sum.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), 0);
+                sum.put("eFapsFieldUseIndex", 0);
                 list.add(sum);
 
             } catch (final ParseException e) {

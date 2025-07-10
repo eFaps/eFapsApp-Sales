@@ -115,7 +115,6 @@ import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
 import org.efaps.ui.wicket.models.objects.UITable.TableFilter;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -317,9 +316,9 @@ public abstract class AbstractDocument_Base
             }
             choice = choice + add2ChoiceAutoComplete4Doc(_parameter, multi.getCurrentInstance());
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            map.put("eFapsAutoCompleteKEY", multi.getAttribute(key).toString());
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", choice);
             tmpMap.put(name, map);
         }
         list.addAll(tmpMap.values());

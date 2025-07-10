@@ -55,7 +55,6 @@ import org.efaps.esjp.products.PriceList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -147,13 +146,11 @@ public abstract class PriceUtil_Base
             ret.setOrigPrice(price);
             if (priceInst.equals(currentInst)) {
                 ret.setCurrentPrice(price);
+            } else if (currentInst != null) {
+                final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
+                ret.setCurrentPrice(price.multiply(rates[2]));
             } else {
-                if (currentInst != null) {
-                    final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
-                    ret.setCurrentPrice(price.multiply(rates[2]));
-                } else {
-                    ret.setCurrentPrice(price);
-                }
+                ret.setCurrentPrice(price);
             }
             if (priceInst.equals(baseInst)) {
                 ret.setBasePrice(price);
@@ -280,15 +277,13 @@ public abstract class PriceUtil_Base
                         ret.setOrigPrice(price);
                         if (origCurrInst.equals(currentInst)) {
                             ret.setCurrentPrice(price);
+                        } else if (currentInst != null) {
+                            final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date,
+                                            origCurrInst, currentInst);
+                            final BigDecimal rate = RateInfo.getRate(_parameter, rateInfos[2], _rateInfoKey);
+                            ret.setCurrentPrice(price.divide(rate, 8, BigDecimal.ROUND_HALF_UP));
                         } else {
-                            if (currentInst != null) {
-                                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date,
-                                                origCurrInst, currentInst);
-                                final BigDecimal rate = RateInfo.getRate(_parameter, rateInfos[2], _rateInfoKey);
-                                ret.setCurrentPrice(price.divide(rate, 8, BigDecimal.ROUND_HALF_UP));
-                            } else {
-                                ret.setCurrentPrice(price);
-                            }
+                            ret.setCurrentPrice(price);
                         }
                         if (origCurrInst.equals(baseInst)) {
                             ret.setBasePrice(price);
@@ -565,7 +560,7 @@ public abstract class PriceUtil_Base
             }
 
             final String html = getTable4PriceListHistory(mapProd, heads);
-            map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(),
+            map.put("eFapsPickerJavaScript",
                             "document.getElementsByName('priceHistory')[0].innerHTML='" + html + "';");
             ret.put(ReturnValues.VALUES, map);
         }

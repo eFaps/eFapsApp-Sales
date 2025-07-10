@@ -63,7 +63,6 @@ import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -388,14 +387,14 @@ public abstract class DeliveryNote_Base
         for (final String depPoint : depPoints) {
             if (all || StringUtils.startsWithIgnoreCase(depPoint, input)) {
                 final Map<String, String> map = new HashMap<>();
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), depPoint);
+                map.put("eFapsAutoCompleteVALUE", depPoint);
                 list.add(map);
             }
         }
         add2AutoComplete4DeparturePoint(_parameter, list);
 
-        Collections.sort(list, (_o1, _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
-                        _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey())));
+        Collections.sort(list, (_o1, _o2) -> _o1.get("eFapsAutoCompleteVALUE").compareTo(
+                        _o2.get("eFapsAutoCompleteVALUE")));
         ret.put(ReturnValues.VALUES, list);
         return ret;
     }
@@ -830,8 +829,8 @@ public abstract class DeliveryNote_Base
             final String address = print.getMsgPhrase(msgPhrase);
             if (all || StringUtils.startsWithIgnoreCase(address, input)) {
                 final Map<String, String> map = new HashMap<>();
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
-                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), getFormatedDBProperty("ContactArrivalPoint", address));
+                map.put("eFapsAutoCompleteVALUE", address);
+                map.put("eFapsAutoCompleteCHOICE", getFormatedDBProperty("ContactArrivalPoint", address));
                 list.add(map);
             }
 
@@ -852,8 +851,8 @@ public abstract class DeliveryNote_Base
                     final String loAddress = multi.getMsgPhrase(subMsgPhrase);
                     if (all || StringUtils.startsWithIgnoreCase(loAddress, input)) {
                         final Map<String, String> map = new HashMap<>();
-                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), loAddress);
-                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
+                        map.put("eFapsAutoCompleteVALUE", loAddress);
+                        map.put("eFapsAutoCompleteCHOICE",
                                         getFormatedDBProperty("SubContactArrivalPoint", loAddress, idx,
                                                         multi.getAttribute(CIContacts.SubContact.Name)));
                         list.add(map);
@@ -873,8 +872,8 @@ public abstract class DeliveryNote_Base
             final String address = print.getMsgPhrase(msgPhrase);
             if (all || StringUtils.startsWithIgnoreCase(address, input)) {
                 final Map<String, String> map = new HashMap<>();
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
-                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), getFormatedDBProperty("CarrierArrivalPoint", address));
+                map.put("eFapsAutoCompleteVALUE", address);
+                map.put("eFapsAutoCompleteCHOICE", getFormatedDBProperty("CarrierArrivalPoint", address));
                 list.add(map);
             }
         }
@@ -884,8 +883,8 @@ public abstract class DeliveryNote_Base
         for (final String destination : destinations) {
             if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
                 final Map<String, String> map = new HashMap<>();
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
-                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
+                map.put("eFapsAutoCompleteVALUE", destination);
+                map.put("eFapsAutoCompleteCHOICE",
                                 getFormatedDBProperty("ConfiguredArrivalPoint", destination, idx));
                 list.add(map);
                 idx++;
@@ -894,8 +893,8 @@ public abstract class DeliveryNote_Base
 
         add2AutoComplete4ArrivalPoint(_parameter, list);
 
-        Collections.sort(list, (_o1, _o2) -> _o1.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()).compareTo(
-                        _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey())));
+        Collections.sort(list, (_o1, _o2) -> _o1.get("eFapsAutoCompleteCHOICE").compareTo(
+                        _o2.get("eFapsAutoCompleteCHOICE")));
         ret.put(ReturnValues.VALUES, list);
         return ret;
     }
@@ -1123,7 +1122,7 @@ public abstract class DeliveryNote_Base
                     for (final String val : values) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
                             final Map<String, String> map = new HashMap<>();
-                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
+                            map.put("eFapsAutoCompleteVALUE", val);
                             list.add(map);
                         }
                     }
@@ -1169,7 +1168,7 @@ public abstract class DeliveryNote_Base
                     for (final String val : values) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
                             final Map<String, String> map = new HashMap<>();
-                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
+                            map.put("eFapsAutoCompleteVALUE", val);
                             list.add(map);
                         }
                     }
@@ -1217,7 +1216,7 @@ public abstract class DeliveryNote_Base
                     for (final String val : licenses) {
                         if (all || StringUtils.startsWithIgnoreCase(val, input)) {
                             final Map<String, String> map = new HashMap<>();
-                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), names.get(idx) + " - " + val);
+                            map.put("eFapsAutoCompleteVALUE", names.get(idx) + " - " + val);
                             list.add(map);
                         }
                         idx++;
