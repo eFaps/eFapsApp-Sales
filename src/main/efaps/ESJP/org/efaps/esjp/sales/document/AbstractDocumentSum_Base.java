@@ -546,6 +546,7 @@ public abstract class AbstractDocumentSum_Base
                 final Map<String, Object> map = new HashMap<>();
                 map.put("quantity", position.getQuantity());
                 map.put("rateNetUnitPrice", position.getNetUnitPrice());
+                map.put("rateNetUnitPrice4Read", position.getNetUnitPrice());
                 map.put("rateNetPrice", position.getNetPrice());
                 map.put("rateDiscountNetUnitPrice", position.getNetUnitPrice());
                 map.put("discount", 0);
@@ -1256,6 +1257,10 @@ public abstract class AbstractDocumentSum_Base
             idx++;
             prodInst = Instance.get(getValue(parameter, "product", idx));
         }
+        if (existingIter.hasNext()) {
+            EQL.builder().delete(existingIter.next()).stmt().execute();
+        }
+
         service.recalculate(docInstance);
     }
 
