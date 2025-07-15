@@ -94,6 +94,7 @@ import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -486,7 +487,10 @@ public abstract class AbstractDocumentSum_Base
     {
         BigDecimal ret = evalBigDecimal(parameter, "rateNetUnitPrice", index);
         if (ret == null || ret.compareTo(BigDecimal.ZERO) == 0) {
-            final var prodPrice = service.evalPriceFromDB(parameter, prodInst);
+            final var dateStr = getValue(parameter, "date");
+            final var localDate = DateTimeUtil.toContextDate(dateStr);
+            final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.asContextDateTime(localDate));
+            final var prodPrice = service.evalPriceFromDB(dateTime, prodInst);
             ret = prodPrice.getCurrentPrice();
         }
         return ret;

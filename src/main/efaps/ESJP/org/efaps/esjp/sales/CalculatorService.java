@@ -25,7 +25,6 @@ import org.apache.commons.lang3.EnumUtils;
 import org.efaps.abacus.api.ITax;
 import org.efaps.abacus.api.TaxType;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -202,10 +201,8 @@ public class CalculatorService
                                           final Instance productInst)
         throws EFapsException
     {
-        final var parameter = ParameterUtil.instance();
         final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.toDateTime(dateObject));
-        ParameterUtil.setParameterValues(parameter, "date_eFapsDate", dateTime.toString());
-        return evalPriceFromDB(parameter, productInst).getCurrentPrice();
+        return evalPriceFromDB(dateTime, productInst).getCurrentPrice();
     }
 
     public IDocument calculate(final IDocument document)
@@ -253,10 +250,11 @@ public class CalculatorService
         return result;
     }
 
-    public ProductPrice evalPriceFromDB(final Parameter parameter,
+    public ProductPrice evalPriceFromDB(final DateTime dateTime,
                                         final Instance productInstance)
         throws EFapsException
     {
+        final var parameter = ParameterUtil.instance();
         final ProductPrice ret;
         final String setting = getConfig().getPriceEvaluation();
         ret = switch (setting) {
@@ -267,8 +265,8 @@ public class CalculatorService
             case "PriceList" ->
                 new PriceUtil().getPrice(parameter, productInstance.getOid(), getConfig().getPriceList(),
                                 getConfig().getTypeKey());
-            default -> new PriceUtil().getPrice(parameter, productInstance.getOid(), getConfig().getPriceList(),
-                            getConfig().getTypeKey());
+            default -> new PriceUtil().getPrice(parameter, dateTime, productInstance, getConfig().getPriceList(),
+                            getConfig().getTypeKey(), false);
         };
         return ret;
     }
