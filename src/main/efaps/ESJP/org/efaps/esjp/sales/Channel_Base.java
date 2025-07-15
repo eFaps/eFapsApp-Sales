@@ -167,11 +167,11 @@ public abstract class Channel_Base
                 js.append(")); ");
                 final DateTime date;
                 if (_parameter.getParameterValue("date_eFapsDate") != null) {
-                    date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+                    date = JodaTimeUtils.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
                 } else {
                     date = new DateTime();
                 }
-                js.append(getSetFieldValue(0, "dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(days))));
+                js.append(getSetFieldValue(0, "dueDate_eFapsDate", date.plusDays(days).toString()));
             }
         }
         return js;
@@ -217,7 +217,7 @@ public abstract class Channel_Base
                         final Integer days = multi.getSelect(selDays);
                         final DateTime date = days == null ? new DateTime() : new DateTime().plusDays(days);
                         ret.append(getSetFieldValue(0, "condition", chanInst.getOid()));
-                        ret.append(getSetFieldValue(0, "dueDate_eFapsDate", DateUtil.getDate4Parameter(date)));
+                        ret.append(getSetFieldValue(0, "dueDate_eFapsDate", date.toString()));
                     }
                 }
             }
