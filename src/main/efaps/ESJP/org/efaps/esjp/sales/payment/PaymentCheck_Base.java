@@ -46,7 +46,6 @@ import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -312,7 +311,7 @@ public abstract class PaymentCheck_Base
         //      .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.date.name + "_eFapsDate",
        //                    DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))))
                 .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.dueDate.name + "_eFapsDate",
-                            DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.Date))));
+                            print.<DateTime>getAttribute(CISales.IncomingCheck.Date).toString()));
 
             // store that the amount was set from the User
             ParameterUtil.setParameterValues(_parameter, "amount", amount);

@@ -48,13 +48,13 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.PriceList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.HtmlTable;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -485,7 +485,7 @@ public abstract class PriceUtil_Base
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
         final DateTime date;
         if (dateStr != null && dateStr.length() > 0) {
-            date = DateUtil.getDateFromParameter(dateStr);
+            date = JodaTimeUtils.getDateFromParameter(dateStr);
         } else {
             date = new DateTime();
         }

@@ -59,7 +59,6 @@ import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -578,7 +577,7 @@ public abstract class PettyCashReceipt_Base
                 final DateTime date = print.getAttribute(CISales.PettyCashReceipt.Date);
                 js.append(getSetFieldValue(0,
                                 CIFormSales.Sales_PettyCashReceiptJustificationEditForm.date.name + "_eFapsDate",
-                                DateUtil.getDate4Parameter(date)));
+                                date.toString()));
 
                 final Instance actionInst = print.<Instance>getSelect(selActionInst);
                 if (actionInst != null && actionInst.isValid()) {

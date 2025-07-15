@@ -37,6 +37,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -51,7 +52,6 @@ import org.efaps.esjp.sales.tax.Tax_Base;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -281,7 +281,7 @@ public abstract class Calculator_Base
         posKey = _config.getSysConfKey4Pos(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
-            setDate(DateUtil.getDateFromParameter(dateStr));
+            setDate(JodaTimeUtils.getDateFromParameter(dateStr));
         } else {
             setDate(new DateTime());
         }
@@ -371,7 +371,7 @@ public abstract class Calculator_Base
         posKey = _config.getSysConfKey4Pos(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
-            setDate(DateUtil.getDateFromParameter(dateStr));
+            setDate(JodaTimeUtils.getDateFromParameter(dateStr));
         } else {
             setDate(new DateTime());
         }
@@ -443,20 +443,14 @@ public abstract class Calculator_Base
     {
         final ProductPrice ret;
         final String config = getConfig(getDocKey(), Keys.PRICEEVALUATION, "PriceList");
-        switch (config) {
-            case "Latest":
-                ret = new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
-                                priceIsNet, false);
-                break;
-            case "Latest4Contact":
-                ret = new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
-                                priceIsNet, true);
-                break;
-            case "PriceList":
-            default:
-                ret = new PriceUtil().getPrice(_parameter, getOid(), getPriceListUUID(), getPosKey());
-                break;
-        }
+        ret = switch (config) {
+            case "Latest" -> new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
+                                            priceIsNet, false);
+            case "Latest4Contact" -> new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
+                                            priceIsNet, true);
+            case "PriceList" -> new PriceUtil().getPrice(_parameter, getOid(), getPriceListUUID(), getPosKey());
+            default -> new PriceUtil().getPrice(_parameter, getOid(), getPriceListUUID(), getPosKey());
+        };
         return ret;
     }
 
@@ -989,12 +983,10 @@ public abstract class Calculator_Base
         final BigDecimal ret;
         if (withoutTax) {
             ret = getNetUnitPrice();
+        } else if (productCrossUnitPrice == null) {
+            ret = getProductCrossUnitPrice().getCurrentPrice();
         } else {
-            if (productCrossUnitPrice == null) {
-                ret = getProductCrossUnitPrice().getCurrentPrice();
-            } else {
-                ret = productCrossUnitPrice.getCurrentPrice();
-            }
+            ret = productCrossUnitPrice.getCurrentPrice();
         }
         return ret;
     }
@@ -1395,52 +1387,50 @@ public abstract class Calculator_Base
             ret.setBasePrice(BigDecimal.ZERO);
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
-        } else {
-            if (priceIsNet && taxCatId > 0) {
-                final List<Tax> taxesTmp = getTaxes();
-                final BigDecimal currentPrice = _price.getCurrentPrice() == null
-                                ? BigDecimal.ZERO : _price.getCurrentPrice();
-                final BigDecimal basePrice = _price.getBasePrice() == null ? BigDecimal.ZERO : _price.getBasePrice();
-                final BigDecimal origPrice = _price.getOrigPrice() == null ? BigDecimal.ZERO : _price.getOrigPrice();
-                BigDecimal tCurrentPrice = currentPrice;
-                BigDecimal tBasePrice = basePrice;
-                BigDecimal tOrigPrice = origPrice;
-                boolean hasPerUnitTax = false;
-                for (final Tax tax : taxesTmp) {
-                    if (TaxType.ADVALOREM.equals(tax.getTaxType())) {
-                        final BigDecimal factor = tax.getFactor();
-                        if (factor.compareTo(BigDecimal.ONE) != 0) {
-                            if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
-                                tCurrentPrice = tCurrentPrice.add(currentPrice.multiply(factor));
-                            }
-                            if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
-                                tBasePrice = tBasePrice.add(basePrice.multiply(factor));
-                            }
-                            if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
-                                tOrigPrice = tOrigPrice.add(origPrice.multiply(factor));
-                            }
+        } else if (priceIsNet && taxCatId > 0) {
+            final List<Tax> taxesTmp = getTaxes();
+            final BigDecimal currentPrice = _price.getCurrentPrice() == null
+                            ? BigDecimal.ZERO : _price.getCurrentPrice();
+            final BigDecimal basePrice = _price.getBasePrice() == null ? BigDecimal.ZERO : _price.getBasePrice();
+            final BigDecimal origPrice = _price.getOrigPrice() == null ? BigDecimal.ZERO : _price.getOrigPrice();
+            BigDecimal tCurrentPrice = currentPrice;
+            BigDecimal tBasePrice = basePrice;
+            BigDecimal tOrigPrice = origPrice;
+            boolean hasPerUnitTax = false;
+            for (final Tax tax : taxesTmp) {
+                if (TaxType.ADVALOREM.equals(tax.getTaxType())) {
+                    final BigDecimal factor = tax.getFactor();
+                    if (factor.compareTo(BigDecimal.ONE) != 0) {
+                        if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tCurrentPrice = tCurrentPrice.add(currentPrice.multiply(factor));
                         }
-                    } else if (TaxType.PERUNIT.equals(tax.getTaxType())) {
-                        hasPerUnitTax = true;
+                        if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tBasePrice = tBasePrice.add(basePrice.multiply(factor));
+                        }
+                        if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tOrigPrice = tOrigPrice.add(origPrice.multiply(factor));
+                        }
                     }
+                } else if (TaxType.PERUNIT.equals(tax.getTaxType())) {
+                    hasPerUnitTax = true;
                 }
-                ret.setCurrentPrice(tCurrentPrice);
-                ret.setBasePrice(tBasePrice);
-                ret.setOrigPrice(tOrigPrice);
-                if (!_excludePerUnitTax && hasPerUnitTax) {
-                    evalPerUnitTax(ret, taxesTmp.toArray(new Tax[taxesTmp.size()]));
-                }
-            } else {
-                ret.setCurrentPrice(_price.getCurrentPrice() == null
-                                ? BigDecimal.ZERO
-                                : _price.getCurrentPrice());
-                ret.setBasePrice(_price.getBasePrice() == null
-                                ? BigDecimal.ZERO
-                                : _price.getBasePrice());
-                ret.setOrigPrice(_price.getOrigPrice() == null
-                                ? BigDecimal.ZERO
-                                : _price.getOrigPrice());
             }
+            ret.setCurrentPrice(tCurrentPrice);
+            ret.setBasePrice(tBasePrice);
+            ret.setOrigPrice(tOrigPrice);
+            if (!_excludePerUnitTax && hasPerUnitTax) {
+                evalPerUnitTax(ret, taxesTmp.toArray(new Tax[taxesTmp.size()]));
+            }
+        } else {
+            ret.setCurrentPrice(_price.getCurrentPrice() == null
+                            ? BigDecimal.ZERO
+                            : _price.getCurrentPrice());
+            ret.setBasePrice(_price.getBasePrice() == null
+                            ? BigDecimal.ZERO
+                            : _price.getBasePrice());
+            ret.setOrigPrice(_price.getOrigPrice() == null
+                            ? BigDecimal.ZERO
+                            : _price.getOrigPrice());
         }
         return ret;
     }
@@ -1458,52 +1448,50 @@ public abstract class Calculator_Base
             ret.setBasePrice(BigDecimal.ZERO);
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
+        } else if (priceIsNet && taxCatId > 0) {
+            ret.setCurrentPrice(productPrice.getCurrentPrice() == null
+                            ? BigDecimal.ZERO
+                            : productPrice.getCurrentPrice());
+            ret.setBasePrice(productPrice.getBasePrice() == null
+                            ? BigDecimal.ZERO
+                            : productPrice.getBasePrice());
+            ret.setOrigPrice(productPrice.getOrigPrice() == null
+                            ? BigDecimal.ZERO
+                            : productPrice.getOrigPrice());
         } else {
-            if (priceIsNet && taxCatId > 0) {
-                ret.setCurrentPrice(productPrice.getCurrentPrice() == null
-                                ? BigDecimal.ZERO
-                                : productPrice.getCurrentPrice());
-                ret.setBasePrice(productPrice.getBasePrice() == null
-                                ? BigDecimal.ZERO
-                                : productPrice.getBasePrice());
-                ret.setOrigPrice(productPrice.getOrigPrice() == null
-                                ? BigDecimal.ZERO
-                                : productPrice.getOrigPrice());
-            } else {
-                final List<Tax> taxesTmp = getTaxes();
-                final BigDecimal currentPrice = productPrice.getCurrentPrice() == null ? BigDecimal.ZERO
-                                : productPrice.getCurrentPrice();
-                final BigDecimal basePrice = productPrice.getBasePrice() == null
-                                ? BigDecimal.ZERO : productPrice.getBasePrice();
-                final BigDecimal origPrice = productPrice.getOrigPrice() == null
-                                ? BigDecimal.ZERO : productPrice.getOrigPrice();
-                BigDecimal tCurrentPrice = currentPrice;
-                BigDecimal tBasePrice = basePrice;
-                BigDecimal tOrigPrice = origPrice;
+            final List<Tax> taxesTmp = getTaxes();
+            final BigDecimal currentPrice = productPrice.getCurrentPrice() == null ? BigDecimal.ZERO
+                            : productPrice.getCurrentPrice();
+            final BigDecimal basePrice = productPrice.getBasePrice() == null
+                            ? BigDecimal.ZERO : productPrice.getBasePrice();
+            final BigDecimal origPrice = productPrice.getOrigPrice() == null
+                            ? BigDecimal.ZERO : productPrice.getOrigPrice();
+            BigDecimal tCurrentPrice = currentPrice;
+            BigDecimal tBasePrice = basePrice;
+            BigDecimal tOrigPrice = origPrice;
 
-                for (final Tax tax : taxesTmp) {
-                    if (TaxType.ADVALOREM.equals(tax.getTaxType())) {
-                        final BigDecimal factor = tax.getFactor();
-                        if (factor.compareTo(BigDecimal.ONE) != 0) {
-                            if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
-                                tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
-                                                .divide(BigDecimal.ONE.add(factor), RoundingMode.HALF_UP)));
-                            }
-                            if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
-                                tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
-                                                .add(factor), RoundingMode.HALF_UP)));
-                            }
-                            if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
-                                tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
-                                                .add(factor), RoundingMode.HALF_UP)));
-                            }
+            for (final Tax tax : taxesTmp) {
+                if (TaxType.ADVALOREM.equals(tax.getTaxType())) {
+                    final BigDecimal factor = tax.getFactor();
+                    if (factor.compareTo(BigDecimal.ONE) != 0) {
+                        if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
+                                            .divide(BigDecimal.ONE.add(factor), RoundingMode.HALF_UP)));
+                        }
+                        if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
+                                            .add(factor), RoundingMode.HALF_UP)));
+                        }
+                        if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
+                                            .add(factor), RoundingMode.HALF_UP)));
                         }
                     }
                 }
-                ret.setCurrentPrice(tCurrentPrice);
-                ret.setBasePrice(tBasePrice);
-                ret.setOrigPrice(tOrigPrice);
             }
+            ret.setCurrentPrice(tCurrentPrice);
+            ret.setBasePrice(tBasePrice);
+            ret.setOrigPrice(tOrigPrice);
         }
         return ret;
     }

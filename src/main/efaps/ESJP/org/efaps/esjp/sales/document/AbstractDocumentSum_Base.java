@@ -66,6 +66,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.db.InstanceUtils;
@@ -93,7 +94,6 @@ import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -1493,7 +1493,7 @@ public abstract class AbstractDocumentSum_Base
                     if (dateStr == null) {
                         date = print.getAttribute(CISales.DocumentSumAbstract.Date);
                     } else {
-                        date = DateUtil.getDateFromParameter(dateStr);
+                        date = JodaTimeUtils.getDateFromParameter(dateStr);
                     }
                     final Currency currency = new Currency();
                     final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, date, rateCurrInst);

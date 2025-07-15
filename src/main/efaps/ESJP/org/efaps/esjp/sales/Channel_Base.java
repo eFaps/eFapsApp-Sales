@@ -35,10 +35,10 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -97,14 +97,14 @@ public abstract class Channel_Base
             }
             final DateTime date;
             if (_parameter.getParameterValue("date_eFapsDate") != null) {
-                date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+                date = JodaTimeUtils.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
             } else {
                 date = new DateTime();
             }
-            _map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(addDays)));
+            _map.put("dueDate_eFapsDate", date.plusDays(addDays).toString());
         } else if (_parameter.getParameterValue("date_eFapsDate") != null) {
-            final DateTime date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
-            _map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date));
+            final DateTime date = JodaTimeUtils.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+            _map.put("dueDate_eFapsDate", date.toString());
         }
     }
 

@@ -47,6 +47,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.Currency;
@@ -56,7 +57,6 @@ import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -188,8 +188,8 @@ public abstract class Exchange_Base
         if (ArrayUtils.isNotEmpty(addDays) && addDays.length > selected) {
             final int add = Integer.parseInt(addDays[selected]);
             final String[] dates = _parameter.getParameterValues("date_eFapsDate");
-            final DateTime date = DateUtil.getDateFromParameter(dates[selected]);
-            map.put("dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(add)));
+            final DateTime date = JodaTimeUtils.getDateFromParameter(dates[selected]);
+            map.put("dueDate_eFapsDate", date.plusDays(add));
             list.add(map);
         }
         ret.put(ReturnValues.VALUES, list);
@@ -248,7 +248,7 @@ public abstract class Exchange_Base
                 }
                 int start = 0;
                 BigDecimal missing = null;
-                for (Entry<Instance, BigDecimal> entry : exchangeMap.entrySet()) {
+                for (final Entry<Instance, BigDecimal> entry : exchangeMap.entrySet()) {
                     BigDecimal currentTotal = BigDecimal.ZERO;
                     for (int i = start; i < docOids.length; i++) {
                         final Instance docInst = Instance.get(docOids[i]);

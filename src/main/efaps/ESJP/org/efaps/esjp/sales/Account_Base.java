@@ -60,6 +60,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Create;
@@ -73,7 +74,6 @@ import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.FundsToBeSettledBalance;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -789,7 +789,7 @@ public abstract class Account_Base
     {
         final Return retVal = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final DateTime date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+        final DateTime date = JodaTimeUtils.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
 
         final DateTime firstDate = new DateTime(date).withDayOfMonth(1).withTimeAtStartOfDay();
         final DateTime lastDate = new DateTime(date).plusMonths(1).withDayOfMonth(1).withTimeAtStartOfDay();

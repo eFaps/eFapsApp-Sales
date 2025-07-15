@@ -114,7 +114,6 @@ import org.efaps.esjp.sales.util.Sales.TaxRetention;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
 import org.efaps.ui.wicket.models.objects.UITable.TableFilter;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -931,8 +930,8 @@ public abstract class AbstractDocument_Base
 
         final Map<Integer, String> copyDates = analyseProperty(_parameter, "CopyDate4Type");
         if (copyDates.containsValue(docInst.getType().getName())) {
-            js.append(getSetFieldValue(0, "date_eFapsDate", DateUtil.getDate4Parameter(
-                            print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date)))).append("\n");
+            js.append(getSetFieldValue(0, "date_eFapsDate",
+                            print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).toString()).append("\n"));
         }
         js.append(getSetFieldValue(0, "netTotal", netTotal == null
                             ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
