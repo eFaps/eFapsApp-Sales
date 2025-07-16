@@ -213,6 +213,7 @@ public class CalculatorService
     }
 
     public IDocument calculate(final IDocument document)
+        throws EFapsException
     {
         final var calculator = new org.efaps.promotionengine.Calculator(getConfig());
         calculator.calc(document, getPromotions());
@@ -292,6 +293,7 @@ public class CalculatorService
     }
 
     public List<Promotion> getPromotions()
+        throws EFapsException
     {
         List<Promotion> ret = new ArrayList<>();
         if (PROMPROVCLZ == null) {
