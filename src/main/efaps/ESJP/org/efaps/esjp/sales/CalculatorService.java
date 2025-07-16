@@ -15,6 +15,7 @@
  */
 package org.efaps.esjp.sales;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.efaps.abacus.api.TaxType;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.EsjpScanner;
 import org.efaps.db.Instance;
 import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIProducts;
@@ -43,9 +45,12 @@ import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.promotionengine.api.IDocument;
+import org.efaps.promotionengine.api.IPromotionsProvider;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.promotion.Promotion;
 import org.efaps.util.DateTimeUtil;
+import org.efaps.util.EFapsBaseException;
 import org.efaps.util.EFapsException;
 import org.efaps.util.UUIDUtil;
 import org.joda.time.DateTime;
@@ -58,6 +63,8 @@ public class CalculatorService
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(CalculatorService.class);
+
+    private static Class<?> PROMPROVCLZ;
 
     private CalculatorConfig config;
 
@@ -201,14 +208,14 @@ public class CalculatorService
                                           final Instance productInst)
         throws EFapsException
     {
-        final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.toDateTime(dateObject));
+        final var dateTime = JodaTimeUtils.toDateTime(DateTimeUtil.toContextDateTime(dateObject));
         return evalPriceFromDB(dateTime, productInst).getCurrentPrice();
     }
 
     public IDocument calculate(final IDocument document)
     {
         final var calculator = new org.efaps.promotionengine.Calculator(getConfig());
-        calculator.calc(document, new ArrayList<>());
+        calculator.calc(document, getPromotions());
         return document;
     }
 
@@ -280,6 +287,32 @@ public class CalculatorService
             ret = Type.get(UUID.fromString(typeStr));
         } else {
             ret = Type.get(typeStr);
+        }
+        return ret;
+    }
+
+    public List<Promotion> getPromotions()
+    {
+        List<Promotion> ret = new ArrayList<>();
+        if (PROMPROVCLZ == null) {
+            final var promotionsProviderClasses = new EsjpScanner().scan4SubTypes(IPromotionsProvider.class);
+            if (promotionsProviderClasses != null && !promotionsProviderClasses.isEmpty()) {
+                PROMPROVCLZ = promotionsProviderClasses.iterator().next();
+            }
+            if (PROMPROVCLZ == null) {
+                PROMPROVCLZ = Object.class;
+            }
+        }
+        if (PROMPROVCLZ != null && PROMPROVCLZ.isInterface()) {
+            try {
+                final var promotionsProviderImpl = (IPromotionsProvider) PROMPROVCLZ.getConstructor()
+                                .newInstance();
+                ret = promotionsProviderImpl.getPromotions();
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                            | InvocationTargetException | NoSuchMethodException | SecurityException
+                            | EFapsBaseException e) {
+                LOG.error("Catched", e);
+            }
         }
         return ret;
     }
