@@ -295,6 +295,7 @@ public class CalculatorService
     public List<Promotion> getPromotions()
         throws EFapsException
     {
+        LOG.info("Evaluating promotions: ");
         List<Promotion> ret = new ArrayList<>();
         if (PROMPROVCLZ == null) {
             final var promotionsProviderClasses = new EsjpScanner().scan4SubTypes(IPromotionsProvider.class);
@@ -304,8 +305,9 @@ public class CalculatorService
             if (PROMPROVCLZ == null) {
                 PROMPROVCLZ = Object.class;
             }
+            LOG.info("Using IPromotionsProvider: {}", PROMPROVCLZ.getCanonicalName());
         }
-        if (PROMPROVCLZ != null && PROMPROVCLZ.isInterface()) {
+        if (PROMPROVCLZ != null && IPromotionsProvider.class.isAssignableFrom(PROMPROVCLZ)) {
             try {
                 final var promotionsProviderImpl = (IPromotionsProvider) PROMPROVCLZ.getConstructor()
                                 .newInstance();
@@ -316,6 +318,7 @@ public class CalculatorService
                 LOG.error("Catched", e);
             }
         }
+        LOG.info("     -> {}", ret);
         return ret;
     }
 
