@@ -197,7 +197,6 @@ public abstract class StatisticsReport_Base
         return new DynStatisticsReport(this);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<ValueDto> getFilters()
     {
@@ -219,7 +218,7 @@ public abstract class StatisticsReport_Base
         if (filterMap != null && filterMap.containsKey("dateFrom")) {
             dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
         } else {
-            dateFromValue = LocalDate.now(zoneId).toString();
+            dateFromValue = LocalDate.now(zoneId).minusMonths(1).toString();
         }
 
         if (filterMap != null && filterMap.containsKey("dateTo")) {
