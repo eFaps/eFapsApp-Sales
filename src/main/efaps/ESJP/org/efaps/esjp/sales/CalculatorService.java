@@ -17,7 +17,6 @@ package org.efaps.esjp.sales;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -45,10 +44,12 @@ import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.promotionengine.api.IDocument;
+import org.efaps.promotionengine.api.IPromotionInfo;
 import org.efaps.promotionengine.api.IPromotionsProvider;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.promotion.Promotion;
+import org.efaps.promotionengine.promotion.PromotionInfo;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsBaseException;
 import org.efaps.util.EFapsException;
@@ -200,6 +201,21 @@ public class CalculatorService
                                     .execute();
                 }
             }
+
+            if (result.getPromotionInfo() != null) {
+                register(result.getPromotionInfo(), docInst);
+            }
+        }
+    }
+
+
+    protected void register(IPromotionInfo promoInfo, final Instance docInstance) {
+        final var promotionInfoDto = PromotionInfo.toDto(promoInfo);
+        try {
+            getPromotionsProvider().registerPromotionInfo(promotionInfoDto, docInstance.getOid());
+        } catch (final EFapsBaseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -296,7 +312,19 @@ public class CalculatorService
         throws EFapsException
     {
         LOG.info("Evaluating promotions: ");
-        List<Promotion> ret = new ArrayList<>();
+        List<Promotion> ret = null;
+        try {
+            ret = getPromotionsProvider().getPromotions();
+        } catch (final EFapsBaseException e) {
+            LOG.error("Catched", e);
+        }
+        LOG.info("     -> {}", ret);
+        return ret;
+    }
+
+    public IPromotionsProvider getPromotionsProvider()
+    {
+        IPromotionsProvider ret = null;
         if (PROMPROVCLZ == null) {
             final var promotionsProviderClasses = new EsjpScanner().scan4SubTypes(IPromotionsProvider.class);
             if (promotionsProviderClasses != null && !promotionsProviderClasses.isEmpty()) {
@@ -309,16 +337,13 @@ public class CalculatorService
         }
         if (PROMPROVCLZ != null && IPromotionsProvider.class.isAssignableFrom(PROMPROVCLZ)) {
             try {
-                final var promotionsProviderImpl = (IPromotionsProvider) PROMPROVCLZ.getConstructor()
+                ret = (IPromotionsProvider) PROMPROVCLZ.getConstructor()
                                 .newInstance();
-                ret = promotionsProviderImpl.getPromotions();
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException | SecurityException
-                            | EFapsBaseException e) {
+                            | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 LOG.error("Catched", e);
             }
         }
-        LOG.info("     -> {}", ret);
         return ret;
     }
 
