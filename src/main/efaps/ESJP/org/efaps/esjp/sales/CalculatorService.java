@@ -201,21 +201,20 @@ public class CalculatorService
                                     .execute();
                 }
             }
-
-            if (result.getPromotionInfo() != null) {
-                register(result.getPromotionInfo(), docInst);
-            }
+            register(result.getPromotionInfo(), docInst);
         }
     }
 
-
-    protected void register(IPromotionInfo promoInfo, final Instance docInstance) {
-        final var promotionInfoDto = PromotionInfo.toDto(promoInfo);
-        try {
-            getPromotionsProvider().registerPromotionInfo(promotionInfoDto, docInstance.getOid());
-        } catch (final EFapsBaseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    protected void register(final IPromotionInfo promoInfo,
+                            final Instance docInstance)
+    {
+        if (promoInfo != null) {
+            final var promotionInfoDto = PromotionInfo.toDto(promoInfo);
+            try {
+                getPromotionsProvider().registerPromotionInfo(promotionInfoDto, docInstance.getOid());
+            } catch (final EFapsBaseException e) {
+                LOG.error("Catched", e);
+            }
         }
     }
 
@@ -325,24 +324,24 @@ public class CalculatorService
     public IPromotionsProvider getPromotionsProvider()
     {
         IPromotionsProvider ret = null;
-        if (PROMPROVCLZ == null) {
-            final var promotionsProviderClasses = new EsjpScanner().scan4SubTypes(IPromotionsProvider.class);
-            if (promotionsProviderClasses != null && !promotionsProviderClasses.isEmpty()) {
-                PROMPROVCLZ = promotionsProviderClasses.iterator().next();
-            }
+
+        try {
             if (PROMPROVCLZ == null) {
-                PROMPROVCLZ = Object.class;
+                final var promotionsProviderClasses = new EsjpScanner().scan4SubTypes(IPromotionsProvider.class);
+                if (promotionsProviderClasses != null && !promotionsProviderClasses.isEmpty()) {
+                    PROMPROVCLZ = promotionsProviderClasses.iterator().next();
+                }
+                if (PROMPROVCLZ == null) {
+                    PROMPROVCLZ = Object.class;
+                }
+                LOG.info("Using IPromotionsProvider: {}", PROMPROVCLZ.getCanonicalName());
             }
-            LOG.info("Using IPromotionsProvider: {}", PROMPROVCLZ.getCanonicalName());
-        }
-        if (PROMPROVCLZ != null && IPromotionsProvider.class.isAssignableFrom(PROMPROVCLZ)) {
-            try {
-                ret = (IPromotionsProvider) PROMPROVCLZ.getConstructor()
-                                .newInstance();
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                LOG.error("Catched", e);
+            if (PROMPROVCLZ != null && IPromotionsProvider.class.isAssignableFrom(PROMPROVCLZ)) {
+                ret = (IPromotionsProvider) PROMPROVCLZ.getConstructor().newInstance();
             }
+        } catch (EFapsException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            LOG.error("Catched", e);
         }
         return ret;
     }
