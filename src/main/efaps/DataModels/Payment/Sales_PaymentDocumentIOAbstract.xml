@@ -81,5 +81,11 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>DATE1</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>AbstractExtendInteger1</name>
+            <type>Integer</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER1</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

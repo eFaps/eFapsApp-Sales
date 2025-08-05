@@ -33,5 +33,12 @@
                 name="Sales_PaymentElectronic.Status.RANGE_VALUE"
                 program="org.efaps.esjp.admin.datamodel.StatusValue"/>
         </attribute>
+        <attribute>
+            <name>CreditNoteLink</name>
+            <type>Link</type>
+            <typelink>Sales_CreditNote</typelink>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER1</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

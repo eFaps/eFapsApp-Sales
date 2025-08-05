@@ -24,5 +24,12 @@
         <name>Sales_PaymentRedeemAbstract</name>
         <parent>Sales_PaymentDocumentAbstract</parent>
         <purpose abstract="true"/>
+        <attribute>
+            <name>RedeeemDocumentLink</name>
+            <type>Link</type>
+            <typelink>ERP_DocumentAbstract</typelink>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER1</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
