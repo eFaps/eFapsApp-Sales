@@ -26,11 +26,11 @@
         <attribute>
             <name>Status</name>
             <type>Status</type>
-            <typelink>Sales_PaymentElectronicStatus</typelink>
+            <typelink>Sales_PaymentRedeemCreditNoteStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger event="RANGE_VALUE"
-                name="Sales_PaymentElectronic.Status.RANGE_VALUE"
+                name="Sales_PaymentRedeemCreditNote.Status.RANGE_VALUE"
                 program="org.efaps.esjp.admin.datamodel.StatusValue"/>
         </attribute>
         <attribute>
