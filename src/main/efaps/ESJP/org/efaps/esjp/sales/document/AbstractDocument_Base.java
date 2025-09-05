@@ -2625,7 +2625,8 @@ public abstract class AbstractDocument_Base
      */
     protected String[] getUnitPricesFromUI(final Parameter _parameter)
     {
-        return _parameter.getParameterValues("netUnitPrice");
+        return isRest() ? _parameter.getParameterValues("rateNetUnitPrice")
+                        : _parameter.getParameterValues("netUnitPrice");
     }
 
     /**
