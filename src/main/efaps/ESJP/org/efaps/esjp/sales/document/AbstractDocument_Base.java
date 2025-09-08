@@ -197,12 +197,15 @@ public abstract class AbstractDocument_Base
             ret = new BigDecimal(str);
         } else if (value != null && value instanceof final Integer integer) {
             ret = new BigDecimal(integer);
+        } else if (value != null && value instanceof final Long along) {
+            ret = new BigDecimal(along);
+        } else if (value != null && value instanceof final BigDecimal decimal) {
+            ret = decimal;
         } else {
             ret = BigDecimal.ZERO;//
         }
         return ret;
     }
-
 
     /**
      * Method must be called on opening the form containing positions to
