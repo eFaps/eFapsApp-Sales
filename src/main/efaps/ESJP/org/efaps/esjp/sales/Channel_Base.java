@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -34,6 +35,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.db.InstanceUtils;
@@ -41,6 +43,7 @@ import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 /**
  * TODO comment!
@@ -81,13 +84,34 @@ public abstract class Channel_Base
      * @param _map the map
      * @throws EFapsException on error
      */
+    @SuppressWarnings("unchecked")
     public void add2FieldUpdateMap4Condition(final Parameter _parameter,
                                              final Map<String, String> _map)
         throws EFapsException
     {
         final String fieldName = getProperty(_parameter, "ConditionFieldName", "condition");
         final Instance condInst = Instance.get(_parameter.getParameterValue(fieldName));
-        if (InstanceUtils.isKindOf(condInst, CISales.ChannelConditionAbstract)) {
+
+        if (isRest()) {
+            final var payload = (Map<String, Object>)_parameter.get(ParameterValues.PAYLOAD);
+            LocalDate dueDate =  LocalDate.now();
+            Integer addDays = 0;
+            if (InstanceUtils.isKindOf(condInst, CISales.ChannelConditionAbstract)) {
+                final var eval = EQL.builder().print(condInst)
+                                .attribute(CISales.ChannelConditionAbstract.QuantityDays)
+                                .evaluate();
+                addDays = eval.get(CISales.ChannelConditionAbstract.QuantityDays);
+                if (addDays == null) {
+                    addDays = 0;
+                }
+                if (payload.containsKey("date")) {
+                    dueDate = LocalDate.parse((String) payload.get("date"));
+                }
+            } else if (payload.containsKey("date")) {
+                dueDate = LocalDate.parse((String) payload.get("date"));
+            }
+            _map.put("dueDate", dueDate.plusDays(addDays).toString());
+        } else if (InstanceUtils.isKindOf(condInst, CISales.ChannelConditionAbstract)) {
             final PrintQuery print = new PrintQuery(condInst);
             print.addAttribute(CISales.ChannelConditionAbstract.QuantityDays);
             print.execute();
