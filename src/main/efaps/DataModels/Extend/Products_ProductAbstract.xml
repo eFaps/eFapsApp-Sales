@@ -152,6 +152,23 @@
                 <sqltable>Products_ProductBarcodesSQLTable</sqltable>
                 <sqlcolumn>CODE</sqlcolumn>
             </attribute>
+             <trigger program="org.efaps.esjp.common.history.InsertAttributeSetHistoryTrigger"
+                name="Products_ProductAbstract.Barcodes.INSERT_POST"
+                event="INSERT_POST">
+                <property name="IgnoreAttribute">Barcodes</property>
+                <property name="SelectAttribute01">BarcodeType</property>
+                <property name="Select01">linkto[BarcodeType].attribute[Value]</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.common.history.UpdateAttributeSetHistoryTrigger"
+                name="Products_ProductAbstract.Barcodes.UPDATE_POST"
+                event="UPDATE_POST">
+                <property name="SelectAttribute01">BarcodeType</property>
+                <property name="Select01">linkto[BarcodeType].attribute[Value]</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.common.history.DeleteAttributeSetHistoryTrigger"
+                name="Products_ProductAbstract.Barcodes.DELETE_PRE"
+                event="DELETE_PRE">
+            </trigger>
         </attributeset>
         <attribute>
             <name>Creator</name>
