@@ -25,53 +25,129 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReceiptRatePositionTable</name>
+         <field name="positionNumber">
+            <property name="Attribute">PositionNumber</property>
+            <property name="Label">Sales_ReceiptPosition/PositionNumber.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_ReceiptPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Quantity"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_ReceiptPosition/Product.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="autoComplete4Product"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.Receipt.ProductAutoComplete</property>
+                <property name="ExtraParameter">contact</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Product"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
-            <property name="Label">Sales_ReceiptPosition/ProductDesc.Label</property>
+            <property name="Label">Sales_ReceiptPositionTable.productDesc.Label</property>
             <property name="Width">10</property>
         </field>
+       <field name="uoM">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">UoM</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">Sales_ReceiptPosition/UoM.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Uom" name="Sales_ReceiptRatePositionTable.uom.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+             <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getUoMDropDownFieldValue"
+                name="Sales_ReceiptRatePositionTable.uom..UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+        </field>
         <field name="uom4View">
-            <property name="Width">1</property>
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_ReceiptPosition/UoM.Label</property>
         </field>
         <field name="rateNetUnitPrice">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">RateNetUnitPrice</property>
-            <property name="Label">Sales_ReceiptPosition/RateNetUnitPrice.Label</property>
-            <property name="Align">right</property>
+            <property name="Label">Sales_ReceiptPosition/NetUnitPrice.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
+        </field>
+        <field name="rateNetUnitPrice4Read">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Attribute">RateNetUnitPrice</property>
+            <property name="Label">Sales_ReceiptPosition/NetUnitPrice.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="discount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Discount</property>
             <property name="Label">Sales_ReceiptPosition/Discount.Label</property>
             <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Discount"
+                name="Sales_ReceiptPositionTable.discount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateDiscountNetUnitPrice">
+            <property name="ModeCreate">READONLY</property>
             <property name="Attribute">RateDiscountNetUnitPrice</property>
-            <property name="Label">Sales_ReceiptPosition/RateDiscountNetUnitPrice.Label</property>
+            <property name="Label">Sales_ReceiptPosition/DiscountNetUnitPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateNetPrice">
+            <property name="ModeCreate">READONLY</property>
             <property name="Attribute">RateNetPrice</property>
-            <property name="Label">Sales_ReceiptPosition/RateNetPrice.Label</property>
+            <property name="Label">Sales_ReceiptPosition/NetPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateCrossPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Attribute">RateCrossPrice</property>
-            <property name="Label">Sales_ReceiptPosition/RateCrossPrice.Label</property>
+            <property name="Label">Sales_ReceiptPosition/CrossPrice.Label</property>
             <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4CrossPrice"
+                name="Sales_ReceiptPositionTable.crossPrice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
     </definition>
 </ui-table>

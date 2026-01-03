@@ -602,6 +602,8 @@ public abstract class AbstractDocument_Base
                                    DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
                     label.append(add2LabelUpdateFields4Doc(_parameter, print.getInstance()));
                 }
+                map.put(infofield, label);
+                map.put(input, fieldName);
                 final StringBuilder js = new StringBuilder()
                     .append("require([\"dojo/query\", \"dojo/dom-construct\"], function(query, domConstruct) { ")
                     .append("query(\"div  + input[name='").append(input).append("']\").forEach(domConstruct.destroy); ")

@@ -536,6 +536,20 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">NetTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.netTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="rateNetTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">NetTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_InvoiceForm.rateNetTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="taxes">
             <property name="ModeCreate">READONLY</property>
@@ -549,6 +563,20 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.crossTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="rateCrossTotal">
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateCrossTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_InvoiceForm.rateCrossTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
        <field name="netTotal4Read">
             <property name="ModeEdit">NONE</property>
