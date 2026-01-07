@@ -408,6 +408,19 @@ public final class Sales
                     .addDefaultValue("StatusGroup01", "Sales_ReceiptStatus")
                     .addDefaultValue("Status01", "*");
 
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREDITNOTE_SOURCEDOCAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "CreditNote.SourceDocumentAutoComplete")
+                    .description("AutoComplete for the source documents")
+                    .addDefaultValue("eql", """
+                        print query type Sales_Invoice, Sales_Receipt \
+                        where Name like "%TERM%" limit 100 \
+                        select attribute[Name], attribute[Date], attribute[RateCrossTotal], type.label, \
+                        linkto[Contact].attribute[Name] order by 1""")
+                    .addDefaultValue("valueMsgFormat", "{0}")
+                    .addDefaultValue("choiceMsgFormat", "{3} - {0} - {4}");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute CREDITNOTE_JASPERREPORT = new StringSysConfAttribute()

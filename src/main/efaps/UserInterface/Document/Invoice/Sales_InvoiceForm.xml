@@ -731,6 +731,10 @@
                 event="UI_FIELD_VALUE" >
                 <property name="SetEmployee">true</property>
             </trigger>
+             <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.javaScript.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="executeCalculator" character="Command">
             <property name="ModePrint">NONE</property>

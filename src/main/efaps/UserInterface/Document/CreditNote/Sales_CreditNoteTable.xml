@@ -127,13 +127,6 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_CreditNote/Status.Label</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
-        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -248,13 +241,6 @@
             <property name="FilterType">PICKLIST</property>
             <property name="Label">Projects_ProjectService.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>

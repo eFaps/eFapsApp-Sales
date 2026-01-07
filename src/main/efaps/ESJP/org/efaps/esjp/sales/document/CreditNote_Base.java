@@ -34,7 +34,9 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CIHumanResource;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperActivation;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -58,27 +60,63 @@ public abstract class CreditNote_Base
     /**
      * Method for create a new Credit Note.
      *
-     * @param _parameter Parameter as passed from eFaps API.
+     * @param parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return create(final Parameter _parameter)
+    public Return create(final Parameter parameter)
         throws EFapsException
     {
         final Return ret = new Return();
-        final CreatedDoc createdDoc = createDoc(_parameter);
-        createPositions(_parameter, createdDoc);
-        connect2Derived(_parameter, createdDoc);
-        connect2Object(_parameter, createdDoc);
+        if (isRest()) {
+            final var sourceDocInst = Instance.get(parameter.getParameterValue("sourceDocument"));
+            if (InstanceUtils.isType(sourceDocInst, CISales.Invoice)
+                            || InstanceUtils.isType(sourceDocInst, CISales.Receipt)) {
+                final var creditNoteInst = createFromSourceDocument(sourceDocInst);
 
-        if (Sales.CREDITNOTE_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
-            final File file = createReport(_parameter, createdDoc);
-            if (file != null) {
-                ret.put(ReturnValues.VALUES, file);
-                ret.put(ReturnValues.TRUE, true);
+                final var name = getDocName4Create(parameter);
+
+                EQL.builder().update(creditNoteInst)
+                                .set(CISales.CreditNote.Name, name)
+                                .set(CISales.CreditNote.CreditReason, parameter.getParameterValue("creditReason"))
+                                .execute();
+
+                EQL.builder().insert(CISales.Document2DerivativeDocument)
+                                .set(CISales.Document2DerivativeDocument.From, sourceDocInst)
+                                .set(CISales.Document2DerivativeDocument.To, creditNoteInst)
+                                .execute();
+
+                final var eval = EQL.builder().print().query(CIHumanResource.Employee2DocumentAbstract)
+                                .where()
+                                .attribute(CIHumanResource.Employee2DocumentAbstract.ToAbstractLink).eq(sourceDocInst)
+                                .select()
+                                .attribute(CIHumanResource.Employee2DocumentAbstract.FromAbstractLink)
+                                .evaluate();
+                if (eval.next()) {
+                    EQL.builder().insert(CISales.Employee2CreditNote)
+                                    .set(CISales.Employee2CreditNote.ToLink, creditNoteInst)
+                                    .set(CISales.Employee2CreditNote.FromLink, eval
+                                                    .get(CIHumanResource.Employee2DocumentAbstract.FromAbstractLink))
+                                    .execute();
+                }
+
+                afterCreate(parameter, creditNoteInst);
+                ret.put(ReturnValues.INSTANCE, creditNoteInst);
             }
+        } else {
+            final CreatedDoc createdDoc = createDoc(parameter);
+            createPositions(parameter, createdDoc);
+            connect2Derived(parameter, createdDoc);
+            connect2Object(parameter, createdDoc);
+            if (Sales.CREDITNOTE_JASPERACTIVATION.get().contains(JasperActivation.ONCREATE)) {
+                final File file = createReport(parameter, createdDoc);
+                if (file != null) {
+                    ret.put(ReturnValues.VALUES, file);
+                    ret.put(ReturnValues.TRUE, true);
+                }
+            }
+            afterCreate(parameter, createdDoc.getInstance());
         }
-        afterCreate(_parameter, createdDoc.getInstance());
         return ret;
     }
 
@@ -109,7 +147,9 @@ public abstract class CreditNote_Base
     }
 
     @Override
-    protected void add2DocCreate(final Parameter _parameter, final Insert _insert, final CreatedDoc _createdDoc)
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
         throws EFapsException
     {
         super.add2DocCreate(_parameter, _insert, _createdDoc);
@@ -142,7 +182,9 @@ public abstract class CreditNote_Base
     }
 
     @Override
-    protected void add2DocEdit(final Parameter _parameter, final Update _update, final EditedDoc _editDoc)
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
         throws EFapsException
     {
         super.add2DocEdit(_parameter, _update, _editDoc);
@@ -225,6 +267,7 @@ public abstract class CreditNote_Base
     {
         final Validation validation = new Validation()
         {
+
             @Override
             protected List<IWarning> validate(final Parameter _parameter,
                                               final List<IWarning> _warnings)
@@ -250,9 +293,18 @@ public abstract class CreditNote_Base
         return ret;
     }
 
+    public Instance createFromSourceDocument(final Instance sourceDocInst)
+        throws EFapsException
+    {
+        final var creditNoteInst = cloneDocument(sourceDocInst, CISales.CreditNote, CISales.CreditNoteStatus.Draft);
+        clonePositions(sourceDocInst, creditNoteInst, CISales.CreditNotePosition);
+        return creditNoteInst;
+    }
+
     public static class RequiredDerivedWarning
         extends AbstractWarning
     {
+
         public RequiredDerivedWarning()
         {
             setError(true);

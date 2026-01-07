@@ -17,8 +17,6 @@
 
 -->
 
-
-
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e9b48284-a9b3-462f-a657-485d9e6e03be</uuid>
@@ -67,14 +65,13 @@
                 method="configCheck"
                 name="Sales_CreditNoteForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.Invoice.AssignEmployee</property>
            </trigger>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
+             <property name="ModeEdit">NONE</property>
         </field>
         <field name="creator">
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
@@ -82,13 +79,16 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+             <property name="ModeEdit">NONE</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
             <property name="ModeSearch">EDITABLE</property>
+             <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
+             <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifier">
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
@@ -96,10 +96,12 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+             <property name="ModeEdit">NONE</property>
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
+             <property name="ModeEdit">NONE</property>
         </field>
         <field name="ebillingGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -113,6 +115,7 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="ebillingCreditNote">
             <property name="SelectAlternateOID">linkfrom[EBilling_CreditNote#CreditNoteLink].oid</property>
@@ -133,8 +136,6 @@
                 name="Sales_CreditNoteForm.ebillingGroup.UI_ACCESSCHECK.2"
                 event="UI_ACCESSCHECK"
                 index="2">
-                
-
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.CreditNote.Activate</property>
            </trigger>
@@ -156,8 +157,6 @@
                 method="configCheck"
                 name="Sales_CreditNoteForm.ebillingGroup.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.CreditNote.Activate</property>
            </trigger>
@@ -187,9 +186,7 @@
                 method="configCheck"
                 name="Sales_CreditNoteForm.name4create.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
-                <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
+              <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.CreditNote.Activate</property>
                 <property name="Inverse">true</property>
            </trigger>
@@ -205,8 +202,6 @@
                 method="configCheck"
                 name="Sales_CreditNoteForm.name4edit.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">451e21b9-27ff-4378-adfa-a578a9ba0b51</property>
                 <property name="Attribute">org.efaps.electronicbilling.CreditNote.Activate</property>
                 <property name="Inverse">true</property>
@@ -227,9 +222,7 @@
                 method="configCheck"
                 name="Sales_CreditNoteForm.creditReason.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
-                <property name="SystemConfig">70a6a397-b8ef-40c5-853e-cff331bc79bb</property>
+              <property name="SystemConfig">70a6a397-b8ef-40c5-853e-cff331bc79bb</property>
                 <property name="Attribute">org.efaps.sales.CreditNote.ActivateReason</property>
                 <property name="Default">true</property>
            </trigger>
@@ -280,6 +273,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="rateCurrencyFieldValueUI"
                 name="Sales_CreditNoteForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="updateFields4RateCurrency"
@@ -318,6 +312,46 @@
                 <property name="Type">Sales_CreditNotePosition</property>
                 <property name="LinkFrom">CreditNote</property>
             </evaluate>
+             <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_CreditNoteForm.positionTable.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="restPositionTable4View" character="Target">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_CreditNotePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_CreditNotePosition</property>
+                <property name="LinkFrom">CreditNote</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_CreditNoteForm.restPositionTable4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="restPositionTable4Edit" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <table>Sales_CreditNoteRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_CreditNotePosition</property>
+                <property name="LinkFrom">CreditNote</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_CreditNoteForm.restPositionTable4Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+
+        <field name="headingFooter" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_CreditNoteForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
@@ -476,6 +510,10 @@
                 event="UI_FIELD_VALUE" >
                 <property name="SetEmployee">true</property>
             </trigger>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_CreditNoteForm.javaScript.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="executeCalculator" character="Command">
             <property name="ModePrint">NONE</property>
@@ -488,6 +526,10 @@
                 method="executeCalculatorOnScript"
                 name="Sales_CreditNoteForm.executeCalculator.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+             <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_CreditNoteForm.executeCalculator.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
     </definition>
 </ui-form>

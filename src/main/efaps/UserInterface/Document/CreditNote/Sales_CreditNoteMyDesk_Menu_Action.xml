@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b0a67821-8a5d-46b6-b464-320fc869f410</uuid>
@@ -29,6 +26,7 @@
         <name>Sales_CreditNoteMyDesk_Menu_Action</name>
         <childs>
             <child>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc</child>
+            <child>Sales_CreditNoteMyDesk_Menu_Action_Create</child>
             <child>Sales_CreditNoteMyDesk_Menu_Action_Delete</child>
             <child>Sales_CreditNoteMyDesk_Menu_Action_Recalculate</child>
         </childs>

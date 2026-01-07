@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
     Copyright © 2003 - 2024 The eFaps Team (-)
 
@@ -16,30 +15,29 @@
     limitations under the License.
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ac02bf10-c39a-4703-ac56-afb0766d765b</uuid>
+    <uuid>784f7438-3f8a-4f64-99ce-f029fa3923fc</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc</name>
+        <name>Sales_CreditNoteMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_CreditNote_SelectDocForm</form>
-            <command>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2</command>
-            <trigger event="UI_ACCESSCHECK" method="isNotRest"
-                name="Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc.UI_ACCESSCHECK"
+            <form>Sales_CreditNote_CreateForm</form>
+            <execute program="org.efaps.esjp.sales.document.CreditNote" method="create" />
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_CreditNoteMyDesk_Menu_Action_Create.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
             </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_CreditNote</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
-        <property name="TargetCmdRevise">true</property>
     </definition>
 </ui-command>
