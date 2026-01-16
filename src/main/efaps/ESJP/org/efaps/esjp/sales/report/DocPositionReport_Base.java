@@ -37,6 +37,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -62,6 +63,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
+import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
@@ -203,6 +205,15 @@ public abstract class DocPositionReport_Base
             List<?> typeValue = Collections.emptyList();
             String contactValue = null;
             final List<OptionDto> contactOptions = new ArrayList<>();
+            String dateGroupValue = DateGroup.YEAR.name();
+            String contactGroupValue = ContactGroup.NONE.name();
+            final Boolean typeGroupValue = evaluateBooleanFilter("typeGroup");
+
+            final Boolean unitPriceValue = evaluateBooleanFilter("unitPrice");
+            final Boolean docDetailsValue = evaluateBooleanFilter("docDetails");
+
+            final Boolean posDetailsValue = evaluateBooleanFilter("posDetails");
+            final Boolean bomValue = evaluateBooleanFilter("bom");
 
             if (filterMap != null) {
 
@@ -221,13 +232,21 @@ public abstract class DocPositionReport_Base
 
                 if (filterMap.containsKey("contact")) {
                     contactValue = (String) filterMap.get("contact");
-                    final var contactEval = EQL.builder().print(contactValue).attribute(CIContacts.Contact.Name).evaluate();
+                    final var contactEval = EQL.builder().print(contactValue).attribute(CIContacts.Contact.Name)
+                                    .evaluate();
                     contactOptions.add(OptionDto.builder()
                                     .withLabel(contactEval.get(CIContacts.Contact.Name))
                                     .withValue(contactValue)
                                     .build());
                 }
+                if (filterMap.containsKey("dateGroup")) {
+                    dateGroupValue = (String) filterMap.get("dateGroup");
+                }
+                if (filterMap.containsKey("contactGroup")) {
+                    contactGroupValue = (String) filterMap.get("contactGroup");
+                }
             }
+
             ret.add(ValueDto.builder()
                             .withName("dateFrom")
                             .withLabel(DBProperties
@@ -265,6 +284,69 @@ public abstract class DocPositionReport_Base
                             .withValue(contactValue)
                             .withOptions(contactOptions)
                             .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("dateGroup")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocPositionReport.dateGroup"))
+                            .withType(ValueType.RADIO)
+                            .withValue(dateGroupValue)
+                            .withOptions(getOptions(DateGroup.class))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("contactGroup")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocPositionReport.contactGroup"))
+                            .withType(ValueType.RADIO)
+                            .withValue(contactGroupValue)
+                            .withOptions(getOptions(ContactGroup.class))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("typeGroup")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.typeGroup"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.DocPositionReport.typeGroup"))
+                            .withValue(typeGroupValue)
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("unitPrice")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.unitPrice"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.DocPositionReport.unitPrice"))
+                            .withValue(unitPriceValue)
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("docDetails")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.docDetails"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.DocPositionReport.docDetails"))
+                            .withValue(docDetailsValue)
+                            .build());
+
+            if (Sales.REPORT_DOCPOS_BOM.get()) {
+                ret.add(ValueDto.builder()
+                                .withName("bom")
+                                .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.bom"))
+                                .withType(ValueType.RADIO)
+                                .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.DocPositionReport.bom"))
+                                .withValue(bomValue)
+                                .build());
+            }
+
+            if (Sales.REPORT_DOCPOS_POS.get()) {
+                ret.add(ValueDto.builder()
+                                .withName("posDetails")
+                                .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.posDetails"))
+                                .withType(ValueType.RADIO)
+                                .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.DocPositionReport.posDetails"))
+                                .withValue(posDetailsValue)
+                                .build());
+            }
+
 
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
@@ -329,7 +411,7 @@ public abstract class DocPositionReport_Base
                     throws EFapsException
                 {
                     super.add2Print(_parameter, _multi);
-                    if (BooleanUtils.isTrue((Boolean) filter.get("posDetails"))) {
+                    if (evaluateBooleanFilter("posDetails")) {
                         _multi.addSelect(selPOSDetails);
                     }
                 }
@@ -378,17 +460,13 @@ public abstract class DocPositionReport_Base
                 typeList = getTypeList(_parameter);
             }
             final Properties props = getProperties4TypeList(_parameter, null);
-            final AbstractGroupedByDate.DateGroup dateGroup;
-            if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
-            } else {
-                dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
-            }
+            final var dateGroup = evaluateEnumFilter("dateGroup", AbstractGroupedByDate.DateGroup.class,
+                            AbstractGroupedByDate.DateGroup.MONTH);
 
             valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
 
-            if (BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
+            if (evaluateBooleanFilter("bom")) {
                 int counter = 0; // just a variable to prevent eternal loops
                 boolean finisched = false;
                 while (!finisched && counter < 5) {
@@ -423,7 +501,7 @@ public abstract class DocPositionReport_Base
                     valueList.addAll(tmpList);
                 }
             }
-            final ContactGroup contactGroup = evaluateContactGroup(_parameter);
+            final var contactGroup = evaluateEnumFilter("contactGrp", ContactGroup.class, ContactGroup.NONE);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
                             || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
                 for (final Map<String, Object> value : valueList) {
@@ -502,7 +580,7 @@ public abstract class DocPositionReport_Base
                 contactInst = Instance.get((String) contactObj);
             }
             if (contactInst.isValid()) {
-                final ContactGroup contactGroup = evaluateContactGroup(_parameter);
+                final var contactGroup = evaluateEnumFilter("contactGrp", ContactGroup.class, ContactGroup.NONE);
                 switch (contactGroup) {
                     case PRODPRODUCER -> {
                         final QueryBuilder p2pAttrQueryBldr = new QueryBuilder(CIProducts.Product2Producer);
@@ -555,14 +633,17 @@ public abstract class DocPositionReport_Base
      * @return the date config
      * @throws EFapsException on error
      */
-    protected ContactGroup evaluateContactGroup(final Parameter _parameter)
+    protected ContactGroup evaluateContactGroup2(final Parameter parameter)
         throws EFapsException
     {
         final ContactGroup ret;
-        final Map<String, Object> filter = getFilterMap(_parameter);
-        final EnumFilterValue value = (EnumFilterValue) filter.get("contactGroup");
-        if (value != null) {
-            ret = (ContactGroup) value.getObject();
+        final var filterValue = getFilterMap(parameter).get("contactGroup");
+        if (filterValue != null) {
+            if (filterValue instanceof final EnumFilterValue enumFilterValue) {
+                ret = (ContactGroup) enumFilterValue.getObject();
+            } else {
+                ret = EnumUtils.getEnum(ContactGroup.class, (String) filterValue);
+            }
         } else {
             ret = ContactGroup.NONE;
         }
@@ -610,24 +691,24 @@ public abstract class DocPositionReport_Base
                 final ValueList values = getFilteredReport().getData(_parameter);
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
 
-                final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
+                final var contactGrp = filteredReport.evaluateEnumFilter("contactGrp", ContactGroup.class,
+                                ContactGroup.NONE);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
                     chain.addComparator((_o1,
                                          _o2) -> String.valueOf(_o1.get("contact"))
                                                          .compareTo(String.valueOf(_o2.get("contact"))));
                 }
-                final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-                if (BooleanUtils.isTrue((Boolean) filterMap.get("typeGroup"))) {
+                if (filteredReport.evaluateBooleanFilter("typeGroup")) {
                     chain.addComparator((_o1,
                                          _o2) -> String.valueOf(_o1.get("type"))
                                                          .compareTo(String.valueOf(_o2.get("type"))));
                 }
-                if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+                if (getFilteredReport().evaluateBooleanFilter("docDetails")) {
                     chain.addComparator((_o1,
                                          _o2) -> String.valueOf(_o1.get("docName"))
                                                          .compareTo(String.valueOf(_o2.get("docName"))));
                 }
-                if (BooleanUtils.isTrue((Boolean) filterMap.get("posDetails"))) {
+                if (filteredReport.evaluateBooleanFilter("posDetails")) {
                     chain.addComparator((_o1,
                                          _o2) -> String.valueOf(_o1.get("posDetails"))
                                                          .compareTo(String.valueOf(_o2.get("posDetails"))));
@@ -728,21 +809,22 @@ public abstract class DocPositionReport_Base
                     }
                 }
             }
-            final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
+            final var contactGrp = filteredReport.evaluateEnumFilter("contactGrp", ContactGroup.class,
+                            ContactGroup.NONE);
             if (!ContactGroup.NONE.equals(contactGrp)) {
                 final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
                                 String.class).setHeaderWidth(150);
                 rowGrpBldrs.add(contactGroup);
             }
             if (filterMap.containsKey("typeGroup")) {
-                final Boolean contactBool = (Boolean) filterMap.get("typeGroup");
+                final Boolean contactBool = filteredReport.evaluateBooleanFilter("typeGroup");
                 if (contactBool != null && contactBool) {
                     final CrosstabRowGroupBuilder<String> typeGroup = DynamicReports.ctab.rowGroup("type",
                                     String.class).setHeaderWidth(150);
                     rowGrpBldrs.add(typeGroup);
                 }
             }
-            if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
+            if (getFilteredReport().evaluateBooleanFilter("docDetails")) {
                 final CrosstabRowGroupBuilder<String> docGroup = DynamicReports.ctab.rowGroup("docName",
                                 String.class);
                 rowGrpBldrs.add(docGroup);
@@ -849,8 +931,7 @@ public abstract class DocPositionReport_Base
                                     final List<CrosstabMeasureBuilder<?>> _measureGrpBldrs)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-            if (filterMap.containsKey("unitPrice") && BooleanUtils.isTrue((Boolean) filterMap.get("unitPrice"))) {
+            if (getFilteredReport().evaluateBooleanFilter("unitPrice")) {
                 final CrosstabVariableBuilder<BigDecimal> unitPriceVariable = DynamicReports.ctab.variable(
                                 new UnitPriceExpression(_key), Calculation.NOTHING);
                 _variableGrpBldrs.add(unitPriceVariable);
