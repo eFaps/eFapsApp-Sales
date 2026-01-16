@@ -42,6 +42,7 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -52,12 +53,14 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -67,6 +70,9 @@ import org.efaps.esjp.products.BOM;
 import org.efaps.esjp.products.BOM_Base.ProductBOMBean;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.AutocompleteController;
+import org.efaps.esjp.ui.rest.dto.AutocompleteResponseDto;
+import org.efaps.esjp.ui.rest.dto.OptionDto;
 import org.efaps.esjp.ui.rest.dto.ValueDto;
 import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
@@ -192,28 +198,36 @@ public abstract class DocPositionReport_Base
             clearCache(ParameterUtil.instance());
             zoneId = Context.getThreadContext().getZoneId();
             final var filterMap = getFilterMap();
-            String dateFromValue = null;
-            String dateToValue = null;
-            List<?> typeValue = null;
+            String dateFromValue = LocalDate.now(zoneId).minusMonths(1).toString();
+            String dateToValue = LocalDate.now(zoneId).toString();
+            List<?> typeValue = Collections.emptyList();
+            String contactValue = null;
+            final List<OptionDto> contactOptions = new ArrayList<>();
 
-            if (filterMap != null && filterMap.containsKey("dateFrom")) {
-                dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
-            } else {
-                dateFromValue = LocalDate.now(zoneId).minusMonths(1).toString();
+            if (filterMap != null) {
+
+                if (filterMap.containsKey("dateFrom")) {
+                    dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
+                }
+
+                if (filterMap.containsKey("dateTo")) {
+                    dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
+                }
+
+                if (filterMap.containsKey("type")) {
+                    typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx))
+                                    .toList();
+                }
+
+                if (filterMap.containsKey("contact")) {
+                    contactValue = (String) filterMap.get("contact");
+                    final var contactEval = EQL.builder().print(contactValue).attribute(CIContacts.Contact.Name).evaluate();
+                    contactOptions.add(OptionDto.builder()
+                                    .withLabel(contactEval.get(CIContacts.Contact.Name))
+                                    .withValue(contactValue)
+                                    .build());
+                }
             }
-
-            if (filterMap != null && filterMap.containsKey("dateTo")) {
-                dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
-            } else {
-                dateToValue = LocalDate.now(zoneId).toString();
-            }
-
-            if (filterMap != null && filterMap.containsKey("type")) {
-                typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx)).toList();
-            } else {
-                typeValue = Collections.emptyList();
-            }
-
             ret.add(ValueDto.builder()
                             .withName("dateFrom")
                             .withLabel(DBProperties
@@ -242,10 +256,39 @@ public abstract class DocPositionReport_Base
                             .withValue(typeValue)
                             .withOptions(getOptions4Types(typeKeys))
                             .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("contact")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocPositionReport.contact"))
+                            .withType(ValueType.AUTOCOMPLETE)
+                            .withValue(contactValue)
+                            .withOptions(contactOptions)
+                            .build());
+
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
         return ret;
+    }
+
+    @Override
+    public AutocompleteResponseDto autocomplete(final String fieldName,
+                                                final String term)
+    {
+        final List<OptionDto> options = new ArrayList<>();
+        try {
+            final var parameters = ParameterUtil.instance();
+            parameters.put(ParameterValues.OTHERS, term);
+            final var returns = new Contacts().autoComplete4Contact(parameters);
+            final List<?> values = (List<?>) returns.get(ReturnValues.VALUES);
+            options.addAll(new AutocompleteController().evalOptions(values));
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return AutocompleteResponseDto.builder()
+                        .withOptions(options)
+                        .build();
     }
 
     /**
@@ -451,25 +494,31 @@ public abstract class DocPositionReport_Base
         }
 
         if (filterMap.containsKey("contact")) {
-            final InstanceFilterValue filterValue = (InstanceFilterValue) filterMap.get("contact");
-            if (filterValue != null && filterValue.getObject().isValid()) {
+            final var contactObj = filterMap.get("contact");
+            Instance contactInst;
+            if (contactObj instanceof final InstanceFilterValue filterValue) {
+                contactInst = filterValue.getObject();
+            } else {
+                contactInst = Instance.get((String) contactObj);
+            }
+            if (contactInst.isValid()) {
                 final ContactGroup contactGroup = evaluateContactGroup(_parameter);
                 switch (contactGroup) {
                     case PRODPRODUCER -> {
                         final QueryBuilder p2pAttrQueryBldr = new QueryBuilder(CIProducts.Product2Producer);
-                        p2pAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Producer.To, filterValue.getObject());
+                        p2pAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Producer.To, contactInst);
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                         p2pAttrQueryBldr.getAttributeQuery(CIProducts.Product2Producer.From));
                     }
                     case PRODSUPPLIER -> {
                         final QueryBuilder p2sAttrQueryBldr = new QueryBuilder(CIProducts.Product2Supplier);
-                        p2sAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Supplier.To, filterValue.getObject());
+                        p2sAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Supplier.To, contactInst);
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                         p2sAttrQueryBldr.getAttributeQuery(CIProducts.Product2Supplier.From));
                     }
                     default -> {
                         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
-                        attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
+                        attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst);
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
                                         attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
                     }
