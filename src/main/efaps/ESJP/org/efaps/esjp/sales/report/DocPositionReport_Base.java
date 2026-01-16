@@ -18,6 +18,8 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,12 +40,14 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -52,15 +56,19 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
 import org.efaps.esjp.products.BOM;
 import org.efaps.esjp.products.BOM_Base.ProductBOMBean;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -91,6 +99,7 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 @EFapsApplication("eFapsApp-Sales")
 public abstract class DocPositionReport_Base
     extends FilteredReport
+    implements IFilteredReportProvider
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocPositionReport.class);
@@ -166,10 +175,77 @@ public abstract class DocPositionReport_Base
      * @return the report class
      * @throws EFapsException on error
      */
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    @Override
+    public AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynDocPositionReport(this);
+    }
+
+    @Override
+    public List<ValueDto> getFilters()
+    {
+        final List<ValueDto> ret = new ArrayList<>();
+        try {
+            ZoneId zoneId = ZoneId.systemDefault();
+
+            clearCache(ParameterUtil.instance());
+            zoneId = Context.getThreadContext().getZoneId();
+            final var filterMap = getFilterMap();
+            String dateFromValue = null;
+            String dateToValue = null;
+            List<?> typeValue = null;
+
+            if (filterMap != null && filterMap.containsKey("dateFrom")) {
+                dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
+            } else {
+                dateFromValue = LocalDate.now(zoneId).minusMonths(1).toString();
+            }
+
+            if (filterMap != null && filterMap.containsKey("dateTo")) {
+                dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
+            } else {
+                dateToValue = LocalDate.now(zoneId).toString();
+            }
+
+            if (filterMap != null && filterMap.containsKey("type")) {
+                typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx)).toList();
+            } else {
+                typeValue = Collections.emptyList();
+            }
+
+            ret.add(ValueDto.builder()
+                            .withName("dateFrom")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocPositionReport.dateFrom"))
+                            .withType(ValueType.DATE)
+                            .withRequired(true)
+                            .withValue(dateFromValue)
+                            .build());
+            ret.add(ValueDto.builder()
+                            .withName("dateTo")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.dateTo"))
+                            .withType(ValueType.DATE)
+                            .withRequired(true)
+                            .withValue(dateToValue)
+                            .build());
+
+            final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_DOCPOS.get(), "Type", 0)
+                            .values()
+                            .toArray(String[]::new);
+
+            ret.add(ValueDto.builder()
+                            .withName("type")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocPositionReport.type"))
+                            .withType(ValueType.CHECKBOX)
+                            .withRequired(true)
+                            .withValue(typeValue)
+                            .withOptions(getOptions4Types(typeKeys))
+                            .build());
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
     }
 
     /**
@@ -241,10 +317,20 @@ public abstract class DocPositionReport_Base
             final List<Type> typeList;
             if (filter.containsKey("type")) {
                 typeList = new ArrayList<>();
-                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
-                for (final Long typeid : filters.getObject()) {
-                    typeList.add(Type.get(typeid));
+                if (filter.get("type") instanceof TypeFilterValue) {
+                    final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+                    for (final Long typeid : filters.getObject()) {
+                        typeList.add(Type.get(typeid));
+                    }
+                } else {
+                    final var typeIds = (List<?>) filter.get("type");
+                    for (final var typeid : typeIds) {
+                        if (typeid != null) {
+                            typeList.add(Type.get(Long.valueOf((String) typeid)));
+                        }
+                    }
                 }
+
             } else {
                 typeList = getTypeList(_parameter);
             }
@@ -369,28 +455,26 @@ public abstract class DocPositionReport_Base
             if (filterValue != null && filterValue.getObject().isValid()) {
                 final ContactGroup contactGroup = evaluateContactGroup(_parameter);
                 switch (contactGroup) {
-                    case PRODPRODUCER:
+                    case PRODPRODUCER -> {
                         final QueryBuilder p2pAttrQueryBldr = new QueryBuilder(CIProducts.Product2Producer);
                         p2pAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Producer.To, filterValue.getObject());
-
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                         p2pAttrQueryBldr.getAttributeQuery(CIProducts.Product2Producer.From));
-                        break;
-                    case PRODSUPPLIER:
+                    }
+                    case PRODSUPPLIER -> {
                         final QueryBuilder p2sAttrQueryBldr = new QueryBuilder(CIProducts.Product2Supplier);
                         p2sAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Supplier.To, filterValue.getObject());
-
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                         p2sAttrQueryBldr.getAttributeQuery(CIProducts.Product2Supplier.From));
-                        break;
-                    default:
+                    }
+                    default -> {
                         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
                         attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
-
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
                                         attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                        break;
+                    }
                 }
+
             }
         }
 
@@ -555,9 +639,18 @@ public abstract class DocPositionReport_Base
             final List<Type> typeList;
             if (filterMap.containsKey("type")) {
                 typeList = new ArrayList<>();
-                final TypeFilterValue filters = (TypeFilterValue) filterMap.get("type");
-                for (final Long typeid : filters.getObject()) {
-                    typeList.add(Type.get(typeid));
+                if (filterMap.get("type") instanceof TypeFilterValue) {
+                    final TypeFilterValue filters = (TypeFilterValue) filterMap.get("type");
+                    for (final Long typeid : filters.getObject()) {
+                        typeList.add(Type.get(typeid));
+                    }
+                } else {
+                    final var typeIds = (List<?>) filterMap.get("type");
+                    for (final var typeid : typeIds) {
+                        if (typeid != null) {
+                            typeList.add(Type.get(Long.valueOf((String) typeid)));
+                        }
+                    }
                 }
             } else {
                 typeList = getFilteredReport().getTypeList(_parameter);
