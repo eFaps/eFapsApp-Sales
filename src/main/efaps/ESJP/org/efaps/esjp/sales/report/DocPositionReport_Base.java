@@ -36,8 +36,6 @@ import java.util.UUID;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.comparators.ComparatorChain;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -373,6 +371,12 @@ public abstract class DocPositionReport_Base
                         .build();
     }
 
+    @Override
+    public boolean isExportPdf()
+    {
+        return false;
+    }
+
     /**
      * Gets the data.
      *
@@ -501,7 +505,7 @@ public abstract class DocPositionReport_Base
                     valueList.addAll(tmpList);
                 }
             }
-            final var contactGroup = evaluateEnumFilter("contactGrp", ContactGroup.class, ContactGroup.NONE);
+            final var contactGroup = evaluateEnumFilter("contactGroup", ContactGroup.class, ContactGroup.NONE);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
                             || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
                 for (final Map<String, Object> value : valueList) {
@@ -580,7 +584,7 @@ public abstract class DocPositionReport_Base
                 contactInst = Instance.get((String) contactObj);
             }
             if (contactInst.isValid()) {
-                final var contactGroup = evaluateEnumFilter("contactGrp", ContactGroup.class, ContactGroup.NONE);
+                final var contactGroup = evaluateEnumFilter("contactGroup", ContactGroup.class, ContactGroup.NONE);
                 switch (contactGroup) {
                     case PRODPRODUCER -> {
                         final QueryBuilder p2pAttrQueryBldr = new QueryBuilder(CIProducts.Product2Producer);
@@ -627,30 +631,6 @@ public abstract class DocPositionReport_Base
     }
 
     /**
-     * Evaluate contact group.
-     *
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return the date config
-     * @throws EFapsException on error
-     */
-    protected ContactGroup evaluateContactGroup2(final Parameter parameter)
-        throws EFapsException
-    {
-        final ContactGroup ret;
-        final var filterValue = getFilterMap(parameter).get("contactGroup");
-        if (filterValue != null) {
-            if (filterValue instanceof final EnumFilterValue enumFilterValue) {
-                ret = (ContactGroup) enumFilterValue.getObject();
-            } else {
-                ret = EnumUtils.getEnum(ContactGroup.class, (String) filterValue);
-            }
-        } else {
-            ret = ContactGroup.NONE;
-        }
-        return ret;
-    }
-
-    /**
      * Dynamic Report.
      *
      * @author The eFaps Team
@@ -691,7 +671,7 @@ public abstract class DocPositionReport_Base
                 final ValueList values = getFilteredReport().getData(_parameter);
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
 
-                final var contactGrp = filteredReport.evaluateEnumFilter("contactGrp", ContactGroup.class,
+                final var contactGrp = filteredReport.evaluateEnumFilter("contactGroup", ContactGroup.class,
                                 ContactGroup.NONE);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
                     chain.addComparator((_o1,
@@ -809,7 +789,7 @@ public abstract class DocPositionReport_Base
                     }
                 }
             }
-            final var contactGrp = filteredReport.evaluateEnumFilter("contactGrp", ContactGroup.class,
+            final var contactGrp = filteredReport.evaluateEnumFilter("contactGroup", ContactGroup.class,
                             ContactGroup.NONE);
             if (!ContactGroup.NONE.equals(contactGrp)) {
                 final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
@@ -830,7 +810,7 @@ public abstract class DocPositionReport_Base
                 rowGrpBldrs.add(docGroup);
             }
 
-            if (BooleanUtils.isTrue((Boolean) filterMap.get("posDetails"))) {
+            if ( getFilteredReport().evaluateBooleanFilter("posDetails")) {
                 final CrosstabRowGroupBuilder<String> posGroup = DynamicReports.ctab.rowGroup("posDetails",
                                 String.class);
                 rowGrpBldrs.add(posGroup);
