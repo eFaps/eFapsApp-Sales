@@ -45,34 +45,7 @@
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
         </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
-                method="getSalesPersonFieldValue"
-                name="Sales_PaymentOrderForm.salesperson.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Admin_User_Person</property>
-                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-                <property name="OrderSelect">attribute[LastName]</property>
-                <property name="WhereAttrEqValue">Status|true</property>
-                <property name="SelectCurrent">true</property>
-            </trigger>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-        </field>
-         <field name="statusGroup" character="Group">
+        <field name="statusGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
         <field name="status">
@@ -158,13 +131,15 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
                 method="rateCurrencyFieldValueUI"
                 name="Sales_PayementOrderForm.currencyId.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
              <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
                 method="updateFields4RateCurrency"
-                name="Sales_PaymentOrderForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+                name="Sales_PaymentOrderForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
          <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -191,6 +166,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="rateCrossTotal">
             <property name="Width">10</property>
@@ -233,8 +212,6 @@
                 method="configCheck"
                 name="Sales_PaymentOrderForm.action.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.PaymentOrder.AssignAction</property>
            </trigger>
@@ -252,8 +229,6 @@
                 method="configCheck"
                 name="Sales_PaymentOrderForm.action4View.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.PaymentOrder.AssignAction</property>
            </trigger>
