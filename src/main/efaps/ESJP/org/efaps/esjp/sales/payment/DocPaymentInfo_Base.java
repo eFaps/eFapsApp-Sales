@@ -58,9 +58,10 @@ import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
-import org.jfree.util.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -70,6 +71,8 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsApplication("eFapsApp-Sales")
 public abstract class DocPaymentInfo_Base
 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DocPaymentInfo.class);
 
     /**
      * Instance of the Document.
@@ -1150,7 +1153,7 @@ public abstract class DocPaymentInfo_Base
             try {
                 return CurrencyInst.get(i1).getName().compareTo(CurrencyInst.get(i2).getName());
             } catch (final EFapsException e) {
-                Log.error("Catched", e);
+                LOG.error("Catched", e);
             }
             return 0;
         });
