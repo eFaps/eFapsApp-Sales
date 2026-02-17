@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
     Copyright © 2003 - 2024 The eFaps Team (-)
@@ -16,25 +16,14 @@
     limitations under the License.
 
 -->
-
-
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>71143756-eb3c-4abe-ac51-722b1b51cffa</uuid>
+<ui-module xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>38a10246-cdd8-4d21-beff-f4d260c3e18a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_SalesRecordReportMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_SalesRecordReportMyDesk_Menu</menu>
-            <form>Sales_SalesRecordReportForm</form>
-            <module>Sales_SalesRecordReportModule</module>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_SalesRecordReportModule</name>
+        <property name="ModuleKey">FilteredReport</property>
+        <property name="FilteredReport">org.efaps.esjp.sales.report.SalesRecordReport</property>
     </definition>
-</ui-command>
+</ui-module>

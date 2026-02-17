@@ -17,7 +17,10 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,12 +36,14 @@ import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -48,15 +53,19 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -67,6 +76,7 @@ import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
@@ -80,6 +90,7 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 @EFapsApplication("eFapsApp-Sales")
 public abstract class SalesRecordReport_Base
     extends FilteredReport
+    implements IFilteredReportProvider
 {
 
     /**
@@ -235,6 +246,11 @@ public abstract class SalesRecordReport_Base
         return ret;
     }
 
+    protected PageOrientation getPageOrientation()
+    {
+        return PageOrientation.LANDSCAPE;
+    }
+
     /**
      * Gets the report.
      *
@@ -242,10 +258,56 @@ public abstract class SalesRecordReport_Base
      * @return the report
      * @throws EFapsException on error
      */
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    @Override
+    public AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynSalesRecordReport(this);
+    }
+
+    @Override
+    public List<ValueDto> getFilters()
+    {
+        ZoneId zoneId = ZoneId.systemDefault();
+        try {
+            clearCache(ParameterUtil.instance());
+            zoneId = Context.getThreadContext().getZoneId();
+        } catch (final EFapsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        final var filterMap = getFilterMap();
+        String dateFromValue = null;
+        String dateToValue = null;
+
+        if (filterMap != null && filterMap.containsKey("dateFrom")) {
+            dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
+        } else {
+            dateFromValue = LocalDate.now(zoneId).withDayOfMonth(1).toString();
+        }
+
+        if (filterMap != null && filterMap.containsKey("dateTo")) {
+            dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
+        } else {
+            dateToValue = LocalDate.now(zoneId).toString();
+        }
+
+        final var dateFrom = ValueDto.builder()
+                        .withName("dateFrom")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesRecordReport.dateFrom"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true)
+                        .withValue(dateFromValue)
+                        .build();
+        final var dateTo = ValueDto.builder()
+                        .withName("dateTo")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesRecordReport.dateTo"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true)
+                        .withValue(dateToValue)
+                        .build();
+
+        return Arrays.asList(dateFrom, dateTo);
     }
 
     /**
@@ -353,11 +415,14 @@ public abstract class SalesRecordReport_Base
                         map.put(Column.DOCDUEDATE.getKey(), multi.getAttribute(CISales.DocumentSumAbstract.DueDate));
                         map.put(Column.CONTACTNAME.getKey(), multi.getSelect(selContactName));
                         map.put(Column.CONTACTDOITYPE.getKey(), StringUtils.isNotEmpty(taxNumber)
-                                        ? "6" : contactDOIType);
+                                        ? "6"
+                                        : contactDOIType);
                         map.put(Column.CONTACTDOINUMBER.getKey(), StringUtils.isNotEmpty(taxNumber)
-                                        ? taxNumber : contactIdCard);
+                                        ? taxNumber
+                                        : contactIdCard);
                         map.put(Column.RATE.getKey(), Currency.getBaseCurrency().equals(rateInfo.getCurrencyInstance())
-                                        ? null : rateInfo.getRateUI());
+                                        ? null
+                                        : rateInfo.getRateUI());
 
                         map.put(Column.TOTAL.getKey(), crossTotal);
                         evalTaxedValues(_parameter, map, netTotal, crossTotal, taxes, country);
@@ -369,19 +434,19 @@ public abstract class SalesRecordReport_Base
 
                 final ComparatorChain<Map<String, ?>> chain = new ComparatorChain<>();
                 chain.addComparator((_o1,
-                 _o2) -> {
+                                     _o2) -> {
                     final String val1 = (String) _o1.get(SalesRecordReport_Base.Column.DOCDOCTYPE.getKey());
                     final String val2 = (String) _o2.get(SalesRecordReport_Base.Column.DOCDOCTYPE.getKey());
                     return ObjectUtils.compare(val1, val2);
                 });
                 chain.addComparator((_o1,
-                 _o2) -> {
+                                     _o2) -> {
                     final DateTime date1 = (DateTime) _o1.get(SalesRecordReport_Base.Column.DOCDATE.getKey());
                     final DateTime date2 = (DateTime) _o2.get(SalesRecordReport_Base.Column.DOCDATE.getKey());
                     return ObjectUtils.compare(date1, date2);
                 });
                 chain.addComparator((_o1,
-                 _o2) -> {
+                                     _o2) -> {
                     final String val1 = (String) _o1.get(SalesRecordReport_Base.Column.DOCNUMBER.getKey());
                     final String val2 = (String) _o2.get(SalesRecordReport_Base.Column.DOCNUMBER.getKey());
                     return ObjectUtils.compare(val1, val2);
@@ -495,7 +560,8 @@ public abstract class SalesRecordReport_Base
         {
             // no taxes found
             if (_taxes == null) {
-                // but it is local, therefore it must be unaffected, in other case it is export
+                // but it is local, therefore it must be unaffected, in other
+                // case it is export
                 if (ERP.COMPANY_COUNTRY.get().equalsIgnoreCase(_country)) {
                     _map.put(Column.TAXABLEVAL.getKey(), _netTotal);
                     _map.put(Column.UNAFFVAL.getKey(), _netTotal);
@@ -522,19 +588,19 @@ public abstract class SalesRecordReport_Base
                     }
                 }
                 if (BigDecimal.ZERO.compareTo(igv) < 0) {
-                    if (_netTotal.compareTo(BigDecimal.ZERO) <0) {
+                    if (_netTotal.compareTo(BigDecimal.ZERO) < 0) {
                         igv = igv.negate();
                     }
                     _map.put(Column.IGV.getKey(), igv);
                 }
                 if (BigDecimal.ZERO.compareTo(unaff) < 0) {
-                    if (_netTotal.compareTo(BigDecimal.ZERO) <0) {
+                    if (_netTotal.compareTo(BigDecimal.ZERO) < 0) {
                         unaff = unaff.negate();
                     }
                     _map.put(Column.UNAFFVAL.getKey(), unaff);
                 }
                 if (BigDecimal.ZERO.compareTo(other) < 0) {
-                    if (_netTotal.compareTo(BigDecimal.ZERO) <0) {
+                    if (_netTotal.compareTo(BigDecimal.ZERO) < 0) {
                         other = other.negate();
                     }
                     _map.put(Column.OTHERTAX.getKey(), other);
@@ -578,7 +644,7 @@ public abstract class SalesRecordReport_Base
 
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
-                                          final JasperReportBuilder _builder)
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
             final TextColumnBuilder<Integer> numberColumn = DynamicReports.col
@@ -624,7 +690,6 @@ public abstract class SalesRecordReport_Base
                             getFilteredReport().getDBProperty("contactTitleGroup"), contactDOITitleGroup,
                             contactNameColumn);
 
-
             final TextColumnBuilder<BigDecimal> exportValColumn = DynamicReports.col.column(
                             getFilteredReport().getDBProperty(Column.EXPORTVAL.getKey()), Column.EXPORTVAL.getKey(),
                             DynamicReports.type.bigDecimalType());
@@ -661,7 +726,6 @@ public abstract class SalesRecordReport_Base
                             getFilteredReport().getDBProperty(Column.TOTAL.getKey()), Column.TOTAL.getKey(),
                             DynamicReports.type.bigDecimalType());
 
-
             final TextColumnBuilder<BigDecimal> rateColumn = DynamicReports.col.column(
                             getFilteredReport().getDBProperty(Column.RATE.getKey()), Column.RATE.getKey(),
                             DynamicReports.type.bigDecimalType());
@@ -685,13 +749,14 @@ public abstract class SalesRecordReport_Base
                             relDocTypeColumn, relSerialNoColumn, relNumberColumn);
 
             _builder.columnGrid(numberColumn, docDateCol, docDueDateCol, docTitleGroup, contactTitleGroup,
-                                    exportValColumn, taxableValColumn, taxfreeGroup, iscColumn, igvColumn,
-                                    otherTaxColumn, totalColumn, rateColumn, relatedGroup)
-                    .addColumn(numberColumn, docDateCol, docDueDateCol, docDocTypeColumn, docSNColumn,
-                                        docNumberColumn, contactDOITypeColumn, contactDOINumberColumn,
-                                        contactNameColumn, exportValColumn, taxableValColumn, exoneratedValueColumn,
-                                        unaffectedValueColumn, iscColumn, igvColumn, otherTaxColumn, totalColumn,
-                                        rateColumn, relDateCol, relDocTypeColumn, relSerialNoColumn, relNumberColumn);
+                            exportValColumn, taxableValColumn, taxfreeGroup, iscColumn, igvColumn,
+                            otherTaxColumn, totalColumn, rateColumn, relatedGroup)
+                            .addColumn(numberColumn, docDateCol, docDueDateCol, docDocTypeColumn, docSNColumn,
+                                            docNumberColumn, contactDOITypeColumn, contactDOINumberColumn,
+                                            contactNameColumn, exportValColumn, taxableValColumn, exoneratedValueColumn,
+                                            unaffectedValueColumn, iscColumn, igvColumn, otherTaxColumn, totalColumn,
+                                            rateColumn, relDateCol, relDocTypeColumn, relSerialNoColumn,
+                                            relNumberColumn);
         }
 
         /**
