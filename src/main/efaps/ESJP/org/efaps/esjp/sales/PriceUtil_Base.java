@@ -59,6 +59,8 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -85,6 +87,8 @@ public abstract class PriceUtil_Base
      * Needed for serialization.
      */
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOG = LoggerFactory.getLogger(PriceUtil.class);
 
     /**
      * Method to get the Price for a product.
@@ -235,9 +239,12 @@ public abstract class PriceUtil_Base
             add2QueryBldr4PriceList(_parameter, queryBldr);
             final InstanceQuery query;
             if (_cache) {
-                query = queryBldr.getCachedQuery(PriceUtil_Base.CACHE_KEY).setLifespan(12)
-                                .setLifespanUnit(TimeUnit.HOURS);
+                final var lifespan = Sales.PRICE_CACHE.get();
+                LOG.debug("Getting pricelist from cache with a lifespan of {} minutes");
+                query = queryBldr.getCachedQuery(PriceUtil_Base.CACHE_KEY).setLifespan(lifespan)
+                                .setLifespanUnit(TimeUnit.MINUTES);
             } else {
+                LOG.debug("Getting pricelist from database");
                 query = queryBldr.getQuery();
             }
             query.execute();
@@ -247,9 +254,12 @@ public abstract class PriceUtil_Base
                                 query.getCurrentValue().getId());
                 final MultiPrintQuery multi;
                 if (_cache) {
-                    multi = queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(12)
-                                    .setLifespanUnit(TimeUnit.DAYS);
+                    final var lifespan = Sales.PRICE_CACHE.get();
+                    LOG.debug("Getting pricelist position from cache with a lifespan of {} minutes");
+                    multi = queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(lifespan)
+                                    .setLifespanUnit(TimeUnit.MINUTES);
                 } else {
+                    LOG.debug("Getting pricelist from database");
                     multi = queryBldr2.getPrint();
                 }
                 final SelectBuilder selPGInst = SelectBuilder.get().linkto(

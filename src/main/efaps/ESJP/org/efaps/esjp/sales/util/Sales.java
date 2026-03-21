@@ -165,6 +165,13 @@ public final class Sales
                                     TaxCalcFlow: RoundSum, SumRound
                                     CrossTotalFlow: NetTotalPlusTax, SumCrossPrice""");
 
+    @EFapsSysConfAttribute
+    public static final IntegerSysConfAttribute PRICE_CACHE = new IntegerSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Price.CachingLifespan")
+                    .defaultValue(60)
+                    .description("Caching Lifespan for prices in minutes, to reduce load on database.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PARTIALCONFIG = new PropertiesSysConfAttribute()
