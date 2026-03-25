@@ -65,8 +65,6 @@
                 method="configCheck"
                 name="Sales_RecievingTicketTable.orderOutbound.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.RecievingTicket.CreateFromOrderOutbound</property>
             </trigger>
@@ -131,7 +129,7 @@
                 method="configCheck"
                 name="Sales_RecievingTicketTable.orderOutbound.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
+
 
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.RecievingTicket.CreateFromOrderOutbound</property>

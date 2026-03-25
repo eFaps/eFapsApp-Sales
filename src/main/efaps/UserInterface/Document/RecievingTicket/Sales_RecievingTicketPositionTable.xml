@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>247f5c19-74e4-43aa-b189-522cd626fbfd</uuid>
@@ -78,13 +75,12 @@
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_RecievingTicketPositionTable.storage.Label</property>
              <property name="UIType">DROPDOWN</property>
+             <property name="Required">true</property>
              <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                    method="getStorageFieldValueUI"
                    name="Sales_RecievingTicketPositionTable.storage.UI_FIELD_VALUE"
                     event="UI_FIELD_VALUE">
                     <property name="ValueSelect">oid</property>
-                    
-
                     <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                     <property name="Link4DefaultStorage">org.efaps.sales.RecievingTicket.DefaultWareHouse</property>
             </trigger>
@@ -105,8 +101,6 @@
                 method="configCheck"
                 name="Sales_RecievingTicketPositionTable.remark.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" >
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.RecievingTicket.ActivateRemark4Position</property>
             </trigger>
