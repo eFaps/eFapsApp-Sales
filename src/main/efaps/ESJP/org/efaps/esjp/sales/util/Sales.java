@@ -3665,7 +3665,7 @@ public final class Sales
     public static final StringSysConfAttribute TRANSDOCOUT2IN_JASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "TransactionDocumentOut2In.JasperReport")
-                    .defaultValue("Sales_TransactionDocOut2In")
+                    .defaultValue("Sales_TransactionDocOut2In7")
                     .description("JasperReport for TransactionDocOut2In");
 
     /** See description. */
