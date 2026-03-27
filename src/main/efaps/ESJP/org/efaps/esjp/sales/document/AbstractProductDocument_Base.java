@@ -629,11 +629,11 @@ public abstract class AbstractProductDocument_Base
      * Method is executed as an update event of the field containing the
      * quantity of products to calculate the new totals.
      *
-     * @param _parameter Parameter as passed by the eFasp API
+     * @param parameter Parameter as passed by the eFasp API
      * @return Return containing the list
      * @throws EFapsException on error
      */
-    public Return updateFields4Quantity(final Parameter _parameter)
+    public Return updateFields4Quantity(final Parameter parameter)
         throws EFapsException
     {
         final Return retVal = new Return();
@@ -641,22 +641,25 @@ public abstract class AbstractProductDocument_Base
         final Map<String, Object> map = new HashMap<>();
 
         if (Products.ACTIVATEINDIVIDUAL.get()) {
-            final int selected = getSelectedRow(_parameter);
-            final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
-            if (InstanceUtils.isValid(prodInst)) {
-                final PrintQuery print = new PrintQuery(prodInst);
-                print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
-                                CIProducts.ProductAbstract.Dimension,
-                                CIProducts.ProductAbstract.DefaultUoM,
-                                CIProducts.ProductAbstract.Individual);
-                print.execute();
-                final String name = print.getAttribute(CIProducts.ProductAbstract.Name);
-                final String desc = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
-                add4Individual(_parameter, prodInst,
-                                print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual), map,
-                                prodInst.getOid(), name +  "-" + desc);
-                list.add(map);
-                retVal.put(ReturnValues.VALUES, list);
+            final int selected = getSelectedRow(parameter);
+            if (parameter.getParameterValues("product") != null
+                            && parameter.getParameterValues("product").length > selected) {
+                final Instance prodInst = Instance.get(parameter.getParameterValues("product")[selected]);
+                if (InstanceUtils.isValid(prodInst)) {
+                    final PrintQuery print = new PrintQuery(prodInst);
+                    print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
+                                    CIProducts.ProductAbstract.Dimension,
+                                    CIProducts.ProductAbstract.DefaultUoM,
+                                    CIProducts.ProductAbstract.Individual);
+                    print.execute();
+                    final String name = print.getAttribute(CIProducts.ProductAbstract.Name);
+                    final String desc = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
+                    add4Individual(parameter, prodInst,
+                                    print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual), map,
+                                    prodInst.getOid(), name +  "-" + desc);
+                    list.add(map);
+                    retVal.put(ReturnValues.VALUES, list);
+                }
             }
         }
         return retVal;
@@ -976,15 +979,9 @@ public abstract class AbstractProductDocument_Base
                 final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
                                 CIProducts.ProductAbstract.Individual);
                 switch (indivual) {
-                    case BATCH:
-                        ret.addAll(updateBean4Batch(_parameter, _bean));
-                        break;
-                    case INDIVIDUAL:
-                        ret.addAll(updateBean4Individual(_parameter, _bean));
-                        break;
-                    default:
-                        ret.add(_bean);
-                        break;
+                    case BATCH -> ret.addAll(updateBean4Batch(_parameter, _bean));
+                    case INDIVIDUAL -> ret.addAll(updateBean4Individual(_parameter, _bean));
+                    default -> ret.add(_bean);
                 }
             } else {
                 ret.add(_bean);
