@@ -49,8 +49,6 @@
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="Sales_SalesProductReportFilterForm.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport">
-                 
-
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesProductReport</property>
             </trigger>
@@ -163,8 +161,6 @@
                 method="configCheck"
                 name="Sales_SalesProductReportFilterForm.conditionGroup.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                 
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
             </trigger>
@@ -194,8 +190,6 @@
                 method="configCheck"
                 name="Sales_SalesProductReportFilterForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                 
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
             </trigger>
@@ -213,8 +207,6 @@
                 method="configCheck"
                 name="Sales_SalesProductReportFilterForm.condition_negate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                 
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateCondition</property>
             </trigger>
@@ -241,8 +233,6 @@
                 method="configCheck"
                 name="Sales_SalesProductReportFilterForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                 
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.SalesProductReport.ActivateContactAssigned2Employee</property>
             </trigger>

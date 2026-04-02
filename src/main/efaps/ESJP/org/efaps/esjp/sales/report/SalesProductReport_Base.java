@@ -18,9 +18,12 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -37,6 +40,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -44,6 +48,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -59,14 +64,18 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
 import org.efaps.esjp.products.ProductFamily;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -96,6 +105,7 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 @EFapsApplication("eFapsApp-Sales")
 public abstract class SalesProductReport_Base
     extends FilteredReport
+    implements IFilteredReportProvider
 {
 
     /**
@@ -219,17 +229,94 @@ public abstract class SalesProductReport_Base
         return ret;
     }
 
-    /**
-     * Gets the report.
-     *
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return the report
-     * @throws EFapsException on error
-     */
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    @Override
+    public AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynSalesProductReport(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ValueDto> getFilters()
+    {
+        final List<ValueDto> ret = new ArrayList<>();
+        ZoneId zoneId = ZoneId.systemDefault();
+        try {
+            clearCache(ParameterUtil.instance());
+            zoneId = Context.getThreadContext().getZoneId();
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        final var filterMap = getFilterMap();
+        String dateFromValue = null;
+        String dateToValue = null;
+        List<?> typeValue = Collections.emptyList();
+        List<String> groupByValue=  null;
+
+        if (filterMap != null) {
+
+            if (filterMap.containsKey("dateFrom")) {
+                dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
+            } else {
+                dateFromValue = LocalDate.now(zoneId).withDayOfMonth(1).toString();
+            }
+
+            if (filterMap.containsKey("dateTo")) {
+                dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
+            } else {
+                dateToValue = LocalDate.now(zoneId).toString();
+            }
+
+            if (filterMap.containsKey("type")) {
+                typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx))
+                                .toList();
+            }
+
+            if (filterMap.containsKey("groupBy")) {
+                groupByValue = ((List<GroupBy>) filterMap.get("groupBy")).stream().map(GroupBy::name).toList();
+            }
+        }
+
+        ret.add(ValueDto.builder()
+                        .withName("dateFrom")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateFrom"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true)
+                        .withValue(dateFromValue)
+                        .build());
+        ret.add(ValueDto.builder()
+                        .withName("dateTo")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateTo"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true)
+                        .withValue(dateToValue)
+                        .build());
+        try {
+            final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_SALESPROD.get(), "Type", 0)
+                            .values()
+                            .toArray(String[]::new);
+
+            ret.add(ValueDto.builder()
+                            .withName("type")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesProductReport.type"))
+                            .withType(ValueType.CHECKBOX)
+                            .withRequired(true)
+                            .withValue(typeValue)
+                            .withOptions(getOptions4Types(typeKeys))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                        .withName("groupBy")
+                        .withLabel(DBProperties.getProperty("org.efaps.esjp.pos.report.BalanceReport.groupBy"))
+                        .withType(ValueType.PICKLIST)
+                        .withValue(groupByValue)
+                        .withOptions(getOptions4Enum("org.efaps.esjp.pos.report.BalanceReport$GroupBy", GroupBy.class))
+                        .build());
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
     }
 
     /**
@@ -332,7 +419,7 @@ public abstract class SalesProductReport_Base
                 }
 
                 multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName, selCurInst,
-                                selProductInst, selProductDesc, selProdFamInst, selDocOID,selDocStatus);
+                                selProductInst, selProductDesc, selProdFamInst, selDocOID, selDocStatus);
                 multi.addMsgPhrase(selProduct, CIMsgProducts.SlugMsgPhrase);
                 multi.execute();
                 while (multi.next()) {
@@ -502,42 +589,47 @@ public abstract class SalesProductReport_Base
             for (final GroupBy group : groupBy) {
                 switch (group) {
                     case DAILY:
-                        comparator.addComparator((_arg0, _arg1) -> _arg0.getDocDate().compareTo(_arg1.getDocDate()));
+                        comparator.addComparator((_arg0,
+                                                  _arg1) -> _arg0.getDocDate().compareTo(_arg1.getDocDate()));
                         break;
                     case MONTHLY:
-                        comparator.addComparator((_arg0, _arg1) -> Integer.valueOf(_arg0.getDocDate().getMonthOfYear())
-                                        .compareTo(_arg1.getDocDate().getMonthOfYear()));
+                        comparator.addComparator((_arg0,
+                                                  _arg1) -> Integer.valueOf(_arg0.getDocDate().getMonthOfYear())
+                                                                  .compareTo(_arg1.getDocDate().getMonthOfYear()));
                         break;
                     case YEARLY:
-                        comparator.addComparator((_arg0, _arg1) -> Integer.valueOf(_arg0.getDocDate().getYear())
-                                        .compareTo(_arg1
-                                                        .getDocDate().getYear()));
+                        comparator.addComparator((_arg0,
+                                                  _arg1) -> Integer.valueOf(_arg0.getDocDate().getYear())
+                                                                  .compareTo(_arg1
+                                                                                  .getDocDate().getYear()));
                         break;
                     case CONTACT:
-                        comparator.addComparator((_arg0, _arg1) -> _arg0.getContact().compareTo(_arg1.getContact()));
+                        comparator.addComparator(Comparator.comparing(DataBean::getContact));
                         break;
                     case PRODUCT:
                         comparator.addComparator(
-                                        (_arg0, _arg1) -> _arg0.getProductName().compareTo(_arg1.getProductName()));
+                                        Comparator.comparing(DataBean::getProductName));
                         break;
                     case PRODFAMILY:
                         comparator.addComparator(
-                                        (_arg0, _arg1) -> _arg0.getProductFamily().compareTo(_arg1.getProductFamily()));
+                                        Comparator.comparing(DataBean::getProductFamily));
                         break;
                     case DOCTYPE:
-                        comparator.addComparator((_arg0, _arg1) -> _arg0.getDocType().compareTo(_arg1.getDocType()));
+                        comparator.addComparator(Comparator.comparing(DataBean::getDocType));
                         break;
                     case CONDITION:
-                        comparator.addComparator((_arg0, _arg1) -> String.valueOf(_arg0.getCondition())
-                                        .compareTo(String.valueOf(_arg1
-                                                        .getCondition())));
+                        comparator.addComparator((_arg0,
+                                                  _arg1) -> String.valueOf(_arg0.getCondition())
+                                                                  .compareTo(String.valueOf(_arg1
+                                                                                  .getCondition())));
                         break;
                     default:
                         break;
                 }
             }
-            comparator.addComparator((_arg0, _arg1) -> _arg0.getDocDate().compareTo(_arg1.getDocDate()));
-            comparator.addComparator((_arg0, _arg1) -> _arg0.getDocName().compareTo(_arg1.getDocName()));
+            comparator.addComparator((_arg0,
+                                      _arg1) -> _arg0.getDocDate().compareTo(_arg1.getDocDate()));
+            comparator.addComparator(Comparator.comparing(DataBean::getDocName));
 
             Collections.sort(_data, comparator);
         }
@@ -950,7 +1042,7 @@ public abstract class SalesProductReport_Base
                         final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn)
                                         .groupByDataType();
                         _builder.addGroup(contactGroup)
-                                        .addSubtotalAtGroupFooter(contactGroup,getSubtotals(columns4Totals));
+                                        .addSubtotalAtGroupFooter(contactGroup, getSubtotals(columns4Totals));
                         break;
                     case DOCTYPE:
                         final ColumnGroupBuilder docTypeGroup = DynamicReports.grp.group(docTypeColumn)
@@ -977,7 +1069,7 @@ public abstract class SalesProductReport_Base
                                         .groupByDataType();
 
                         _builder.addGroup(productFamilyGroup)
-                                        .addSubtotalAtGroupFooter(productFamilyGroup,getSubtotals(columns4Totals));
+                                        .addSubtotalAtGroupFooter(productFamilyGroup, getSubtotals(columns4Totals));
                         break;
                     case CONDITION:
                         final ColumnGroupBuilder conditionGroup = DynamicReports.grp.group(conditionColumn)

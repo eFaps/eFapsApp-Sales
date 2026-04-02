@@ -16,25 +16,14 @@
     limitations under the License.
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-module xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>00401297-4a13-44cf-9dc9-122d3401c4a2</uuid>
+    <uuid>5e218a21-2671-4196-b43b-7eeb6a48cb16</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_SalesProductReportMyDesk</name>
-        <access>
-            <role>Products_Admin</role>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_SalesProductReportMyDesk_Menu</menu>
-            <form>Sales_SalesProductReportForm</form>
-            <module>Sales_SalesProductReportModule</module>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_SalesProductReportModule</name>
+        <property name="ModuleKey">FilteredReport</property>
+        <property name="FilteredReport">org.efaps.esjp.sales.report.SalesProductReport</property>
     </definition>
-</ui-command>
+</ui-module>
