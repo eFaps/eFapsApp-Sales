@@ -32,13 +32,12 @@
         <target>
             <menu>Sales_PriceListReportWithTax_Menu</menu>
             <form>Sales_PriceListReportWithTaxForm</form>
+            <module>Sales_PriceListReportWithTaxModule</module>
             <trigger
                 program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_PriceListReportWithTax.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.report.PriceListReportWithTax.Activate</property>
             </trigger>

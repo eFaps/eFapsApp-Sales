@@ -42,7 +42,7 @@ public class PriceListReportWithTax_Base
 {
 
     @Override
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    public AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynPriceListWithTaxReport(_parameter, this);
@@ -59,6 +59,7 @@ public class PriceListReportWithTax_Base
             super(_parameter, _report);
         }
 
+        @Override
         protected void add2Value(final Instance _productInst, final Map<String, Object> _map)
             throws EFapsException
         {
@@ -81,6 +82,7 @@ public class PriceListReportWithTax_Base
             _map.putAll(tempMap);
         }
 
+        @Override
         protected ColumnBuilder<?, ?>[] add2PriceColumnBldrs(final TextColumnBuilder<BigDecimal> price,
                                                              final TextColumnBuilder<String> currency)
         {
