@@ -289,7 +289,7 @@ public abstract class DocPositionReport_Base
                                             .getProperty("org.efaps.esjp.sales.report.DocPositionReport.dateGroup"))
                             .withType(ValueType.RADIO)
                             .withValue(dateGroupValue)
-                            .withOptions(getOptions(DateGroup.class))
+                            .withOptions(getOptions4Enum(DateGroup.class))
                             .build());
 
             ret.add(ValueDto.builder()
@@ -298,7 +298,7 @@ public abstract class DocPositionReport_Base
                                             .getProperty("org.efaps.esjp.sales.report.DocPositionReport.contactGroup"))
                             .withType(ValueType.RADIO)
                             .withValue(contactGroupValue)
-                            .withOptions(getOptions(ContactGroup.class))
+                            .withOptions(getOptions4Enum(ContactGroup.class))
                             .build());
 
             ret.add(ValueDto.builder()
@@ -350,6 +350,14 @@ public abstract class DocPositionReport_Base
             LOG.error("Catched", e);
         }
         return ret;
+    }
+
+
+    @Override
+    public Object evalFilterValue4Key(final String key,
+                                      final List<String> values)
+    {
+        return values == null ? null : values.get(0);
     }
 
     @Override

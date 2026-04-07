@@ -263,7 +263,7 @@ public abstract class StatisticsReport_Base
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.reportType"))
                         .withType(ValueType.RADIO)
                         .withValue(reportTypeValue)
-                        .withOptions(getOptions(ReportType.class))
+                        .withOptions(getOptions4Enum(ReportType.class))
                         .build();
 
         final var showStatus = ValueDto.builder()
@@ -279,7 +279,7 @@ public abstract class StatisticsReport_Base
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateGroup"))
                         .withType(ValueType.RADIO)
                         .withValue(dateGroupValue)
-                        .withOptions(getOptions(DateGroup.class))
+                        .withOptions(getOptions4Enum(DateGroup.class))
                         .build();
 
         return Arrays.asList(dateFrom, dateTo, reportType, showStatus, dateGroup);

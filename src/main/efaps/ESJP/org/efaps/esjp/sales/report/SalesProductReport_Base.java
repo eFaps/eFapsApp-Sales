@@ -32,11 +32,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.collections4.map.LazyMap;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -54,6 +55,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIMsgProducts;
 import org.efaps.esjp.ci.CIProducts;
@@ -65,15 +67,20 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
+import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.ProductFamily;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.AutocompleteController;
+import org.efaps.esjp.ui.rest.dto.AutocompleteResponseDto;
+import org.efaps.esjp.ui.rest.dto.OptionDto;
 import org.efaps.esjp.ui.rest.dto.ValueDto;
 import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.ui.wicket.models.EmbeddedLink;
@@ -245,16 +252,22 @@ public abstract class SalesProductReport_Base
         try {
             clearCache(ParameterUtil.instance());
             zoneId = Context.getThreadContext().getZoneId();
-        } catch (final EFapsException e) {
-            LOG.error("Catched", e);
-        }
-        final var filterMap = getFilterMap();
-        String dateFromValue = null;
-        String dateToValue = null;
-        List<?> typeValue = Collections.emptyList();
-        List<String> groupByValue=  null;
 
-        if (filterMap != null) {
+            final var filterMap = getFilterMap();
+
+            String dateFromValue = null;
+            String dateToValue = null;
+            List<?> typeValue = Collections.emptyList();
+            List<String> groupByValue = null;
+            Boolean hideDetails = false;
+            String priceConfigValue = PriceConfig.NET.name();
+            String currencyValue = null;
+            List<String> contactValue = null;
+            final List<OptionDto> contactOptions = new ArrayList<>();
+            Boolean contactNegate = false;
+            List<String> productValue = null;
+            final List<OptionDto> productOptions = new ArrayList<>();
+            Boolean productNegate = false;
 
             if (filterMap.containsKey("dateFrom")) {
                 dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
@@ -276,30 +289,83 @@ public abstract class SalesProductReport_Base
             if (filterMap.containsKey("groupBy")) {
                 groupByValue = ((List<GroupBy>) filterMap.get("groupBy")).stream().map(GroupBy::name).toList();
             }
-        }
 
-        ret.add(ValueDto.builder()
-                        .withName("dateFrom")
-                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateFrom"))
-                        .withType(ValueType.DATE)
-                        .withRequired(true)
-                        .withValue(dateFromValue)
-                        .build());
-        ret.add(ValueDto.builder()
-                        .withName("dateTo")
-                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateTo"))
-                        .withType(ValueType.DATE)
-                        .withRequired(true)
-                        .withValue(dateToValue)
-                        .build());
-        try {
+            if (filterMap.containsKey("hideDetails")) {
+                hideDetails = BooleanUtils.toBoolean((String) filterMap.get("hideDetails"));
+            }
+
+            if (filterMap.containsKey("priceConfig")) {
+                priceConfigValue = (String) filterMap.get("priceConfig");
+            }
+
+            if (filterMap.containsKey("currency")) {
+                currencyValue = (String) filterMap.get("currency");
+            }
+
+            if (filterMap.containsKey("contact")) {
+                final var contactInsts = (List<Instance>) filterMap.get("contact");
+                contactValue = contactInsts.stream().map(Instance::getOid).toList();
+                final var contactEval = EQL.builder().print(contactInsts.toArray(new Instance[contactInsts.size()]))
+                                .attribute(CIContacts.Contact.Name)
+                                .evaluate();
+                while (contactEval.next()) {
+                    contactOptions.add(OptionDto.builder()
+                                    .withLabel(contactEval.get(CIContacts.Contact.Name))
+                                    .withValue(contactEval.inst().getOid())
+                                    .build());
+                }
+            }
+
+            if (filterMap.containsKey("contact_negate")) {
+                contactNegate = BooleanUtils.toBoolean((String) filterMap.get("contact_negate"));
+            }
+
+            if (filterMap.containsKey("product")) {
+                final var productInsts = (List<Instance>) filterMap.get("product");
+                productValue = productInsts.stream().map(Instance::getOid).toList();
+
+                final var productEval = EQL.builder().print(productInsts.toArray(new Instance[productInsts.size()]))
+                                .attribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description)
+                                .evaluate();
+                while (productEval.next()) {
+                    productOptions.add(OptionDto.builder()
+                                    .withLabel(String.format("%s  - %s",
+                                                    productEval.get(CIProducts.ProductAbstract.Name),
+                                                    productEval.get(CIProducts.ProductAbstract.Description)))
+                                    .withValue(productEval.inst().getOid())
+                                    .build());
+                }
+            }
+
+            if (filterMap.containsKey("product_negate")) {
+                productNegate = BooleanUtils.toBoolean((String) filterMap.get("product_negate"));
+            }
+
+            ret.add(ValueDto.builder()
+                            .withName("dateFrom")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateFrom"))
+                            .withType(ValueType.DATE)
+                            .withRequired(true)
+                            .withValue(dateFromValue)
+                            .build());
+            ret.add(ValueDto.builder()
+                            .withName("dateTo")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateTo"))
+                            .withType(ValueType.DATE)
+                            .withRequired(true)
+                            .withValue(dateToValue)
+                            .build());
+
             final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_SALESPROD.get(), "Type", 0)
                             .values()
                             .toArray(String[]::new);
 
             ret.add(ValueDto.builder()
                             .withName("type")
-                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesProductReport.type"))
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.DocType"))
                             .withType(ValueType.CHECKBOX)
                             .withRequired(true)
                             .withValue(typeValue)
@@ -307,16 +373,130 @@ public abstract class SalesProductReport_Base
                             .build());
 
             ret.add(ValueDto.builder()
-                        .withName("groupBy")
-                        .withLabel(DBProperties.getProperty("org.efaps.esjp.pos.report.BalanceReport.groupBy"))
-                        .withType(ValueType.PICKLIST)
-                        .withValue(groupByValue)
-                        .withOptions(getOptions4Enum("org.efaps.esjp.pos.report.BalanceReport$GroupBy", GroupBy.class))
-                        .build());
+                            .withName("groupBy")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.groupBy"))
+                            .withType(ValueType.PICKLIST)
+                            .withValue(groupByValue)
+                            .withOptions(getOptions4Enum(GroupBy.class))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("hideDetails")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.hideDetails"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean(
+                                            "org.efaps.esjp.sales.report.SalesProductReport.hideDetails"))
+                            .withValue(hideDetails)
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("priceConfig")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.priceConfig"))
+                            .withType(ValueType.RADIO)
+                            .withValue(priceConfigValue)
+                            .withOptions(getOptions4Enum(PriceConfig.class))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("currency")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.currency"))
+                            .withType(ValueType.DROPDOWN)
+                            .withValue(currencyValue)
+                            .withOptions(getOptions4Currency())
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("contact")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.contact"))
+                            .withType(ValueType.AUTOCOMPLETE)
+                            .withValue(contactValue)
+                            .withOptions(contactOptions)
+                            .withConfig(Map.of("multiple", true))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("contact_negate")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.contact_negate"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean(
+                                            "org.efaps.esjp.sales.report.SalesProductReport.contact_negate"))
+                            .withValue(contactNegate)
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("product")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.product"))
+                            .withType(ValueType.AUTOCOMPLETE)
+                            .withValue(productValue)
+                            .withOptions(productOptions)
+                            .withConfig(Map.of("multiple", true))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("product_negate")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.product_negate"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean(
+                                            "org.efaps.esjp.sales.report.SalesProductReport.product_negate"))
+                            .withValue(productNegate)
+                            .build());
+
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
         return ret;
+    }
+
+    @Override
+    public Object evalFilterValue4Key(final String key,
+                                      final List<String> values)
+    {
+        Object ret = null;
+        if ("groupBy".equals(key)) {
+            ret = values.stream().map(value -> EnumUtils.getEnum(GroupBy.class, value)).toList();
+        }
+        if ("contact".equals(key)) {
+            ret = values.stream().map(Instance::get).toList();
+        }
+        if ("product".equals(key)) {
+            ret = values.stream().map(Instance::get).toList();
+        }
+        return ret;
+    }
+
+    @Override
+    public AutocompleteResponseDto autocomplete(final String fieldName,
+                                                final String term)
+    {
+        final List<OptionDto> options = new ArrayList<>();
+        try {
+            final var parameters = ParameterUtil.instance();
+            parameters.put(ParameterValues.OTHERS, term);
+
+            if ("contact".equals(fieldName)) {
+                final var returns = new Contacts().autoComplete4Contact(parameters);
+                final List<?> values = (List<?>) returns.get(ReturnValues.VALUES);
+                options.addAll(new AutocompleteController().evalOptions(values));
+            }
+            if ("product".equals(fieldName)) {
+                final var returns = new Product().autoComplete4Product(parameters);
+                final List<?> values = (List<?>) returns.get(ReturnValues.VALUES);
+                options.addAll(new AutocompleteController().evalOptions(values));
+            }
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return AutocompleteResponseDto.builder()
+                        .withOptions(options)
+                        .build();
     }
 
     /**
@@ -359,7 +539,7 @@ public abstract class SalesProductReport_Base
 
                 final List<DataBean> data = new ArrayList<>();
 
-                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter);
+                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, Sales.REPORT_SALESPROD.get());
                 add2QueryBuilder(_parameter, attrQueryBldr);
                 if (getContactInst(_parameter).length > 0) {
                     if (isContactNegate(_parameter)) {
@@ -644,8 +824,17 @@ public abstract class SalesProductReport_Base
         protected boolean isHideDetails(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
-            return (Boolean) filter.get("hideDetails");
+            boolean ret = false;
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
+            if (filterMap.containsKey("hideDetails")) {
+                if (filterMap.get("hideDetails") instanceof final Boolean booleanValue) {
+                    ret = booleanValue;
+                }
+                if (filterMap.get("hideDetails") instanceof final String strValue) {
+                    ret = BooleanUtils.toBoolean(strValue);
+                }
+            }
+            return ret;
         }
 
         /**
@@ -676,21 +865,23 @@ public abstract class SalesProductReport_Base
             return ret;
         }
 
-        /**
-         * Evaluate price config.
-         *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @return the price config
-         * @throws EFapsException on error
-         */
         protected PriceConfig evaluatePriceConfig(final Parameter _parameter)
             throws EFapsException
         {
             final PriceConfig ret;
-            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
-            final EnumFilterValue value = (EnumFilterValue) filter.get("priceConfig");
-            if (value != null) {
-                ret = (PriceConfig) value.getObject();
+            final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
+
+            final var rawPriceConfig = filters.get("priceConfig");
+            if (rawPriceConfig != null) {
+                if (rawPriceConfig instanceof final EnumFilterValue priceConfig) {
+                    ret = (PriceConfig) priceConfig.getObject();
+                } else if (rawPriceConfig instanceof final PriceConfig priceConfig) {
+                    ret = priceConfig;
+                } else if (rawPriceConfig instanceof final String priceConfig) {
+                    ret = EnumUtils.getEnum(PriceConfig.class, priceConfig);
+                } else {
+                    ret = PriceConfig.NET;
+                }
             } else {
                 ret = PriceConfig.NET;
             }
@@ -704,63 +895,65 @@ public abstract class SalesProductReport_Base
          * @return the price config
          * @throws EFapsException on error
          */
+        @SuppressWarnings("unchecked")
         protected Collection<GroupBy> evaluateGroupBy(final Parameter _parameter)
             throws EFapsException
         {
-            final List<GroupBy> ret = new ArrayList<>();
+            List<GroupBy> entries = new ArrayList<>();
             final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
-            final GroupByFilterValue groupBy = (GroupByFilterValue) filters.get("groupBy");
-            final List<Enum<?>> selected = groupBy.getObject();
-            if (CollectionUtils.isNotEmpty(selected)) {
-                for (final Enum<?> sel : selected) {
-                    ret.add((GroupBy) sel);
+            final var rawGroupBy = filters.get("groupBy");
+            if (rawGroupBy != null) {
+                if (rawGroupBy instanceof final GroupByFilterValue groupBy) {
+                    entries = groupBy.getObject().stream().map(val -> ((GroupBy) val)).toList();
+                } else {
+                    entries = (List<GroupBy>) rawGroupBy;
                 }
             }
-            return ret;
+            return entries;
         }
 
-        /**
-         * @param _parameter Parameter as passed from the eFaps API
-         * @param _queryBldr QueryBuilder the criteria will be added to
-         * @throws EFapsException on error
-         */
-        protected void add2QueryBuilder(final Parameter _parameter,
-                                        final QueryBuilder _queryBldr)
+        protected void add2QueryBuilder(final Parameter parameter,
+                                        final QueryBuilder queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
+            final Map<String, Object> filter = filteredReport.getFilterMap(parameter);
             final DateTime dateFrom;
-            if (filter.containsKey("dateFrom")) {
+            if (filter.containsKey("dateFrom") && filter.get("dateFrom") != null) {
                 dateFrom = (DateTime) filter.get("dateFrom");
             } else {
                 dateFrom = new DateTime().minusYears(1);
             }
             final DateTime dateTo;
-            if (filter.containsKey("dateTo")) {
+            if (filter.containsKey("dateTo") && filter.get("dateTo") != null) {
                 dateTo = (DateTime) filter.get("dateTo");
             } else {
                 dateTo = new DateTime();
             }
             if (filter.containsKey("type")) {
-                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, ((TypeFilterValue) filter.get("type"))
-                                .getObject().toArray());
+                if (filter.get("type") instanceof TypeFilterValue) {
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
+                                    ((TypeFilterValue) filter.get("type")).getObject().toArray());
+                } else {
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
+                                    ((List<?>) filter.get("type")).toArray());
+                }
             }
-            if (Sales.REPORT_SALESPROD_CONDITION.get() && ArrayUtils.isNotEmpty(getConditionInsts(_parameter))) {
+            if (Sales.REPORT_SALESPROD_CONDITION.get() && ArrayUtils.isNotEmpty(getConditionInsts(parameter))) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
                 attrQueryBldr.addWhereAttrEqValue(CISales.ChannelCondition2DocumentAbstract.FromAbstractLink,
-                                getConditionInsts(_parameter));
+                                getConditionInsts(parameter));
 
-                if (isConditionNegate(_parameter)) {
-                    _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQueryBldr.getAttributeQuery(
+                if (isConditionNegate(parameter)) {
+                    queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQueryBldr.getAttributeQuery(
                                     CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
                 } else {
-                    _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQueryBldr.getAttributeQuery(
+                    queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQueryBldr.getAttributeQuery(
                                     CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
                 }
             }
 
-            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
-            _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
+            queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
+            queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());
         }
 
@@ -784,22 +977,27 @@ public abstract class SalesProductReport_Base
          * @return the contact inst
          * @throws EFapsException on error
          */
+        @SuppressWarnings("unchecked")
         protected Object[] getContactInst(final Parameter _parameter)
             throws EFapsException
         {
-            Object[] ret;
+            Object[] ret = new Object[] {};
             if (isContact(_parameter)) {
                 ret = new Object[] { _parameter.getInstance() };
             } else {
-                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
-                final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
-                if (filter == null || filter != null && filter.getObject() == null) {
-                    ret = new Object[] {};
-                } else {
-                    ret = filter.getObject().toArray();
+                final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
+                final var raw = filters.get("contact");
+                if (raw != null) {
+                    if (raw instanceof final InstanceSetFilterValue instanceSet) {
+                        if (instanceSet.getObject() != null) {
+                            ret = instanceSet.getObject().toArray();
+                        }
+                    } else {
+                        ret = ((List<Instance>) raw).toArray();
+                    }
                 }
                 if (ret.length == 0) {
-                    final InstanceFilterValue employeefilter = (InstanceFilterValue) filterMap.get("employee");
+                    final InstanceFilterValue employeefilter = (InstanceFilterValue) filters.get("employee");
                     if (employeefilter != null && employeefilter.getObject() != null && employeefilter.getObject()
                                     .isValid()) {
                         // HumanResource_Employee2Contact
@@ -828,9 +1026,13 @@ public abstract class SalesProductReport_Base
         {
             boolean ret = false;
             if (!isContact(_parameter)) {
-                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
-                final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
-                ret = filter != null && filter.isNegate();
+                final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
+                final var raw = filters.get("contact");
+                if (raw != null && raw instanceof final InstanceSetFilterValue instanceSet) {
+                    ret = instanceSet.isNegate();
+                } else if (filters.get("contact_negate") instanceof final String strValue) {
+                    ret = BooleanUtils.toBoolean(strValue);
+                }
             }
             return ret;
         }
@@ -853,19 +1055,24 @@ public abstract class SalesProductReport_Base
          * @return the product inst
          * @throws EFapsException on error
          */
+        @SuppressWarnings("unchecked")
         protected Object[] getProductInst(final Parameter _parameter)
             throws EFapsException
         {
-            final Object[] ret;
+            Object[] ret = new Object[] {};
             if (isProduct(_parameter)) {
                 ret = new Object[] { _parameter.getInstance() };
             } else {
-                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
-                final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
-                if (filter == null || filter != null && filter.getObject() == null) {
-                    ret = new Object[] {};
-                } else {
-                    ret = filter.getObject().toArray();
+                final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
+                final var raw = filters.get("product");
+                if (raw != null) {
+                    if (raw instanceof final InstanceSetFilterValue instanceSet) {
+                        if (instanceSet.getObject() != null) {
+                            ret = instanceSet.getObject().toArray();
+                        }
+                    } else {
+                        ret = ((List<Instance>) raw).toArray();
+                    }
                 }
             }
             return ret;
@@ -883,9 +1090,13 @@ public abstract class SalesProductReport_Base
         {
             boolean ret = false;
             if (!isProduct(_parameter)) {
-                final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
-                final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
-                ret = filter != null && filter.isNegate();
+                final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
+                final var raw = filters.get("product");
+                if (raw != null && raw instanceof final InstanceSetFilterValue instanceSet) {
+                    ret = instanceSet.isNegate();
+                } else if (filters.get("product_negate") instanceof final String strValue) {
+                    ret = BooleanUtils.toBoolean(strValue);
+                }
             }
             return ret;
         }
@@ -938,7 +1149,6 @@ public abstract class SalesProductReport_Base
             return _parameter.getInstance() != null && _parameter.getInstance().isValid();
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
                                            final JasperReportBuilder _builder)
@@ -946,16 +1156,22 @@ public abstract class SalesProductReport_Base
         {
             final Set<ColumnBuilder<?, ?>> columns = new LinkedHashSet<>();
 
-            final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement("http://www.efaps.org",
-                            "efapslink").addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression("docOID"))
-                            .setHeight(12).setWidth(25);
+            final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(filteredReport.getDBProperty(
+                            "Contact"), "contact", DynamicReports.type.stringType()).setWidth(250);
+            Collections.addAll(columns, contactColumn);
 
-            final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
+            ComponentColumnBuilder linkColumn = null;
+            if (!isRest()) {
+                final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement("http://www.efaps.org",
+                                "efapslink")
+                                .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression("docOID"))
+                                .setHeight(12).setWidth(25);
+                linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
+                Collections.addAll(columns, linkColumn);
+            }
 
             final TextColumnBuilder<DateTime> dateColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "Date"), "docDate", DateTimeDate.get());
-            final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(filteredReport.getDBProperty(
-                            "Contact"), "contact", DynamicReports.type.stringType()).setWidth(250);
             final TextColumnBuilder<String> docTypeColumn = DynamicReports.col.column(filteredReport.getDBProperty(
                             "DocType"), "docType", DynamicReports.type.stringType());
             final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(filteredReport.getDBProperty(
@@ -979,7 +1195,7 @@ public abstract class SalesProductReport_Base
             final TextColumnBuilder<BigDecimal> discountColumn = DynamicReports.col.column(filteredReport
                             .getDBProperty("Discount"), "productDiscount", DynamicReports.type.bigDecimalType());
 
-            Collections.addAll(columns, contactColumn, linkColumn, docTypeColumn, docNameColumn, dateColumn,
+            Collections.addAll(columns, docTypeColumn, docNameColumn, dateColumn,
                             conditionColumn, statusColumn, productFamilyColumn, productNameColumn, productDescColumn,
                             quantityColumn, uomColumn, unitPriceColumn, discountColumn);
 
@@ -1083,7 +1299,7 @@ public abstract class SalesProductReport_Base
                 }
             }
 
-            if (!getExType().equals(ExportType.HTML)) {
+            if (!getExType().equals(ExportType.HTML) && linkColumn != null) {
                 columns.remove(linkColumn);
             }
             if (isHideDetails(_parameter)) {
@@ -1102,7 +1318,9 @@ public abstract class SalesProductReport_Base
                 if (!groupBy.contains(GroupBy.CONTACT)) {
                     columns.remove(contactColumn);
                 }
-                columns.remove(linkColumn);
+                if (linkColumn != null) {
+                    columns.remove(linkColumn);
+                }
                 columns.remove(docNameColumn);
                 columns.remove(statusColumn);
                 columns.remove(productNameColumn);
