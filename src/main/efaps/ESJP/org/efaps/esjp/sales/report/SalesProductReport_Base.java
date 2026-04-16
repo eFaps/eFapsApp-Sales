@@ -261,7 +261,7 @@ public abstract class SalesProductReport_Base
             List<String> groupByValue = null;
             Boolean hideDetails = false;
             String priceConfigValue = PriceConfig.NET.name();
-            String currencyValue = null;
+            String currencyValue = "BASE";
             List<String> contactValue = null;
             final List<OptionDto> contactOptions = new ArrayList<>();
             Boolean contactNegate = false;
@@ -406,7 +406,7 @@ public abstract class SalesProductReport_Base
                                             .getProperty("org.efaps.esjp.sales.report.SalesProductReport.currency"))
                             .withType(ValueType.DROPDOWN)
                             .withValue(currencyValue)
-                            .withOptions(getOptions4Currency())
+                            .withOptions(getOptions4Currency(true))
                             .build());
 
             ret.add(ValueDto.builder()
@@ -847,20 +847,26 @@ public abstract class SalesProductReport_Base
         protected CurrencyInst evaluateCurrencyInst(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<String, Object> filterMap = filteredReport.getFilterMap(_parameter);
-            final CurrencyInst ret;
-
-            if (filterMap.containsKey("currency")) {
-                final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
-                if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
-                    ret = CurrencyInst.get(filter.getObject());
-                } else if (filter.getObject() instanceof Instance && "BASE".equals(filter.getObject().getKey())) {
-                    ret = CurrencyInst.get(Currency.getBaseCurrency());
-                } else {
-                    ret = null;
+            final Map<String, Object> filters = filteredReport.getFilterMap(_parameter);
+            CurrencyInst ret = null;
+            if (filters.containsKey("currency")) {
+                final var raw = filters.get("currency");
+                if (raw != null) {
+                    if (raw instanceof final CurrencyFilterValue currencyFilter) {
+                        if (currencyFilter.getObject() instanceof Instance && currencyFilter.getObject().isValid()) {
+                            ret = CurrencyInst.get(currencyFilter.getObject());
+                        } else if (currencyFilter.getObject() instanceof Instance
+                                        && "BASE".equals(currencyFilter.getObject().getKey())) {
+                            ret = CurrencyInst.get(Currency.getBaseCurrency());
+                        } else {
+                            ret = null;
+                        }
+                    } else if ("BASE".equals(raw)) {
+                        ret = CurrencyInst.get(Currency.getBaseCurrency());
+                    } else {
+                        ret = CurrencyInst.get(Instance.get(raw.toString()));
+                    }
                 }
-            } else {
-                ret = null;
             }
             return ret;
         }
