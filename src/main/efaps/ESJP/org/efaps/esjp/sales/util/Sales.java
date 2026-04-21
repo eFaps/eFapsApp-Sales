@@ -169,7 +169,7 @@ public final class Sales
     public static final IntegerSysConfAttribute PRICE_CACHE = new IntegerSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Price.CachingLifespan")
-                    .defaultValue(60)
+                    .defaultValue(5)
                     .description("Caching Lifespan for prices in minutes, to reduce load on database.");
 
     /** See description. */
