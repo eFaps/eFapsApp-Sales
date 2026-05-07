@@ -927,7 +927,7 @@ public abstract class SalesProductReport_Base
             if (filter.containsKey("dateFrom") && filter.get("dateFrom") != null) {
                 dateFrom = (DateTime) filter.get("dateFrom");
             } else {
-                dateFrom = new DateTime().minusYears(1);
+                dateFrom = new DateTime().withDayOfMonth(1);
             }
             final DateTime dateTo;
             if (filter.containsKey("dateTo") && filter.get("dateTo") != null) {
