@@ -17,6 +17,8 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,19 +41,26 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
 import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -66,14 +75,16 @@ import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
-  * @author The eFaps Team
+ * @author The eFaps Team
  */
 @EFapsUUID("086c53e8-bb2a-4235-b234-8b9c38cadc7c")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class DocSituationReport_Base
     extends FilteredReport
+    implements IFilteredReportProvider
 {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DocSituationReport.class);
     /**
      * DataBean list.
      */
@@ -165,8 +176,8 @@ public abstract class DocSituationReport_Base
             final Properties props = getProperties4TypeList(_parameter, null);
             final DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = (DocumentSumGroupedByDate_Base.DateGroup)
-                                ((EnumFilterValue) filter.get("dateGroup")).getObject();
+                dateGroup = (DocumentSumGroupedByDate_Base.DateGroup) ((EnumFilterValue) filter.get("dateGroup"))
+                                .getObject();
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
@@ -176,7 +187,7 @@ public abstract class DocSituationReport_Base
 
             final Set<Instance> instances = this.valueList.getDocInstances();
             final Map<Instance, DocPaymentInfo> infos = new HashMap<>();
-            for (final Instance inst  :instances) {
+            for (final Instance inst : instances) {
                 final DocPaymentInfo info = new DocPaymentInfo(inst);
                 infos.put(inst, info);
             }
@@ -270,10 +281,56 @@ public abstract class DocSituationReport_Base
      * @return the report class
      * @throws EFapsException on error
      */
-    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    @Override
+    public AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynDocSituationReport(this);
+    }
+
+    @Override
+    public List<ValueDto> getFilters()
+    {
+        final List<ValueDto> ret = new ArrayList<>();
+        final var filterMap = getFilterMap();
+        ZoneId zoneId = ZoneId.systemDefault();
+        try {
+            clearCache(ParameterUtil.instance());
+            zoneId = Context.getThreadContext().getZoneId();
+            String dateFromValue = null;
+            String dateToValue = null;
+            if (filterMap.containsKey("dateFrom")) {
+                dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
+            } else {
+                dateFromValue = LocalDate.now(zoneId).withDayOfMonth(1).toString();
+            }
+
+            if (filterMap.containsKey("dateTo")) {
+                dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
+            } else {
+                dateToValue = LocalDate.now(zoneId).toString();
+            }
+
+            ret.add(ValueDto.builder()
+                            .withName("dateFrom")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocSituationReport.dateFrom"))
+                            .withType(ValueType.DATE)
+                            .withRequired(true)
+                            .withValue(dateFromValue)
+                            .build());
+            ret.add(ValueDto.builder()
+                            .withName("dateTo")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocSituationReport.dateTo"))
+                            .withType(ValueType.DATE)
+                            .withRequired(true)
+                            .withValue(dateToValue)
+                            .build());
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
     }
 
     /**
@@ -312,7 +369,8 @@ public abstract class DocSituationReport_Base
             } else {
                 final ValueList values = getFilteredReport().getData(_parameter);
                 final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
-                chain.addComparator((_o1, _o2) -> 0);
+                chain.addComparator((_o1,
+                                     _o2) -> 0);
                 Collections.sort(values, chain);
                 ret = new JRMapCollectionDataSource((Collection) values);
                 getFilteredReport().cache(_parameter, ret);
@@ -322,7 +380,7 @@ public abstract class DocSituationReport_Base
 
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
-                                          final JasperReportBuilder _builder)
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
