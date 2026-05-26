@@ -693,13 +693,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "report.DocSituationReport")
-                    .description("Properties 4 DocSituationReport");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCPOSCOSTREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocPositionCostReport")
@@ -3151,6 +3144,16 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.DocPositionReport.ProductAutoComplete")
                     .description("Properties to define the autocomplete for products");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_DOCSITUATION = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.DocSituationReport")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .description("Properties 4 DocSituationReport");
+
 
     /** See description. */
     @EFapsSysConfAttribute

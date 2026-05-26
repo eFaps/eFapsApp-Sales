@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -44,9 +45,14 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
+import org.efaps.eql.EQL;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.erp.AbstractGroupedByDate_Base;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
@@ -55,6 +61,9 @@ import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.ui.rest.AutocompleteController;
+import org.efaps.esjp.ui.rest.dto.AutocompleteResponseDto;
+import org.efaps.esjp.ui.rest.dto.OptionDto;
 import org.efaps.esjp.ui.rest.dto.ValueDto;
 import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
@@ -166,9 +175,16 @@ public abstract class DocSituationReport_Base
             final List<Type> typeList;
             if (filter.containsKey("type")) {
                 typeList = new ArrayList<>();
-                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
-                for (final Long typeid : filters.getObject()) {
-                    typeList.add(Type.get(typeid));
+                if (filter.get("type") instanceof final TypeFilterValue typeFilterValue) {
+                    for (final Long typeid : typeFilterValue.getObject()) {
+                        typeList.add(Type.get(typeid));
+                    }
+                } else {
+                    for (final var typeId : (List<?>) filter.get("type")) {
+                        if (typeId instanceof final String typeIdStr) {
+                            typeList.add(Type.get(Long.valueOf(typeIdStr)));
+                        }
+                    }
                 }
             } else {
                 typeList = getTypeList(_parameter);
@@ -176,8 +192,15 @@ public abstract class DocSituationReport_Base
             final Properties props = getProperties4TypeList(_parameter, null);
             final DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = (DocumentSumGroupedByDate_Base.DateGroup) ((EnumFilterValue) filter.get("dateGroup"))
-                                .getObject();
+                final var dateGroupValue = filter.get("dateGroup");
+                if (dateGroupValue instanceof final EnumFilterValue enumFilterValue) {
+                    dateGroup = (DocumentSumGroupedByDate_Base.DateGroup) enumFilterValue.getObject();
+                } else if (dateGroupValue instanceof final String enumStrValue) {
+                    dateGroup = EnumUtils.getEnumIgnoreCase(DocumentSumGroupedByDate_Base.DateGroup.class,
+                                    enumStrValue);
+                } else {
+                    dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
+                }
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
@@ -216,27 +239,35 @@ public abstract class DocSituationReport_Base
     /**
      * Add to query builder.
      *
-     * @param _parameter the _parameter
-     * @param _queryBldr the _query bldr
+     * @param parameter the _parameter
+     * @param queryBldr the _query bldr
      * @throws EFapsException on error
      */
-    protected void add2QueryBuilder(final Parameter _parameter,
-                                    final QueryBuilder _queryBldr)
+    @SuppressWarnings("unchecked")
+    protected void add2QueryBuilder(final Parameter parameter,
+                                    final QueryBuilder queryBldr)
         throws EFapsException
     {
-        final Map<String, Object> filter = getFilterMap(_parameter);
+        final Map<String, Object> filter = getFilterMap(parameter);
 
-        if (filter.containsKey("contact")) {
-            final InstanceFilterValue filterValue = (InstanceFilterValue) filter.get("contact");
-            if (filterValue != null && filterValue.getObject().isValid()) {
-                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, filterValue.getObject());
+        if (filter.containsKey("contact") && filter.get("contact") != null) {
+            final var filterValue = filter.get("contact");
+            if (filterValue instanceof final InstanceFilterValue instanceFilterValue) {
+                if (instanceFilterValue.getObject().isValid()) {
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
+                                    instanceFilterValue.getObject());
+                }
+            } else {
+                final var values = (List<Object>) filterValue;
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
+                                values.toArray(new Object[values.size()]));
             }
         }
         for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
                         IOnDocumentSumReport.class)) {
-            listener.add2QueryBuilder(_parameter, _queryBldr);
+            listener.add2QueryBuilder(parameter, queryBldr);
         }
-        _queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
+        queryBldr.setCompanyDependent(isCompanyDependent(parameter));
     }
 
     /**
@@ -271,7 +302,7 @@ public abstract class DocSituationReport_Base
             }
         }
         if (ret == null) {
-            ret = Sales.DOCSITUATIONREPORT.get();
+            ret = Sales.REPORT_DOCSITUATION.get();
         }
         return ret;
     }
@@ -296,9 +327,21 @@ public abstract class DocSituationReport_Base
         ZoneId zoneId = ZoneId.systemDefault();
         try {
             clearCache(ParameterUtil.instance());
+
+            final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_DOCSITUATION.get(), "Type", 0)
+                            .values()
+                            .toArray(String[]::new);
+            final var typeOptions = getOptions4Types(typeKeys);
+
             zoneId = Context.getThreadContext().getZoneId();
             String dateFromValue = null;
             String dateToValue = null;
+            List<?> typeValue = Collections.emptyList();
+            String contactValue = null;
+            final List<OptionDto> contactOptions = new ArrayList<>();
+            String dateGroupValue = null;
+            Boolean contactGroupValue = false;
+
             if (filterMap.containsKey("dateFrom")) {
                 dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
             } else {
@@ -309,6 +352,37 @@ public abstract class DocSituationReport_Base
                 dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
             } else {
                 dateToValue = LocalDate.now(zoneId).toString();
+            }
+
+            if (filterMap.containsKey("type")) {
+                typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx))
+                                .toList();
+            } else {
+                typeValue = typeOptions.stream().map(OptionDto::getValue).toList();
+            }
+
+            if (filterMap.containsKey("contact")) {
+                @SuppressWarnings("unchecked") final var contactInsts = (List<Instance>) filterMap.get("contact");
+                contactValue = contactInsts.isEmpty() ? null : contactInsts.get(0).getOid();
+                final var contactEval = EQL.builder().print(contactInsts.toArray(new Instance[contactInsts.size()]))
+                                .attribute(CIContacts.Contact.Name)
+                                .evaluate();
+                while (contactEval.next()) {
+                    contactOptions.add(OptionDto.builder()
+                                    .withLabel(contactEval.get(CIContacts.Contact.Name))
+                                    .withValue(contactEval.inst().getOid())
+                                    .build());
+                }
+            }
+
+            if (filterMap != null && filterMap.containsKey("dateGroup")) {
+                dateGroupValue = (String) filterMap.get("dateGroup");
+            } else {
+                dateGroupValue = AbstractGroupedByDate_Base.DateGroup.MONTH.name();
+            }
+
+            if (filterMap != null && filterMap.containsKey("contactGroup")) {
+                contactGroupValue = BooleanUtils.toBoolean((String) filterMap.get("contactGroup"));
             }
 
             ret.add(ValueDto.builder()
@@ -327,10 +401,81 @@ public abstract class DocSituationReport_Base
                             .withRequired(true)
                             .withValue(dateToValue)
                             .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("type")
+                            .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.DocSituationReport.type"))
+                            .withType(ValueType.CHECKBOX)
+                            .withRequired(true)
+                            .withValue(typeValue)
+                            .withOptions(typeOptions)
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("contact")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocSituationReport.contact"))
+                            .withType(ValueType.AUTOCOMPLETE)
+                            .withValue(contactValue)
+                            .withOptions(contactOptions)
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("dateGroup")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocSituationReport.dateGroup"))
+                            .withType(ValueType.RADIO)
+                            .withValue(dateGroupValue)
+                            .withOptions(getOptions4Enum(AbstractGroupedByDate_Base.DateGroup.class))
+                            .build());
+
+            ret.add(ValueDto.builder()
+                            .withName("contactGroup")
+                            .withLabel(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.report.DocSituationReport.contactGroup"))
+                            .withType(ValueType.RADIO)
+                            .withOptions(getOptions4Boolean(
+                                            "org.efaps.esjp.sales.report.DocSituationReport.contactGroup"))
+                            .withValue(contactGroupValue)
+                            .build());
+
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
         return ret;
+    }
+
+    @Override
+    public Object evalFilterValue4Key(final String key,
+                                      final List<String> values)
+    {
+        Object ret = null;
+        if ("contact".equals(key)) {
+            ret = values.stream().map(Instance::get).toList();
+        }
+        return ret;
+    }
+
+    @Override
+    public AutocompleteResponseDto autocomplete(final String fieldName,
+                                                final String term)
+    {
+        final List<OptionDto> options = new ArrayList<>();
+        try {
+            final var parameters = ParameterUtil.instance();
+            parameters.put(ParameterValues.OTHERS, term);
+
+            if ("contact".equals(fieldName)) {
+                final var returns = new Contacts().autoComplete4Contact(parameters);
+                final List<?> values = (List<?>) returns.get(ReturnValues.VALUES);
+                options.addAll(new AutocompleteController().evalOptions(values));
+            }
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return AutocompleteResponseDto.builder()
+                        .withOptions(options)
+                        .build();
     }
 
     /**
@@ -393,7 +538,13 @@ public abstract class DocSituationReport_Base
             }
 
             if (filterMap.containsKey("contactGroup")) {
-                final Boolean contactBool = (Boolean) filterMap.get("contactGroup");
+                Boolean contactBool = null;
+                final var contactGroupValue = filterMap.get("contactGroup");
+                if (contactGroupValue instanceof final Boolean contactGroupValueBool) {
+                    contactBool = contactGroupValueBool;
+                } else if (contactGroupValue instanceof final String contactGroupValueStr) {
+                    contactBool = BooleanUtils.toBoolean(contactGroupValueStr);
+                }
                 if (contactBool != null && contactBool) {
                     final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
                                     String.class).setHeaderWidth(150);
