@@ -32,6 +32,7 @@
         <target>
             <menu>Sales_AccountsPayableReportMyDesk_Menu</menu>
             <form>Sales_AccountsPayableReportForm</form>
+            <module>Sales_AccountsPayableReportModule</module>
         </target>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
     Copyright © 2003 - 2024 The eFaps Team (-)
 
@@ -16,25 +15,14 @@
     limitations under the License.
 
 -->
-
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-module xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f622f3f6-8c9d-4a9d-bd05-25e7578f7443</uuid>
+    <uuid>8a18c7cd-71d9-4e98-a640-376665530796</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountsReceivableReportMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_AccountsReceivableReportMyDesk_Menu</menu>
-            <form>Sales_AccountsRecievableReportForm</form>
-            <module>Sales_AccountsReceivableReportModule</module>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_AccountsPayableReportModule</name>
+        <property name="ModuleKey">FilteredReport</property>
+        <property name="FilteredReport">org.efaps.esjp.sales.report.AccountsPayableReport</property>
     </definition>
-</ui-command>
+</ui-module>

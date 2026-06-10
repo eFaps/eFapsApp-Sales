@@ -30,7 +30,7 @@ public abstract class AccountsPayableReport_Base
 {
 
     @Override
-    protected AccountsAbstractDynReport getReport(final Parameter _parameter)
+    public AccountsAbstractDynReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new AccountsPayableDynReport(this);
