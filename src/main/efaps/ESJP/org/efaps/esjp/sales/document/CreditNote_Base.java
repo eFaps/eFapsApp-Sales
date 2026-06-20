@@ -86,6 +86,15 @@ public abstract class CreditNote_Base
                                 .set(CISales.Document2DerivativeDocument.To, creditNoteInst)
                                 .execute();
 
+                final CIType relType = InstanceUtils.isType(sourceDocInst, CISales.Invoice)
+                                ? CISales.CreditNote2Invoice
+                                : CISales.CreditNote2Receipt;
+
+                EQL.builder().insert(relType)
+                                .set(CISales.CreditNote2DocumentAbstract.FromAbstractLink, creditNoteInst)
+                                .set(CISales.CreditNote2DocumentAbstract.ToAbstractLink, sourceDocInst)
+                                .execute();
+
                 final var eval = EQL.builder().print().query(CIHumanResource.Employee2DocumentAbstract)
                                 .where()
                                 .attribute(CIHumanResource.Employee2DocumentAbstract.ToAbstractLink).eq(sourceDocInst)
