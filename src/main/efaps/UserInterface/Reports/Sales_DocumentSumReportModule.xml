@@ -16,23 +16,14 @@
     limitations under the License.
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-module xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ef966c2e-e82a-49a8-8350-02a0803f858c</uuid>
+    <uuid>a4ecdc65-c639-4463-ae0f-a9d62821a1b2</uuid>
     <file-application>eFapsApp-Sales</file-application>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentSumReportMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_DocumentSumReportMyDesk_Menu</menu>
-            <form>Sales_DocumentSumReportForm</form>
-            <module>Sales_DocumentSumReportModule</module>
-        </target>
-        <property name="Target">content</property>
+        <name>Sales_DocumentSumReportModule</name>
+        <property name="ModuleKey">FilteredReport</property>
+        <property name="FilteredReport">org.efaps.esjp.sales.report.DocumentSumReport</property>
     </definition>
-</ui-command>
+</ui-module>

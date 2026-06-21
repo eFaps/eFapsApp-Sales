@@ -19,7 +19,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +40,6 @@ import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -57,6 +55,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIMsgProducts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -82,6 +81,7 @@ import org.efaps.esjp.ui.rest.AutocompleteController;
 import org.efaps.esjp.ui.rest.dto.AutocompleteResponseDto;
 import org.efaps.esjp.ui.rest.dto.OptionDto;
 import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueDto.Builder;
 import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
@@ -243,215 +243,203 @@ public abstract class SalesProductReport_Base
         return new DynSalesProductReport(this);
     }
 
+    @Override
+    public Object evalDefaultValue4Key(final String key)
+    {
+        return switch (key) {
+            case "dateFrom": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    final var adjuster = evalTemporalAdjuster(Sales.REPORT_SALESRECORD.get(), "DefaultDateFrom");
+                    yield LocalDate.now(zoneId).with(adjuster);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "dateTo": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    yield LocalDate.now(zoneId);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "groupBy": {
+                yield Collections.emptyList();
+            }
+            case "currency": {
+                yield "BASE";
+            }
+            case "hideDetails", "contact_negate", "product_negate": {
+                yield true;
+            }
+            case "type" : {
+                try {
+                    final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_SALESPROD.get(), "Type", 0)
+                                .values()
+                                .toArray(String[]::new);
+                    yield getOptions4Types(typeKeys).stream().map(OptionDto::getValue).toList();
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "priceConfig": {
+                yield PriceConfig.NET;
+            }
+            default:
+                yield null;
+        };
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<ValueDto> getFilters()
     {
         final List<ValueDto> ret = new ArrayList<>();
-        ZoneId zoneId = ZoneId.systemDefault();
+        final var filterMap = getFilterMap();
         try {
-            clearCache(ParameterUtil.instance());
-            zoneId = Context.getThreadContext().getZoneId();
+            for (final var filterDef : getFilterDefinitions()) {
+                final var value = filterMap.get(filterDef.getName());
+                switch (filterDef.getName()) {
+                    case "hideDetails", "contact_negate", "product_negate" ->
+                        ret.add(filterDef.withValue(toBoolean(value)).build());
+                    case "groupBy" -> {
+                        final var groupBy = ((List<GroupBy>) value).stream().map(GroupBy::name).toList();
+                        ret.add(filterDef.withValue(groupBy).build());
+                    }
+                    case "type" -> {
+                        final var typeValue = ((List<?>) value).stream().map(this::toLong).toList();
+                        ret.add(filterDef.withValue(typeValue).build());
+                    }
+                    case "contact" -> {
+                        if (value == null) {
+                            ret.add(filterDef.build());
+                        } else {
+                            final List<OptionDto> contactOptions = new ArrayList<>();
+                            final var contactInsts = (List<Instance>) filterMap.get("contact");
+                            contactInsts.stream().map(Instance::getOid).toList();
+                            final var contactEval = EQL.builder()
+                                            .print(contactInsts.toArray(new Instance[contactInsts.size()]))
+                                            .attribute(CIContacts.Contact.Name)
+                                            .evaluate();
+                            while (contactEval.next()) {
+                                contactOptions.add(OptionDto.builder()
+                                                .withLabel(contactEval.get(CIContacts.Contact.Name))
+                                                .withValue(contactEval.inst().getOid())
+                                                .build());
+                            }
+                            ret.add(filterDef.withValue(value).withOptions(contactOptions).build());
+                        }
+                    }
+                    case "product" -> {
+                        if (value == null) {
+                            ret.add(filterDef.build());
+                        } else {
+                            final List<OptionDto> productOptions = new ArrayList<>();
 
-            final var filterMap = getFilterMap();
+                            final var productInsts = (List<Instance>) filterMap.get("product");
+                            productInsts.stream().map(Instance::getOid).toList();
 
-            String dateFromValue = null;
-            String dateToValue = null;
-            List<?> typeValue = Collections.emptyList();
-            List<String> groupByValue = null;
-            Boolean hideDetails = false;
-            String priceConfigValue = PriceConfig.NET.name();
-            String currencyValue = "BASE";
-            List<String> contactValue = null;
-            final List<OptionDto> contactOptions = new ArrayList<>();
-            Boolean contactNegate = false;
-            List<String> productValue = null;
-            final List<OptionDto> productOptions = new ArrayList<>();
-            Boolean productNegate = false;
-
-            if (filterMap.containsKey("dateFrom")) {
-                dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
-            } else {
-                dateFromValue = LocalDate.now(zoneId).withDayOfMonth(1).toString();
-            }
-
-            if (filterMap.containsKey("dateTo")) {
-                dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
-            } else {
-                dateToValue = LocalDate.now(zoneId).toString();
-            }
-
-            if (filterMap.containsKey("type")) {
-                typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx))
-                                .toList();
-            }
-
-            if (filterMap.containsKey("groupBy")) {
-                groupByValue = ((List<GroupBy>) filterMap.get("groupBy")).stream().map(GroupBy::name).toList();
-            }
-
-            if (filterMap.containsKey("hideDetails")) {
-                hideDetails = BooleanUtils.toBoolean((String) filterMap.get("hideDetails"));
-            }
-
-            if (filterMap.containsKey("priceConfig")) {
-                priceConfigValue = (String) filterMap.get("priceConfig");
-            }
-
-            if (filterMap.containsKey("currency")) {
-                currencyValue = (String) filterMap.get("currency");
-            }
-
-            if (filterMap.containsKey("contact")) {
-                final var contactInsts = (List<Instance>) filterMap.get("contact");
-                contactValue = contactInsts.stream().map(Instance::getOid).toList();
-                final var contactEval = EQL.builder().print(contactInsts.toArray(new Instance[contactInsts.size()]))
-                                .attribute(CIContacts.Contact.Name)
-                                .evaluate();
-                while (contactEval.next()) {
-                    contactOptions.add(OptionDto.builder()
-                                    .withLabel(contactEval.get(CIContacts.Contact.Name))
-                                    .withValue(contactEval.inst().getOid())
-                                    .build());
+                            final var productEval = EQL.builder()
+                                            .print(productInsts.toArray(new Instance[productInsts.size()]))
+                                            .attribute(CIProducts.ProductAbstract.Name,
+                                                            CIProducts.ProductAbstract.Description)
+                                            .evaluate();
+                            while (productEval.next()) {
+                                productOptions.add(OptionDto.builder()
+                                                .withLabel(String.format("%s  - %s",
+                                                                productEval.get(CIProducts.ProductAbstract.Name),
+                                                                productEval.get(CIProducts.ProductAbstract.Description)))
+                                                .withValue(productEval.inst().getOid())
+                                                .build());
+                            }
+                            ret.add(filterDef.withValue(value).withOptions(productOptions).build());
+                        }
+                    }
+                    default -> ret.add(filterDef.withValue(value).build());
                 }
             }
-
-            if (filterMap.containsKey("contact_negate")) {
-                contactNegate = BooleanUtils.toBoolean((String) filterMap.get("contact_negate"));
-            }
-
-            if (filterMap.containsKey("product")) {
-                final var productInsts = (List<Instance>) filterMap.get("product");
-                productValue = productInsts.stream().map(Instance::getOid).toList();
-
-                final var productEval = EQL.builder().print(productInsts.toArray(new Instance[productInsts.size()]))
-                                .attribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description)
-                                .evaluate();
-                while (productEval.next()) {
-                    productOptions.add(OptionDto.builder()
-                                    .withLabel(String.format("%s  - %s",
-                                                    productEval.get(CIProducts.ProductAbstract.Name),
-                                                    productEval.get(CIProducts.ProductAbstract.Description)))
-                                    .withValue(productEval.inst().getOid())
-                                    .build());
-                }
-            }
-
-            if (filterMap.containsKey("product_negate")) {
-                productNegate = BooleanUtils.toBoolean((String) filterMap.get("product_negate"));
-            }
-
-            ret.add(ValueDto.builder()
-                            .withName("dateFrom")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateFrom"))
-                            .withType(ValueType.DATE)
-                            .withRequired(true)
-                            .withValue(dateFromValue)
-                            .build());
-            ret.add(ValueDto.builder()
-                            .withName("dateTo")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.dateTo"))
-                            .withType(ValueType.DATE)
-                            .withRequired(true)
-                            .withValue(dateToValue)
-                            .build());
-
-            final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_SALESPROD.get(), "Type", 0)
-                            .values()
-                            .toArray(String[]::new);
-
-            ret.add(ValueDto.builder()
-                            .withName("type")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.DocType"))
-                            .withType(ValueType.CHECKBOX)
-                            .withRequired(true)
-                            .withValue(typeValue)
-                            .withOptions(getOptions4Types(typeKeys))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("groupBy")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.groupBy"))
-                            .withType(ValueType.PICKLIST)
-                            .withValue(groupByValue)
-                            .withOptions(getOptions4Enum(GroupBy.class))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("hideDetails")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.hideDetails"))
-                            .withType(ValueType.RADIO)
-                            .withOptions(getOptions4Boolean(
-                                            "org.efaps.esjp.sales.report.SalesProductReport.hideDetails"))
-                            .withValue(hideDetails)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("priceConfig")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.priceConfig"))
-                            .withType(ValueType.RADIO)
-                            .withValue(priceConfigValue)
-                            .withOptions(getOptions4Enum(PriceConfig.class))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("currency")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.currency"))
-                            .withType(ValueType.DROPDOWN)
-                            .withValue(currencyValue)
-                            .withOptions(getOptions4Currency(true))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("contact")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.contact"))
-                            .withType(ValueType.AUTOCOMPLETE)
-                            .withValue(contactValue)
-                            .withOptions(contactOptions)
-                            .withConfig(Map.of("multiple", true))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("contact_negate")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.contact_negate"))
-                            .withType(ValueType.RADIO)
-                            .withOptions(getOptions4Boolean(
-                                            "org.efaps.esjp.sales.report.SalesProductReport.contact_negate"))
-                            .withValue(contactNegate)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("product")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.product"))
-                            .withType(ValueType.AUTOCOMPLETE)
-                            .withValue(productValue)
-                            .withOptions(productOptions)
-                            .withConfig(Map.of("multiple", true))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("product_negate")
-                            .withLabel(DBProperties
-                                            .getProperty("org.efaps.esjp.sales.report.SalesProductReport.product_negate"))
-                            .withType(ValueType.RADIO)
-                            .withOptions(getOptions4Boolean(
-                                            "org.efaps.esjp.sales.report.SalesProductReport.product_negate"))
-                            .withValue(productNegate)
-                            .build());
-
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
+        return ret;
+    }
+
+    @Override
+    public List<Builder> getFilterDefinitions()
+        throws EFapsException
+    {
+        final List<Builder> ret = new ArrayList<>();
+        this.getClass().getName();
+        ret.add(ValueDto.builder()
+                        .withName("dateFrom")
+                        .withLabel(getLabel("dateFrom"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true));
+        ret.add(ValueDto.builder()
+                        .withName("dateTo")
+                        .withLabel(getLabel("dateTo"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true));
+
+        final var typeKeys = PropertiesUtil.analyseProperty(Sales.REPORT_SALESPROD.get(), "Type", 0)
+                        .values()
+                        .toArray(String[]::new);
+
+        ret.add(ValueDto.builder()
+                        .withName("type")
+                        .withLabel(getLabel("DocType"))
+                        .withType(ValueType.CHECKBOX)
+                        .withRequired(true)
+                        .withOptions(getOptions4Types(typeKeys)));
+
+        ret.add(ValueDto.builder()
+                        .withName("groupBy")
+                        .withLabel(getLabel("groupBy"))
+                        .withType(ValueType.PICKLIST)
+                        .withOptions(getOptions4Enum(GroupBy.class)));
+
+        ret.add(ValueDto.builder()
+                        .withName("hideDetails")
+                        .withLabel(getLabel("hideDetails"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Boolean("hideDetails")));
+
+        ret.add(ValueDto.builder()
+                        .withName("priceConfig")
+                        .withLabel(getLabel("priceConfig"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Enum(PriceConfig.class)));
+
+        ret.add(ValueDto.builder()
+                        .withName("currency")
+                        .withLabel(getLabel("currency"))
+                        .withType(ValueType.DROPDOWN)
+                        .withOptions(getOptions4Currency(true)));
+
+        ret.add(ValueDto.builder()
+                        .withName("contact")
+                        .withLabel(getLabel("contact"))
+                        .withType(ValueType.AUTOCOMPLETE)
+                        .withConfig(Map.of("multiple", true)));
+
+        ret.add(ValueDto.builder()
+                        .withName("contact_negate")
+                        .withLabel(getLabel("contact_negate"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Boolean("contact_negate")));
+
+        ret.add(ValueDto.builder()
+                        .withName("product")
+                        .withLabel(getLabel("product"))
+                        .withType(ValueType.AUTOCOMPLETE)
+                        .withConfig(Map.of("multiple", true)));
+
+        ret.add(ValueDto.builder()
+                        .withName("product_negate")
+                        .withLabel(getLabel("product_negate"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Boolean("product_negate")));
         return ret;
     }
 
@@ -923,18 +911,11 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final Map<String, Object> filter = filteredReport.getFilterMap(parameter);
-            final DateTime dateFrom;
-            if (filter.containsKey("dateFrom") && filter.get("dateFrom") != null) {
-                dateFrom = (DateTime) filter.get("dateFrom");
-            } else {
-                dateFrom = new DateTime().withDayOfMonth(1);
-            }
-            final DateTime dateTo;
-            if (filter.containsKey("dateTo") && filter.get("dateTo") != null) {
-                dateTo = (DateTime) filter.get("dateTo");
-            } else {
-                dateTo = new DateTime();
-            }
+            final var dateFrom = (LocalDate) filter.get("dateFrom");
+            final var dateTo = (LocalDate) filter.get("dateTo");
+            queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusDays(1));
+            queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
+
             if (filter.containsKey("type")) {
                 if (filter.get("type") instanceof TypeFilterValue) {
                     queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
@@ -957,10 +938,6 @@ public abstract class SalesProductReport_Base
                                     CISales.ChannelCondition2DocumentAbstract.ToAbstractLink));
                 }
             }
-
-            queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
-            queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
-                            .withTimeAtStartOfDay());
         }
 
         /**

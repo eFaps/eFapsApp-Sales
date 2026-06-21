@@ -218,17 +218,15 @@ public abstract class CarrierReport_Base
                 }
             };
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-            final DateTime start;
-            final DateTime end;
             if (filter.containsKey("dateFrom")) {
-                start = (DateTime) filter.get("dateFrom");
+                filter.get("dateFrom");
             } else {
-                start = new DateTime();
+                new DateTime();
             }
             if (filter.containsKey("dateTo")) {
-                end = (DateTime) filter.get("dateTo");
+                filter.get("dateTo");
             } else {
-                end = new DateTime();
+                new DateTime();
             }
             final AbstractGroupedByDate.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
@@ -239,7 +237,7 @@ public abstract class CarrierReport_Base
             final Properties props = new Properties();
             props.put("StatusGroup", CISales.DeliveryNoteStatus.getType().getName());
             props.put("Status", "!" + CISales.DeliveryNoteStatus.Canceled.key);
-            return ds.getValueList(_parameter, start, end, dateGroup, props, CISales.DeliveryNote.getType());
+            return ds.getValueList(_parameter, null, null, dateGroup, props, CISales.DeliveryNote.getType());
         }
 
         /**

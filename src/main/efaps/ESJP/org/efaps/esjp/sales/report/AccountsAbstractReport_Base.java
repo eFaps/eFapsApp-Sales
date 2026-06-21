@@ -18,7 +18,6 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,14 +46,15 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIAttribute;
 import org.efaps.db.CachedMultiPrintQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.history.status.StatusHistory;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
@@ -78,6 +78,7 @@ import org.efaps.esjp.ui.rest.AutocompleteController;
 import org.efaps.esjp.ui.rest.dto.AutocompleteResponseDto;
 import org.efaps.esjp.ui.rest.dto.OptionDto;
 import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueDto.Builder;
 import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
@@ -250,176 +251,171 @@ public abstract class AccountsAbstractReport_Base
     protected abstract boolean isShowCondition()
         throws EFapsException;
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public Object evalDefaultValue4Key(final String key)
+    {
+        return switch (key) {
+            case "dateFrom": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    final var adjuster = evalTemporalAdjuster(getProperties4TypeList(null, null), "DefaultDateFrom");
+                    yield LocalDate.now(zoneId).with(adjuster);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "dateTo": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    yield LocalDate.now(zoneId);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "reportDate": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    yield LocalDate.now(zoneId);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "filterDate": {
+                yield FilterDate.DATE.name();
+
+            }
+            case "analysisType": {
+                yield AnalysisType.PENDING.name();
+
+            }
+            case "reportType": {
+                yield ReportType.STANDARD.name();
+            }
+            case "type": {
+                try {
+                    final var typeKeys =  PropertiesUtil.analyseProperty(getProperties4TypeList(null, null),"Type",0)
+                                    .values()
+                                    .toArray(String[]::new);
+                    yield getOptions4Types(typeKeys).stream().map(OptionDto::getValue).toList();
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            default:
+                yield null;
+        };
+    }
+
     @Override
     public List<ValueDto> getFilters()
     {
+
         final List<ValueDto> ret = new ArrayList<>();
         final var filterMap = getFilterMap();
         try {
-            clearCache(ParameterUtil.instance());
-            final ZoneId zoneId = ZoneId.systemDefault();
-            String dateFromValue = null;
-            String dateToValue = null;
-            String reportDateValue = null;
-            String filterDateValue = null;
-            List<?> typeValue = Collections.emptyList();
-            String analysisTypeValue = null;
-            String reportTypeValue = null;
-            List<String> groupByValue = null;
-            String currencyValue = null;
-            String contactValue = null;
-            final List<OptionDto> contactOptions = new ArrayList<>();
-
-            final var properties = getProperties4TypeList(null, null);
-            final var typeKeys = PropertiesUtil.analyseProperty(properties, "Type", 0)
-                            .values()
-                            .toArray(String[]::new);
-            final var typeOptions = getOptions4Types(typeKeys);
-
-            if (filterMap.containsKey("dateFrom")) {
-                dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
-            } else {
-                dateFromValue = LocalDate.now(zoneId).withDayOfMonth(1).toString();
+            for (final var filterDef : getFilterDefinitions()) {
+                final var value = filterMap.get(filterDef.getName());
+                switch (filterDef.getName()) {
+                    case "type" -> {
+                        final var typeValue = ((List<?>) value).stream().map(this::toLong).toList();
+                        ret.add(filterDef.withValue(typeValue).build());
+                    }
+                    case "contact" -> {
+                        if (value == null) {
+                            ret.add(filterDef.build());
+                        } else {
+                            final List<OptionDto> contactOptions = new ArrayList<>();
+                            final var contactEval = EQL.builder()
+                                            .print((String) value)
+                                            .attribute(CIContacts.Contact.Name)
+                                            .evaluate();
+                            while (contactEval.next()) {
+                                contactOptions.add(OptionDto.builder()
+                                                .withLabel(contactEval.get(CIContacts.Contact.Name))
+                                                .withValue(contactEval.inst().getOid())
+                                                .build());
+                            }
+                            ret.add(filterDef.withValue(value).withOptions(contactOptions).build());
+                        }
+                    }
+                    default -> ret.add(filterDef.withValue(value).build());
+                }
             }
-            if (filterMap.containsKey("dateTo")) {
-                dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
-            } else {
-                dateToValue = LocalDate.now(zoneId).toString();
-            }
-            if (filterMap.containsKey("reportDate")) {
-                reportDateValue = ((DateTime) filterMap.get("reportDate")).toLocalDate().toString();
-            } else {
-                reportDateValue = LocalDate.now(zoneId).toString();
-            }
-
-            if (filterMap.containsKey("filterDate")) {
-                filterDateValue = (String) filterMap.get("filterDate");
-            } else {
-                filterDateValue = FilterDate.DATE.name();
-            }
-
-            if (filterMap.containsKey("type")) {
-                typeValue = ((List<?>) filterMap.get("type")).stream().map(xx -> Long.valueOf((String) xx))
-                                .toList();
-            } else {
-                typeValue = typeOptions.stream().map(OptionDto::getValue).toList();
-            }
-            if (filterMap.containsKey("analysisType")) {
-                analysisTypeValue = (String) filterMap.get("analysisType");
-            } else {
-                analysisTypeValue = AnalysisType.PENDING.name();
-            }
-            if (filterMap.containsKey("reportType")) {
-                reportTypeValue = (String) filterMap.get("reportType");
-            } else {
-                reportTypeValue = ReportType.STANDARD.name();
-            }
-
-            if (filterMap.containsKey("groupBy")) {
-                groupByValue = ((List<GroupBy>) filterMap.get("groupBy")).stream().map(GroupBy::name).toList();
-            }
-
-            if (filterMap.containsKey("currency")) {
-                currencyValue = (String) filterMap.get("currency");
-            }
-
-            if (filterMap.containsKey("contact")) {
-                contactValue = (String) filterMap.get("contact");
-                final var contactEval = EQL.builder().print(contactValue).attribute(CIContacts.Contact.Name)
-                                .evaluate();
-                contactOptions.add(OptionDto.builder()
-                                .withLabel(contactEval.get(CIContacts.Contact.Name))
-                                .withValue(contactValue)
-                                .build());
-            }
-
-            final var key = this.getClass().getName();
-            ret.add(ValueDto.builder()
-                            .withName("dateFrom")
-                            .withLabel(DBProperties.getProperty(key + ".dateFrom"))
-                            .withType(ValueType.DATE)
-                            .withRequired(true)
-                            .withValue(dateFromValue)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("dateTo")
-                            .withLabel(DBProperties.getProperty(key + ".dateTo"))
-                            .withType(ValueType.DATE)
-                            .withRequired(true)
-                            .withValue(dateToValue)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("reportDate")
-                            .withLabel(DBProperties.getProperty(key + ".reportDate"))
-                            .withType(ValueType.DATE)
-                            .withRequired(true)
-                            .withValue(reportDateValue)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("filterDate")
-                            .withLabel(DBProperties.getProperty(key + ".filterDate"))
-                            .withType(ValueType.RADIO)
-                            .withValue(filterDateValue)
-                            .withOptions(getOptions4Enum(FilterDate.class))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("type")
-                            .withLabel(DBProperties.getProperty(key + ".type"))
-                            .withType(ValueType.CHECKBOX)
-                            .withRequired(true)
-                            .withValue(typeValue)
-                            .withOptions(typeOptions)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("analysisType")
-                            .withLabel(DBProperties.getProperty(key + ".analysisType"))
-                            .withType(ValueType.RADIO)
-                            .withValue(analysisTypeValue)
-                            .withOptions(getOptions4Enum(AnalysisType.class))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("reportType")
-                            .withLabel(DBProperties.getProperty(key + ".reportType"))
-                            .withType(ValueType.RADIO)
-                            .withValue(reportTypeValue)
-                            .withOptions(getOptions4Enum(ReportType.class))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("currency")
-                            .withLabel(DBProperties.getProperty(key + ".currency"))
-                            .withType(ValueType.DROPDOWN)
-                            .withValue(currencyValue)
-                            .withOptions(getOptions4Currency(true))
-                            .withConfig(Map.of("showClear", true))
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("contact")
-                            .withLabel(DBProperties.getProperty(key + ".contact"))
-                            .withType(ValueType.AUTOCOMPLETE)
-                            .withValue(contactValue)
-                            .withOptions(contactOptions)
-                            .build());
-
-            ret.add(ValueDto.builder()
-                            .withName("groupBy")
-                            .withLabel(DBProperties.getProperty(key + ".groupBy"))
-                            .withType(ValueType.PICKLIST)
-                            .withValue(groupByValue)
-                            .withOptions(getOptions4Enum(GroupBy.class.getName(), getGroupByEnumSet()))
-                            .build());
-
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
+        return ret;
+    }
+
+    @Override
+    public List<Builder> getFilterDefinitions()
+        throws EFapsException
+    {
+        final List<Builder> ret = new ArrayList<>();
+        final var key = this.getClass().getName();
+        ret.add(ValueDto.builder()
+                        .withName("dateFrom")
+                        .withLabel(DBProperties.getProperty(key + ".dateFrom"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true));
+
+        ret.add(ValueDto.builder()
+                        .withName("dateTo")
+                        .withLabel(DBProperties.getProperty(key + ".dateTo"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true));
+
+        ret.add(ValueDto.builder()
+                        .withName("reportDate")
+                        .withLabel(DBProperties.getProperty(key + ".reportDate"))
+                        .withType(ValueType.DATE)
+                        .withRequired(true));
+
+        ret.add(ValueDto.builder()
+                        .withName("filterDate")
+                        .withLabel(DBProperties.getProperty(key + ".filterDate"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Enum(FilterDate.class)));
+
+        final var typeKeys =  PropertiesUtil.analyseProperty(getProperties4TypeList(null, null),"Type",0)
+                        .values()
+                        .toArray(String[]::new);
+        ret.add(ValueDto.builder()
+                        .withName("type")
+                        .withLabel(DBProperties.getProperty(key + ".type"))
+                        .withType(ValueType.CHECKBOX)
+                        .withRequired(true)
+                        .withOptions(getOptions4Types(typeKeys)));
+
+        ret.add(ValueDto.builder()
+                        .withName("analysisType")
+                        .withLabel(DBProperties.getProperty(key + ".analysisType"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Enum(AnalysisType.class)));
+
+        ret.add(ValueDto.builder()
+                        .withName("reportType")
+                        .withLabel(DBProperties.getProperty(key + ".reportType"))
+                        .withType(ValueType.RADIO)
+                        .withOptions(getOptions4Enum(ReportType.class)));
+
+        ret.add(ValueDto.builder()
+                        .withName("currency")
+                        .withLabel(DBProperties.getProperty(key + ".currency"))
+                        .withType(ValueType.DROPDOWN)
+                        .withOptions(getOptions4Currency(true))
+                        .withConfig(Map.of("showClear", true)));
+
+        ret.add(ValueDto.builder()
+                        .withName("contact")
+                        .withLabel(DBProperties.getProperty(key + ".contact"))
+                        .withType(ValueType.AUTOCOMPLETE));
+
+        ret.add(ValueDto.builder()
+                        .withName("groupBy")
+                        .withLabel(DBProperties.getProperty(key + ".groupBy"))
+                        .withType(ValueType.PICKLIST)
+                        .withOptions(getOptions4Enum(GroupBy.class.getName(), getGroupByEnumSet())));
         return ret;
     }
 
@@ -527,13 +523,13 @@ public abstract class AccountsAbstractReport_Base
             } else {
                 final ReportType reportType = getReportType(parameter);
 
-                final DateTime reportDate = getReportDate(parameter);
+                final LocalDate reportDate = (LocalDate) getFilteredReport().getFilterMap().get("reportDate");
 
                 LOG.debug("Running report with reportType: {}, reportDate: {}", reportType, reportDate);
 
                 Map<Instance, String> instance2status = null;
                 final List<Instance> instances;
-                if (reportDate.isBefore(new DateTime().withTimeAtStartOfDay())) {
+                if (reportDate.isBefore(LocalDate.now(Context.getThreadContext().getZoneId()))) {
                     instance2status = calculate4Date(parameter);
                     instances = new ArrayList<>(instance2status.keySet());
                 } else {
@@ -647,23 +643,11 @@ public abstract class AccountsAbstractReport_Base
             QueryBuilder ret = null;
 
             if (filter.containsKey("type")) {
-                if (filter.get("type") instanceof final TypeFilterValue typeFilterValue) {
-                    for (final Long typeId : typeFilterValue.getObject()) {
-                        if (ret == null) {
-                            ret = new QueryBuilder(Type.get(typeId));
-                        } else {
-                            ret.addType(Type.get(typeId));
-                        }
-                    }
-                } else {
-                    for (final var typeId : (List<?>) filter.get("type")) {
-                        if (typeId instanceof final String typeIdStr) {
-                            if (ret == null) {
-                                ret = new QueryBuilder(Type.get(Long.valueOf(typeIdStr)));
-                            } else {
-                                ret.addType(Type.get(Long.valueOf(typeIdStr)));
-                            }
-                        }
+                for (final var type : getFilteredReport().evaluateTypeFilter("type")) {
+                    if (ret == null) {
+                        ret = new QueryBuilder(type);
+                    } else {
+                        ret.addType(type);
                     }
                 }
             } else {
@@ -679,32 +663,25 @@ public abstract class AccountsAbstractReport_Base
         }
 
         protected void add2QueryBuilder(final Parameter _parameter,
-                                        final QueryBuilder _queryBldr)
+                                        final QueryBuilder queryBldr)
             throws EFapsException
         {
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-            final DateTime dateFrom;
-            if (filter.containsKey("dateFrom")) {
-                dateFrom = (DateTime) filter.get("dateFrom");
-            } else {
-                dateFrom = new DateTime().withDayOfMonth(1);
-            }
-            final DateTime dateTo;
-            if (filter.containsKey("dateTo")) {
-                dateTo = (DateTime) filter.get("dateTo");
-            } else {
-                dateTo = new DateTime();
-            }
+            final var dateFrom = (LocalDate) filter.get("dateFrom");
+            final var dateTo = (LocalDate) filter.get("dateTo");
+            queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusDays(1));
+            queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
+
             final var contactInst = filteredReport.evaluateInstanceFilter("contact");
             if (InstanceUtils.isValid(contactInst)) {
-                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contactInst);
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contactInst);
             }
             if (InstanceUtils.isKindOf(_parameter.getInstance(), CIContacts.ContactAbstract)) {
-                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, _parameter.getInstance());
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, _parameter.getInstance());
             }
             final var currencyInst = filteredReport.evaluateCurrencyInstFilter("currency");
             if (currencyInst != null) {
-                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currencyInst.getInstance());
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currencyInst.getInstance());
             }
             // add the status filter depending on the selected analysisType
             final AnalysisType analysisType = getAnalysisType(_parameter);
@@ -715,26 +692,19 @@ public abstract class AccountsAbstractReport_Base
                             .stream()
                             .map(Status::getId)
                             .collect(Collectors.toSet());
-            _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusIds.toArray());
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusIds.toArray());
 
-            final CIAttribute dateAttr = switch (getFilterDate(_parameter)) {
-                case CREATED -> CISales.DocumentSumAbstract.Created;
-                case DUEDATE -> CISales.DocumentSumAbstract.DueDate;
-                case DATE -> CISales.DocumentSumAbstract.Date;
-                default -> CISales.DocumentSumAbstract.Date;
-            };
-            _queryBldr.addWhereAttrGreaterValue(dateAttr, dateFrom.withTimeAtStartOfDay().minusMinutes(1));
-            _queryBldr.addWhereAttrLessValue(dateAttr, dateTo.plusDays(1).withTimeAtStartOfDay());
+            getFilterDate(_parameter);
         }
 
         protected Map<Instance, String> calculate4Date(final Parameter _parameter)
             throws EFapsException
         {
             final Map<Instance, String> ret = new HashMap<>();
-            final DateTime reportDate = getReportDate(_parameter);
+            final LocalDate reportDate = (LocalDate) getFilteredReport().getFilterMap().get("reportDate");
 
-            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-            final DateTime dateFrom = filter.containsKey("dateFrom") ? (DateTime) filter.get("dateFrom") : null;
+            final Map<String, Object> filter = getFilteredReport().getFilterMap();
+            final LocalDate dateFrom = (LocalDate) getFilteredReport().getFilterMap().get("dateFrom");
 
             Collection<Long> typeIds;
             if (filter.containsKey("type")) {
@@ -828,7 +798,7 @@ public abstract class AccountsAbstractReport_Base
                 multi.addSelect(selContactInst, selContactName);
             }
             multi.execute();
-            final DateTime reportDate = getReportDate(_parameter);
+            final LocalDate reportDate = (LocalDate) getFilteredReport().getFilterMap().get("reportDate");
             final Set<Instance> docInsts = new HashSet<>();
             while (multi.next()) {
                 docInsts.add(multi.getCurrentInstance());
@@ -1015,19 +985,6 @@ public abstract class AccountsAbstractReport_Base
             throws EFapsException
         {
             return filteredReport.evaluateEnumFilter("analysisType", AnalysisType.class, AnalysisType.PENDING);
-        }
-
-        protected DateTime getReportDate(final Parameter _parameter)
-            throws EFapsException
-        {
-            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-            final DateTime ret;
-            if (filterMap.containsKey("reportDate")) {
-                ret = (DateTime) filterMap.get("reportDate");
-            } else {
-                ret = new DateTime().withTimeAtStartOfDay();
-            }
-            return ret;
         }
 
         protected FilterDate getFilterDate(final Parameter parameter)
@@ -1466,7 +1423,7 @@ public abstract class AccountsAbstractReport_Base
         private String swapInfo;
 
         /** The report date. */
-        private DateTime reportDate;
+        private LocalDate reportDate;
 
         protected abstract Properties getProperties()
             throws EFapsException;
@@ -1797,8 +1754,11 @@ public abstract class AccountsAbstractReport_Base
                                 ? BooleanUtils.toBoolean(getProperties().getProperty("PaymentPerPayment"))
                                 : null;
 
-                if (getReportDate().isBefore(new DateTime().withTimeAtStartOfDay())) {
-                    docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
+                final var reportDateTime = new DateTime(getReportDate().getYear(), getReportDate().getMonthValue(),
+                                getReportDate().getDayOfMonth(), 0, 0);
+
+                if (getReportDate().isBefore(LocalDate.now(Context.getThreadContext().getZoneId()))) {
+                    docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(reportDateTime));
                 }
                 payments.put(Currency.getBaseCurrency().getId(),
                                 docPayInfo.getPaidInCurrency(Currency.getBaseCurrency(), perpay).abs());
@@ -1943,7 +1903,7 @@ public abstract class AccountsAbstractReport_Base
          *
          * @return value of instance variable {@link #reportDate}
          */
-        public DateTime getReportDate()
+        public LocalDate getReportDate()
         {
             return reportDate;
         }
@@ -1954,7 +1914,7 @@ public abstract class AccountsAbstractReport_Base
          * @param _reportDate value for instance variable {@link #reportDate}
          * @return the data bean
          */
-        public AbstractDataBean setReportDate(final DateTime _reportDate)
+        public AbstractDataBean setReportDate(final LocalDate _reportDate)
         {
             reportDate = _reportDate;
             return this;

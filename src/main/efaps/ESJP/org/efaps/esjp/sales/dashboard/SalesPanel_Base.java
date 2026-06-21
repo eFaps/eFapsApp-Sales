@@ -191,7 +191,7 @@ public abstract class SalesPanel_Base
             }
             final DateTime end = new DateTime().plusDays(1);
 
-            final ValueList values = ds.getValueList(parameter, start, end, getDateGroup(),
+            final ValueList values = ds.getValueList(parameter, null,null, getDateGroup(),
                             getConfig()).groupBy("partial");
             final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
             chain.addComparator(new Comparator<Map<String, Object>>()

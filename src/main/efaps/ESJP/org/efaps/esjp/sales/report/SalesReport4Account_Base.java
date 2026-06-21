@@ -17,9 +17,11 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -343,18 +345,11 @@ public abstract class SalesReport4Account_Base
         @Override
         protected String getTitle(final Parameter _parameter)
         {
-            final String ret;
-            switch(getFilteredReport().getReportKey()) {
-                case IN:
-                    ret = DBProperties.getProperty("Sales_PaymentDocument_Report4AccountMyDesk.Title");
-                    break;
-                case OUT:
-                    ret = DBProperties.getProperty("Sales_PaymentDocumentOut_Report4AccountMyDesk.Title");
-                    break;
-                default:
-                    ret = super.getTitle(_parameter);
-                    break;
-            }
+            final String ret = switch (getFilteredReport().getReportKey()) {
+                case IN -> DBProperties.getProperty("Sales_PaymentDocument_Report4AccountMyDesk.Title");
+                case OUT -> DBProperties.getProperty("Sales_PaymentDocumentOut_Report4AccountMyDesk.Title");
+                default -> super.getTitle(_parameter);
+            };
             return ret;
         }
 
@@ -390,7 +385,7 @@ public abstract class SalesReport4Account_Base
                 if (filter.containsKey("switch")) {
                     offset = (boolean) filter.get("switch");
                 }
-                final DateTime reportDate = getReportDate(_parameter);
+                final var reportDate = getReportDate(_parameter);
                 final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
                 add2QueryBuilder(_parameter, queryBldr);
                 queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
@@ -483,8 +478,7 @@ public abstract class SalesReport4Account_Base
                     }
                 }
                 if (ReportType.MINIMAL.equals(reportType)) {
-                    Collections.sort(dataSource, (_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                    _o2.getDocContactName()));
+                    Collections.sort(dataSource, Comparator.comparing(DataBean::getDocContactName));
                 } else {
                     final FilterDate filterDate = getFilterDate(_parameter);
                     final ComparatorChain<DataBean> chain = new ComparatorChain<>();
@@ -494,56 +488,40 @@ public abstract class SalesReport4Account_Base
                         final List<Enum<?>> selected = groupBy.getObject();
                         for (final Enum<?> sel : selected) {
                             switch ((GroupBy) sel) {
-                                case ASSIGNED:
-                                    chain.addComparator((_o1, _o2) -> {
-                                        int ret1 = 0;
-                                        try {
-                                            ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
-                                        } catch (final EFapsException e) {
-                                            AbstractDynamicReport_Base.LOG.error("Catched", e);
-                                        }
-                                        return ret1;
-                                    });
-                                    break;
-                                case CONTACT:
-                                    chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                                    _o2.getDocContactName()));
-                                    break;
-                                case DAILY:
-                                case MONTHLY:
-                                case YEARLY:
-                                    chain.addComparator((_o1, _o2) -> {
-                                        final int ret1;
-                                        switch (filterDate) {
-                                            case CREATED:
-                                                ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
-                                                break;
-                                            case DUEDATE:
-                                                if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
-                                                    ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
-                                                } else {
-                                                    ret1 = 0;
-                                                }
-                                                break;
-                                            case DATE:
-                                            default:
-                                                ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
-                                                break;
-                                        }
-                                        return ret1;
-                                    });
-                                    break;
-                                case DOCTYPE:
-                                    chain.addComparator((_o1, _o2) -> _o1.getDocInst().getType().getLabel().compareTo(
-                                                    _o2.getDocInst().getType().getLabel()));
-                                    break;
-                                case CONDITION:
-                                    chain.addComparator((_o1, _o2) -> _o1.getCondition().compareTo(_o2.getCondition()));
-                                    break;
-                                default:
-                                    chain.addComparator((_o1, _o2) -> _o1.getDocContactName().compareTo(
-                                                    _o2.getDocContactName()));
-                                    break;
+                                case ASSIGNED -> chain.addComparator((_o1, _o2) -> {
+                                    int ret1 = 0;
+                                    try {
+                                        ret1 = _o1.getAssigned().compareTo(_o2.getAssigned());
+                                    } catch (final EFapsException e) {
+                                        AbstractDynamicReport_Base.LOG.error("Catched", e);
+                                    }
+                                    return ret1;
+                                });
+                                case CONTACT -> chain.addComparator(Comparator.comparing(DataBean::getDocContactName));
+                                case DAILY, MONTHLY, YEARLY -> chain.addComparator((_o1, _o2) -> {
+                                    final int ret1;
+                                    switch (filterDate) {
+                                        case CREATED:
+                                            ret1 = _o1.getDocCreated().compareTo(_o2.getDocCreated());
+                                            break;
+                                        case DUEDATE:
+                                            if (_o1.getDocDueDate() != null && _o2.getDocDueDate() != null) {
+                                                ret1 = _o1.getDocDueDate().compareTo(_o2.getDocDueDate());
+                                            } else {
+                                                ret1 = 0;
+                                            }
+                                            break;
+                                        case DATE:
+                                        default:
+                                            ret1 = _o1.getDocDate().compareTo(_o2.getDocDate());
+                                            break;
+                                    }
+                                    return ret1;
+                                });
+                                case DOCTYPE -> chain.addComparator((_o1, _o2) -> _o1.getDocInst().getType().getLabel().compareTo(
+                                                _o2.getDocInst().getType().getLabel()));
+                                case CONDITION -> chain.addComparator(Comparator.comparing(DataBean::getCondition));
+                                default -> chain.addComparator(Comparator.comparing(DataBean::getDocContactName));
                             }
                         }
                     }
@@ -617,8 +595,8 @@ public abstract class SalesReport4Account_Base
                                       final Map<Instance, DataBean> _beans)
             throws EFapsException
         {
-            final DateTime reportDate = getReportDate(_parameter);
-            if (reportDate.isBefore(new DateTime().withTimeAtStartOfDay())) {
+            final var reportDate = getReportDate(_parameter);
+            if (reportDate.isBefore(LocalDate.now())) {
                 // check for payments
                 final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter, 100);
                 add2QueryBuilder(_parameter, attrQueryBldr);
@@ -626,7 +604,7 @@ public abstract class SalesReport4Account_Base
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                 queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument,
                                 attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                queryBldr.addWhereAttrGreaterValue(CISales.Payment.Date, reportDate.minusMinutes(1).plusDays(1));
+                queryBldr.addWhereAttrGreaterValue(CISales.Payment.Date, reportDate.plusDays(1));
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder seDocInst = SelectBuilder.get().linkto(CISales.Payment.CreateDocument).instance();
                 multi.addSelect(seDocInst);
@@ -641,7 +619,7 @@ public abstract class SalesReport4Account_Base
                 swapQueryBldr.addWhereAttrInQuery(CISales.Document2Document4Swap.FromLink,
                                 attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
                 swapQueryBldr.addWhereAttrGreaterValue(CISales.Document2Document4Swap.Date,
-                                reportDate.minusMinutes(1).plusDays(1));
+                                reportDate.plusDays(1));
                 final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
                 final SelectBuilder selDocInst = SelectBuilder.get()
                                 .linkto(CISales.Document2Document4Swap.FromLink).instance();
@@ -719,15 +697,15 @@ public abstract class SalesReport4Account_Base
          * @return true, if is group by assigned
          * @throws EFapsException on error
          */
-        protected DateTime getReportDate(final Parameter _parameter)
+        protected LocalDate getReportDate(final Parameter _parameter)
             throws EFapsException
         {
             final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
-            final DateTime ret;
+            LocalDate ret;
             if (filterMap.containsKey("reportDate")) {
-                ret = (DateTime) filterMap.get("reportDate");
+                ret = (LocalDate) filterMap.get("reportDate");
             } else {
-                ret = new DateTime().withTimeAtStartOfDay();
+                ret = LocalDate.now();
             }
             return ret;
         }
@@ -817,19 +795,12 @@ public abstract class SalesReport4Account_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, typeids.toArray());
                 }
             }
-            final CIAttribute dateAttr;
-            switch (getFilterDate(_parameter)) {
-                case CREATED:
-                    dateAttr = CISales.DocumentSumAbstract.Created;
-                    break;
-                case DUEDATE:
-                    dateAttr = CISales.DocumentSumAbstract.DueDate;
-                    break;
-                case DATE:
-                default:
-                    dateAttr = CISales.DocumentSumAbstract.Date;
-                    break;
-            }
+            final CIAttribute dateAttr = switch (getFilterDate(_parameter)) {
+                case CREATED -> CISales.DocumentSumAbstract.Created;
+                case DUEDATE -> CISales.DocumentSumAbstract.DueDate;
+                case DATE -> CISales.DocumentSumAbstract.Date;
+                default -> CISales.DocumentSumAbstract.Date;
+            };
             _queryBldr.addWhereAttrGreaterValue(dateAttr, dateFrom.withTimeAtStartOfDay().minusMinutes(1));
             _queryBldr.addWhereAttrLessValue(dateAttr, dateTo.plusDays(1).withTimeAtStartOfDay());
         }
@@ -847,20 +818,12 @@ public abstract class SalesReport4Account_Base
                 final GroupByFilterValue groupBy = (GroupByFilterValue) filterMap.get("groupBy");
                 final List<Enum<?>> selected = groupBy == null ? new ArrayList<>() : groupBy.getObject();
 
-                final String filter;
-                switch (getFilterDate(_parameter)) {
-                    case CREATED:
-                        filter = "docCreated";
-                        break;
-                    case DUEDATE:
-                        filter = "docDueDate";
-                        break;
-                    case DATE:
-                    default:
-                        filter = "docDate";
-                        break;
-                }
-
+                final String filter = switch (getFilterDate(_parameter)) {
+                    case CREATED -> "docCreated";
+                    case DUEDATE -> "docDueDate";
+                    case DATE -> "docDate";
+                    default -> "docDate";
+                };
                 final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(
                                 getFilteredReport().getLabel(_parameter, "FilterDate1"), filter,
                                 DateTimeMonth.get());
@@ -1306,7 +1269,7 @@ public abstract class SalesReport4Account_Base
         private final ReportKey reportKey;
 
         /** The report date. */
-        private DateTime reportDate;
+        private LocalDate reportDate;
         /**
          * Instantiates a new data bean.
          *
@@ -1353,20 +1316,12 @@ public abstract class SalesReport4Account_Base
                                      final boolean _showSwapInfo)
             throws EFapsException
         {
-            final Properties props;
-            switch (reportKey) {
-                case CONTACT:
-                    props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
-                    break;
-                case OUT:
-                    props = Sales.REPORT_SALES4ACCOUNTOUT.get();
-                    break;
-                case IN:
-                default:
-                    props = Sales.REPORT_SALES4ACCOUNTIN.get();
-                    break;
-            }
-
+            final Properties props = switch (reportKey) {
+                case CONTACT -> Sales.REPORT_SALES4ACCOUNTCONTACT.get();
+                case OUT -> Sales.REPORT_SALES4ACCOUNTOUT.get();
+                case IN -> Sales.REPORT_SALES4ACCOUNTIN.get();
+                default -> Sales.REPORT_SALES4ACCOUNTIN.get();
+            };
             if (payments.isEmpty()) {
                 evalPayments();
             }
@@ -1622,24 +1577,18 @@ public abstract class SalesReport4Account_Base
         {
             if (getDocInst().isValid()) {
                 final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
-                final Properties props;
-                switch (reportKey) {
-                    case CONTACT:
-                        props = Sales.REPORT_SALES4ACCOUNTCONTACT.get();
-                        break;
-                    case OUT:
-                        props = Sales.REPORT_SALES4ACCOUNTOUT.get();
-                        break;
-                    case IN:
-                    default:
-                        props = Sales.REPORT_SALES4ACCOUNTIN.get();
-                        break;
-                }
+                final Properties props = switch (reportKey) {
+                    case CONTACT -> Sales.REPORT_SALES4ACCOUNTCONTACT.get();
+                    case OUT -> Sales.REPORT_SALES4ACCOUNTOUT.get();
+                    case IN -> Sales.REPORT_SALES4ACCOUNTIN.get();
+                    default -> Sales.REPORT_SALES4ACCOUNTIN.get();
+                };
                 final Boolean perpay =  props.containsKey("PaymentPerPayment")
                                 ? BooleanUtils.toBoolean(props.getProperty("PaymentPerPayment")) : null;
 
-                if (getReportDate().isBefore(new DateTime().withTimeAtStartOfDay())) {
-                    docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
+                if (getReportDate().isBefore(LocalDate.now())) {
+                    //todo
+                    //docPayInfo.getPayPos().removeIf(p -> p.getDate().isAfter(getReportDate()));
                 }
                 payments.put(Currency.getBaseCurrency().getId(),
                                 docPayInfo.getPaidInCurrency(Currency.getBaseCurrency(), perpay).abs());
@@ -1784,7 +1733,7 @@ public abstract class SalesReport4Account_Base
          *
          * @return value of instance variable {@link #reportDate}
          */
-        public DateTime getReportDate()
+        public LocalDate getReportDate()
         {
             return reportDate;
         }
@@ -1795,7 +1744,7 @@ public abstract class SalesReport4Account_Base
          * @param _reportDate value for instance variable {@link #reportDate}
          * @return the data bean
          */
-        public DataBean setReportDate(final DateTime _reportDate)
+        public DataBean setReportDate(final LocalDate _reportDate)
         {
             reportDate = _reportDate;
             return this;

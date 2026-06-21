@@ -18,7 +18,6 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,7 +52,6 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
-import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
@@ -266,48 +264,58 @@ public abstract class SalesRecordReport_Base
     }
 
     @Override
-    public List<ValueDto> getFilters()
+    public Object evalDefaultValue4Key(final String key)
     {
-        ZoneId zoneId = ZoneId.systemDefault();
-        try {
-            clearCache(ParameterUtil.instance());
-            zoneId = Context.getThreadContext().getZoneId();
-        } catch (final EFapsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        final var filterMap = getFilterMap();
-        String dateFromValue = null;
-        String dateToValue = null;
+        return switch (key) {
+            case "dateFrom": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    final var adjuster = evalTemporalAdjuster(Sales.REPORT_SALESRECORD.get(), "DefaultDateFrom");
+                    yield LocalDate.now(zoneId).with(adjuster);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "dateTo": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    yield LocalDate.now(zoneId);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            default:
+                yield null;
+        };
+    }
 
-        if (filterMap != null && filterMap.containsKey("dateFrom")) {
-            dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
-        } else {
-            dateFromValue = LocalDate.now(zoneId).withDayOfMonth(1).toString();
-        }
-
-        if (filterMap != null && filterMap.containsKey("dateTo")) {
-            dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
-        } else {
-            dateToValue = LocalDate.now(zoneId).toString();
-        }
-
+    @Override
+    public List<ValueDto.Builder> getFilterDefinitions()
+    {
         final var dateFrom = ValueDto.builder()
                         .withName("dateFrom")
-                        .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesRecordReport.dateFrom"))
+                        .withLabel(DBProperties
+                                        .getProperty("org.efaps.esjp.sales.report.SalesRecordReport.dateFrom"))
                         .withType(ValueType.DATE)
-                        .withRequired(true)
-                        .withValue(dateFromValue)
-                        .build();
+                        .withRequired(true);
         final var dateTo = ValueDto.builder()
                         .withName("dateTo")
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.SalesRecordReport.dateTo"))
                         .withType(ValueType.DATE)
-                        .withRequired(true)
-                        .withValue(dateToValue)
-                        .build();
-
+                        .withRequired(true);
         return Arrays.asList(dateFrom, dateTo);
+    }
+
+    @Override
+    public List<ValueDto> getFilters()
+    {
+        final List<ValueDto> ret = new ArrayList<>();
+        final var filterMap = getFilterMap();
+        for (final var filterDef : getFilterDefinitions()) {
+            final var value = filterMap.get(filterDef.getName());
+            ret.add(filterDef.withValue(value).build());
+        }
+        return ret;
     }
 
     /**
@@ -610,35 +618,26 @@ public abstract class SalesRecordReport_Base
         }
 
         /**
-         * @param _parameter Parameter as passed from the eFaps API.
-         * @param _queryBldr the query bldr
+         * @param parameter Parameter as passed from the eFaps API.
+         * @param queryBldr the query bldr
          * @throws EFapsException on error.
          */
-        protected void add2QueryBldr(final Parameter _parameter,
-                                     final QueryBuilder _queryBldr)
+        protected void add2QueryBldr(final Parameter parameter,
+                                     final QueryBuilder queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = filteredReport.getFilterMap(_parameter);
-            final DateTime dateFrom;
-            if (filter.containsKey("dateFrom")) {
-                dateFrom = (DateTime) filter.get("dateFrom");
-            } else {
-                dateFrom = new DateTime().withDayOfMonth(1);
-            }
-            final DateTime dateTo;
-            if (filter.containsKey("dateTo")) {
-                dateTo = (DateTime) filter.get("dateTo");
-            } else {
-                dateTo = new DateTime();
-            }
-            _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusMinutes(1));
-            _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
+            final var filter = filteredReport.getFilterMap(parameter);
+            final var dateFrom = (LocalDate) filter.get("dateFrom");
+            final var dateTo = (LocalDate) filter.get("dateTo");
 
-            final String contactOid = _parameter.getParameterValue("contact");
-            final String contactName = _parameter.getParameterValue("contactAutoComplete");
+            queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusDays(1));
+            queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
+
+            final String contactOid = parameter.getParameterValue("contact");
+            final String contactName = parameter.getParameterValue("contactAutoComplete");
 
             if (contactOid != null && !contactOid.isEmpty() && contactName != null && !contactName.isEmpty()) {
-                _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, Instance.get(contactOid).getId());
+                queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, Instance.get(contactOid).getId());
             }
         }
 

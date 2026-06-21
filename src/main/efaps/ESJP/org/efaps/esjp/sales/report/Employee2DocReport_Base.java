@@ -17,6 +17,7 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -290,7 +291,7 @@ public abstract class Employee2DocReport_Base
             final Object[] ret;
             final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
             final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("condition");
-            if (filter == null || (filter != null && filter.getObject() == null)) {
+            if (filter == null || filter != null && filter.getObject() == null) {
                 ret = new Object[] {};
             } else {
                 ret = filter.getObject().toArray();
@@ -362,18 +363,8 @@ public abstract class Employee2DocReport_Base
                 }
             };
             final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
-            final DateTime start;
-            final DateTime end;
-            if (filter.containsKey("dateFrom")) {
-                start = (DateTime) filter.get("dateFrom");
-            } else {
-                start = new DateTime();
-            }
-            if (filter.containsKey("dateTo")) {
-                end = (DateTime) filter.get("dateTo");
-            } else {
-                end = new DateTime();
-            }
+            final var dateFrom = (LocalDate) filter.get("dateFrom");
+            final var dateTo = (LocalDate) filter.get("dateTo");
             final List<Type> typeList;
             if (filter.containsKey("type")) {
                 typeList = new ArrayList<>();
@@ -392,7 +383,7 @@ public abstract class Employee2DocReport_Base
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
 
-            return ds.getValueList(_parameter, start, end, dateGroup, props,
+            return ds.getValueList(_parameter, dateFrom, dateTo, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
         }
 

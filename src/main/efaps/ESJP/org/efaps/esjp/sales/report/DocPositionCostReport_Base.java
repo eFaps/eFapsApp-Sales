@@ -17,10 +17,10 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,12 +60,7 @@ import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.esjp.erp.FilteredReport_Base.CurrencyFilterValue;
-import org.efaps.esjp.erp.FilteredReport_Base.EnumFilterValue;
-import org.efaps.esjp.erp.FilteredReport_Base.InstanceFilterValue;
-import org.efaps.esjp.erp.FilteredReport_Base.TypeFilterValue;
 import org.efaps.esjp.products.Cost;
-import org.efaps.esjp.sales.report.DocPositionCostReport_Base.DynDocPositionCostReport;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.report.DocPositionReport_Base.ContactGroup;
 import org.efaps.esjp.sales.report.filter.CostTypeFilterValue;
@@ -190,17 +185,17 @@ public abstract class DocPositionCostReport_Base
                 }
             };
             final Map<String, Object> filterMap = getFilterMap(_parameter);
-            final DateTime start;
-            final DateTime end;
+            final LocalDate start;
+            final LocalDate end;
             if (filterMap.containsKey("dateFrom")) {
-                start = (DateTime) filterMap.get("dateFrom");
+                start = (LocalDate) filterMap.get("dateFrom");
             } else {
-                start = new DateTime();
+                start = null;
             }
             if (filterMap.containsKey("dateTo")) {
-                end = (DateTime) filterMap.get("dateTo");
+                end = (LocalDate) filterMap.get("dateTo");
             } else {
-                end = new DateTime();
+                end = null;
             }
             final List<Type> typeList;
             if (filterMap.containsKey("type")) {
@@ -327,27 +322,24 @@ public abstract class DocPositionCostReport_Base
             if (filterValue != null && filterValue.getObject().isValid()) {
                 final ContactGroup contactGroup = evaluateContactGroup(_parameter);
                 switch (contactGroup) {
-                    case PRODPRODUCER:
+                    case PRODPRODUCER -> {
                         final QueryBuilder p2pAttrQueryBldr = new QueryBuilder(CIProducts.Product2Producer);
                         p2pAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Producer.To, filterValue.getObject());
-
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                         p2pAttrQueryBldr.getAttributeQuery(CIProducts.Product2Producer.From));
-                        break;
-                    case PRODSUPPLIER:
+                    }
+                    case PRODSUPPLIER -> {
                         final QueryBuilder p2sAttrQueryBldr = new QueryBuilder(CIProducts.Product2Supplier);
                         p2sAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Supplier.To, filterValue.getObject());
-
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
                                         p2sAttrQueryBldr.getAttributeQuery(CIProducts.Product2Supplier.From));
-                        break;
-                    default:
+                    }
+                    default -> {
                         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
                         attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
-
                         _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
                                         attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
-                        break;
+                    }
                 }
             }
         }
@@ -427,49 +419,18 @@ public abstract class DocPositionCostReport_Base
 
                 final ContactGroup contactGrp = filteredReport.evaluateContactGroup(_parameter);
                 if (!ContactGroup.NONE.equals(contactGrp)) {
-                    chain.addComparator(new Comparator<Map<String, Object>>()
-                    {
-
-                        @Override
-                        public int compare(final Map<String, Object> _o1,
-                                           final Map<String, Object> _o2)
-                        {
-                            return String.valueOf(_o1.get("contact")).compareTo(String.valueOf(_o2.get("contact")));
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> String.valueOf(_o1.get("contact")).compareTo(String.valueOf(_o2.get("contact"))));
                 }
                 if (BooleanUtils.isTrue((Boolean) filterMap.get("docDetails"))) {
-                    chain.addComparator(new Comparator<Map<String, Object>>()
-                    {
-                        @Override
-                        public int compare(final Map<String, Object> _o1,
-                                           final Map<String, Object> _o2)
-                        {
-                            return String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName")));
-                        }
-                    });
+                    chain.addComparator((_o1,
+                     _o2) -> String.valueOf(_o1.get("docName")).compareTo(String.valueOf(_o2.get("docName"))));
                 }
 
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        return String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName")));
-                    }
-                });
-                chain.addComparator(new Comparator<Map<String, Object>>()
-                {
-
-                    @Override
-                    public int compare(final Map<String, Object> _o1,
-                                       final Map<String, Object> _o2)
-                    {
-                        return String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial")));
-                    }
-                });
+                chain.addComparator((_o1,
+                 _o2) -> String.valueOf(_o1.get("productName")).compareTo(String.valueOf(_o2.get("productName"))));
+                chain.addComparator((_o1,
+                 _o2) -> String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial"))));
 
                 Collections.sort(values, chain);
 
@@ -483,10 +444,8 @@ public abstract class DocPositionCostReport_Base
                 if (partials.size() > 1) {
                     final Iterator<String> partialIter = partials.iterator();
                     final String productName = (String) values.get(0).get("productName");
-                    final Iterator<Map<String, Object>> iter = values.iterator();
                     Map<String, Object> previous = values.get(0);
-                    while (iter.hasNext()) {
-                        final Map<String, Object> map = iter.next();
+                    for (final Map<String, Object> map : values) {
                         // if not al partials added go on validating
                         if (partialIter.hasNext()) {
                             String partial = partialIter.next();

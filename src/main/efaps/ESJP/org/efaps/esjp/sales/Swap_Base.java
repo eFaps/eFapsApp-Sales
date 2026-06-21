@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1146,7 +1147,7 @@ public abstract class Swap_Base
         /**
          * Name of the document.
          */
-        private DateTime swapDate;
+        private LocalDate swapDate;
 
         /**
          * From or to.
@@ -1284,7 +1285,7 @@ public abstract class Swap_Base
          *
          * @return value of instance variable {@link #swapDate}
          */
-        public DateTime getSwapDate()
+        public LocalDate getSwapDate()
         {
             return swapDate;
         }
@@ -1295,7 +1296,7 @@ public abstract class Swap_Base
          * @param _swapDate value for instance variable {@link #swapDate}
          * @return the swap info
          */
-        public SwapInfo setSwapDate(final DateTime _swapDate)
+        public SwapInfo setSwapDate(final LocalDate _swapDate)
         {
             swapDate = _swapDate;
             return this;

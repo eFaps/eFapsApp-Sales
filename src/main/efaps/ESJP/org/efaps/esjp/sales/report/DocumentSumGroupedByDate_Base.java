@@ -16,10 +16,10 @@
 package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -71,23 +71,25 @@ public abstract class DocumentSumGroupedByDate_Base
      * @throws EFapsException on error
      */
     public ValueList getValueList(final Parameter _parameter,
-                                  final DateTime _start,
-                                  final DateTime _end,
+                                  final LocalDate start,
+                                  final LocalDate end,
                                   final DateGroup _dateGourp,
                                   final Properties _props,
                                   final Type... _types)
         throws EFapsException
     {
         final ValueList ret = new ValueList();
-        ret.setStart(_start);
-        ret.setEnd(_end);
+        ret.setStart(start);
+        ret.setEnd(end);
         ret.setDateGourp(_dateGourp);
         CollectionUtils.addAll(ret.getTypes(), _types);
 
         final Properties props = _props == null ? new Properties() : _props;
 
-        Partial startPartial = getPartial(_start, _dateGourp);
-        final Partial endPartial = getPartial(_end, _dateGourp);
+        Partial startPartial = getPartial(
+                        new DateTime(start.getYear(), start.getMonthValue(), start.getDayOfMonth(), 0, 0), _dateGourp);
+        final Partial endPartial = getPartial(
+                        new DateTime(end.getYear(), end.getMonthValue(), end.getDayOfMonth(), 0, 0), _dateGourp);
         final DateTimeFormatter dateTimeFormatter = getDateTimeFormatter(_dateGourp);
 
         while (!startPartial.isAfter(endPartial)) {
@@ -107,9 +109,8 @@ public abstract class DocumentSumGroupedByDate_Base
         if (!statuslist.isEmpty()) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract, statuslist.toArray());
         }
-        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, _start.withTimeAtStartOfDay()
-                        .minusMinutes(1));
-        queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, _end.withTimeAtStartOfDay().plusDays(1));
+        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start.minusDays(1));
+        queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end.plusDays(1));
 
         add2QueryBuilder(_parameter, queryBldr);
 
@@ -205,7 +206,7 @@ public abstract class DocumentSumGroupedByDate_Base
                                     final QueryBuilder _queryBldr)
         throws EFapsException
     {
-     // to be used by implementation
+        // to be used by implementation
     }
 
     /**
@@ -221,10 +222,10 @@ public abstract class DocumentSumGroupedByDate_Base
         private static final long serialVersionUID = 1L;
 
         /** The start. */
-        private DateTime start;
+        private LocalDate start;
 
         /** The end. */
-        private DateTime end;
+        private LocalDate end;
 
         /** The date gourp. */
         private DateGroup dateGourp;
@@ -245,9 +246,7 @@ public abstract class DocumentSumGroupedByDate_Base
         {
             final Map<String, Map<String, Object>> tmpMap = new HashMap<>();
             final ValueList ret = new ValueList();
-            final Iterator<Map<String, Object>> iter = iterator();
-            while (iter.hasNext()) {
-                final Map<String, Object> map = iter.next();
+            for (final Map<String, Object> map : this) {
                 String key = "";
                 for (final String keyTmp : _keys) {
                     key = key + map.get(keyTmp);
@@ -285,9 +284,7 @@ public abstract class DocumentSumGroupedByDate_Base
         public Set<Instance> getDocInstances()
         {
             final Set<Instance> ret = new HashSet<>();
-            final Iterator<Map<String, Object>> iter = iterator();
-            while (iter.hasNext()) {
-                final Map<String, Object> map = iter.next();
+            for (final Map<String, Object> map : this) {
                 final Instance docInstance = (Instance) map.get("docInstance");
                 if (docInstance != null && docInstance.isValid()) {
                     ret.add(docInstance);
@@ -301,7 +298,7 @@ public abstract class DocumentSumGroupedByDate_Base
          *
          * @return value of instance variable {@link #start}
          */
-        public DateTime getStart()
+        public LocalDate getStart()
         {
             return this.start;
         }
@@ -311,7 +308,7 @@ public abstract class DocumentSumGroupedByDate_Base
          *
          * @param _start value for instance variable {@link #start}
          */
-        public void setStart(final DateTime _start)
+        public void setStart(final LocalDate _start)
         {
             this.start = _start;
         }
@@ -321,7 +318,7 @@ public abstract class DocumentSumGroupedByDate_Base
          *
          * @return value of instance variable {@link #end}
          */
-        public DateTime getEnd()
+        public LocalDate getEnd()
         {
             return this.end;
         }
@@ -331,7 +328,7 @@ public abstract class DocumentSumGroupedByDate_Base
          *
          * @param _end value for instance variable {@link #end}
          */
-        public void setEnd(final DateTime _end)
+        public void setEnd(final LocalDate _end)
         {
             this.end = _end;
         }

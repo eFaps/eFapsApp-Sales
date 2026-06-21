@@ -18,9 +18,7 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,16 +40,15 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.rest.modules.IFilteredReportProvider;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.rest.dto.ValueDto;
+import org.efaps.esjp.ui.rest.dto.ValueDto.Builder;
 import org.efaps.esjp.ui.rest.dto.ValueType;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -197,92 +194,87 @@ public abstract class StatisticsReport_Base
         return new DynStatisticsReport(this);
     }
 
+
+    @Override
+    public Object evalDefaultValue4Key(final String key)
+    {
+        return switch (key) {
+            case "dateFrom": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    final var adjuster = evalTemporalAdjuster(Sales.REPORT_STATISTICS.get(), "DefaultDateFrom");
+                    yield LocalDate.now(zoneId).with(adjuster);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "dateTo": {
+                try {
+                    final var zoneId = Context.getThreadContext().getZoneId();
+                    yield LocalDate.now(zoneId);
+                } catch (final EFapsException e) {
+                    LOG.error("Catched", e);
+                }
+            }
+            case "reportType": {
+                yield ReportType.TYPE.name();
+            }
+            case "dateGroup": {
+                yield DateGroup.NONE.name();
+            }
+            case "showStatus": {
+                yield false;
+            }
+            default:
+                yield null;
+        };
+    }
+
     @Override
     public List<ValueDto> getFilters()
     {
-        ZoneId zoneId = ZoneId.systemDefault();
-        try {
-            clearCache(ParameterUtil.instance());
-            zoneId = Context.getThreadContext().getZoneId();
-        } catch (final EFapsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        final List<ValueDto> ret = new ArrayList<>();
         final var filterMap = getFilterMap();
-        String dateFromValue = null;
-        String dateToValue = null;
-        String reportTypeValue=  null;
-        String dateGroupValue = null;
-        Boolean showStatusValue = false;
-
-        if (filterMap != null && filterMap.containsKey("dateFrom")) {
-            dateFromValue = ((DateTime) filterMap.get("dateFrom")).toLocalDate().toString();
-        } else {
-            dateFromValue = LocalDate.now(zoneId).minusMonths(1).toString();
+        for (final var filterDef : getFilterDefinitions()) {
+            final var value = filterMap.get(filterDef.getName());
+            switch (filterDef.getName()) {
+                case "showStatus" -> ret.add(filterDef.withValue(BooleanUtils.toBooleanObject((String) value)).build());
+                default -> ret.add(filterDef.withValue(value).build());
+            }
         }
+        return ret;
+    }
 
-        if (filterMap != null && filterMap.containsKey("dateTo")) {
-            dateToValue = ((DateTime) filterMap.get("dateTo")).toLocalDate().toString();
-        } else {
-            dateToValue = LocalDate.now(zoneId).toString();
-        }
-
-        if (filterMap != null && filterMap.containsKey("reportType")) {
-            reportTypeValue =  (String) filterMap.get("reportType");
-        } else {
-            reportTypeValue = ReportType.TYPE.name();
-        }
-
-        if (filterMap != null && filterMap.containsKey("dateGroup")) {
-            dateGroupValue = (String) filterMap.get("dateGroup");
-        } else {
-            dateGroupValue = DateGroup.NONE.name();
-        }
-
-        if (filterMap != null && filterMap.containsKey("showStatus")) {
-            showStatusValue = BooleanUtils.toBoolean((String) filterMap.get("showStatus"));
-        }
-
-        final var dateFrom = ValueDto.builder()
+    @Override
+    public List<Builder> getFilterDefinitions()
+    {
+        final List<Builder> ret = new ArrayList<>();
+        ret.add(ValueDto.builder()
                         .withName("dateFrom")
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateFrom"))
                         .withType(ValueType.DATE)
-                        .withRequired(true)
-                        .withValue(dateFromValue)
-                        .build();
-        final var dateTo = ValueDto.builder()
+                        .withRequired(true));
+        ret.add(ValueDto.builder()
                         .withName("dateTo")
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateTo"))
                         .withType(ValueType.DATE)
-                        .withRequired(true)
-                        .withValue(dateToValue)
-                        .build();
-
-        final var reportType = ValueDto.builder()
+                        .withRequired(true));
+        ret.add(ValueDto.builder()
                         .withName("reportType")
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.reportType"))
                         .withType(ValueType.RADIO)
-                        .withValue(reportTypeValue)
-                        .withOptions(getOptions4Enum(ReportType.class))
-                        .build();
-
-        final var showStatus = ValueDto.builder()
+                        .withOptions(getOptions4Enum(ReportType.class)));
+        ret.add(ValueDto.builder()
                         .withName("showStatus")
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.showStatus"))
                         .withType(ValueType.RADIO)
-                        .withOptions(getOptions4Boolean("org.efaps.esjp.sales.report.StatisticsReport.showStatus"))
-                        .withValue(showStatusValue)
-                        .build();
-
-        final var dateGroup = ValueDto.builder()
+                        .withOptions(getOptions4Boolean("showStatus")));
+        ret.add(ValueDto.builder()
                         .withName("dateGroup")
                         .withLabel(DBProperties.getProperty("org.efaps.esjp.sales.report.StatisticsReport.dateGroup"))
                         .withType(ValueType.RADIO)
-                        .withValue(dateGroupValue)
-                        .withOptions(getOptions4Enum(DateGroup.class))
-                        .build();
-
-        return Arrays.asList(dateFrom, dateTo, reportType, showStatus, dateGroup);
+                        .withOptions(getOptions4Enum(DateGroup.class)));
+        return ret;
     }
 
 
@@ -402,36 +394,24 @@ public abstract class StatisticsReport_Base
         /**
          * Add to query builder.
          *
-         * @param _parameter Parameter as passed by the eFaps API
+         * @param parameter Parameter as passed by the eFaps API
          * @param _queryBldr the query bldr
          * @throws EFapsException on error
          */
-        protected void add2QueryBuilder(final Parameter _parameter,
-                                        final QueryBuilder _queryBldr)
+        protected void add2QueryBuilder(final Parameter parameter,
+                                        final QueryBuilder queryBldr)
             throws EFapsException
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
-            final DateTime dateFrom;
-            if (filter.containsKey("dateFrom")) {
-                dateFrom = (DateTime) filter.get("dateFrom");
-            } else {
-                dateFrom = new DateTime().minusMonths(1);
-            }
-            final DateTime dateTo;
-            if (filter.containsKey("dateTo")) {
-                dateTo = (DateTime) filter.get("dateTo");
-            } else {
-                dateTo = new DateTime();
-            }
-            _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom
-                            .withTimeAtStartOfDay().minusMinutes(1));
-            _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1)
-                            .withTimeAtStartOfDay());
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(parameter);
+            final var dateFrom = (LocalDate) filter.get("dateFrom");
+            final var dateTo = (LocalDate) filter.get("dateTo");
+            queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusDays(1));
+            queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
         }
 
         @Override
         protected void addColumnDefinition(final Parameter _parameter,
-                                          final JasperReportBuilder _builder)
+                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
 
@@ -454,7 +434,7 @@ public abstract class StatisticsReport_Base
                     crosstab.addRowGroup(DynamicReports.ctab.rowGroup(countColumn).setHeaderWidth(250));
                     if (isShowStatus(_parameter)) {
                         crosstab.addRowGroup(DynamicReports.ctab.rowGroup(DynamicReports.col.column("status",
-                                    DynamicReports.type.stringType())));
+                                        DynamicReports.type.stringType())));
                     }
                     break;
                 case CONTACT:
@@ -469,7 +449,7 @@ public abstract class StatisticsReport_Base
                     crosstab.addRowGroup(DynamicReports.ctab.rowGroup(countColumn).setHeaderWidth(250));
                     if (isShowStatus(_parameter)) {
                         crosstab.addRowGroup(DynamicReports.ctab.rowGroup(DynamicReports.col.column("status",
-                                    DynamicReports.type.stringType())));
+                                        DynamicReports.type.stringType())));
                     }
                     break;
                 case TYPE:
@@ -478,7 +458,7 @@ public abstract class StatisticsReport_Base
                     crosstab.addRowGroup(DynamicReports.ctab.rowGroup(countColumn).setHeaderWidth(250));
                     if (isShowStatus(_parameter)) {
                         crosstab.addRowGroup(DynamicReports.ctab.rowGroup(DynamicReports.col.column("status",
-                                    DynamicReports.type.stringType())));
+                                        DynamicReports.type.stringType())));
                     }
                     break;
             }

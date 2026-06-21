@@ -17,6 +17,7 @@ package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,8 +72,8 @@ public abstract class DocPositionGroupedByDate_Base
      * @throws EFapsException on error
      */
     public ValueList getValueList(final Parameter _parameter,
-                                  final DateTime _start,
-                                  final DateTime _end,
+                                  final LocalDate start,
+                                  final LocalDate end,
                                   final DateGroup _dateGourp,
                                   final Properties _props,
                                   final Type... _types)
@@ -86,15 +87,17 @@ public abstract class DocPositionGroupedByDate_Base
         }
 
         final ValueList ret = new ValueList();
-        ret.setStart(_start);
-        ret.setEnd(_end);
+        ret.setStart(start);
+        ret.setEnd(end);
         ret.setDateGourp(_dateGourp);
         CollectionUtils.addAll(ret.getTypes(), _types);
 
         final Properties props = _props == null ? new Properties() : _props;
 
-        Partial startPartial = getPartial(_start, _dateGourp);
-        final Partial endPartial = getPartial(_end, _dateGourp);
+        Partial startPartial = getPartial(
+                        new DateTime(start.getYear(), start.getMonthValue(), start.getDayOfMonth(), 0, 0), _dateGourp);
+        final Partial endPartial = getPartial(
+                        new DateTime(end.getYear(), end.getMonthValue(), end.getDayOfMonth(), 0, 0), _dateGourp);
         final DateTimeFormatter dateTimeFormatter = getDateTimeFormatter(_dateGourp);
 
         while (!startPartial.isAfter(endPartial)) {
@@ -114,9 +117,8 @@ public abstract class DocPositionGroupedByDate_Base
         if (!statuslist.isEmpty()) {
             attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statuslist.toArray());
         }
-        attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentAbstract.Date, _start.withTimeAtStartOfDay()
-                        .minusMinutes(1));
-        attrQueryBldr.addWhereAttrLessValue(CISales.DocumentAbstract.Date, _end.withTimeAtStartOfDay().plusDays(1));
+        attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentAbstract.Date, start.minusDays(1));
+        attrQueryBldr.addWhereAttrLessValue(CISales.DocumentAbstract.Date, end.plusDays(1));
 
         final QueryBuilder queryBldr;
         if (showAmount) {
@@ -284,10 +286,10 @@ public abstract class DocPositionGroupedByDate_Base
         private static final long serialVersionUID = 1L;
 
         /** The start. */
-        private DateTime start;
+        private LocalDate start;
 
         /** The end. */
-        private DateTime end;
+        private LocalDate end;
 
         /** The date gourp. */
         private DateGroup dateGourp;
@@ -357,7 +359,7 @@ public abstract class DocPositionGroupedByDate_Base
          *
          * @return value of instance variable {@link #start}
          */
-        public DateTime getStart()
+        public LocalDate getStart()
         {
             return start;
         }
@@ -367,7 +369,7 @@ public abstract class DocPositionGroupedByDate_Base
          *
          * @param _start value for instance variable {@link #start}
          */
-        public void setStart(final DateTime _start)
+        public void setStart(final LocalDate _start)
         {
             start = _start;
         }
@@ -377,7 +379,7 @@ public abstract class DocPositionGroupedByDate_Base
          *
          * @return value of instance variable {@link #end}
          */
-        public DateTime getEnd()
+        public LocalDate getEnd()
         {
             return end;
         }
@@ -387,7 +389,7 @@ public abstract class DocPositionGroupedByDate_Base
          *
          * @param _end value for instance variable {@link #end}
          */
-        public void setEnd(final DateTime _end)
+        public void setEnd(final LocalDate _end)
         {
             end = _end;
         }

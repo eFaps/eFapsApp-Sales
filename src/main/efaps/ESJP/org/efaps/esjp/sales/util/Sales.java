@@ -731,14 +731,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute DOCSUMREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(Sales.SYSCONFUUID)
-                    .key(Sales.BASE + "report.DocumentSumReport")
-                    .concatenate(true)
-                    .description("Properties to configure the DocumentSumReport.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute EXCHANGEACTIVATEGUARANTEE = new BooleanSysConfAttribute()
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "Exchange.ActivateGuarantee")
@@ -3021,6 +3013,7 @@ public final class Sales
                     .addDefaultValue("BOTH.StatusGroup03", CISales.IncomingReminderStatus.getType().getName())
                     .addDefaultValue("BOTH.Status03", "!" + CISales.IncomingReminderStatus.Replaced.key)
                     .addDefaultValue("ShortPayed.Threshold", "0.01")
+                    .addDefaultValue("DefaultDateFrom", "firstDayOfMonth")
                     .description("""
                                     Properties for AccountsPayable Report.
                                     List of Types
@@ -3081,6 +3074,7 @@ public final class Sales
                     .addDefaultValue("BOTH.StatusGroup04", CISales.IncomingExchangeStatus.getType().getName())
                     .addDefaultValue("BOTH.Status04", "!" + CISales.IncomingExchangeStatus.Canceled.key)
                     .addDefaultValue("ShortPayed.Threshold", "0.01")
+                    .addDefaultValue("DefaultDateFrom", "firstDayOfMonth")
                     .description("""
                                     Properties for AccountsRecievable Report.
                                     List of Types
@@ -3114,6 +3108,36 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.CarrierReport.Activate")
                     .description("Activate the CarrierReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute REPORT_DOCSUM = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Sales.SYSCONFUUID)
+                    .key(Sales.BASE + "report.DocumentSumReport")
+                    .addDefaultValue("Type01", CISales.Invoice.getType().getName())
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", "!" + CISales.InvoiceStatus.Replaced.key)
+                    .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", "!" + CISales.ReceiptStatus.Replaced.key)
+                    .addDefaultValue("Type03", CISales.CreditNote.getType().getName())
+                    .addDefaultValue("StatusGroup03", CISales.CreditNoteStatus.getType().getName())
+                    .addDefaultValue("Status03", "!" + CISales.CreditNoteStatus.Replaced.key)
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".Negate", "true")
+                    .addDefaultValue("Type04", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("StatusGroup04", CISales.IncomingInvoiceStatus.getType().getName())
+                    .addDefaultValue("Status04", "!" + CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Negate", "true")
+                    .addDefaultValue("Type05", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("StatusGroup05", CISales.IncomingReceiptStatus.getType().getName())
+                    .addDefaultValue("Status05", "!" + CISales.IncomingReceiptStatus.Replaced.key)
+                    .addDefaultValue(CISales.IncomingReceipt.getType().getName() + ".Negate", "true")
+                    .addDefaultValue("Type06", CISales.IncomingCreditNote.getType().getName())
+                    .addDefaultValue("StatusGroup06", CISales.IncomingCreditNoteStatus.getType().getName())
+                    .addDefaultValue("Status06", "!" + CISales.IncomingCreditNoteStatus.Replaced.key)
+                    .addDefaultValue("DefaultDateFrom", "firstDayOfMonth")
+                    .description("Properties to configure the DocumentSumReport."
+                                    + "Sales_Invoice.Total=NET");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -3152,8 +3176,8 @@ public final class Sales
                     .key(Sales.BASE + "report.DocSituationReport")
                     .addDefaultValue("Type01", CISales.Invoice.getType().getName())
                     .addDefaultValue("Type02", CISales.Receipt.getType().getName())
+                    .addDefaultValue("DefaultDateFrom", "firstDayOfMonth")
                     .description("Properties 4 DocSituationReport");
-
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -3256,7 +3280,8 @@ public final class Sales
                     .addDefaultValue("Type04", CISales.Reminder.getType().getName())
                     .addDefaultValue(CISales.CreditNote.getType().getName() + ".Negate", "true")
                     .addDefaultValue("tax.06e40be6-40d8-44f4-9d8f-585f2f97ce63", "IGV")
-                    .addDefaultValue("tax.90346a9b-f637-4dd2-8cdf-802608cf5660", "OTHER");
+                    .addDefaultValue("tax.90346a9b-f637-4dd2-8cdf-802608cf5660", "OTHER")
+                    .addDefaultValue("DefaultDateFrom", "firstDayOfMonth");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -3378,7 +3403,8 @@ public final class Sales
                     .sysConfUUID(Sales.SYSCONFUUID)
                     .key(Sales.BASE + "report.Statistics")
                     .description("Configuration for the StatisticsReport.")
-                    .addDefaultValue("Type", CIERP.DocumentAbstract.getType().getName());
+                    .addDefaultValue("Type", CIERP.DocumentAbstract.getType().getName())
+                    .addDefaultValue("DefaultDateFrom", "firstDayOfMonth");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -3466,6 +3492,7 @@ public final class Sales
                     .addDefaultValue("StatusGroup12", CISales.TransactionDocumentShadowOutStatus.getType().getName())
                     .addDefaultValue("Status12", "!" + CISales.TransactionDocumentShadowOutStatus.Canceled.key)
                     .description("Properties 4 SalesKardexReport. prodDoc");
+
 
     /** See description. */
     @EFapsSysConfAttribute
