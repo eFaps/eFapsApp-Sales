@@ -44,8 +44,6 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
                 <property name="Inverse">true</property>
@@ -58,8 +56,6 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
            </trigger>
@@ -90,39 +86,9 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.deliveryDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateDeliveryDate</property>
            </trigger>
-        </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
-               method="getSalesPersonFieldValue"
-               name="Sales_OrderOutboundForm.salesperson.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-            <property name="ShowTypeIcon">true</property>
         </field>
         <field name="employee">
             <property name="SelectAlternateOID">linkfrom[Sales_Employee2OrderOutbound#ToLink].linkto[FromLink].oid</property>
@@ -139,12 +105,15 @@
                 name="Sales_OrderOutboundForm.employee.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
             </trigger>
+            <trigger program="org.efaps.esjp.humanresource.Employee"
+                method="updateField4Employee"
+                name="Sales_OrderOutboundForm.employee.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.employee.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.AssignEmployee</property>
            </trigger>
@@ -182,6 +151,7 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="tag">
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -205,8 +175,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.headingProject.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -233,8 +201,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.project.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -248,8 +214,6 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
@@ -267,9 +231,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Sales_OrderOutboundForm.projectData.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
-                <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
+               <property name="SystemConfig">7536a95f-c2bb-4e97-beb1-58ef3e75b80a</property>
                 <property name="Attribute">org.efaps.projects.Activate</property>
             </trigger>
         </field>
@@ -331,8 +293,6 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.condition.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateCondition</property>
            </trigger>
@@ -346,9 +306,7 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.condition4View.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+               <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateCondition</property>
            </trigger>
         </field>
@@ -410,6 +368,45 @@
                 <property name="Type">Sales_OrderOutboundPosition</property>
                 <property name="LinkFrom">Order</property>
             </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_OrderOutboundForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+        <field name="restPositionTable4View" character="Target">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_OrderOutboundPositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_OrderOutboundPosition</property>
+                <property name="LinkFrom">Order</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_OrderOutboundForm.restPositionTable4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="restPositionTable4Edit" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <table>Sales_OrderOutboundRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_OrderOutboundPosition</property>
+                <property name="LinkFrom">Order</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_OrderOutboundForm.restPositionTable4Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+        <field name="headingFooter" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_OrderOutboundForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
@@ -423,8 +420,21 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
             <property name="Attribute">NetTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_OrderOutboundForm.netTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+          <field name="rateNetTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">NetTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_OrderOutboundForm.rateNetTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
          <field name="taxes">
             <property name="ModeCreate">READONLY</property>
@@ -433,12 +443,25 @@
             <property name="Attribute">Taxes</property>
             <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
-        <field name="crossTotal">
-            <property name="ModeCreate">READONLY</property>
+         <field name="crossTotal">
             <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
             <property name="Attribute">CrossTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_OrderOutboundForm.crossTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
+         <field name="rateCrossTotal">
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateCrossTotal</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_OrderOutboundForm.rateCrossTotal.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
         <field name="netTotal4Read">
             <property name="ModeEdit">NONE</property>
@@ -545,8 +568,6 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.commentsHeading.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateComment</property>
            </trigger>
@@ -565,8 +586,6 @@
                 method="configCheck"
                 name="Sales_OrderOutboundForm.comments.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="Attribute">org.efaps.sales.OrderOutbound.ActivateComment</property>
            </trigger>
@@ -581,6 +600,10 @@
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
+             <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_OrderOutboundForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
          <field name="executeCalculator" character="Command">
             <property name="ModePrint">NONE</property>
@@ -593,6 +616,10 @@
                 method="executeCalculatorOnScript"
                 name="Sales_OrderOutboundForm.javaScript2.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+             <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Sales_InvoiceForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </field>
     </definition>
 </ui-form>
