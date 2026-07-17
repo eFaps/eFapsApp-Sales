@@ -44,6 +44,7 @@
         <field name="toStatus">
             <property name="Select">linkto[ToAbstractLink].status.label</property>
             <property name="Label">Sales_Document2DocumentTable.toStatus.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>
