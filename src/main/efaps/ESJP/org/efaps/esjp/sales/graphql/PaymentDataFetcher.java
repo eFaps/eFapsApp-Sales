@@ -85,7 +85,8 @@ public class PaymentDataFetcher
                         "authorization", "cardLabel", "cardNumber",
                         "equipmentIdent", "info", "operationDateTime", "operationId", "serviceProvider",
                         "ePaymentTypeValue", "ePaymentTypeDesc", "ePaymentTypeKey",
-                        "pointsAmount", "pointsPaymentTypeValue", "pointsPaymentTypeDesc", "pointsPaymentTypeKey"};
+                        "pointsAmount", "pointsPaymentTypeValue", "pointsPaymentTypeDesc", "pointsPaymentTypeKey",
+                        "creditNote"};
 
         LOG.debug("graphTypeName {}", graphType);
         final var keyMapping = getKeyMapping(environment, graphType, keys);
@@ -194,7 +195,9 @@ public class PaymentDataFetcher
                             .as("cardKey");
         } else if (CISales.PaymentCash.getType().equals(type)) {
             print.attribute(CISales.PaymentCash.Note).as("info");
+        } else if (CISales.PaymentRedeemCreditNote.getType().equals(type)) {
+            print.linkto(CISales.PaymentRedeemCreditNote.CreditNoteLink)
+                .attribute("Name").as("creditNote");
         }
     }
-
 }
