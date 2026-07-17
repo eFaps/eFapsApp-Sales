@@ -26,13 +26,7 @@
         <name>Sales_IncomingRetentionCertificateTree_Documents</name>
         <target>
             <menu>Sales_IncomingRetentionCertificateTree_Documents_Menu</menu>
-            <table>Sales_Document2DocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom01">FromAbstractLink</property>
-                <property name="Type02">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom02">ToAbstractLink</property>
-            </evaluate>
+            <form>Sales_Document2DocumentForm</form>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>

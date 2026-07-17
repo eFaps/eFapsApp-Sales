@@ -22,19 +22,13 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>541e3597-454f-4114-ab54-0a874d45589f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
+
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductionCostingTree_Doc</name>
         <target>
             <menu>Sales_ProductionCostingTree_Doc_Menu</menu>
-            <table>Sales_Document2DocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom01">FromAbstractLink</property>
-                <property name="Type02">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom02">ToAbstractLink</property>
-            </evaluate>
+            <form>Sales_Document2DocumentForm</form>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
