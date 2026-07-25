@@ -317,7 +317,7 @@ public abstract class SalesProductReport_Base
                         } else {
                             final List<OptionDto> contactOptions = new ArrayList<>();
                             final var contactInsts = (List<Instance>) filterMap.get("contact");
-                            contactInsts.stream().map(Instance::getOid).toList();
+                            final var contactOids =  contactInsts.stream().map(Instance::getOid).toList();
                             final var contactEval = EQL.builder()
                                             .print(contactInsts.toArray(new Instance[contactInsts.size()]))
                                             .attribute(CIContacts.Contact.Name)
@@ -328,7 +328,7 @@ public abstract class SalesProductReport_Base
                                                 .withValue(contactEval.inst().getOid())
                                                 .build());
                             }
-                            ret.add(filterDef.withValue(value).withOptions(contactOptions).build());
+                            ret.add(filterDef.withValue(contactOids).withOptions(contactOptions).build());
                         }
                     }
                     case "product" -> {
@@ -337,9 +337,8 @@ public abstract class SalesProductReport_Base
                         } else {
                             final List<OptionDto> productOptions = new ArrayList<>();
 
-                            final var productInsts = (List<Instance>) filterMap.get("product");
-                            productInsts.stream().map(Instance::getOid).toList();
-
+                            final var productInsts = (List<Instance>) value;
+                            final var productOids =  productInsts.stream().map(Instance::getOid).toList();
                             final var productEval = EQL.builder()
                                             .print(productInsts.toArray(new Instance[productInsts.size()]))
                                             .attribute(CIProducts.ProductAbstract.Name,
@@ -353,7 +352,7 @@ public abstract class SalesProductReport_Base
                                                 .withValue(productEval.inst().getOid())
                                                 .build());
                             }
-                            ret.add(filterDef.withValue(value).withOptions(productOptions).build());
+                            ret.add(filterDef.withValue(productOids).withOptions(productOptions).build());
                         }
                     }
                     default -> ret.add(filterDef.withValue(value).build());

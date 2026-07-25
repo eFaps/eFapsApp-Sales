@@ -251,7 +251,7 @@ public abstract class DocPositionReport_Base
                         } else {
                             final List<OptionDto> contactOptions = new ArrayList<>();
                             final var contactInsts = (List<Instance>) filterMap.get("contact");
-                            contactInsts.stream().map(Instance::getOid).toList();
+                            final var contactOids = contactInsts.stream().map(Instance::getOid).toList();
                             final var contactEval = EQL.builder()
                                             .print(contactInsts.toArray(new Instance[contactInsts.size()]))
                                             .attribute(CIContacts.Contact.Name)
@@ -262,7 +262,7 @@ public abstract class DocPositionReport_Base
                                                 .withValue(contactEval.inst().getOid())
                                                 .build());
                             }
-                            ret.add(filterDef.withValue(value).withOptions(contactOptions).build());
+                            ret.add(filterDef.withValue(contactOids).withOptions(contactOptions).build());
                         }
                     }
                     default -> ret.add(filterDef.withValue(value).build());
