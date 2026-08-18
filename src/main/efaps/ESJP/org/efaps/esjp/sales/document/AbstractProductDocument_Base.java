@@ -670,29 +670,44 @@ public abstract class AbstractProductDocument_Base
      * @throws EFapsException on error
      * @return listmap for update
      */
-    public Return updateFields4Product(final Parameter _parameter)
+    public Return updateFields4Product(final Parameter parameter)
         throws EFapsException
     {
-        final Return retVal = new Return();
-        final List<Map<String, Object>> list = new ArrayList<>();
-        final Map<String, Object> map = new HashMap<>();
+        if (isRest()) {
+            final List<Map<String, Object>> list = new ArrayList<>();
+            int idx = 0;
+            var prodInst = Instance.get(getValue(parameter, "product", idx));
+            while (InstanceUtils.isKindOf(prodInst, CIProducts.ProductAbstract)) {
+                final var map =new HashMap<String, Object>();
+                list.add(map);
+                add2UpdateField4Product(parameter, map, prodInst);
+                idx++;
+                prodInst = Instance.get(getValue(parameter, "product", idx));
+            }
+            return new Return().put(ReturnValues.VALUES, list);
+        }
 
-        final int selected = getSelectedRow(_parameter);
-        final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
+
+        final Return retVal = new Return();
+
+        final Map<String, Object> map = new HashMap<>();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final int selected = getSelectedRow(parameter);
+        final Instance prodInst = Instance.get(parameter.getParameterValues("product")[selected]);
 
         Instance storInst = null;
-        if (_parameter.getParameterValues("storage") != null) {
-            storInst  = Instance.get(_parameter.getParameterValues("storage")[selected]);
+        if (parameter.getParameterValues("storage") != null) {
+            storInst  = Instance.get(parameter.getParameterValues("storage")[selected]);
         }
 
         if (prodInst.isValid()) {
             if (InstanceUtils.isValid(storInst)) {
                 map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
-                                getStock4ProductInStorage(_parameter, prodInst, storInst));
-                InterfaceUtils.appendScript4FieldUpdate(map, getAlternateIndividualJS(_parameter, selected,
+                                getStock4ProductInStorage(parameter, prodInst, storInst));
+                InterfaceUtils.appendScript4FieldUpdate(map, getAlternateIndividualJS(parameter, selected,
                                 prodInst, storInst));
             }
-            add2UpdateField4Product(_parameter, map, prodInst);
+            add2UpdateField4Product(parameter, map, prodInst);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
