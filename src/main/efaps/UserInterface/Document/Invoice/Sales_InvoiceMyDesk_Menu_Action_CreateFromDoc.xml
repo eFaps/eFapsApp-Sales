@@ -17,8 +17,6 @@
 
 -->
 
-
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>481f62e6-b9c2-4b4d-aa14-95af68e50bcc</uuid>
@@ -34,8 +32,6 @@
             <form>Sales_Invoice_SelectDocForm</form>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                
-
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="AttributeExists01">org.efaps.sales.Invoice.CreateFromDeliveryNoteAutoComplete</property>
                 <property name="AttributeExists02">org.efaps.sales.Invoice.CreateFromQuotationAutoComplete</property>

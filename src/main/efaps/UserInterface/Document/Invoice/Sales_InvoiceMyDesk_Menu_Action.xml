@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>949df39a-7e89-417b-a393-9024fb09f77c</uuid>
@@ -30,7 +27,6 @@
         <childs>
             <child>Sales_InvoiceMyDesk_Menu_Action_Create</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc</child>
-            <child>Sales_InvoiceMyDesk_Menu_Action_CreateFromWizard</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_SetOpen</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_Copy</child>
             <child>Sales_InvoiceMyDesk_Menu_Action_Recalculate</child>
