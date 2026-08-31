@@ -15,6 +15,7 @@
  */
 package org.efaps.esjp.sales.rest;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -24,6 +25,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.admin.ui.field.FieldTable;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.properties.PropertiesUtil;
@@ -60,11 +62,23 @@ public class CreateFromFormProvider
 
     @Override
     public Map<String, ?> getValues()
+        throws EFapsException
     {
         Map<String, Object> map = null;
         if (derivedInst != null) {
             map = new HashMap<>();
             map.put("derived", derivedInst.getOid());
+        }
+        final var dateStr = LocalDate.now(Context.getThreadContext().getZoneId()).toString();
+        map.put("date", dateStr);
+        map.put("dueDate", dateStr);
+
+        final var properties = new Properties();
+        properties.putAll(getProperties());
+
+        final var cleanFields = PropertiesUtil.analyseProperty(properties, "cleanField", 0);
+        for (final var cleanField : cleanFields.entrySet()) {
+            map.put(cleanField.getValue(), "");
         }
         return map;
     }
@@ -72,6 +86,7 @@ public class CreateFromFormProvider
     @Override
     public Map<String, String> evalEventProperties(final AbstractUserInterfaceObject cmd,
                                                    final EventType eventType)
+        throws EFapsException
     {
         if (EventType.UI_CONTENT_EVALUATE.equals(eventType) && cmd instanceof final FieldTable fieldTable) {
             final Map<String, String> map = new HashMap<>();

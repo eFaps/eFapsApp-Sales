@@ -37,6 +37,7 @@
                 <property name="instField03">recievingTicket</property>
                 <property name="instField04">productRequest</property>
                 <property name="instField04">serviceRequest</property>
+                <property name="cleanField01">name4create</property>
             </evaluate>
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>

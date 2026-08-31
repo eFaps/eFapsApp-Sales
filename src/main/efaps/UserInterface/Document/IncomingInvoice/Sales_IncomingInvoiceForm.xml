@@ -377,11 +377,6 @@
             <property name="ModeView">NONE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field name="note4View">
-            <property name="Attribute">Note</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">READONLY</property>
-        </field>
         <field name="condition">
             <property name="Select">linkfrom[Sales_ChannelPurchaseCondition2IncomingInvoice#ToLink].linkto[FromLink].oid</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -519,11 +514,18 @@
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
             </trigger>
         </field>
+        <field name="headingFooter" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="isRest"
+                name="Sales_IncomingInvoiceForm.headingFooter.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
+        </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
             <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
