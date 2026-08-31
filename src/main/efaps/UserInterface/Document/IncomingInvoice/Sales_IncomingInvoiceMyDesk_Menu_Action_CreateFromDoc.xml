@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ea423c54-6780-49e6-b488-24012c36916a</uuid>
@@ -33,6 +30,15 @@
         </access>
         <target>
             <form>Sales_IncomingInvoice_SelectDocForm</form>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
+                name="Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="AttributeExists01">org.efaps.sales.IncomingInvoice.CreateFromOrderOutboundAutoComplete</property>
+                <property name="AttributeExists02">org.efaps.sales.IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete</property>
+                <property name="AttributeExists03">org.efaps.sales.IncomingInvoice.CreateFromRecievingTicketAutoComplete</property>
+                <property name="AttributeExists04">org.efaps.sales.IncomingInvoice.CreateFromProductRequestAutoComplete</property>
+                <property name="AttributeExists05">org.efaps.sales.IncomingInvoice.CreateFromServiceRequestAutoComplete</property>
+            </trigger>
             <command>Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc2</command>
         </target>
         <property name="Target">modal</property>
