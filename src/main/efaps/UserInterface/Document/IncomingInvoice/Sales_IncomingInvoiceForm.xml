@@ -387,6 +387,7 @@
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_IncomingInvoiceForm.condition.UI_FIELD_VALUE"

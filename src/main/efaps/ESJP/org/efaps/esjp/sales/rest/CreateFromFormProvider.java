@@ -19,9 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.efaps.admin.event.EventType;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject;
+import org.efaps.admin.ui.field.FieldTable;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.ui.rest.provider.StandardFormProvider;
@@ -64,4 +68,19 @@ public class CreateFromFormProvider
         }
         return map;
     }
+
+    @Override
+    public Map<String, String> evalEventProperties(final AbstractUserInterfaceObject cmd,
+                                                   final EventType eventType)
+    {
+        if (EventType.UI_CONTENT_EVALUATE.equals(eventType) && cmd instanceof final FieldTable fieldTable) {
+            final Map<String, String> map = new HashMap<>();
+            map.putAll(fieldTable.getEvents(eventType).get(0).getPropertyMap());
+            map.put("Type", CISales.PositionAbstract.getType().getName());
+            map.put("LinkFrom", CISales.PositionAbstract.DocumentAbstractLink.name);
+            return map;
+        }
+        return super.evalEventProperties(cmd, eventType);
+    }
+
 }
