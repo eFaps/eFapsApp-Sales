@@ -18,14 +18,11 @@
 -->
 
 
-
-
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>180bf737-8816-4e36-ad71-5ee6392e185b</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Invoice</name>
@@ -42,5 +39,15 @@
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_Invoice.ACCESSCHECK" event="ACCESSCHECK" />
+        <trigger program="org.efaps.esjp.common.webhook.WebhookTrigger"
+            name="Sales_Invoice.INSERT_POST"
+            event="INSERT_POST">
+            <property name="Event">invoice.create</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.webhook.WebhookTrigger"
+            name="Sales_Invoice.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="Event">invoice.update</property>
+        </trigger>
     </definition>
 </datamodel-type>
