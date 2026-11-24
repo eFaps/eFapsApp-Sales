@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c42a7d70-1725-440a-a45c-46ff2575d785</uuid>
@@ -27,8 +24,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TransactionAbstractUnfilteredTable</name>
-        
-
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
