@@ -52,5 +52,15 @@
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_CreditNote.ACCESSCHECK" event="ACCESSCHECK" />
+        <trigger program="org.efaps.esjp.common.webhook.WebhookTrigger"
+            name="Sales_CreditNote.INSERT_POST"
+            event="INSERT_POST">
+            <property name="Event">credit-note.create</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.webhook.WebhookTrigger"
+            name="Sales_CreditNote.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="Event">credit-note.update</property>
+        </trigger>
     </definition>
 </datamodel-type>
